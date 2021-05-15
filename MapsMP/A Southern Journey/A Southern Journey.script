@@ -1,0 +1,1320 @@
+const
+
+  OFFER_TIME = 6000;
+  AUTOFEED_TIME = 9000;
+  DEPOSITS_TIME = 600;
+  CONFIRM_TIME = 3000;
+  IDLE_TIME = 50;
+  AMBIENT_TIME = 250;
+  BT = 3;
+
+
+type
+
+  Offer = Record
+    WareType, UnitType, Count: Integer;
+  end;
+
+var
+
+  Economy, Food, Military: array[0..1] of Offer;
+  OffersAllowed: array[0..1] of Boolean;
+  OffersTimer, ConfirmTimer, MilitaryOfferType,
+  LastEconomy, LastFood, LastMilitary: array[0..1] of Integer;
+  Wolves: array of Integer;
+  SoundAllowed: array[0..1] of Boolean;
+
+
+procedure FindWolves;
+var
+  aX, aY, W: Integer;
+begin
+  for aX := 1 to States.MapWidth - 1 do
+    for aY := 1 to States.MapHeight - 1 do
+    begin
+      W := States.UnitAt(aX, aY);
+      if W > 0 then
+        if States.UnitType(W) = 30 then
+        begin
+          SetLength(Wolves, Length(Wolves) + 1);
+          if Length(Wolves) > 0 then
+            Wolves[Length(Wolves) - 1] := W;
+        end;
+    end;
+end;
+
+
+{$COMMAND sound: TurnSoundOnOff}
+
+
+procedure TurnSoundOnOff(P, Value: Integer);
+var
+  aValue: Integer;
+begin
+  if not Utils.InRangeI(P, 0, 1) then
+    Exit;
+  aValue := Utils.EnsureRangeI(Value, 0, 1);
+  SoundAllowed[P] := Boolean(aValue);
+end;
+
+
+function EconomyWareType: Integer;
+begin
+  case States.KaMRandomI(6) of
+    0: Result := 0;
+    1: Result := 2;
+    2: Result := 7;
+    3: Result := 5;
+    4: Result := 9;
+    5: Result := 1;
+  end;
+end;
+
+
+function FoodWareType: Integer;
+begin
+  case States.KaMRandomI(6) of
+    0: Result := 8;
+    1: Result := 10;
+    2: Result := 11;
+    3: Result := 13;
+    4: Result := 14;
+    5: Result := 27;
+  end;
+end;
+
+
+function MilitaryWareType: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0..1: Result := 12;
+    2:    Result := 15;
+    3:    Result := 26;
+    4..5: Result := 6;
+    6..7: Result := 3;
+  end;
+end;
+
+
+function OfferModifier: Integer;
+begin
+  case States.MissionDifficulty of
+    mdEasy1:  Result := 8;
+    mdNormal: Result := 7;
+    mdHard1:  Result := 5;
+    mdHard2:  Result := 4;
+    mdHard3:  Result := 3;
+  end;
+end;
+
+
+function OfferBase: Integer;
+begin
+  case States.MissionDifficulty of
+    mdEasy1:  Result := 7;
+    mdNormal: Result := 6;
+    mdHard1:  Result := 5;
+    mdHard2:  Result := 4;
+    mdHard3:  Result := 4;
+  end;
+end;
+
+
+procedure CheckMilitaryUnits(P: Integer);
+begin
+  case States.MissionDifficulty of
+    mdEasy1: begin
+               case States.KaMRandomI(100) of
+                 0..15:  begin
+                           Military[P].UnitType := 16;
+                           Military[P].Count := 8 + States.KaMRandomI(4);
+                         end;
+
+                 16..29: begin
+                           Military[P].UnitType := 18;
+                           Military[P].Count := 8 + States.KaMRandomI(4);
+                         end;
+
+                 30..44: begin
+                           Military[P].UnitType := 20;
+                           Military[P].Count := 8 + States.KaMRandomI(4);
+                         end;
+
+                 45..59: begin
+                           Military[P].UnitType := 23;
+                           Military[P].Count := 6 + States.KaMRandomI(4);
+                         end;
+
+                 60..65: begin
+                           Military[P].UnitType := 15;
+                           Military[P].Count := 10 + States.KaMRandomI(4);
+                         end;
+
+                 66..71: begin
+                           Military[P].UnitType := 17;
+                           Military[P].Count := 8 + States.KaMRandomI(4);
+                         end;
+
+                 72..77: begin
+                           Military[P].UnitType := 19;
+                           Military[P].Count := 10 + States.KaMRandomI(4);
+                         end;
+
+                 78..83: begin
+                           Military[P].UnitType := 14;
+                           Military[P].Count := 12 + States.KaMRandomI(4);
+                         end;
+
+                 84..89: begin
+                           Military[P].UnitType := 24;
+                           Military[P].Count := 12 + States.KaMRandomI(4);
+                         end;
+
+                 90..99: begin
+                           Military[P].UnitType := 21;
+                           Military[P].Count := 6 + States.KaMRandomI(4);
+                         end;
+               end;
+             end;
+
+    mdNormal: begin
+                case States.KaMRandomI(100) of
+                  0..15:  begin
+                            Military[P].UnitType := 15;
+                            Military[P].Count := 8 + States.KaMRandomI(4);
+                          end;
+
+                  16..29: begin
+                            Military[P].UnitType := 17;
+                            Military[P].Count := 8 + States.KaMRandomI(4);
+                          end;
+
+                  30..44: begin
+                            Military[P].UnitType := 19;
+                            Military[P].Count := 8 + States.KaMRandomI(4);
+                          end;
+
+                  45..59: begin
+                            Military[P].UnitType := 14;
+                            Military[P].Count := 10 + States.KaMRandomI(4);
+                          end;
+
+                  60..65: begin
+                            Military[P].UnitType := 16;
+                            Military[P].Count := 6 + States.KaMRandomI(4);
+                          end;
+
+                  66..71: begin
+                            Military[P].UnitType := 18;
+                            Military[P].Count := 8 + States.KaMRandomI(4);
+                          end;
+
+                  72..77: begin
+                            Military[P].UnitType := 20;
+                            Military[P].Count := 8 + States.KaMRandomI(4);
+                          end;
+
+                  78..83: begin
+                            Military[P].UnitType := 23;
+                            Military[P].Count := 6 + States.KaMRandomI(4);
+                          end;
+
+                  84..89: begin
+                            Military[P].UnitType := 24;
+                            Military[P].Count := 10 + States.KaMRandomI(4);
+                          end;
+
+                  90..99: begin
+                            Military[P].UnitType := 21;
+                            Military[P].Count := 6 + States.KaMRandomI(4);
+                          end;
+                end;
+              end;
+
+    mdHard1: begin
+               case States.KaMRandomI(100) of
+                 0..15:  begin
+                           Military[P].UnitType := 15;
+                           Military[P].Count := 8 + States.KaMRandomI(3);
+                         end;
+
+                 16..29: begin
+                           Military[P].UnitType := 17;
+                           Military[P].Count := 8 + States.KaMRandomI(3);
+                         end;
+
+                 30..44: begin
+                           Military[P].UnitType := 19;
+                           Military[P].Count := 8 + States.KaMRandomI(3);
+                         end;
+
+                 45..59: begin
+                           Military[P].UnitType := 16;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 60..65: begin
+                           Military[P].UnitType := 18;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 66..71: begin
+                           Military[P].UnitType := 20;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 72..77: begin
+                           Military[P].UnitType := 23;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 78..83: begin
+                           Military[P].UnitType := 14;
+                           Military[P].Count := 10 + States.KaMRandomI(3);
+                         end;
+
+                 84..89: begin
+                           Military[P].UnitType := 24;
+                           Military[P].Count := 10 + States.KaMRandomI(3);
+                         end;
+
+                 90..99: begin
+                           Military[P].UnitType := 21;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+               end;
+             end;
+
+    mdHard2: begin
+               case States.KaMRandomI(100) of
+                 0..15:  begin
+                           Military[P].UnitType := 15;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 16..29: begin
+                           Military[P].UnitType := 17;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 30..44: begin
+                           Military[P].UnitType := 19;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 45..59: begin
+                           Military[P].UnitType := 16;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 60..65: begin
+                           Military[P].UnitType := 18;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 66..71: begin
+                           Military[P].UnitType := 20;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 72..77: begin
+                           Military[P].UnitType := 23;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 78..83: begin
+                           Military[P].UnitType := 14;
+                           Military[P].Count := 8 + States.KaMRandomI(3);
+                         end;
+
+                 84..89: begin
+                           Military[P].UnitType := 24;
+                           Military[P].Count := 8 + States.KaMRandomI(3);
+                         end;
+
+                 90..99: begin
+                           Military[P].UnitType := 21;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+               end;
+             end;
+
+    mdHard3: begin
+               case States.KaMRandomI(100) of
+                 0..15:  begin
+                           Military[P].UnitType := 14;
+                           Military[P].Count := 12 + States.KaMRandomI(3);
+                         end;
+
+                 16..29: begin
+                           Military[P].UnitType := 24;
+                           Military[P].Count := 12 + States.KaMRandomI(3);
+                         end;
+
+                 30..44: begin
+                           Military[P].UnitType := 15;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 45..59: begin
+                           Military[P].UnitType := 17;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 60..65: begin
+                           Military[P].UnitType := 19;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 66..71: begin
+                           Military[P].UnitType := 18;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 72..77: begin
+                           Military[P].UnitType := 16;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 78..83: begin
+                           Military[P].UnitType := 23;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 84..89: begin
+                           Military[P].UnitType := 20;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+
+                 90..99: begin
+                           Military[P].UnitType := 21;
+                           Military[P].Count := 6 + States.KaMRandomI(3);
+                         end;
+               end;
+             end;
+  end;
+end;
+
+
+procedure CheckOfferTimer(P: Integer);
+begin
+  if not OffersAllowed[P] then
+    Exit;
+  if OffersTimer[P] > 0 then
+    OffersTimer[P] := OffersTimer[P] - 1;
+  if OffersTimer[P] = 1 then
+  begin
+    Actions.PlayOGG(P, 'Notification', 1);
+    Economy[P].WareType := EconomyWareType;
+    Economy[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+    Food[P].WareType := FoodWareType;
+    Food[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+    Military[P].WareType := MilitaryWareType;
+    Military[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+    while Economy[P].WareType = LastEconomy[P] do
+    begin
+      Economy[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+      Economy[P].WareType := EconomyWareType;
+    end;
+    while Food[P].WareType = LastFood[P] do
+    begin
+      Food[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+      Food[P].WareType := FoodWareType;
+    end;
+    MilitaryOfferType[P] := 0;
+    if States.StatHouseTypeCount(P, 21) > 0 then 
+      MilitaryOfferType[P] := States.KaMRandomI(4);
+    if MilitaryOfferType[P] < 3 then
+      while Military[P].WareType = LastMilitary[P] do
+      begin
+        Military[P].Count := OfferBase + States.KaMRandomI(OfferModifier);
+        Military[P].WareType := MilitaryWareType;
+      end;
+    if MilitaryOfferType[P] = 3 then
+      CheckMilitaryUnits(P);
+  end;
+end;
+
+
+procedure CheckConfirmTimer(P: Integer);
+begin
+  if not OffersAllowed[P] then
+    ConfirmTimer[P] := CONFIRM_TIME;
+  if (OffersAllowed[P])
+  and (ConfirmTimer[P] > 0)
+  and (OffersTimer[P] = 0) then
+    ConfirmTimer[P] := ConfirmTimer[P] - 1;
+  if ConfirmTimer[P] = 1 then
+  begin
+    OffersTimer[P] := OFFER_TIME;
+    ConfirmTimer[P] := CONFIRM_TIME;
+  end;
+end;
+
+
+function FindMarket(P: Integer): Integer;
+var
+  H: array of Integer;
+  I: Integer;
+begin
+  H := States.PlayerGetAllHouses(P);
+  if Length(H) <= 0 then
+    Exit;
+  for I := 0 to Length(H) - 1 do
+    if States.HouseType(H[I]) = 29 then
+      Result := H[I];
+end;
+
+
+{$COMMAND getoffer: GetPlayerOffer}
+
+
+procedure GetPlayerOffer(P, ID: Integer);
+var
+  G, OfferID: Integer;
+begin
+
+  if not Utils.InRangeI(P, 0, 1) then
+    Exit;
+
+  if not OffersAllowed[P] then
+    Exit;
+
+  if OffersTimer[P] > 0 then
+    Exit;
+
+  if not Utils.InRangeI(ID, 0, 3) then
+    Exit;
+
+  OfferID := ID;
+
+  if OfferID = 0 then
+    OfferID := 1 + States.KaMRandomI(3);
+
+  case OfferID of
+
+    1: begin
+         Actions.HouseAddWaresTo(FindMarket(P), Economy[P].WareType, Economy[P].Count);
+         Actions.ShowMsgFormatted(P, '<$7>', [Economy[P].Count, States.WareTypeName(Economy[P].WareType)]);
+       end;
+
+    2: begin
+         Actions.HouseAddWaresTo(FindMarket(P), Food[P].WareType, Food[P].Count);
+         Actions.ShowMsgFormatted(P, '<$7>', [Food[P].Count, States.WareTypeName(Food[P].WareType)]);
+       end;
+
+    3: begin
+         if MilitaryOfferType[P] < 3 then
+         begin
+           Actions.HouseAddWaresTo(FindMarket(P), Military[P].WareType, Military[P].Count)
+           Actions.ShowMsgFormatted(P, '<$7>', [Military[P].Count, States.WareTypeName(Military[P].WareType)]);
+         end;
+         if MilitaryOfferType[P] = 3 then
+         begin
+           G := Actions.GiveGroup(P, Military[P].UnitType, 156, 39, 6, Military[P].Count, States.KaMRandomI(3) + Round(Sqrt(Military[P].Count)));
+           Actions.GroupHungerSet(G, 15000 + States.KaMRandomI(10000) - States.KaMRandomI(5000));
+           Actions.ShowMsgGoToFormatted(P, 156, 39, '<$7>', [Military[P].Count, States.UnitTypeName(Military[P].UnitType)]);
+         end;
+       end
+
+    else Exit;
+
+  end;
+
+  if Utils.InRangeI(ID, 0, 3) then
+  begin
+    OffersTimer[P] := OFFER_TIME;
+    ConfirmTimer[P] := CONFIRM_TIME;
+    Actions.PlayOGG(P, 'Offer', 1);
+    LastEconomy[P] := Economy[P].WareType;
+    LastFood[P] := Food[P].WareType;
+    LastMilitary[P] := Military[P].WareType;
+  end;
+
+end;
+
+
+function Overlay(P: Integer): ANSIString;
+begin
+  if not OffersAllowed[P] then
+    Result := '';
+  if (OffersTimer[P] = 0)
+  and (OffersAllowed[P]) then
+    case MilitaryOfferType[P] of
+      0..2: Result := '[$52A8CF]<$0>[]||[/getoffer 1] [$369210]<$1>[] '
+            + IntToStr(Economy[P].Count) + ' ' + States.WareTypeName(Economy[P].WareType)
+            + '|[/getoffer 2] [$A97775]<$2>[] ' + IntToStr(Food[P].Count) + ' ' + States.WareTypeName(Food[P].WareType)
+            + '|[/getoffer 3] [$5065EE]<$3>[] ' + IntToStr(Military[P].Count) + ' ' + States.WareTypeName(Military[P].WareType)
+            + '|[/getoffer 0] [$382873]<$12>[]'
+            + '||[$87A2EE]<$6>[]' + '||[$526615]<$10>[] ' + Utils.TimeToString(ConfirmTimer[P]);
+      3:    Result := '[$52A8CF]<$0>[]||[/getoffer 1] [$369210]<$1>[] '
+            + IntToStr(Economy[P].Count) + ' ' + States.WareTypeName(Economy[P].WareType)
+            + '|[/getoffer 2] [$A97775]<$2>[] ' + IntToStr(Food[P].Count) + ' ' + States.WareTypeName(Food[P].WareType)
+            + '|[/getoffer 3] [$5065EE]<$3>[] ' + IntToStr(Military[P].Count) + ' ' + States.UnitTypeName(Military[P].UnitType)
+            + '|[/getoffer 0] [$382873]<$12>[]'
+            + '||[$87A2EE]<$6>[]' + '||[$526615]<$10>[] ' + Utils.TimeToString(ConfirmTimer[P]);
+    end;
+  if (OffersTimer[P] > 0)
+  and (OffersAllowed[P]) then
+    Result := '[$784409]<$4>[] ' + Utils.TimeToString(OffersTimer[P]);
+end;
+
+
+procedure OnHouseBuilt(aID: Integer);
+var
+  O: Integer;
+begin
+  O := States.HouseOwner(aID);
+  if not Utils.InRangeI(O, 0, 1) then
+    Exit;
+  if States.HouseType(aID) = 29 then
+  begin
+    OffersAllowed[O] := True;
+    LastEconomy[O] := EconomyWareType;
+    LastFood[O] := FoodWareType;
+    LastMilitary[O] := MilitaryWareType;
+  end;
+end;
+
+
+procedure OnHouseDestroyed(aID, aDestroyer: Integer);
+begin
+  if not Utils.InRangeI(States.HouseOwner(aID), 0, 1) then
+    Exit;
+  if States.StatHouseTypeCount(States.HouseOwner(aID), 29) = 0 then
+    OffersAllowed[States.HouseOwner(aID)] := False;
+end;
+
+
+procedure AutoFeed(P: Integer);
+var
+  K: Integer;
+  UnitsToFeed: array of Integer;
+begin
+  UnitsToFeed := States.PlayerGetAllUnits(P);
+  if Length(UnitsToFeed) <= 0 then
+    Exit;
+  for K := Low(UnitsToFeed) to High(UnitsToFeed) do
+    Actions.UnitHungerSet(UnitsToFeed[K], States.UnitMaxHunger);
+end;
+
+
+function BarbarianRage: Single; {old values 0.15 0.3 0.45 0.5 0.6 - seem too high}
+begin
+  case States.MissionDifficulty of
+    mdEasy1:  Result := 0.1;
+    mdNormal: Result := 0.15;
+    mdHard1:  Result := 0.25;
+    mdHard2:  Result := 0.35;
+    mdHard3:  Result := 0.45;
+  end;
+end;
+
+
+function OutOfAIBase(G: Integer): Boolean;
+var
+  X, Y, aU: Integer;
+begin
+  Result := False;
+  if G <= 0 then
+    Exit;
+  if States.GroupMemberCount(G) <= 0 then
+    Exit;
+  aU := States.GroupMember(G, States.KaMRandomI(States.GroupMemberCount(G)));
+  X := States.UnitPositionX(aU);
+  Y := States.UnitPositionY(aU);
+  case X of
+    1..50:    Result := Y < 83;
+    51..63:   Result := Y < 98;
+    64..71:   Result := Y < 35 + X;
+    72..77:   Result := Y < 105;
+    78..86:   Result := Y < 27 + X;
+    87..125:  Result := Y < 112;
+    126..139: Result := Y < 107;
+    140..154: Result := Y < 100;
+    155..163: Result := Y < 97 - Round((X - 155) * 0.5);
+    164..175: Result := Y < 93;
+  end;
+end;
+
+
+function HasHouses(aPlayer: Integer): Boolean;
+begin
+  Result := False;
+  if States.PlayerEnabled(aPlayer) then
+    Result := Length(States.PlayerGetAllHouses(aPlayer)) > 0;
+end;
+
+
+function HasUnits(aPlayer: Integer): Boolean;
+begin
+  Result := False;
+  if States.PlayerEnabled(aPlayer) then
+    Result := Length(States.PlayerGetAllUnits(aPlayer)) > 0;
+end;
+
+
+procedure CheckIdleGroups;
+var
+  Groups: array of Integer;
+  I, K, X, Y, R: Integer;
+begin
+  for K := 4 to 11 do
+  begin
+    Groups := States.PlayerGetAllGroups(K);
+    if Length(Groups) > 0 then
+      for I := 0 to Length(Groups) - 1 do
+        if (States.GroupIdle(Groups[I]))
+        and (OutOfAIBase(Groups[I])) then
+        begin
+          X := States.UnitPositionX(States.GroupMember(Groups[I], 0));
+          Y := States.UnitPositionY(States.GroupMember(Groups[I], 0));
+          R := Round(States.KaMRandom * 100);
+          if (HasHouses(0))
+          and (X < 70)
+          and (R < 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestHouse(0, X, Y, -1));
+          if (HasHouses(1))
+          and (X > 70)
+          and (R > 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestHouse(1, X, Y, -1));
+          if (HasHouses(1))
+          and (X < 70)
+          and (R >= 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestHouse(1, X, Y, -1));
+          if (HasHouses(0))
+          and (X > 70)
+          and (R <= 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestHouse(0, X, Y, -1));
+          if (HasUnits(0))
+          and (X < 70)
+          and (R < 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestUnit(0, X, Y, -1));
+          if (HasUnits(1))
+          and (X > 70)
+          and (R >= 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestUnit(1, X, Y, -1));
+          if (HasUnits(1))
+          and (X < 70)
+          and (R > 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestUnit(1, X, Y, -1));
+          if (HasUnits(0))
+          and (X > 70)
+          and (R <= 50) then
+            Actions.GroupOrderAttackHouse(Groups[I], States.ClosestUnit(0, X, Y, -1));
+        end;
+  end;
+end;
+
+
+procedure UpdateAttackTimers;
+var
+  Pos: TKMPoint;
+  K: Integer;
+begin
+  case States.MissionDifficulty of
+
+    mdEasy1: begin
+               for K := 4 to 11 do
+                 Actions.AIAttackRemoveAll(K);
+               Pos.X := 0;
+               Pos.Y := 0;
+               Actions.AIAttackAdd(4, True, 51000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+               Actions.AIAttackAdd(5, True, 51000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+               Actions.AIAttackAdd(6, True, 45000, 40, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+               Actions.AIAttackAdd(7, True, 63000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+               Actions.AIAttackAdd(10, True, 45000, 40, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+               Actions.AIAttackAdd(11, True, 63000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+             end;
+
+    mdNormal: begin
+                for K := 4 to 11 do
+                  Actions.AIAttackRemoveAll(K);
+                Pos.X := 0;
+                Pos.Y := 0;
+                Actions.AIAttackAdd(4, True, 48000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+                Actions.AIAttackAdd(5, True, 48000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+                Actions.AIAttackAdd(6, True, 42000, 40, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+                Actions.AIAttackAdd(7, True, 60000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+                Actions.AIAttackAdd(10, True, 42000, 40, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+                Actions.AIAttackAdd(11, True, 60000, 48, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
+              end;
+
+  end;
+end;
+
+
+procedure UpdateAIEquipRates;
+begin
+  case States.MissionDifficulty of
+
+    mdEasy1: begin
+               Actions.AIEquipRate(4, 0, 375);
+               Actions.AIEquipRate(4, 1, 375);
+               Actions.AIEquipRate(5, 0, 375);
+               Actions.AIEquipRate(5, 1, 375);
+               Actions.AIEquipRate(6, 0, 375);
+               Actions.AIEquipRate(6, 1, 375);
+               Actions.AIEquipRate(7, 0, 450);
+               Actions.AIEquipRate(7, 1, 450);
+               Actions.AIEquipRate(8, 0, 225);
+               Actions.AIEquipRate(8, 1, 225);
+               Actions.AIEquipRate(9, 0, 225);
+               Actions.AIEquipRate(9, 1, 225);
+               Actions.AIEquipRate(10, 0, 375);
+               Actions.AIEquipRate(10, 1, 375);
+               Actions.AIEquipRate(11, 0, 450);
+               Actions.AIEquipRate(11, 1, 450);
+               Actions.AIRecruitDelay(4, 35250);
+               Actions.AIRecruitDelay(5, 35250);
+               Actions.AIRecruitDelay(6, 12000);
+               Actions.AIRecruitDelay(7, 19600);
+               Actions.AIRecruitDelay(10, 5250);
+               Actions.AIRecruitDelay(11, 27000);
+             end;
+
+    mdNormal: begin
+                Actions.AIEquipRate(4, 0, 325);
+                Actions.AIEquipRate(4, 1, 325);
+                Actions.AIEquipRate(5, 0, 325);
+                Actions.AIEquipRate(5, 1, 325);
+                Actions.AIEquipRate(6, 0, 330);
+                Actions.AIEquipRate(6, 1, 330);
+                Actions.AIEquipRate(7, 0, 400);
+                Actions.AIEquipRate(7, 1, 400);
+                Actions.AIEquipRate(8, 0, 220);
+                Actions.AIEquipRate(8, 1, 220);
+                Actions.AIEquipRate(9, 0, 220);
+                Actions.AIEquipRate(9, 1, 220);
+                Actions.AIEquipRate(10, 0, 330);
+                Actions.AIEquipRate(10, 1, 330);
+                Actions.AIEquipRate(11, 0, 400);
+                Actions.AIEquipRate(11, 1, 400);
+                Actions.AIRecruitDelay(4, 34350);
+                Actions.AIRecruitDelay(5, 34350);
+                Actions.AIRecruitDelay(6, 12960);
+                Actions.AIRecruitDelay(7, 24180);
+                Actions.AIRecruitDelay(10, 7020);
+                Actions.AIRecruitDelay(11, 28000);
+              end;
+
+    mdHard1: begin
+               Actions.AIEquipRate(4, 0, 285);
+               Actions.AIEquipRate(4, 1, 285);
+               Actions.AIEquipRate(5, 0, 285);
+               Actions.AIEquipRate(5, 1, 285);
+               Actions.AIEquipRate(6, 0, 285);
+               Actions.AIEquipRate(6, 1, 285);
+               Actions.AIEquipRate(7, 0, 363);
+               Actions.AIEquipRate(7, 1, 363);
+               Actions.AIEquipRate(8, 0, 100);
+               Actions.AIEquipRate(8, 1, 100);
+               Actions.AIEquipRate(9, 0, 100);
+               Actions.AIEquipRate(9, 1, 100);
+               Actions.AIEquipRate(10, 0, 285);
+               Actions.AIEquipRate(10, 1, 285);
+               Actions.AIEquipRate(11, 0, 363);
+               Actions.AIEquipRate(11, 1, 363);
+               Actions.AIRecruitDelay(4, 33030);
+               Actions.AIRecruitDelay(5, 33030);
+               Actions.AIRecruitDelay(6, 13920);
+               Actions.AIRecruitDelay(7, 20330);
+               Actions.AIRecruitDelay(10, 8790);
+               Actions.AIRecruitDelay(11, 27960);
+             end;
+
+    mdHard2: begin
+               Actions.AIEquipRate(4, 0, 250);
+               Actions.AIEquipRate(4, 1, 250);
+               Actions.AIEquipRate(5, 0, 250);
+               Actions.AIEquipRate(5, 1, 250);
+               Actions.AIEquipRate(6, 0, 255);
+               Actions.AIEquipRate(6, 1, 255);
+               Actions.AIEquipRate(7, 0, 325);
+               Actions.AIEquipRate(7, 1, 325);
+               Actions.AIEquipRate(8, 0, 100);
+               Actions.AIEquipRate(8, 1, 100);
+               Actions.AIEquipRate(9, 0, 100);
+               Actions.AIEquipRate(9, 1, 100);
+               Actions.AIEquipRate(10, 0, 255);
+               Actions.AIEquipRate(10, 1, 255);
+               Actions.AIEquipRate(11, 0, 325);
+               Actions.AIEquipRate(11, 1, 325);
+               Actions.AIRecruitDelay(4, 34500);
+               Actions.AIRecruitDelay(5, 34500);
+               Actions.AIRecruitDelay(6, 16560);
+               Actions.AIRecruitDelay(7, 24180);
+               Actions.AIRecruitDelay(10, 11970);
+               Actions.AIRecruitDelay(11, 31000);
+             end;
+
+    mdHard3: begin
+               Actions.AIEquipRate(4, 0, 225);
+               Actions.AIEquipRate(4, 1, 225);
+               Actions.AIEquipRate(5, 0, 225);
+               Actions.AIEquipRate(5, 1, 225);
+               Actions.AIEquipRate(6, 0, 225);
+               Actions.AIEquipRate(6, 1, 225);
+               Actions.AIEquipRate(7, 0, 285);
+               Actions.AIEquipRate(7, 1, 285);
+               Actions.AIEquipRate(8, 0, 50);
+               Actions.AIEquipRate(8, 1, 50);
+               Actions.AIEquipRate(9, 0, 50);
+               Actions.AIEquipRate(9, 1, 50);
+               Actions.AIEquipRate(10, 0, 225);
+               Actions.AIEquipRate(10, 1, 225);
+               Actions.AIEquipRate(11, 0, 285);
+               Actions.AIEquipRate(11, 1, 285);
+               Actions.AIRecruitDelay(4, 35550);
+               Actions.AIRecruitDelay(5, 35550);
+               Actions.AIRecruitDelay(6, 19200);
+               Actions.AIRecruitDelay(7, 28200);
+               Actions.AIRecruitDelay(10, 15150);
+               Actions.AIRecruitDelay(11, 34200);
+             end;
+
+  end;
+end;
+
+
+procedure GiveInitialTroops;
+var
+  G1, G2: Integer;
+begin
+  case States.MissionDifficulty of
+
+    mdEasy1: begin
+
+               if States.PlayerEnabled(0) then
+               begin
+                 G1 := Actions.GiveGroup(0, 16, 18, 45, 4, 12, 4);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GiveGroup(0, 22, 35, 34, 2, 6, 3);
+                 Actions.GiveGroup(0, 19, 17, 29, 7, 8, 4);
+                 Actions.GiveUnit(0, 0, 20, 40, 4);
+                 Actions.GiveUnit(0, 0, 22, 40, 4);
+                 Actions.GiveUnit(0, 9, 21, 40, 4);
+                 Actions.GiveWares(0, 2, 10);
+                 Actions.GiveWares(0, 7, 15);
+                 Actions.GiveWares(0, 8, 10);
+                 Actions.GiveWares(0, 10, 10);
+                 Actions.GiveWares(0, 13, 5);
+                 Actions.GiveWares(0, 27, 5);
+               end;
+
+               if States.PlayerEnabled(1) then
+               begin
+                 G1 := Actions.GiveGroup(1, 16, 102, 64, 5, 12, 4);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GiveGroup(1, 22, 92, 52, 6, 6, 3);
+                 Actions.GiveGroup(1, 19, 117, 49, 0, 8, 4);
+                 Actions.GiveUnit(1, 0, 103, 58, 4);
+                 Actions.GiveUnit(1, 0, 105, 58, 4);
+                 Actions.GiveUnit(1, 9, 104, 58, 4);
+                 Actions.GiveWares(1, 2, 10);
+                 Actions.GiveWares(1, 7, 15);
+                 Actions.GiveWares(1, 8, 10);
+                 Actions.GiveWares(1, 10, 10);
+                 Actions.GiveWares(1, 13, 5);
+                 Actions.GiveWares(1, 27, 5);
+               end;
+
+             end;
+
+    mdNormal: begin
+
+                if States.PlayerEnabled(0) then
+                begin
+                  G1 := Actions.GiveGroup(0, 16, 18, 45, 4, 8, 5);
+                  G2 := Actions.GiveGroup(0, 15, 18, 43, 0, 7, 5);
+                  Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                  Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                  Actions.GroupOrderLink(G2, G1);
+                  Actions.GiveGroup(0, 22, 35, 34, 2, 8, 4);
+                  Actions.GiveUnit(0, 0, 21, 40, 4);
+                  Actions.GiveWares(0, 2, 5);
+                  Actions.GiveWares(0, 7, 10);
+                  Actions.GiveWares(0, 8, 5);
+                  Actions.GiveWares(0, 10, 5);
+                  Actions.GiveWares(0, 13, 5);
+                  Actions.GiveWares(0, 27, 5);
+                end;
+
+                if States.PlayerEnabled(1) then
+                begin
+                  G1 := Actions.GiveGroup(1, 16, 102, 64, 5, 8, 5);
+                  G2 := Actions.GiveGroup(1, 15, 103, 65, 5, 7, 5);
+                  Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                  Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                  Actions.GroupOrderLink(G2, G1);
+                  Actions.GiveGroup(1, 22, 92, 52, 6, 8, 4);
+                  Actions.GiveUnit(1, 0, 104, 58, 4);
+                  Actions.GiveWares(1, 2, 5);
+                  Actions.GiveWares(1, 7, 10);
+                  Actions.GiveWares(1, 8, 5);
+                  Actions.GiveWares(1, 10, 5);
+                  Actions.GiveWares(1, 13, 5);
+                  Actions.GiveWares(1, 27, 5);
+                end;
+
+              end;
+
+    mdHard1: begin
+
+               if States.PlayerEnabled(0) then
+               begin
+                 G1 := Actions.GiveGroup(0, 16, 18, 45, 4, 7, 5);
+                 G2 := Actions.GiveGroup(0, 15, 18, 43, 0, 8, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                 Actions.GroupOrderLink(G2, G1);
+                 Actions.GiveGroup(0, 22, 35, 34, 2, 6, 3);
+               end;
+
+               if States.PlayerEnabled(1) then
+               begin
+                 G1 := Actions.GiveGroup(1, 16, 102, 64, 5, 7, 5);
+                 G2 := Actions.GiveGroup(1, 15, 103, 65, 5, 8, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                 Actions.GroupOrderLink(G2, G1);
+                 Actions.GiveGroup(1, 22, 92, 52, 6, 6, 3);
+              end;
+
+            end;
+
+    mdHard2: begin
+
+               if States.PlayerEnabled(0) then
+               begin
+                 G1 := Actions.GiveGroup(0, 16, 18, 45, 4, 5, 5);
+                 G2 := Actions.GiveGroup(0, 15, 18, 44, 4, 10, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                 Actions.GroupOrderLink(G2, G1);
+                 Actions.GiveGroup(0, 22, 35, 34, 2, 6, 3);
+               end;
+
+               if States.PlayerEnabled(1) then
+               begin
+                 G1 := Actions.GiveGroup(1, 16, 102, 64, 5, 5, 5);
+                 G2 := Actions.GiveGroup(1, 15, 103, 65, 5, 10, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GroupHungerSet(G2, States.UnitMaxHunger);
+                 Actions.GroupOrderLink(G2, G1);
+                 Actions.GiveGroup(1, 22, 92, 52, 6, 6, 3);
+              end;
+
+             end;
+
+    mdHard3: begin
+               if States.PlayerEnabled(0) then
+               begin
+                 G1 := Actions.GiveGroup(0, 15, 18, 45, 4, 15, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GiveGroup(0, 21, 35, 34, 2, 9, 3);
+               end;
+
+               if States.PlayerEnabled(1) then
+               begin
+                 G1 := Actions.GiveGroup(1, 15, 102, 64, 5, 15, 5);
+                 Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+                 Actions.GiveGroup(1, 21, 92, 52, 6, 9, 3);
+               end;
+             end;
+
+  end;
+end;
+
+
+procedure OnWarriorEquipped(aU, aG: Integer);
+var
+  nG, nX, nY: Integer;
+begin
+  if (Utils.InRangeI(States.UnitOwner(aU), 4, 11))
+  and (Utils.InRangeI(States.UnitType(aU), 14, 16)) then  
+    if (States.KaMRandom > 0.4) then
+    begin
+      nX := States.UnitPositionX(aU);
+      nY := States.UnitPositionY(aU);
+      nG := Actions.GiveGroup(States.UnitOwner(aU), 23, nX, nY, 1, 1, 1);
+      Actions.UnitKill(aU, True);
+      Actions.GroupOrderLink(nG, aG);
+    end;
+
+  if Utils.InRangeI(States.UnitOwner(aU), 4, 11) then
+  begin
+    if States.KaMRandom > 0.5 then
+      Actions.AIArmyType(States.UnitOwner(aU), atLeather)
+    else
+      Actions.AIArmyType(States.UnitOwner(aU), atIron);
+  end;
+end;
+
+
+procedure OnUnitWounded(aU, aAttacker: Integer);
+begin
+  if (States.UnitType(aU) = 23)
+  and (Utils.InRangeI(States.UnitOwner(aU), 4, 11)) then
+    if States.KaMRandom <= BarbarianRage then
+      Actions.UnitHPChange(aU, 1 + States.KaMRandomI(2));
+end;
+
+
+procedure UpdateDeposits;
+begin
+  Actions.MapTilesArraySetS(['18, 128, 147, -1, -1, -1', '19, 98, 152, -1, -1, -1', '19, 99, 152, -1, -1, -1', '19, 100, 152, -1, -1, -1', '19, 101, 152, -1, -1, -1', '19, 102, 152, -1, -1, -1', '19, 103, 152, -1, -1, -1', '19, 104, 152, -1, -1, -1', '19, 126, 147, -1, -1, -1', '19, 127, 147, -1, -1, -1', '19, 128, 147, -1, -1, -1', '19, 129, 147, -1, -1, -1', '20, 96, 152, -1, -1, -1', '20, 97, 152, -1, -1, -1', '20, 98, 152, -1, -1, -1', '20, 99, 153, -1, -1, -1', '20, 100, 153, -1, -1, -1', '20, 101, 153, -1, -1, -1', '20, 102, 153, -1, -1, -1', '20, 103, 153, -1, -1, -1', '20, 104, 152, -1, -1, -1', '20, 105, 152, -1, -1, -1', '20, 126, 147, -1, -1, -1', '20, 127, 147, -1, -1, -1', '20, 128, 147, -1, -1, -1', '20, 129, 147, -1, -1, -1', '21, 94, 152, -1, -1, -1', '21, 95, 152, -1, -1, -1', '21, 96, 152, -1, -1, -1', '21, 97, 153, -1, -1, -1', '21, 98, 153, -1, -1, -1', '21, 99, 154, -1, -1, -1', '21, 100, 154, -1, -1, -1', '21, 101, 154, -1, -1, -1', '21, 102, 153, -1, -1, -1', '21, 103, 153, -1, -1, -1', '21, 104, 152, -1, -1, -1', '21, 105, 152, -1, -1, -1', '21, 106, 152, -1, -1, -1', '21, 125, 147, -1, -1, -1', '21, 126, 147, -1, -1, -1', '21, 127, 147, -1, -1, -1', '21, 128, 147, -1, -1, -1', '21, 129, 147, -1, -1, -1', '22, 93, 152, -1, -1, -1', '22, 94, 152, -1, -1, -1', '22, 95, 152, -1, -1, -1', '22, 96, 153, -1, -1, -1', '22, 97, 154, -1, -1, -1', '22, 98, 154, -1, -1, -1', '22, 99, 154, -1, -1, -1', '22, 100, 155, -1, -1, -1', '22, 101, 155, -1, -1, -1', '22, 102, 154, -1, -1, -1', '22, 103, 154, -1, -1, -1', '22, 104, 153, -1, -1, -1', '22, 105, 152, -1, -1, -1', '22, 106, 152, -1, -1, -1', '22, 107, 152, -1, -1, -1', '22, 123, 147, -1, -1, -1', '22, 124, 147, -1, -1, -1', '22, 125, 147, -1, -1, -1', '22, 126, 147, -1, -1, -1', '22, 127, 147, -1, -1, -1', '22, 128, 147, -1, -1, -1', '22, 129, 147, -1, -1, -1', '23, 92, 152, -1, -1, -1', '23, 93, 152, -1, -1, -1', '23, 94, 153, -1, -1, -1', '23, 95, 153, -1, -1, -1', '23, 96, 154, -1, -1, -1', '23, 97, 154, -1, -1, -1', '23, 98, 155, -1, -1, -1', '23, 99, 155, -1, -1, -1', '23, 100, 155, -1, -1, -1', '23, 101, 155, -1, -1, -1', '23, 102, 155, -1, -1, -1', '23, 103, 155, -1, -1, -1', '23, 104, 154, -1, -1, -1', '23, 105, 154, -1, -1, -1', '23, 106, 152, -1, -1, -1', '23, 107, 152, -1, -1, -1', '23, 108, 152, -1, -1, -1', '23, 123, 147, -1, -1, -1', '23, 124, 147, -1, -1, -1', '23, 125, 147, -1, -1, -1', '23, 126, 147, -1, -1, -1', '23, 127, 147, -1, -1, -1', '23, 128, 147, -1, -1, -1', '24, 85, 151, -1, -1, -1', '24, 86, 151, -1, -1, -1', '24, 91, 152, -1, -1, -1', '24, 92, 152, -1, -1, -1', '24, 93, 153, -1, -1, -1', '24, 94, 153, -1, -1, -1', '24, 95, 153, -1, -1, -1', '24, 96, 154, -1, -1, -1', '24, 97, 155, -1, -1, -1', '24, 98, 155, -1, -1, -1', '24, 99, 155, -1, -1, -1', '24, 100, 155, -1, -1, -1', '24, 101, 155, -1, -1, -1', '24, 102, 155, -1, -1, -1', '24, 103, 155, -1, -1, -1', '24, 104, 155, -1, -1, -1', '24, 105, 154, -1, -1, -1', '24, 106, 153, -1, -1, -1', '24, 107, 152, -1, -1, -1', '24, 108, 152, -1, -1, -1', '24, 122, 147, -1, -1, -1', '24, 123, 147, -1, -1, -1', '24, 124, 147, -1, -1, -1', '24, 125, 147, -1, -1, -1', '24, 126, 147, -1, -1, -1', '25, 82, 151, -1, -1, -1', '25, 83, 148, -1, -1, -1', '25, 84, 151, -1, -1, -1', '25, 90, 152, -1, -1, -1', '25, 91, 152, -1, -1, -1', '25, 92, 153, -1, -1, -1', '25, 93, 153, -1, -1, -1', '25, 94, 154, -1, -1, -1', '25, 95, 154, -1, -1, -1', '25, 96, 155, -1, -1, -1', '25, 97, 155, -1, -1, -1', '25, 98, 155, -1, -1, -1', '25, 99, 155, -1, -1, -1', '25, 100, 155, -1, -1, -1', '25, 101, 155, -1, -1, -1', '25, 102, 155, -1, -1, -1', '25, 103, 155, -1, -1, -1', '25, 104, 154, -1, -1, -1', '25, 105, 154, -1, -1, -1', '25, 106, 153, -1, -1, -1', '25, 107, 153, -1, -1, -1', '25, 108, 152, -1, -1, -1', '25, 109, 152, -1, -1, -1', '25, 120, 147, -1, -1, -1', '25, 121, 147, -1, -1, -1', '25, 122, 147, -1, -1, -1', '25, 123, 147, -1, -1, -1', '25, 124, 147, -1, -1, -1', '25, 125, 147, -1, -1, -1', '26, 82, 150, -1, -1, -1', '26, 83, 151, -1, -1, -1', '26, 84, 151, -1, -1, -1', '26, 85, 149, -1, -1, -1', '26, 86, 149, -1, -1, -1', '26, 88, 148, -1, -1, -1', '26, 90, 152, -1, -1, -1', '26, 91, 152, -1, -1, -1', '26, 92, 153, -1, -1, -1', '26, 93, 154, -1, -1, -1', '26, 94, 155, -1, -1, -1', '26, 95, 154, -1, -1, -1', '26, 96, 155, -1, -1, -1', '26, 97, 155, -1, -1, -1', '26, 98, 154, -1, -1, -1', '26, 99, 155, -1, -1, -1', '26, 100, 155, -1, -1, -1', '26, 101, 155, -1, -1, -1', '26, 102, 155, -1, -1, -1', '26, 103, 155, -1, -1, -1', '26, 104, 154, -1, -1, -1', '26, 105, 153, -1, -1, -1', '26, 106, 153, -1, -1, -1', '26, 107, 153, -1, -1, -1', '26, 108, 152, -1, -1, -1', '26, 109, 152, -1, -1, -1', '26, 118, 147, -1, -1, -1', '26, 119, 147, -1, -1, -1', '26, 120, 147, -1, -1, -1', '26, 121, 147, -1, -1, -1', '26, 122, 147, -1, -1, -1', '26, 123, 147, -1, -1, -1', '26, 124, 147, -1, -1, -1', '27, 82, 149, -1, -1, -1', '27, 83, 148, -1, -1, -1', '27, 84, 151, -1, -1, -1', '27, 85, 150, -1, -1, -1', '27, 86, 150, -1, -1, -1', '27, 87, 150, -1, -1, -1', '27, 88, 150, -1, -1, -1', '27, 90, 152, -1, -1, -1', '27, 91, 152, -1, -1, -1', '27, 92, 153, -1, -1, -1', '27, 93, 154, -1, -1, -1', '27, 94, 155, -1, -1, -1', '27, 95, 155, -1, -1, -1', '27, 96, 155, -1, -1, -1', '27, 97, 155, -1, -1, -1', '27, 98, 155, -1, -1, -1', '27, 99, 155, -1, -1, -1', '27, 100, 155, -1, -1, -1', '27, 101, 154, -1, -1, -1', '27, 102, 155, -1, -1, -1', '27, 103, 155, -1, -1, -1', '27, 104, 154, -1, -1, -1', '27, 105, 155, -1, -1, -1', '27, 106, 153, -1, -1, -1', '27, 107, 152, -1, -1, -1', '27, 108, 153, -1, -1, -1', '27, 109, 152, -1, -1, -1', '27, 117, 147, -1, -1, -1', '27, 118, 147, -1, -1, -1', '27, 119, 147, -1, -1, -1', '27, 120, 147, -1, -1, -1', '27, 121, 147, -1, -1, -1', '27, 122, 147, -1, -1, -1', '27, 123, 147, -1, -1, -1', '28, 82, 149, -1, -1, -1', '28, 83, 151, -1, -1, -1', '28, 84, 151, -1, -1, -1', '28, 85, 150, -1, -1, -1', '28, 86, 149, -1, -1, -1', '28, 87, 149, -1, -1, -1', '28, 88, 149, -1, -1, -1', '28, 90, 152, -1, -1, -1', '28, 91, 152, -1, -1, -1', '28, 92, 153, -1, -1, -1', '28, 93, 155, -1, -1, -1', '28, 94, 155, -1, -1, -1', '28, 95, 155, -1, -1, -1', '28, 96, 155, -1, -1, -1', '28, 97, 155, -1, -1, -1', '28, 98, 155, -1, -1, -1', '28, 99, 155, -1, -1, -1', '28, 100, 154, -1, -1, -1', '28, 101, 155, -1, -1, -1', '28, 102, 155, -1, -1, -1', '28, 103, 154, -1, -1, -1', '28, 104, 154, -1, -1, -1', '28, 105, 155, -1, -1, -1', '28, 106, 153, -1, -1, -1', '28, 107, 153, -1, -1, -1', '28, 108, 153, -1, -1, -1', '28, 109, 152, -1, -1, -1', '28, 116, 147, -1, -1, -1', '28, 117, 147, -1, -1, -1', '28, 118, 147, -1, -1, -1', '28, 119, 147, -1, -1, -1', '28, 120, 147, -1, -1, -1', '28, 121, 147, -1, -1, -1', '28, 122, 147, -1, -1, -1', '28, 123, 147, -1, -1, -1', '29, 82, 149, -1, -1, -1', '29, 83, 151, -1, -1, -1', '29, 84, 151, -1, -1, -1', '29, 85, 151, -1, -1, -1', '29, 86, 150, -1, -1, -1', '29, 87, 150, -1, -1, -1', '29, 88, 149, -1, -1, -1', '29, 90, 152, -1, -1, -1', '29, 91, 152, -1, -1, -1', '29, 92, 153, -1, -1, -1', '29, 93, 154, -1, -1, -1', '29, 94, 155, -1, -1, -1', '29, 95, 155, -1, -1, -1', '29, 96, 155, -1, -1, -1', '29, 97, 155, -1, -1, -1', '29, 98, 155, -1, -1, -1', '29, 99, 155, -1, -1, -1', '29, 100, 155, -1, -1, -1', '29, 101, 155, -1, -1, -1', '29, 102, 155, -1, -1, -1', '29, 103, 154, -1, -1, -1', '29, 104, 155, -1, -1, -1', '29, 105, 153, -1, -1, -1', '29, 106, 153, -1, -1, -1', '29, 107, 153, -1, -1, -1', '29, 108, 153, -1, -1, -1', '29, 109, 152, -1, -1, -1', '29, 116, 147, -1, -1, -1', '29, 117, 147, -1, -1, -1', '29, 118, 147, -1, -1, -1', '29, 119, 147, -1, -1, -1', '29, 120, 147, -1, -1, -1', '29, 121, 147, -1, -1, -1', '29, 122, 147, -1, -1, -1', '29, 123, 147, -1, -1, -1', '30, 82, 148, -1, -1, -1', '30, 83, 150, -1, -1, -1', '30, 84, 151, -1, -1, -1', '30, 85, 150, -1, -1, -1', '30, 86, 149, -1, -1, -1', '30, 87, 149, -1, -1, -1', '30, 90, 152, -1, -1, -1', '30, 91, 153, -1, -1, -1', '30, 92, 152, -1, -1, -1', '30, 93, 154, -1, -1, -1', '30, 94, 155, -1, -1, -1', '30, 95, 154, -1, -1, -1', '30, 96, 155, -1, -1, -1', '30, 97, 155, -1, -1, -1', '30, 98, 155, -1, -1, -1', '30, 99, 155, -1, -1, -1', '30, 100, 155, -1, -1, -1', '30, 101, 155, -1, -1, -1', '30, 102, 155, -1, -1, -1', '30, 103, 155, -1, -1, -1', '30, 104, 154, -1, -1, -1', '30, 105, 153, -1, -1, -1', '30, 106, 152, -1, -1, -1', '30, 107, 153, -1, -1, -1', '30, 108, 153, -1, -1, -1', '30, 109, 152, -1, -1, -1', '30, 115, 147, -1, -1, -1', '30, 116, 147, -1, -1, -1', '30, 117, 147, -1, -1, -1', '30, 118, 147, -1, -1, -1', '30, 119, 147, -1, -1, -1', '30, 120, 147, -1, -1, -1', '30, 121, 147, -1, -1, -1', '30, 122, 147, -1, -1, -1', '30, 123, 147, -1, -1, -1', '31, 80, 148, -1, -1, -1', '31, 81, 149, -1, -1, -1', '31, 82, 148, -1, -1, -1', '31, 83, 149, -1, -1, -1', '31, 84, 151, -1, -1, -1', '31, 85, 149, -1, -1, -1', '31, 89, 152, -1, -1, -1', '31, 90, 152, -1, -1, -1', '31, 91, 153, -1, -1, -1', '31, 92, 154, -1, -1, -1', '31, 93, 155, -1, -1, -1', '31, 94, 155, -1, -1, -1', '31, 95, 155, -1, -1, -1', '31, 96, 155, -1, -1, -1', '31, 97, 155, -1, -1, -1', '31, 98, 155, -1, -1, -1', '31, 99, 155, -1, -1, -1', '31, 100, 155, -1, -1, -1', '31, 101, 155, -1, -1, -1', '31, 102, 155, -1, -1, -1', '31, 103, 155, -1, -1, -1', '31, 104, 154, -1, -1, -1', '31, 105, 153, -1, -1, -1', '31, 106, 153, -1, -1, -1', '31, 107, 152, -1, -1, -1', '31, 108, 153, -1, -1, -1', '31, 109, 152, -1, -1, -1', '31, 115, 147, -1, -1, -1', '31, 116, 147, -1, -1, -1', '31, 117, 147, -1, -1, -1', '31, 118, 147, -1, -1, -1', '31, 119, 147, -1, -1, -1', '31, 120, 147, -1, -1, -1', '31, 121, 147, -1, -1, -1', '31, 122, 147, -1, -1, -1', '31, 123, 147, -1, -1, -1', '32, 79, 148, -1, -1, -1', '32, 80, 150, -1, -1, -1', '32, 81, 149, -1, -1, -1', '32, 82, 150, -1, -1, -1', '32, 83, 150, -1, -1, -1', '32, 84, 149, -1, -1, -1', '32, 85, 148, -1, -1, -1', '32, 89, 153, -1, -1, -1', '32, 90, 153, -1, -1, -1', '32, 91, 154, -1, -1, -1', '32, 92, 155, -1, -1, -1', '32, 93, 155, -1, -1, -1', '32, 94, 155, -1, -1, -1', '32, 95, 155, -1, -1, -1', '32, 96, 155, -1, -1, -1', '32, 97, 155, -1, -1, -1', '32, 98, 155, -1, -1, -1', '32, 99, 155, -1, -1, -1', '32, 100, 155, -1, -1, -1', '32, 101, 155, -1, -1, -1', '32, 102, 155, -1, -1, -1', '32, 103, 155, -1, -1, -1', '32, 104, 154, -1, -1, -1', '32, 105, 154, -1, -1, -1', '32, 106, 152, -1, -1, -1', '32, 107, 153, -1, -1, -1', '32, 108, 153, -1, -1, -1', '32, 109, 152, -1, -1, -1', '32, 115, 147, -1, -1, -1', '32, 116, 147, -1, -1, -1', '32, 117, 147, -1, -1, -1', '32, 118, 147, -1, -1, -1', '32, 119, 147, -1, -1, -1', '32, 120, 147, -1, -1, -1', '32, 121, 147, -1, -1, -1', '33, 78, 148, -1, -1, -1', '33, 79, 150, -1, -1, -1', '33, 80, 149, -1, -1, -1', '33, 81, 151, -1, -1, -1', '33, 82, 151, -1, -1, -1', '33, 83, 149, -1, -1, -1', '33, 88, 152, -1, -1, -1', '33, 89, 152, -1, -1, -1', '33, 90, 153, -1, -1, -1', '33, 91, 154, -1, -1, -1', '33, 92, 154, -1, -1, -1', '33, 93, 155, -1, -1, -1', '33, 94, 155, -1, -1, -1', '33, 95, 155, -1, -1, -1', '33, 96, 155, -1, -1, -1', '33, 97, 155, -1, -1, -1', '33, 98, 155, -1, -1, -1', '33, 99, 155, -1, -1, -1', '33, 100, 155, -1, -1, -1', '33, 101, 155, -1, -1, -1', '33, 102, 154, -1, -1, -1', '33, 103, 155, -1, -1, -1', '33, 104, 154, -1, -1, -1', '33, 105, 152, -1, -1, -1', '33, 106, 153, -1, -1, -1', '33, 107, 152, -1, -1, -1', '33, 108, 153, -1, -1, -1', '33, 109, 152, -1, -1, -1', '33, 110, 152, -1, -1, -1', '33, 114, 147, -1, -1, -1', '33, 115, 147, -1, -1, -1', '33, 116, 147, -1, -1, -1', '33, 117, 147, -1, -1, -1', '33, 118, 147, -1, -1, -1', '33, 119, 147, -1, -1, -1', '33, 120, 147, -1, -1, -1', '34, 78, 149, -1, -1, -1', '34, 79, 151, -1, -1, -1', '34, 80, 148, -1, -1, -1', '34, 81, 151, -1, -1, -1', '34, 82, 151, -1, -1, -1', '34, 83, 150, -1, -1, -1', '34, 88, 152, -1, -1, -1', '34, 89, 152, -1, -1, -1', '34, 90, 153, -1, -1, -1', '34, 91, 154, -1, -1, -1', '34, 92, 155, -1, -1, -1', '34, 93, 155, -1, -1, -1', '34, 94, 155, -1, -1, -1', '34, 95, 155, -1, -1, -1', '34, 96, 155, -1, -1, -1', '34, 97, 155, -1, -1, -1', '34, 98, 155, -1, -1, -1', '34, 99, 154, -1, -1, -1', '34, 100, 155, -1, -1, -1', '34, 101, 155, -1, -1, -1', '34, 102, 155, -1, -1, -1', '34, 103, 155, -1, -1, -1', '34, 104, 154, -1, -1, -1', '34, 105, 154, -1, -1, -1', '34, 106, 153, -1, -1, -1', '34, 107, 153, -1, -1, -1', '34, 108, 152, -1, -1, -1', '34, 109, 152, -1, -1, -1', '34, 110, 152, -1, -1, -1', '34, 113, 147, -1, -1, -1', '34, 114, 147, -1, -1, -1', '34, 115, 147, -1, -1, -1', '34, 116, 147, -1, -1, -1', '34, 117, 147, -1, -1, -1', '34, 118, 147, -1, -1, -1', '34, 119, 147, -1, -1, -1', '34, 120, 147, -1, -1, -1', '35, 80, 151, -1, -1, -1', '35, 81, 151, -1, -1, -1', '35, 82, 151, -1, -1, -1', '35, 83, 151, -1, -1, -1', '35, 87, 152, -1, -1, -1', '35, 88, 152, -1, -1, -1', '35, 89, 153, -1, -1, -1', '35, 90, 153, -1, -1, -1', '35, 91, 154, -1, -1, -1', '35, 92, 155, -1, -1, -1', '35, 93, 155, -1, -1, -1', '35, 94, 155, -1, -1, -1', '35, 95, 154, -1, -1, -1', '35, 96, 155, -1, -1, -1', '35, 97, 155, -1, -1, -1', '35, 98, 155, -1, -1, -1', '35, 99, 155, -1, -1, -1', '35, 100, 155, -1, -1, -1', '35, 101, 154, -1, -1, -1', '35, 102, 155, -1, -1, -1', '35, 103, 153, -1, -1, -1', '35, 104, 154, -1, -1, -1', '35, 105, 154, -1, -1, -1', '35, 106, 153, -1, -1, -1', '35, 107, 153, -1, -1, -1', '35, 108, 152, -1, -1, -1', '35, 109, 153, -1, -1, -1', '35, 110, 152, -1, -1, -1', '35, 113, 147, -1, -1, -1', '35, 114, 147, -1, -1, -1', '35, 115, 147, -1, -1, -1', '35, 116, 147, -1, -1, -1', '35, 117, 147, -1, -1, -1', '35, 118, 147, -1, -1, -1', '35, 119, 147, -1, -1, -1', '35, 120, 147, -1, -1, -1', '36, 78, 151, -1, -1, -1', '36, 80, 149, -1, -1, -1', '36, 81, 151, -1, -1, -1', '36, 82, 150, -1, -1, -1', '36, 83, 150, -1, -1, -1', '36, 87, 152, -1, -1, -1', '36, 88, 152, -1, -1, -1', '36, 89, 153, -1, -1, -1', '36, 90, 153, -1, -1, -1', '36, 91, 153, -1, -1, -1', '36, 92, 154, -1, -1, -1', '36, 93, 154, -1, -1, -1', '36, 94, 154, -1, -1, -1', '36, 95, 154, -1, -1, -1', '36, 96, 154, -1, -1, -1', '36, 97, 155, -1, -1, -1', '36, 98, 155, -1, -1, -1', '36, 99, 155, -1, -1, -1', '36, 100, 155, -1, -1, -1', '36, 101, 155, -1, -1, -1', '36, 102, 155, -1, -1, -1', '36, 103, 155, -1, -1, -1', '36, 104, 154, -1, -1, -1', '36, 105, 153, -1, -1, -1', '36, 106, 153, -1, -1, -1', '36, 107, 153, -1, -1, -1', '36, 108, 152, -1, -1, -1', '36, 109, 152, -1, -1, -1', '36, 110, 152, -1, -1, -1', '36, 113, 147, -1, -1, -1', '36, 114, 147, -1, -1, -1', '36, 115, 147, -1, -1, -1', '36, 116, 147, -1, -1, -1', '36, 117, 147, -1, -1, -1', '36, 118, 147, -1, -1, -1', '36, 119, 147, -1, -1, -1', '36, 120, 147, -1, -1, -1', '37, 77, 151, -1, -1, -1', '37, 78, 150, -1, -1, -1', '37, 81, 150, -1, -1, -1', '37, 82, 149, -1, -1, -1', '37, 83, 149, -1, -1, -1', '37, 87, 152, -1, -1, -1', '37, 88, 152, -1, -1, -1', '37, 89, 152, -1, -1, -1', '37, 90, 152, -1, -1, -1', '37, 91, 154, -1, -1, -1', '37, 92, 153, -1, -1, -1', '37, 93, 153, -1, -1, -1', '37, 94, 154, -1, -1, -1', '37, 95, 154, -1, -1, -1', '37, 96, 155, -1, -1, -1', '37, 97, 155, -1, -1, -1', '37, 98, 155, -1, -1, -1', '37, 99, 155, -1, -1, -1', '37, 100, 155, -1, -1, -1', '37, 101, 154, -1, -1, -1', '37, 102, 155, -1, -1, -1', '37, 103, 155, -1, -1, -1', '37, 104, 154, -1, -1, -1', '37, 105, 153, -1, -1, -1', '37, 106, 153, -1, -1, -1', '37, 107, 152, -1, -1, -1', '37, 108, 152, -1, -1, -1', '37, 109, 152, -1, -1, -1', '37, 113, 147, -1, -1, -1', '37, 114, 147, -1, -1, -1', '37, 115, 147, -1, -1, -1', '37, 116, 147, -1, -1, -1', '37, 117, 147, -1, -1, -1', '37, 118, 147, -1, -1, -1', '38, 79, 148, -1, -1, -1', '38, 82, 151, -1, -1, -1', '38, 83, 149, -1, -1, -1', '38, 90, 152, -1, -1, -1', '38, 91, 152, -1, -1, -1', '38, 92, 153, -1, -1, -1', '38, 93, 153, -1, -1, -1', '38, 94, 153, -1, -1, -1', '38, 95, 153, -1, -1, -1', '38, 96, 154, -1, -1, -1', '38, 97, 154, -1, -1, -1', '38, 98, 155, -1, -1, -1', '38, 99, 155, -1, -1, -1', '38, 100, 155, -1, -1, -1', '38, 101, 154, -1, -1, -1', '38, 102, 155, -1, -1, -1', '38, 103, 154, -1, -1, -1', '38, 104, 153, -1, -1, -1', '38, 105, 153, -1, -1, -1', '38, 106, 152, -1, -1, -1', '38, 107, 152, -1, -1, -1', '38, 108, 152, -1, -1, -1', '38, 114, 147, -1, -1, -1', '38, 115, 147, -1, -1, -1', '38, 116, 147, -1, -1, -1', '38, 117, 147, -1, -1, -1', '39, 78, 151, -1, -1, -1', '39, 79, 150, -1, -1, -1', '39, 80, 150, -1, -1, -1', '39, 81, 150, -1, -1, -1', '39, 84, 148, -1, -1, -1', '39, 91, 152, -1, -1, -1', '39, 92, 152, -1, -1, -1', '39, 93, 153, -1, -1, -1', '39, 94, 153, -1, -1, -1', '39, 95, 153, -1, -1, -1', '39, 96, 153, -1, -1, -1', '39, 97, 154, -1, -1, -1', '39, 98, 154, -1, -1, -1', '39, 99, 155, -1, -1, -1', '39, 100, 155, -1, -1, -1', '39, 101, 154, -1, -1, -1', '39, 102, 154, -1, -1, -1', '39, 103, 154, -1, -1, -1', '39, 104, 153, -1, -1, -1', '39, 105, 153, -1, -1, -1', '39, 106, 152, -1, -1, -1', '39, 107, 152, -1, -1, -1', '39, 114, 147, -1, -1, -1', '39, 115, 147, -1, -1, -1', '39, 116, 146, -1, -1, -1', '40, 78, 149, -1, -1, -1', '40, 79, 151, -1, -1, -1', '40, 82, 151, -1, -1, -1', '40, 83, 148, -1, -1, -1', '40, 93, 152, -1, -1, -1', '40, 94, 153, -1, -1, -1', '40, 95, 153, -1, -1, -1', '40, 96, 153, -1, -1, -1', '40, 97, 153, -1, -1, -1', '40, 98, 154, -1, -1, -1', '40, 99, 154, -1, -1, -1', '40, 100, 154, -1, -1, -1', '40, 101, 154, -1, -1, -1', '40, 102, 154, -1, -1, -1', '40, 103, 153, -1, -1, -1', '40, 104, 153, -1, -1, -1', '40, 105, 152, -1, -1, -1', '40, 106, 152, -1, -1, -1', '40, 107, 152, -1, -1, -1', '40, 114, 147, -1, -1, -1', '40, 115, 147, -1, -1, -1', '41, 78, 151, -1, -1, -1', '41, 79, 151, -1, -1, -1', '41, 81, 148, -1, -1, -1', '41, 84, 151, -1, -1, -1', '41, 95, 152, -1, -1, -1', '41, 96, 153, -1, -1, -1', '41, 97, 153, -1, -1, -1', '41, 98, 153, -1, -1, -1', '41, 99, 155, -1, -1, -1', '41, 100, 154, -1, -1, -1', '41, 101, 155, -1, -1, -1', '41, 102, 153, -1, -1, -1', '41, 103, 153, -1, -1, -1', '41, 104, 152, -1, -1, -1', '41, 105, 152, -1, -1, -1', '41, 106, 152, -1, -1, -1', '42, 84, 151, -1, -1, -1', '42, 85, 150, -1, -1, -1', '42, 96, 152, -1, -1, -1', '42, 97, 152, -1, -1, -1', '42, 98, 153, -1, -1, -1', '42, 99, 153, -1, -1, -1', '42, 100, 154, -1, -1, -1', '42, 101, 155, -1, -1, -1', '42, 102, 153, -1, -1, -1', '42, 103, 152, -1, -1, -1', '42, 104, 152, -1, -1, -1', '42, 105, 152, -1, -1, -1', '43, 83, 151, -1, -1, -1', '43, 84, 151, -1, -1, -1', '43, 85, 149, -1, -1, -1', '43, 98, 152, -1, -1, -1', '43, 99, 153, -1, -1, -1', '43, 100, 153, -1, -1, -1', '43, 101, 153, -1, -1, -1', '43, 102, 153, -1, -1, -1', '43, 103, 152, -1, -1, -1', '43, 104, 152, -1, -1, -1', '44, 84, 150, -1, -1, -1', '44, 99, 152, -1, -1, -1', '44, 100, 153, -1, -1, -1', '44, 101, 153, -1, -1, -1', '44, 102, 153, -1, -1, -1', '44, 103, 152, -1, -1, -1', '44, 104, 152, -1, -1, -1', '45, 89, 149, -1, -1, -1', '45, 90, 149, -1, -1, -1', '45, 91, 149, -1, -1, -1', '45, 92, 148, -1, -1, -1', '45, 99, 152, -1, -1, -1', '45, 100, 152, -1, -1, -1', '45, 101, 152, -1, -1, -1', '45, 102, 152, -1, -1, -1', '46, 84, 150, -1, -1, -1', '46, 85, 150, -1, -1, -1', '46, 86, 148, -1, -1, -1', '46, 88, 151, -1, -1, -1', '46, 90, 148, -1, -1, -1', '46, 91, 150, -1, -1, -1', '46, 92, 150, -1, -1, -1', '46, 93, 149, -1, -1, -1', '47, 84, 151, -1, -1, -1', '47, 85, 150, -1, -1, -1', '47, 87, 150, -1, -1, -1', '47, 88, 151, -1, -1, -1', '47, 89, 148, -1, -1, -1', '47, 91, 150, -1, -1, -1', '47, 92, 150, -1, -1, -1', '47, 93, 151, -1, -1, -1', '48, 86, 148, -1, -1, -1', '48, 87, 149, -1, -1, -1', '48, 88, 151, -1, -1, -1', '48, 89, 148, -1, -1, -1', '48, 90, 151, -1, -1, -1', '48, 92, 151, -1, -1, -1', '48, 93, 150, -1, -1, -1', '49, 88, 151, -1, -1, -1', '49, 89, 150, -1, -1, -1', '49, 90, 150, -1, -1, -1', '49, 91, 150, -1, -1, -1', '49, 92, 151, -1, -1, -1', '49, 93, 149, -1, -1, -1', '50, 88, 151, -1, -1, -1', '50, 90, 151, -1, -1, -1', '50, 92, 150, -1, -1, -1', '50, 93, 149, -1, -1, -1', '51, 92, 150, -1, -1, -1', '51, 93, 150, -1, -1, -1', '51, 94, 148, -1, -1, -1', '51, 96, 149, -1, -1, -1', '51, 97, 148, -1, -1, -1', '52, 92, 149, -1, -1, -1', '52, 93, 151, -1, -1, -1', '52, 94, 149, -1, -1, -1', '52, 96, 149, -1, -1, -1', '52, 97, 150, -1, -1, -1', '52, 98, 150, -1, -1, -1', '53, 92, 149, -1, -1, -1', '53, 93, 151, -1, -1, -1', '53, 94, 150, -1, -1, -1', '53, 95, 149, -1, -1, -1', '53, 96, 150, -1, -1, -1', '53, 97, 151, -1, -1, -1', '53, 98, 150, -1, -1, -1', '53, 99, 151, -1, -1, -1', '53, 100, 149, -1, -1, -1', '54, 92, 149, -1, -1, -1', '54, 93, 150, -1, -1, -1', '54, 94, 149, -1, -1, -1', '54, 95, 148, -1, -1, -1', '54, 96, 151, -1, -1, -1', '54, 97, 151, -1, -1, -1', '54, 98, 151, -1, -1, -1', '54, 99, 148, -1, -1, -1', '54, 100, 150, -1, -1, -1', '55, 92, 148, -1, -1, -1', '55, 93, 149, -1, -1, -1', '55, 94, 149, -1, -1, -1', '55, 95, 150, -1, -1, -1', '55, 96, 150, -1, -1, -1', '55, 97, 148, -1, -1, -1', '55, 98, 151, -1, -1, -1', '55, 99, 150, -1, -1, -1', '55, 100, 151, -1, -1, -1', '56, 93, 149, -1, -1, -1', '56, 95, 149, -1, -1, -1', '56, 96, 151, -1, -1, -1', '56, 97, 151, -1, -1, -1', '56, 98, 151, -1, -1, -1', '56, 99, 151, -1, -1, -1', '56, 100, 151, -1, -1, -1', '57, 93, 149, -1, -1, -1', '57, 95, 148, -1, -1, -1', '57, 96, 149, -1, -1, -1', '57, 97, 150, -1, -1, -1', '57, 98, 149, -1, -1, -1', '57, 99, 148, -1, -1, -1', '58, 96, 149, -1, -1, -1', '58, 97, 149, -1, -1, -1', '58, 98, 149, -1, -1, -1', '91, 111, 148, -1, -1, -1', '91, 112, 149, -1, -1, -1', '91, 129, 152, -1, -1, -1', '91, 130, 152, -1, -1, -1', '91, 131, 152, -1, -1, -1', '92, 111, 149, -1, -1, -1', '92, 112, 151, -1, -1, -1', '92, 123, 152, -1, -1, -1', '92, 124, 152, -1, -1, -1', '92, 125, 152, -1, -1, -1', '92, 126, 153, -1, -1, -1', '92, 127, 153, -1, -1, -1', '92, 128, 153, -1, -1, -1', '92, 129, 153, -1, -1, -1', '92, 130, 153, -1, -1, -1', '92, 131, 153, -1, -1, -1', '92, 132, 153, -1, -1, -1', '92, 133, 152, -1, -1, -1', '92, 134, 152, -1, -1, -1', '92, 135, 153, -1, -1, -1', '93, 111, 149, -1, -1, -1', '93, 112, 150, -1, -1, -1', '93, 113, 150, -1, -1, -1', '93, 114, 150, -1, -1, -1', '93, 115, 150, -1, -1, -1', '93, 116, 148, -1, -1, -1', '93, 122, 152, -1, -1, -1', '93, 123, 152, -1, -1, -1', '93, 124, 153, -1, -1, -1', '93, 125, 153, -1, -1, -1', '93, 126, 155, -1, -1, -1', '93, 127, 154, -1, -1, -1', '93, 128, 154, -1, -1, -1', '93, 129, 154, -1, -1, -1', '93, 130, 154, -1, -1, -1', '93, 131, 154, -1, -1, -1', '93, 132, 154, -1, -1, -1', '93, 133, 153, -1, -1, -1', '93, 134, 153, -1, -1, -1', '93, 135, 152, -1, -1, -1', '94, 111, 149, -1, -1, -1', '94, 112, 149, -1, -1, -1', '94, 113, 149, -1, -1, -1', '94, 114, 150, -1, -1, -1', '94, 115, 150, -1, -1, -1', '94, 116, 150, -1, -1, -1', '94, 122, 152, -1, -1, -1', '94, 123, 152, -1, -1, -1', '94, 124, 153, -1, -1, -1', '94, 125, 154, -1, -1, -1', '94, 126, 155, -1, -1, -1', '94, 127, 155, -1, -1, -1', '94, 128, 154, -1, -1, -1', '94, 129, 154, -1, -1, -1', '94, 130, 155, -1, -1, -1', '94, 131, 155, -1, -1, -1', '94, 132, 155, -1, -1, -1', '94, 133, 154, -1, -1, -1', '94, 134, 153, -1, -1, -1', '94, 135, 152, -1, -1, -1', '94, 136, 152, -1, -1, -1', '94, 137, 152, -1, -1, -1', '95, 111, 149, -1, -1, -1', '95, 112, 150, -1, -1, -1', '95, 113, 150, -1, -1, -1', '95, 114, 151, -1, -1, -1', '95, 115, 151, -1, -1, -1', '95, 116, 150, -1, -1, -1', '95, 122, 152, -1, -1, -1', '95, 123, 152, -1, -1, -1', '95, 124, 153, -1, -1, -1', '95, 125, 154, -1, -1, -1', '95, 126, 155, -1, -1, -1', '95, 127, 155, -1, -1, -1', '95, 128, 155, -1, -1, -1', '95, 129, 154, -1, -1, -1', '95, 130, 155, -1, -1, -1', '95, 131, 155, -1, -1, -1', '95, 132, 154, -1, -1, -1', '95, 133, 154, -1, -1, -1', '95, 134, 154, -1, -1, -1', '95, 135, 153, -1, -1, -1', '95, 136, 152, -1, -1, -1', '95, 137, 152, -1, -1, -1', '95, 138, 152, -1, -1, -1', '96, 110, 148, -1, -1, -1', '96, 111, 149, -1, -1, -1', '96, 112, 151, -1, -1, -1', '96, 113, 151, -1, -1, -1', '96, 114, 150, -1, -1, -1', '96, 115, 150, -1, -1, -1', '96, 116, 150, -1, -1, -1', '96, 123, 152, -1, -1, -1', '96, 124, 153, -1, -1, -1', '96, 125, 153, -1, -1, -1', '96, 126, 154, -1, -1, -1', '96, 127, 154, -1, -1, -1', '96, 128, 155, -1, -1, -1', '96, 129, 154, -1, -1, -1', '96, 130, 154, -1, -1, -1', '96, 131, 154, -1, -1, -1', '96, 132, 154, -1, -1, -1', '96, 133, 155, -1, -1, -1', '96, 134, 154, -1, -1, -1', '96, 135, 153, -1, -1, -1', '96, 136, 153, -1, -1, -1', '96, 137, 153, -1, -1, -1', '96, 138, 152, -1, -1, -1', '96, 139, 152, -1, -1, -1', '97, 109, 148, -1, -1, -1', '97, 110, 149, -1, -1, -1', '97, 111, 149, -1, -1, -1', '97, 112, 151, -1, -1, -1', '97, 113, 151, -1, -1, -1', '97, 114, 150, -1, -1, -1', '97, 115, 148, -1, -1, -1', '97, 116, 150, -1, -1, -1', '97, 124, 152, -1, -1, -1', '97, 125, 153, -1, -1, -1', '97, 126, 153, -1, -1, -1', '97, 127, 154, -1, -1, -1', '97, 128, 154, -1, -1, -1', '97, 129, 155, -1, -1, -1', '97, 130, 154, -1, -1, -1', '97, 131, 154, -1, -1, -1', '97, 132, 155, -1, -1, -1', '97, 133, 155, -1, -1, -1', '97, 134, 154, -1, -1, -1', '97, 135, 154, -1, -1, -1', '97, 136, 153, -1, -1, -1', '97, 137, 153, -1, -1, -1', '97, 138, 153, -1, -1, -1', '97, 139, 152, -1, -1, -1', '97, 140, 152, -1, -1, -1', '98, 108, 149, -1, -1, -1', '98, 109, 148, -1, -1, -1', '98, 110, 149, -1, -1, -1', '98, 111, 149, -1, -1, -1', '98, 112, 150, -1, -1, -1', '98, 113, 150, -1, -1, -1', '98, 114, 150, -1, -1, -1', '98, 115, 149, -1, -1, -1', '98, 125, 152, -1, -1, -1', '98, 126, 153, -1, -1, -1', '98, 127, 153, -1, -1, -1', '98, 128, 152, -1, -1, -1', '98, 129, 154, -1, -1, -1', '98, 130, 155, -1, -1, -1', '98, 131, 154, -1, -1, -1', '98, 132, 154, -1, -1, -1', '98, 133, 154, -1, -1, -1', '98, 134, 155, -1, -1, -1', '98, 135, 154, -1, -1, -1', '98, 136, 154, -1, -1, -1', '98, 137, 153, -1, -1, -1', '98, 138, 153, -1, -1, -1', '98, 139, 153, -1, -1, -1', '98, 140, 152, -1, -1, -1', '99, 108, 148, -1, -1, -1', '99, 109, 148, -1, -1, -1', '99, 110, 148, -1, -1, -1', '99, 111, 149, -1, -1, -1', '99, 112, 149, -1, -1, -1', '99, 113, 149, -1, -1, -1', '99, 114, 150, -1, -1, -1', '99, 115, 150, -1, -1, -1', '99, 126, 152, -1, -1, -1', '99, 127, 152, -1, -1, -1', '99, 128, 153, -1, -1, -1', '99, 129, 153, -1, -1, -1', '99, 130, 155, -1, -1, -1', '99, 131, 155, -1, -1, -1', '99, 132, 154, -1, -1, -1', '99, 133, 154, -1, -1, -1', '99, 134, 155, -1, -1, -1', '99, 135, 154, -1, -1, -1', '99, 136, 155, -1, -1, -1', '99, 137, 154, -1, -1, -1', '99, 138, 153, -1, -1, -1', '99, 139, 153, -1, -1, -1', '99, 140, 152, -1, -1, -1', '99, 141, 152, -1, -1, -1', '100, 109, 149, -1, -1, -1', '100, 110, 149, -1, -1, -1', '100, 111, 149, -1, -1, -1', '100, 112, 149, -1, -1, -1', '100, 113, 149, -1, -1, -1', '100, 114, 150, -1, -1, -1', '100, 115, 149, -1, -1, -1', '100, 127, 152, -1, -1, -1', '100, 128, 152, -1, -1, -1', '100, 129, 153, -1, -1, -1', '100, 130, 153, -1, -1, -1', '100, 131, 153, -1, -1, -1', '100, 132, 153, -1, -1, -1', '100, 133, 153, -1, -1, -1', '100, 134, 154, -1, -1, -1', '100, 135, 154, -1, -1, -1', '100, 136, 154, -1, -1, -1', '100, 137, 154, -1, -1, -1', '100, 138, 153, -1, -1, -1', '100, 139, 153, -1, -1, -1', '100, 140, 153, -1, -1, -1', '100, 141, 152, -1, -1, -1', '100, 142, 152, -1, -1, -1', '101, 109, 148, -1, -1, -1', '101, 110, 150, -1, -1, -1', '101, 111, 149, -1, -1, -1', '101, 112, 150, -1, -1, -1', '101, 113, 150, -1, -1, -1', '101, 114, 150, -1, -1, -1', '101, 128, 152, -1, -1, -1', '101, 129, 152, -1, -1, -1', '101, 130, 152, -1, -1, -1', '101, 131, 152, -1, -1, -1', '101, 132, 152, -1, -1, -1', '101, 133, 153, -1, -1, -1', '101, 134, 153, -1, -1, -1', '101, 135, 155, -1, -1, -1', '101, 136, 155, -1, -1, -1', '101, 137, 154, -1, -1, -1', '101, 138, 153, -1, -1, -1', '101, 139, 153, -1, -1, -1', '101, 140, 152, -1, -1, -1', '101, 141, 152, -1, -1, -1', '101, 142, 152, -1, -1, -1', '102, 111, 148, -1, -1, -1', '102, 112, 150, -1, -1, -1', '102, 113, 151, -1, -1, -1', '102, 130, 152, -1, -1, -1', '102, 131, 152, -1, -1, -1', '102, 132, 152, -1, -1, -1', '102, 133, 152, -1, -1, -1', '102, 134, 153, -1, -1, -1', '102, 135, 153, -1, -1, -1', '102, 136, 154, -1, -1, -1', '102, 137, 153, -1, -1, -1', '102, 138, 153, -1, -1, -1', '102, 139, 152, -1, -1, -1', '102, 140, 152, -1, -1, -1', '103, 111, 149, -1, -1, -1', '103, 112, 149, -1, -1, -1', '103, 113, 150, -1, -1, -1', '103, 134, 152, -1, -1, -1', '103, 135, 152, -1, -1, -1', '103, 136, 153, -1, -1, -1', '103, 137, 153, -1, -1, -1', '103, 138, 153, -1, -1, -1', '103, 139, 152, -1, -1, -1', '104, 111, 148, -1, -1, -1', '104, 112, 148, -1, -1, -1', '104, 113, 150, -1, -1, -1', '104, 135, 152, -1, -1, -1', '104, 136, 153, -1, -1, -1', '104, 137, 153, -1, -1, -1', '104, 138, 152, -1, -1, -1', '105, 135, 152, -1, -1, -1', '105, 136, 152, -1, -1, -1', '105, 137, 152, -1, -1, -1', '116, 114, 147, -1, -1, -1', '116, 117, 145, -1, -1, -1', '117, 112, 147, -1, -1, -1', '117, 113, 147, -1, -1, -1', '117, 114, 146, -1, -1, -1', '117, 117, 147, -1, -1, -1', '118, 112, 147, -1, -1, -1', '118, 116, 147, -1, -1, -1', '118, 117, 147, -1, -1, -1', '119, 110, 147, -1, -1, -1', '119, 111, 147, -1, -1, -1', '119, 112, 147, -1, -1, -1', '119, 117, 147, -1, -1, -1', '120, 110, 147, -1, -1, -1', '120, 111, 147, -1, -1, -1', '120, 112, 147, -1, -1, -1', '120, 117, 147, -1, -1, -1', '121, 109, 144, -1, -1, -1', '121, 110, 147, -1, -1, -1', '121, 111, 147, -1, -1, -1', '121, 112, 146, -1, -1, -1', '121, 116, 147, -1, -1, -1', '121, 117, 147, -1, -1, -1', '121, 140, 152, -1, -1, -1', '121, 141, 152, -1, -1, -1', '121, 142, 152, -1, -1, -1', '122, 108, 144, -1, -1, -1', '122, 109, 146, -1, -1, -1', '122, 110, 146, -1, -1, -1', '122, 111, 147, -1, -1, -1', '122, 115, 147, -1, -1, -1', '122, 139, 152, -1, -1, -1', '122, 140, 152, -1, -1, -1', '122, 141, 152, -1, -1, -1', '122, 142, 152, -1, -1, -1', '122, 143, 152, -1, -1, -1', '123, 108, 145, -1, -1, -1', '123, 109, 146, -1, -1, -1', '123, 110, 144, -1, -1, -1', '123, 111, 146, -1, -1, -1', '123, 114, 147, -1, -1, -1', '123, 115, 147, -1, -1, -1', '123, 137, 152, -1, -1, -1', '123, 138, 152, -1, -1, -1', '123, 139, 152, -1, -1, -1', '123, 140, 152, -1, -1, -1', '123, 141, 153, -1, -1, -1', '123, 142, 153, -1, -1, -1', '123, 143, 152, -1, -1, -1', '123, 144, 152, -1, -1, -1', '124, 107, 144, -1, -1, -1', '124, 108, 146, -1, -1, -1', '124, 109, 146, -1, -1, -1', '124, 113, 147, -1, -1, -1', '124, 135, 152, -1, -1, -1', '124, 136, 152, -1, -1, -1', '124, 137, 152, -1, -1, -1', '124, 138, 153, -1, -1, -1', '124, 139, 153, -1, -1, -1', '124, 140, 153, -1, -1, -1', '124, 141, 153, -1, -1, -1', '124, 142, 153, -1, -1, -1', '124, 143, 152, -1, -1, -1', '124, 144, 152, -1, -1, -1', '125, 107, 145, -1, -1, -1', '125, 108, 146, -1, -1, -1', '125, 109, 145, -1, -1, -1', '125, 135, 152, -1, -1, -1', '125, 136, 152, -1, -1, -1', '125, 137, 153, -1, -1, -1', '125, 138, 153, -1, -1, -1', '125, 139, 152, -1, -1, -1', '125, 140, 153, -1, -1, -1', '125, 141, 153, -1, -1, -1', '125, 142, 153, -1, -1, -1', '125, 143, 153, -1, -1, -1', '125, 144, 152, -1, -1, -1', '126, 107, 144, -1, -1, -1', '126, 108, 145, -1, -1, -1', '126, 109, 144, -1, -1, -1', '126, 110, 144, -1, -1, -1', '126, 135, 152, -1, -1, -1', '126, 136, 153, -1, -1, -1', '126, 137, 153, -1, -1, -1', '126, 138, 154, -1, -1, -1', '126, 139, 154, -1, -1, -1', '126, 140, 154, -1, -1, -1', '126, 141, 154, -1, -1, -1', '126, 142, 153, -1, -1, -1', '126, 143, 153, -1, -1, -1', '126, 144, 152, -1, -1, -1', '127, 134, 152, -1, -1, -1', '127, 135, 152, -1, -1, -1', '127, 136, 153, -1, -1, -1', '127, 137, 154, -1, -1, -1', '127, 138, 154, -1, -1, -1', '127, 139, 154, -1, -1, -1', '127, 140, 155, -1, -1, -1', '127, 141, 154, -1, -1, -1', '127, 142, 154, -1, -1, -1', '127, 143, 153, -1, -1, -1', '127, 144, 153, -1, -1, -1', '128, 106, 144, -1, -1, -1', '128, 107, 145, -1, -1, -1', '128, 108, 144, -1, -1, -1', '128, 134, 152, -1, -1, -1', '128, 135, 152, -1, -1, -1', '128, 136, 154, -1, -1, -1', '128, 137, 153, -1, -1, -1', '128, 138, 154, -1, -1, -1', '128, 139, 155, -1, -1, -1', '128, 140, 155, -1, -1, -1', '128, 141, 155, -1, -1, -1', '128, 142, 154, -1, -1, -1', '128, 143, 154, -1, -1, -1', '128, 144, 154, -1, -1, -1', '129, 106, 145, -1, -1, -1', '129, 107, 146, -1, -1, -1', '129, 108, 144, -1, -1, -1', '129, 133, 152, -1, -1, -1', '129, 134, 152, -1, -1, -1', '129, 135, 154, -1, -1, -1', '129, 136, 155, -1, -1, -1', '129, 137, 155, -1, -1, -1', '129, 138, 155, -1, -1, -1', '129, 139, 155, -1, -1, -1', '129, 140, 155, -1, -1, -1', '129, 141, 155, -1, -1, -1', '129, 142, 154, -1, -1, -1', '129, 143, 154, -1, -1, -1', '129, 144, 154, -1, -1, -1', '130, 106, 145, -1, -1, -1', '130, 107, 146, -1, -1, -1', '130, 108, 144, -1, -1, -1', '130, 133, 152, -1, -1, -1', '130, 134, 153, -1, -1, -1', '130, 135, 154, -1, -1, -1', '130, 136, 155, -1, -1, -1', '130, 137, 155, -1, -1, -1', '130, 138, 155, -1, -1, -1', '130, 139, 155, -1, -1, -1', '130, 140, 155, -1, -1, -1', '130, 141, 155, -1, -1, -1', '130, 142, 154, -1, -1, -1', '130, 143, 154, -1, -1, -1', '130, 144, 153, -1, -1, -1', '131, 104, 144, -1, -1, -1', '131, 105, 147, -1, -1, -1', '131, 106, 147, -1, -1, -1', '131, 107, 146, -1, -1, -1', '131, 108, 145, -1, -1, -1', '131, 127, 148, -1, -1, -1', '131, 128, 149, -1, -1, -1', '131, 129, 149, -1, -1, -1', '131, 133, 152, -1, -1, -1', '131, 134, 153, -1, -1, -1', '131, 135, 154, -1, -1, -1', '131, 136, 154, -1, -1, -1', '131, 137, 155, -1, -1, -1', '131, 138, 155, -1, -1, -1', '131, 139, 155, -1, -1, -1', '131, 140, 155, -1, -1, -1', '131, 141, 155, -1, -1, -1', '131, 142, 155, -1, -1, -1', '131, 143, 154, -1, -1, -1', '131, 144, 152, -1, -1, -1', '132, 104, 145, -1, -1, -1', '132, 105, 147, -1, -1, -1', '132, 106, 147, -1, -1, -1', '132, 107, 147, -1, -1, -1', '132, 108, 147, -1, -1, -1', '132, 127, 149, -1, -1, -1', '132, 128, 151, -1, -1, -1', '132, 129, 151, -1, -1, -1', '132, 130, 151, -1, -1, -1', '132, 133, 152, -1, -1, -1', '132, 134, 152, -1, -1, -1', '132, 135, 153, -1, -1, -1', '132, 136, 154, -1, -1, -1', '132, 137, 154, -1, -1, -1', '132, 138, 155, -1, -1, -1', '132, 139, 153, -1, -1, -1', '132, 140, 155, -1, -1, -1', '132, 141, 155, -1, -1, -1', '132, 142, 155, -1, -1, -1', '132, 143, 155, -1, -1, -1', '132, 144, 153, -1, -1, -1', '133, 104, 145, -1, -1, -1', '133, 105, 147, -1, -1, -1', '133, 106, 147, -1, -1, -1', '133, 107, 147, -1, -1, -1', '133, 108, 147, -1, -1, -1', '133, 130, 151, -1, -1, -1', '133, 135, 152, -1, -1, -1', '133, 136, 153, -1, -1, -1', '133, 137, 154, -1, -1, -1', '133, 138, 154, -1, -1, -1', '133, 139, 155, -1, -1, -1', '133, 140, 155, -1, -1, -1', '133, 141, 155, -1, -1, -1', '133, 142, 154, -1, -1, -1', '133, 143, 153, -1, -1, -1', '133, 144, 155, -1, -1, -1', '134, 104, 144, -1, -1, -1', '134, 105, 146, -1, -1, -1', '134, 106, 147, -1, -1, -1', '134, 107, 147, -1, -1, -1', '134, 108, 147, -1, -1, -1', '134, 109, 144, -1, -1, -1', '134, 128, 149, -1, -1, -1', '134, 130, 151, -1, -1, -1', '134, 136, 153, -1, -1, -1', '134, 137, 153, -1, -1, -1', '134, 138, 154, -1, -1, -1', '134, 139, 154, -1, -1, -1', '134, 140, 155, -1, -1, -1', '134, 141, 155, -1, -1, -1', '134, 142, 154, -1, -1, -1', '134, 143, 155, -1, -1, -1', '134, 144, 153, -1, -1, -1', '135, 104, 144, -1, -1, -1', '135, 105, 144, -1, -1, -1', '135, 106, 146, -1, -1, -1', '135, 107, 147, -1, -1, -1', '135, 108, 147, -1, -1, -1', '135, 109, 145, -1, -1, -1', '135, 130, 151, -1, -1, -1', '135, 131, 151, -1, -1, -1', '135, 132, 150, -1, -1, -1', '135, 133, 148, -1, -1, -1', '135, 134, 149, -1, -1, -1', '135, 136, 152, -1, -1, -1', '135, 137, 152, -1, -1, -1', '135, 138, 153, -1, -1, -1', '135, 139, 154, -1, -1, -1', '135, 140, 155, -1, -1, -1', '135, 141, 155, -1, -1, -1', '135, 142, 154, -1, -1, -1', '135, 143, 154, -1, -1, -1', '135, 144, 153, -1, -1, -1', '136, 103, 147, -1, -1, -1', '136, 104, 147, -1, -1, -1', '136, 106, 145, -1, -1, -1', '136, 107, 147, -1, -1, -1', '136, 108, 147, -1, -1, -1', '136, 109, 146, -1, -1, -1', '136, 130, 151, -1, -1, -1', '136, 131, 151, -1, -1, -1', '136, 132, 150, -1, -1, -1', '136, 133, 149, -1, -1, -1', '136, 134, 148, -1, -1, -1', '136, 137, 152, -1, -1, -1', '136, 138, 152, -1, -1, -1', '136, 139, 153, -1, -1, -1', '136, 140, 154, -1, -1, -1', '136, 141, 154, -1, -1, -1', '136, 142, 154, -1, -1, -1', '136, 143, 154, -1, -1, -1', '136, 144, 152, -1, -1, -1', '137, 100, 147, -1, -1, -1', '137, 101, 147, -1, -1, -1', '137, 102, 146, -1, -1, -1', '137, 103, 145, -1, -1, -1', '137, 104, 147, -1, -1, -1', '137, 105, 147, -1, -1, -1', '137, 106, 147, -1, -1, -1', '137, 107, 144, -1, -1, -1', '137, 128, 149, -1, -1, -1', '137, 132, 151, -1, -1, -1', '137, 133, 148, -1, -1, -1', '137, 134, 150, -1, -1, -1', '137, 138, 152, -1, -1, -1', '137, 139, 153, -1, -1, -1', '137, 140, 153, -1, -1, -1', '137, 141, 153, -1, -1, -1', '137, 142, 153, -1, -1, -1', '137, 143, 153, -1, -1, -1', '137, 144, 152, -1, -1, -1', '138, 100, 147, -1, -1, -1', '138, 101, 147, -1, -1, -1', '138, 102, 147, -1, -1, -1', '138, 103, 147, -1, -1, -1', '138, 104, 147, -1, -1, -1', '138, 105, 147, -1, -1, -1', '138, 106, 147, -1, -1, -1', '138, 128, 148, -1, -1, -1', '138, 129, 150, -1, -1, -1', '138, 130, 150, -1, -1, -1', '138, 132, 150, -1, -1, -1', '138, 133, 150, -1, -1, -1', '138, 134, 149, -1, -1, -1', '138, 139, 152, -1, -1, -1', '138, 140, 153, -1, -1, -1', '138, 141, 153, -1, -1, -1', '138, 142, 153, -1, -1, -1', '138, 143, 153, -1, -1, -1', '138, 144, 152, -1, -1, -1', '139, 100, 147, -1, -1, -1', '139, 101, 147, -1, -1, -1', '139, 102, 147, -1, -1, -1', '139, 103, 147, -1, -1, -1', '139, 104, 147, -1, -1, -1', '139, 105, 147, -1, -1, -1', '139, 106, 147, -1, -1, -1', '139, 129, 148, -1, -1, -1', '139, 134, 150, -1, -1, -1', '139, 135, 149, -1, -1, -1', '139, 136, 148, -1, -1, -1', '139, 137, 148, -1, -1, -1', '139, 140, 152, -1, -1, -1', '139, 141, 152, -1, -1, -1', '139, 142, 152, -1, -1, -1', '139, 143, 152, -1, -1, -1', '139, 144, 152, -1, -1, -1', '140, 100, 146, -1, -1, -1', '140, 101, 147, -1, -1, -1', '140, 102, 147, -1, -1, -1', '140, 103, 146, -1, -1, -1', '140, 104, 145, -1, -1, -1', '140, 105, 147, -1, -1, -1', '140, 106, 147, -1, -1, -1', '140, 135, 151, -1, -1, -1', '140, 136, 149, -1, -1, -1', '140, 138, 149, -1, -1, -1', '141, 100, 147, -1, -1, -1', '141, 101, 147, -1, -1, -1', '141, 102, 146, -1, -1, -1', '141, 103, 145, -1, -1, -1', '141, 104, 147, -1, -1, -1', '141, 105, 147, -1, -1, -1', '141, 106, 147, -1, -1, -1', '141, 142, 150, -1, -1, -1', '141, 143, 150, -1, -1, -1', '142, 100, 147, -1, -1, -1', '142, 101, 147, -1, -1, -1', '142, 102, 147, -1, -1, -1', '142, 103, 147, -1, -1, -1', '142, 104, 147, -1, -1, -1', '142, 105, 147, -1, -1, -1', '142, 138, 149, -1, -1, -1', '142, 142, 151, -1, -1, -1', '142, 143, 150, -1, -1, -1', '143, 99, 147, -1, -1, -1', '143, 100, 147, -1, -1, -1', '143, 101, 146, -1, -1, -1', '143, 102, 145, -1, -1, -1', '143, 103, 147, -1, -1, -1', '143, 104, 147, -1, -1, -1', '143, 105, 147, -1, -1, -1', '143, 129, 149, -1, -1, -1', '143, 130, 148, -1, -1, -1', '143, 138, 150, -1, -1, -1', '143, 139, 150, -1, -1, -1', '143, 140, 150, -1, -1, -1', '143, 141, 151, -1, -1, -1', '143, 142, 150, -1, -1, -1', '143, 143, 151, -1, -1, -1', '144, 99, 147, -1, -1, -1', '144, 100, 147, -1, -1, -1', '144, 101, 147, -1, -1, -1', '144, 102, 147, -1, -1, -1', '144, 103, 147, -1, -1, -1', '144, 104, 147, -1, -1, -1', '144, 105, 147, -1, -1, -1', '144, 129, 149, -1, -1, -1', '144, 130, 149, -1, -1, -1', '144, 131, 151, -1, -1, -1', '144, 139, 150, -1, -1, -1', '144, 140, 151, -1, -1, -1', '144, 141, 148, -1, -1, -1', '144, 142, 150, -1, -1, -1', '144, 143, 151, -1, -1, -1', '145, 99, 147, -1, -1, -1', '145, 100, 147, -1, -1, -1', '145, 101, 147, -1, -1, -1', '145, 102, 147, -1, -1, -1', '145, 103, 147, -1, -1, -1', '145, 104, 147, -1, -1, -1', '145, 105, 147, -1, -1, -1', '145, 130, 150, -1, -1, -1', '145, 131, 150, -1, -1, -1', '145, 135, 149, -1, -1, -1', '145, 139, 150, -1, -1, -1', '145, 140, 150, -1, -1, -1', '145, 141, 150, -1, -1, -1', '145, 142, 150, -1, -1, -1', '145, 143, 151, -1, -1, -1', '146, 98, 144, -1, -1, -1', '146, 99, 146, -1, -1, -1', '146, 100, 147, -1, -1, -1', '146, 101, 147, -1, -1, -1', '146, 102, 147, -1, -1, -1', '146, 103, 147, -1, -1, -1', '146, 104, 147, -1, -1, -1', '146, 105, 147, -1, -1, -1', '146, 131, 150, -1, -1, -1', '146, 141, 149, -1, -1, -1', '146, 143, 151, -1, -1, -1', '147, 98, 145, -1, -1, -1', '147, 99, 144, -1, -1, -1', '147, 100, 146, -1, -1, -1', '147, 101, 147, -1, -1, -1', '147, 102, 147, -1, -1, -1', '147, 130, 148, -1, -1, -1', '147, 132, 149, -1, -1, -1', '147, 139, 148, -1, -1, -1', '147, 141, 151, -1, -1, -1', '148, 97, 144, -1, -1, -1', '148, 98, 145, -1, -1, -1', '148, 100, 145, -1, -1, -1', '148, 101, 147, -1, -1, -1', '148, 102, 147, -1, -1, -1', '148, 140, 149, -1, -1, -1', '149, 97, 145, -1, -1, -1', '149, 98, 147, -1, -1, -1', '149, 99, 147, -1, -1, -1', '149, 100, 146, -1, -1, -1', '149, 101, 144, -1, -1, -1', '150, 97, 145, -1, -1, -1', '150, 98, 147, -1, -1, -1', '150, 99, 146, -1, -1, -1', '150, 100, 145, -1, -1, -1', '150, 101, 144, -1, -1, -1', '150, 133, 151, -1, -1, -1', '151, 97, 144, -1, -1, -1', '151, 98, 145, -1, -1, -1', '151, 99, 144, -1, -1, -1', '151, 135, 151, -1, -1, -1', '152, 136, 151, -1, -1, -1', '152, 137, 151, -1, -1, -1', '153, 137, 150, -1, -1, -1', '153, 138, 151, -1, -1, -1', '153, 139, 150, -1, -1, -1', '154, 138, 149, -1, -1, -1', '154, 139, 151, -1, -1, -1', '155, 143, 151, -1, -1, -1', '156, 142, 151, -1, -1, -1', '156, 143, 148, -1, -1, -1', '156, 144, 150, -1, -1, -1', '158, 144, 151, -1, -1, -1', '134, 5, 152, -1, -1, -1', '134, 6, 153, -1, -1, -1', '134, 7, 152, -1, -1, -1', '135, 1, 151, -1, -1, -1', '135, 5, 153, -1, -1, -1', '135, 6, 155, -1, -1, -1', '135, 7, 154, -1, -1, -1', '135, 8, 152, -1, -1, -1', '136, 1, 151, -1, -1, -1', '136, 2, 151, -1, -1, -1', '136, 3, 151, -1, -1, -1', '136, 5, 153, -1, -1, -1', '136, 6, 155, -1, -1, -1', '136, 7, 154, -1, -1, -1', '136, 8, 152, -1, -1, -1', '137, 1, 151, -1, -1, -1', '137, 2, 151, -1, -1, -1', '137, 3, 151, -1, -1, -1', '137, 5, 153, -1, -1, -1', '137, 6, 155, -1, -1, -1', '137, 7, 154, -1, -1, -1', '137, 8, 152, -1, -1, -1', '138, 1, 151, -1, -1, -1', '138, 2, 151, -1, -1, -1', '138, 3, 151, -1, -1, -1', '138, 5, 152, -1, -1, -1', '138, 6, 154, -1, -1, -1', '138, 7, 154, -1, -1, -1', '138, 8, 152, -1, -1, -1', '139, 1, 151, -1, -1, -1', '139, 2, 151, -1, -1, -1', '139, 3, 151, -1, -1, -1', '139, 5, 153, -1, -1, -1', '139, 6, 154, -1, -1, -1', '139, 7, 154, -1, -1, -1', '139, 8, 152, -1, -1, -1', '140, 1, 151, -1, -1, -1', '140, 2, 151, -1, -1, -1', '140, 3, 151, -1, -1, -1', '140, 5, 154, -1, -1, -1', '140, 6, 155, -1, -1, -1', '140, 7, 154, -1, -1, -1', '140, 8, 152, -1, -1, -1', '141, 1, 151, -1, -1, -1', '141, 5, 153, -1, -1, -1', '141, 6, 155, -1, -1, -1', '141, 7, 154, -1, -1, -1', '141, 8, 152, -1, -1, -1', '142, 1, 151, -1, -1, -1', '142, 5, 152, -1, -1, -1', '142, 6, 154, -1, -1, -1', '142, 7, 155, -1, -1, -1', '142, 8, 153, -1, -1, -1', '143, 6, 152, -1, -1, -1', '143, 7, 153, -1, -1, -1', '143, 8, 152, -1, -1, -1', '157, 1, 147, -1, -1, -1', '158, 1, 147, -1, -1, -1', '158, 2, 147, -1, -1, -1', '159, 1, 147, -1, -1, -1', '159, 2, 147, -1, -1, -1', '160, 1, 147, -1, -1, -1', '160, 2, 147, -1, -1, -1', '161, 1, 147, -1, -1, -1', '161, 2, 147, -1, -1, -1', '162, 1, 147, -1, -1, -1', '162, 2, 147, -1, -1, -1', '163, 1, 147, -1, -1, -1', '163, 2, 147, -1, -1, -1', '164, 1, 147, -1, -1, -1', '170, 27, 132, -1, -1, -1', '170, 28, 132, -1, -1, -1', '170, 29, 132, -1, -1, -1', '171, 27, 132, -1, -1, -1', '171, 28, 132, -1, -1, -1', '171, 29, 132, -1, -1, -1'], False, False);
+end;
+
+
+procedure UB;
+begin
+  Actions.MapTilesArraySetS(['131, 2, -1, -1, -1, 254', '131, 4, -1, -1, -1, 254', '131, 6, -1, -1, -1, 254', '131, 8, -1, -1, -1, 254', '131, 10, -1, -1, -1, 254', '134, 3, -1, -1, -1, 254', '132, 3, -1, -1, -1, 254', '132, 5, -1, -1, -1, 254', '132, 7, -1, -1, -1, 254', '132, 9, -1, -1, -1, 254', '132, 11, -1, -1, -1, 254', '134, 10, -1, -1, -1, 254', '136, 10, -1, -1, -1, 254', '138, 10, -1, -1, -1, 254', '140, 10, -1, -1, -1, 254', '142, 10, -1, -1, -1, 254', '144, 10, -1, -1, -1, 254', '135, 11, -1, -1, -1, 254', '137, 11, -1, -1, -1, 254', '139, 11, -1, -1, -1, 254', '141, 11, -1, -1, -1, 254', '143, 11, -1, -1, -1, 254'], False, False);
+end;
+
+
+procedure OnTick;
+var
+  I, K: Integer;
+begin
+  for I := 2 to 11 do
+    if States.GameTime mod AUTOFEED_TIME = 5 * I then
+      AutoFeed(I);
+
+  for I := 0 to 1 do
+  begin
+    Actions.OverlayTextSet(I, Overlay(I));
+    CheckOfferTimer(I);
+    CheckConfirmTimer(I);
+  end;
+
+  if States.GameTime mod DEPOSITS_TIME = 0 then
+    UpdateDeposits;
+
+  if States.GameTime mod IDLE_TIME = 0 then
+    CheckIdleGroups;
+
+  if States.GameTime mod BT = 0 then
+    UB;
+
+  if States.GameTime = 2400 then
+    Actions.ShowMsg(-1, '<$8>');
+
+  if States.GameTime = 3000 then
+    Actions.ShowMsg(-1, '<$5>');
+
+  for I := 0 to 1 do
+    if States.PlayerEnabled(I) then
+      if (States.PlayerIsAI(I))
+      and (OffersTimer[I] = 0) then
+        GetPlayerOffer(I, States.KaMRandomI(3) + 1);
+
+  for K := 0 to 1 do
+    if SoundAllowed[K] then
+    begin
+      if (States.KaMRandom > 0.5)
+      and (States.GameTime mod AMBIENT_TIME = 0) then
+      begin
+        Actions.PlayOGGAtLocation(K, 'Quack' + IntToStr(1 + States.KaMRandomI(3)), 0.75, 32, 10, 64);
+        Actions.PlayOGGAtLocation(K, 'Quack' + IntToStr(1 + States.KaMRandomI(3)), 0.75, 32, 111, 75);
+        Actions.PlayOGGAtLocation(K, 'Quack' + IntToStr(1 + States.KaMRandomI(3)), 0.75, 32, 126, 23);
+        Actions.PlayOGGAtLocation(K, 'Quack' + IntToStr(1 + States.KaMRandomI(3)), 0.75, 32, 141, 63);
+      end;
+
+      if (States.KaMRandom < 0.4)
+      and (States.GameTime mod AMBIENT_TIME = 33) then
+        if Length(Wolves) > 0 then
+          for I := Low(Wolves) to High(Wolves) do
+            if not States.UnitDead(Wolves[I]) then
+              if States.KaMRandom < 0.25 then
+                 Actions.PlayOGGAtLocation(K, 'Wolf' + IntToStr(1 + States.KaMRandomI(3)), Utils.MinS(States.KaMRandom, 0.35), 32, States.UnitPositionX(Wolves[I]), States.UnitPositionY(Wolves[I]));
+
+    end;
+
+end;
+
+
+function GroupTypeToRandomUnitType(aGroupType: Integer): Integer;
+begin
+  case aGroupType of
+    0: begin
+         if States.KaMRandom > 0.5 then
+           Result := 15 + States.KaMRandomI(2)
+         else
+           Result := 23;
+       end;
+    1: Result := 19 + States.KaMRandomI(2);
+    2: Result := 17 + States.KaMRandomI(2);
+    3: Result := 21 + States.KaMRandomI(2);
+  end;
+end;
+
+
+procedure GiveRandomAIGroup(P, X, Y, D, aType, aCount, aFormation: Integer);
+var
+  I, G1, G2, Count: Integer;
+begin
+  Count := Utils.MaxI(0, aCount - 2);
+  G1 := Actions.GiveGroup(P, GroupTypeToRandomUnitType(aType), X, Y, D, 1, 1);
+  for I := 0 to Count do
+  begin
+    G2 := Actions.GiveGroup(P, GroupTypeToRandomUnitType(aType), X + States.KaMRandomI(2) - States.KaMRandomI(2), Y + States.KaMRandomI(2), D, 1, 1);
+    Actions.GroupOrderLink(G2, G1);
+  end;
+  Actions.GroupHungerSet(G1, States.UnitMaxHunger);
+  Actions.GroupSetFormation(G1, aFormation);
+end;
+
+
+procedure FillAIDefencePositions;
+begin
+
+  GiveRandomAIGroup(4, 4, 126, 0, 3, 10, 5);
+  GiveRandomAIGroup(4, 9, 126, 0, 0, 10, 5);
+
+  GiveRandomAIGroup(5, 152, 129, 0, 3, 10, 5);
+  GiveRandomAIGroup(5, 157, 127, 0, 0, 10, 5);
+
+  GiveRandomAIGroup(6, 11, 88, 0, 0, 10, 5);
+  GiveRandomAIGroup(6, 17, 88, 0, 3, 10, 5);
+  GiveRandomAIGroup(6, 23, 88, 0, 1, 8, 4);
+  GiveRandomAIGroup(6, 12, 91, 0, 2, 8, 4);
+  GiveRandomAIGroup(6, 18, 91, 0, 2, 8, 4);
+  GiveRandomAIGroup(6, 23, 91, 0, 2, 8, 4);
+
+  GiveRandomAIGroup(7, 60, 103, 0, 0, 10, 5);
+  GiveRandomAIGroup(7, 66, 106, 1, 3, 10, 5);
+  GiveRandomAIGroup(7, 71, 109, 0, 0, 10, 5);
+  GiveRandomAIGroup(7, 60, 106, 0, 2, 8, 4);
+  GiveRandomAIGroup(7, 66, 109, 1, 2, 8, 4);
+  GiveRandomAIGroup(7, 71, 112, 0, 2, 8, 4);
+  GiveRandomAIGroup(7, 55, 106, 0, 1, 8, 4);
+
+  GiveRandomAIGroup(8, 78, 112, 1, 3, 10, 5);
+  GiveRandomAIGroup(8, 83, 114, 0, 0, 10, 5);
+  GiveRandomAIGroup(8, 88, 115, 0, 3, 10, 5);
+  GiveRandomAIGroup(8, 77, 114, 1, 2, 8, 4);
+  GiveRandomAIGroup(8, 82, 117, 0, 2, 8, 4);
+  GiveRandomAIGroup(8, 90, 118, 0, 2, 8, 4);
+  GiveRandomAIGroup(8, 98, 133, 0, 1, 8, 4);
+
+  GiveRandomAIGroup(9, 109, 116, 0, 0, 8, 4);
+  GiveRandomAIGroup(9, 104, 116, 0, 3, 8, 4);
+  GiveRandomAIGroup(9, 114, 118, 0, 3, 8, 4);
+  GiveRandomAIGroup(9, 109, 119, 0, 2, 8, 4);
+  GiveRandomAIGroup(9, 114, 122, 0, 2, 8, 4);
+  GiveRandomAIGroup(9, 104, 119, 0, 2, 8, 4);
+  GiveRandomAIGroup(9, 109, 122, 0, 1, 8, 4);
+
+  GiveRandomAIGroup(10, 157, 102, 0, 0, 10, 5);
+  GiveRandomAIGroup(10, 161, 99, 7, 3, 10, 5);
+  GiveRandomAIGroup(10, 168, 98, 0, 0, 10, 5);
+  GiveRandomAIGroup(10, 158, 105, 0, 2, 8, 4);
+  GiveRandomAIGroup(10, 163, 100, 7, 2, 8, 4);
+  GiveRandomAIGroup(10, 172, 101, 0, 2, 8, 4);
+  GiveRandomAIGroup(10, 173, 98, 0, 3, 10, 5);
+  GiveRandomAIGroup(10, 167, 95, 0, 1, 8, 4);
+
+  GiveRandomAIGroup(11, 124, 118, 6, 0, 10, 5);
+  GiveRandomAIGroup(11, 128, 111, 7, 2, 8, 4);
+  GiveRandomAIGroup(11, 127, 117, 6, 3, 10, 5);
+  GiveRandomAIGroup(11, 130, 120, 6, 1, 8, 4);
+  GiveRandomAIGroup(11, 130, 116, 6, 2, 8, 4);
+
+end;
+
+
+procedure SetWareDistribution;
+var
+  I: Integer;
+begin
+  for I := 4 to 11 do
+  begin
+    Actions.PlayerWareDistribution(I, 6, 2, 5);
+    Actions.PlayerWareDistribution(I, 6, 10, 5);
+    Actions.PlayerWareDistribution(I, 5, 1, 5);
+    Actions.PlayerWareDistribution(I, 5, 15, 5);
+    Actions.PlayerWareDistribution(I, 5, 2, 5);
+    Actions.PlayerWareDistribution(I, 5, 10, 5);
+    Actions.PlayerWareDistribution(I, 2, 20, 5);
+    Actions.PlayerWareDistribution(I, 2, 19, 5);
+    Actions.PlayerWareDistribution(I, 9, 22, 5);
+    Actions.PlayerWareDistribution(I, 9, 16, 5);
+    Actions.PlayerWareDistribution(I, 9, 12, 5);
+  end;
+end;
+
+
+procedure BlockWares;
+var
+  H: array of Integer;
+  I, K: Integer;
+begin
+  for I := 4 to 11 do
+  begin
+    H := States.PlayerGetAllHouses(I);
+
+    if Length(H) <= 0 then
+      Exit;
+
+    for K := Low(H) to High(H) do
+      if States.HouseType(H[K]) = 11 then
+      begin
+        Actions.HouseWareBlock(H[K], 0, True);
+        Actions.HouseWareBlock(H[K], 1, True);
+        Actions.HouseWareBlock(H[K], 2, True);
+        Actions.HouseWareBlock(H[K], 3, True);
+        Actions.HouseWareBlock(H[K], 4, True);
+        Actions.HouseWareBlock(H[K], 5, True);
+        Actions.HouseWareBlock(H[K], 6, True);
+        Actions.HouseWareBlock(H[K], 9, True);
+        Actions.HouseWareBlock(H[K], 11, True);
+        Actions.HouseWareBlock(H[K], 14, True);
+        Actions.HouseWareBlock(H[K], 15, True);
+      end;
+  end;
+end;
+
+
+procedure OnMissionStart;
+var
+  I, K: Integer;
+begin
+
+  for I := 2 to 11 do
+  for K := 2 to 11 do
+    if (I <> K)
+    and (States.PlayerEnabled(I))
+    and (States.PlayerEnabled(K)) then
+      Actions.PlayerAllianceNFogChange(I, K, True, True, False);
+
+  FillAIDefencePositions;
+
+  for I := 2 to 11 do
+    AutoFeed(I);
+
+  for I := 0 to 1 do
+  begin
+    OffersAllowed[I] := False;
+    OffersTimer[I] := OFFER_TIME;
+    ConfirmTimer[I] := CONFIRM_TIME;
+  end;
+
+  UpdateAIEquipRates;
+
+  UpdateAttackTimers;
+
+  GiveInitialTroops;
+
+  SetWareDistribution;
+
+  BlockWares;
+
+  FindWolves;
+
+  for I := 0 to 1 do
+    SoundAllowed[I] := True;
+
+  Actions.ShowMsg(-1, '<$11>');
+
+end;

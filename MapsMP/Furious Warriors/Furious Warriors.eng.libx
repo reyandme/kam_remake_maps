@@ -1,0 +1,37 @@
+﻿1:[$00FF00]Furious Warriors[]
+2:[$%s]%s[]: %d
+3:[$00D7FF]Gold[]: %d
+4:[$00D7FF]Defeated[]:
+5: +[$00FF00]%d[]
+6: /[$00D7FF]%d[]
+7: +[$32CD32]%d[]
+8:[$E6D8AD]Elite[]: %d/%d
+9: - [$E6D8AD]%d[]
+10: Not enough coins! You need [$00FF00]%d[] to buy this plan ( [$00FF00]%s[] ).
+11: You already have the maximum amount of watch towers is %d.
+12: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]%s[]
+13: - [$FAFFF5]%s[]([$20A5DA]%d[])
+14: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]upgrade to iron troops[]
+15: Not enough coins! You need [$00FF00]%d[] to buy this plan.
+16: <- [$00FF00]%d[]
+17:[$B48246]([][$EE687B]@[][$B48246])[] 
+18:[$EE687B]([][$000000]O[][$EE687B])[] 
+19:[$000000](o)[] 
+20:[$F0FFFF]Day[] %d
+21:[$%s]Furious Warriors[]
+22: +[$0000FF]%d[]
+23:[$F0FFFF]Day[] [$0000FF]%d[]
+24:[$E6D8AD]Tower[]/%d
+25:[$F0FFFF]Day[] [$00FF00]%d[]
+26:[$E6D8AD]Barbarians[]/%d
+27: <- First [$2222B2]Blood[]!
+28: <- [$F5F5F5]Barbarian[]!
+30:[$00FF00]Tip 1/6[] - Mounted warriors in the first place will attack ranged units and try to ignore melee troops.
+31:[$00FF00]Tip 2/6[] - Every house slightly increasing number of defence units and making black magic greater.
+32:[$00FF00]Tip 3/6[] - Enable house repair then enable delivery to release all warriors of the same type.
+33:[$00FF00]Tip 4/6[] - Militia armies are bigger if sending frequently. 
+33:[$00FF00]Tip 5/6[] - Set ON house repair orders house to release all same type warriors when production is finished.
+34:[$00FF00]Tip 6/6[] - Place Market plan to see house list for 30 seconds.
+50:[$8CE6F0]test_mode[]
+51:[$32CD32]Refund Time[]... %d
+52: You captured your first barbarian! Build school house to keep them into battle. Cost [$00FF00]%d[] Gold.

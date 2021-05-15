@@ -1,0 +1,110 @@
+﻿0:[$%s]%s[]: %d
+1:Scores
+2:Wave:
+3:New soldiers available: %s!
+4:To hire barbarians, enable barracks repair and equip militia.
+5:Next wave in: %.2d:%.2d
+6:Congrats! You reached 18th wave! Your bonus for this game:
+7:Immediate Kill
+8:Double
+9:New Conscription
+10:Reinforcement
+11:Reborn
+12:Newborn Ally
+13:You have chances to kill enemy soldier from one hit.
+14:You have chances to get extra soldiers when equipping army.
+15:10 extra recruits per wave will join you.
+16:You have chances to get reinforcement for every wave.
+17:Your soldiers can reborn.
+18:Enemy soldiers can reborn and fight on your side.
+19:The beginning...
+20:Noob and his brothers
+21:There's safety in numbers!
+22:Leather???
+23:Yep. Leather.
+24:More leather!
+25:It becomes interesting...
+26:Can you scout here?
+27:Snipers incoming?
+28:Horses rebellion? Ah, no, I was wrong :D
+29:Scout out all the...
+30:Iron?
+31:Flanks!
+32:Hey, I'm Vaga-Vaga :D
+33:More Vagazzz!
+34:Equator?
+35:Wow, they can even equip swordmen!
+36:It becomes more interesting...
+37:Need ranged?
+38:Pikemadness...
+39:You survived so long... Or not?
+40:Knights!
+41:Does it become insane?
+42:Still need ranged?
+43:Knights. Again. Angry Knights!
+44:Madness? No, just some reinforcement.
+45:Are you still alive?
+46:Now it's really insane
+47:Still alive? No problem!
+48:Time to die!
+49:Congrats! You reached 26th wave! New bonus available: Rescue Squad: You can get a reinforcement immediately if you have too less soldiers.|To use this bonus, enter command %s into chat or place road plan on special Rescue Tile.|NOTE: You can use this bonus 4 times. Every next use is delayed.|You can't use this bonus if you have enough soldiers and recruits!
+50:[$%s]Rescue squads available: %d |Delay: %.2d:%.2d ||Your army (CURRENT/USAGE LIMIT): %d/%d|Your recruits (CURRENT/USAGE LIMIT): %d/%d[]
+51:[$FE437A]Castle Defenders 3.2 (07.06.2020)[]||In this mission you should defend the Castle and defeat 35 enemy attacks. Every next attack is stronger than previous. You have a lot of weapons, but not so much gold and can't equip strong soldiers at start. You can unlock new soldiers by killing enemy troops.||ARMY UNLOCK ORDER ON NORMAL DIFFICULTY LVL:||50 kills - Lance Carrier;|100 kills - Axe Fighter;|160 kills - Bowman;|250 kills - Crossbowman;|400 kills - Pikeman;|500 kills - Scout;|700 kills - Sword Fighter;|1000 kills - Barbarian;|1250 kills - Knight.||To get Barbarian, enable barracks repair and equip militia when you have more than 1000 points.||You can also get rogues when equipping militias and get extra recruit training recruits. |Also, if you reach 18th, 26th and 31st wave you get useful bonuses!||Made by andreus.
+52:Rifle Division
+53:You have chances to get extra ranged units when equipping melee units.
+54:Barbarians incoming?
+55:No. Warriors rebellion!
+56:Shoot yourself!
+57:No one knows who will come...
+58:Apocalypse?
+59:Retribution
+60:There's some chances that enemy soldiers dared to attack you will die immediately.
+61:Congrats! You reached 31st wave! 3 team bonuses available: %s, %s, %s. Team can use each bonus only once. Every next usage of the bonus is delayed.
+62:Stone Wall
+63:Moat
+64:Poisoning
+65:Drought
+66:Stone Wall bonus will block allied Barracks entrances for 3 minutes. To use this bonus, enter command %s into chat or place winefield plan in the special tile next to Big Stone.
+67:Moat bonus will block 3-4 random Castle entrances by moats for 3 minutes. To use this bonus, enter command %s into chat or place winefield plan in the special tile next to Reed.
+68:Poisoning bonus will kill randomly significant portion of enemy soldiers but also can kill some of your troops. To use this bonus, enter command %s into chat or place winefield plan in the special tile next to Red Mushroom.
+69:Drought bonus will set hunger level of significant portion of enemy soldiers to critical but also can do this for some of your troops. To use this bonus, enter command %s into chat or place winefield plan in the special tile next to Cactus.
+70:[$CD9B4B]Castle Defenders[]
+71:Team bonuses available: [$%s]%s[], [$%s]%s[], [$%s]%s[] |Delay: %.2d:%.2d
+72:Don't forget about Rescue Squad bonus - you can use it right now! Just enter command %s into chat or place road plan in the special rescue tile located in the wall corner where this message sends you!
+73:Tip #2: Don't waste gold! You have not so much gold, and a lot of weak soldiers equipped too early will be useless later.
+74:Tip #3: Arrange defence positions within team. The best way is to defend corners (two flank and one middle entrances per player).
+75:Tip #4: No need to send much soldiers to defend flanks until 13th wave. Only some enemy soldiers could go there, so one small squad will be enough to kill them.
+76:Tip #5: Check wave names - sometimes they can help you to choose troops for defence.
+77:Tip #6: From now you have to defend flanks.
+78:Tip #7: To use Rescue Squad bonus, you should have too less soldiers and recruits. Usage limits: %d soldiers and %d recruits.
+79:Tip #9: To use Lategame Bonuses, place winefield plan one tile down from special objects near the allied Barracks.
+80:Tip #8: Lost all your serfs? Don't worry! Place Field plans within the Castle to respawn them or enter console command %s into chat.
+81:Tip #10: From now enemies will send extra ambush squads to attack the Castle. Prepare for long sieges!
+82:Ambushed!
+83:Unlocked
+84:Used Rescue Squad!
+85:Used %s bonus!
+86:and
+87:Used Stone Wall bonus
+88:Used Moat bonus
+89:Used Poisoning bonus
+90:Used Drought bonus
+91:Now you can build Watchtowers. Disable Storehouse repair and place a tower plan within the Castle, where you need to have it. At the moment you can build only %d towers. You can buy extra towers, each of them costs %d gold. To buy a tower enter command %s into chat or enable Storehouse repair and place tower plan. You can have maximum of %d towers.
+92:You have enough towers already!
+93:Tip #1: Soldiers unlocking order: %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills; %s - %d kills.
+94:Reinforced Armor
+95:Your soldiers now have better armor, which can absorb a part of received damage.
+96:Your bonus
+97:Bought extra tower!
+98:Not enough gold (%d). You need %d to buy a tower.
+99:Towers purchase limit is reached.
+100:Towers: %d/%d
+101:Try to buy extra one
+102:An error has occured while building a tower
+103:location
+104:is too far away from the castle
+105:tower entrance could be blocked or can't build walkable road at location
+106:Can't split this troop to groups of %d and %d members. Each group should have at least %d group members after splitting
+107:Can't split this troop of %d members. Each group should have at least %d group members after splitting
+108:is occupied by unit
+109:The King has sent reinforcement: %d %s

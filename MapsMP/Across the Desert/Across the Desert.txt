@@ -1,0 +1,8 @@
+SmallDesc
+Original map from KaM TSK
+
+BigDesc
+Pursue your enemies across the wide open desert||Original map from Knights and Merchants The Shattered Kingdom
+
+PlayableAsSP
+

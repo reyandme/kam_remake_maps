@@ -1,0 +1,6 @@
+BigDesc
+Maneuver your soldiers around the ruins of a city and use the obstacles to your advantage.||Made by War_Its_Life.||[$74AF78]Normal difficulty[]: Original map|[$5432AA]Hard difficulty[]: Random city
+
+DifficultyLevels
+mdNormal,mdHard1
+

@@ -1,0 +1,378 @@
+const
+  HOUSES_COUNT = 20;
+  WINEYARDS_COUNT = 2;
+  FARMS_COUNT = 2;
+  FISHER_CHANCE = 0.3;
+  MAX_CHECKS = 1000;
+
+var
+  I, K, X, Y, aX, aY, T, Checks: Integer;
+  H: array of Integer;
+
+
+procedure SetOriginalMap;
+begin
+  Actions.GiveRoad(4, 30, 34);
+  Actions.GiveRoad(4, 31, 26);
+  Actions.GiveRoad(4, 31, 34);
+  Actions.GiveRoad(4, 32, 26);
+  Actions.GiveRoad(4, 32, 27);
+  Actions.GiveRoad(4, 32, 28);
+  Actions.GiveRoad(4, 32, 29);
+  Actions.GiveRoad(4, 32, 30);
+  Actions.GiveRoad(4, 32, 31);
+  Actions.GiveRoad(4, 32, 32);
+  Actions.GiveRoad(4, 32, 33);
+  Actions.GiveRoad(4, 32, 34);
+  Actions.GiveRoad(4, 32, 35);
+  Actions.GiveRoad(4, 32, 40);
+  Actions.GiveRoad(4, 33, 28);
+  Actions.GiveRoad(4, 33, 29);
+  Actions.GiveRoad(4, 33, 30);
+  Actions.GiveRoad(4, 33, 31);
+  Actions.GiveRoad(4, 33, 32);
+  Actions.GiveRoad(4, 33, 35);
+  Actions.GiveRoad(4, 33, 40);
+  Actions.GiveRoad(4, 34, 28);
+  Actions.GiveRoad(4, 34, 29);
+  Actions.GiveRoad(4, 34, 32);
+  Actions.GiveRoad(4, 34, 35);
+  Actions.GiveRoad(4, 34, 40);
+  Actions.GiveRoad(4, 35, 28);
+  Actions.GiveRoad(4, 35, 29);
+  Actions.GiveRoad(4, 35, 32);
+  Actions.GiveRoad(4, 35, 35);
+  Actions.GiveRoad(4, 35, 36);
+  Actions.GiveRoad(4, 35, 40);
+  Actions.GiveRoad(4, 35, 44);
+  Actions.GiveRoad(4, 36, 29);
+  Actions.GiveRoad(4, 36, 32);
+  Actions.GiveRoad(4, 36, 36);
+  Actions.GiveRoad(4, 36, 40);
+  Actions.GiveRoad(4, 36, 44);
+  Actions.GiveRoad(4, 37, 29);
+  Actions.GiveRoad(4, 37, 32);
+  Actions.GiveRoad(4, 37, 36);
+  Actions.GiveRoad(4, 37, 40);
+  Actions.GiveRoad(4, 37, 44);
+  Actions.GiveRoad(4, 38, 29);
+  Actions.GiveRoad(4, 38, 32);
+  Actions.GiveRoad(4, 38, 36);
+  Actions.GiveRoad(4, 38, 40);
+  Actions.GiveRoad(4, 38, 44);
+  Actions.GiveRoad(4, 38, 50);
+  Actions.GiveRoad(4, 39, 29);
+  Actions.GiveRoad(4, 39, 32);
+  Actions.GiveRoad(4, 39, 36);
+  Actions.GiveRoad(4, 39, 37);
+  Actions.GiveRoad(4, 39, 40);
+  Actions.GiveRoad(4, 39, 44);
+  Actions.GiveRoad(4, 39, 50);
+  Actions.GiveRoad(4, 40, 29);
+  Actions.GiveRoad(4, 40, 32);
+  Actions.GiveRoad(4, 40, 36);
+  Actions.GiveRoad(4, 40, 37);
+  Actions.GiveRoad(4, 40, 40);
+  Actions.GiveRoad(4, 40, 44);
+  Actions.GiveRoad(4, 40, 50);
+  Actions.GiveRoad(4, 40, 51);
+  Actions.GiveRoad(4, 40, 52);
+  Actions.GiveRoad(4, 40, 53);
+  Actions.GiveRoad(4, 40, 54);
+  Actions.GiveRoad(4, 40, 58);
+  Actions.GiveRoad(4, 41, 29);
+  Actions.GiveRoad(4, 41, 32);
+  Actions.GiveRoad(4, 41, 36);
+  Actions.GiveRoad(4, 41, 37);
+  Actions.GiveRoad(4, 41, 38);
+  Actions.GiveRoad(4, 41, 39);
+  Actions.GiveRoad(4, 41, 40);
+  Actions.GiveRoad(4, 41, 41);
+  Actions.GiveRoad(4, 41, 42);
+  Actions.GiveRoad(4, 41, 43);
+  Actions.GiveRoad(4, 41, 44);
+  Actions.GiveRoad(4, 41, 45);
+  Actions.GiveRoad(4, 41, 46);
+  Actions.GiveRoad(4, 41, 47);
+  Actions.GiveRoad(4, 41, 48);
+  Actions.GiveRoad(4, 41, 49);
+  Actions.GiveRoad(4, 41, 50);
+  Actions.GiveRoad(4, 41, 54);
+  Actions.GiveRoad(4, 41, 58);
+  Actions.GiveRoad(4, 42, 29);
+  Actions.GiveRoad(4, 42, 32);
+  Actions.GiveRoad(4, 42, 33);
+  Actions.GiveRoad(4, 42, 34);
+  Actions.GiveRoad(4, 42, 35);
+  Actions.GiveRoad(4, 42, 36);
+  Actions.GiveRoad(4, 42, 40);
+  Actions.GiveRoad(4, 42, 54);
+  Actions.GiveRoad(4, 42, 55);
+  Actions.GiveRoad(4, 42, 56);
+  Actions.GiveRoad(4, 42, 57);
+  Actions.GiveRoad(4, 42, 58);
+  Actions.GiveRoad(4, 42, 59);
+  Actions.GiveRoad(4, 42, 60);
+  Actions.GiveRoad(4, 42, 61);
+  Actions.GiveRoad(4, 42, 62);
+  Actions.GiveRoad(4, 42, 63);
+  Actions.GiveRoad(4, 43, 27);
+  Actions.GiveRoad(4, 43, 28);
+  Actions.GiveRoad(4, 43, 29);
+  Actions.GiveRoad(4, 43, 35);
+  Actions.GiveRoad(4, 43, 36);
+  Actions.GiveRoad(4, 43, 40);
+  Actions.GiveRoad(4, 43, 54);
+  Actions.GiveRoad(4, 43, 57);
+  Actions.GiveRoad(4, 43, 63);
+  Actions.GiveRoad(4, 43, 64);
+  Actions.GiveRoad(4, 44, 35);
+  Actions.GiveRoad(4, 44, 36);
+  Actions.GiveRoad(4, 44, 40);
+  Actions.GiveRoad(4, 44, 53);
+  Actions.GiveRoad(4, 44, 54);
+  Actions.GiveRoad(4, 44, 57);
+  Actions.GiveRoad(4, 44, 64);
+  Actions.GiveRoad(4, 44, 65);
+  Actions.GiveRoad(4, 45, 35);
+  Actions.GiveRoad(4, 45, 36);
+  Actions.GiveRoad(4, 45, 40);
+  Actions.GiveRoad(4, 45, 53);
+  Actions.GiveRoad(4, 45, 57);
+  Actions.GiveRoad(4, 45, 65);
+  Actions.GiveRoad(4, 46, 36);
+  Actions.GiveRoad(4, 46, 39);
+  Actions.GiveRoad(4, 46, 40);
+  Actions.GiveRoad(4, 46, 53);
+  Actions.GiveRoad(4, 46, 65);
+  Actions.GiveRoad(4, 47, 36);
+  Actions.GiveRoad(4, 47, 39);
+  Actions.GiveRoad(4, 47, 53);
+  Actions.GiveRoad(4, 48, 36);
+  Actions.GiveRoad(4, 48, 39);
+  Actions.GiveRoad(4, 48, 53);
+  Actions.GiveRoad(4, 49, 36);
+  Actions.GiveRoad(4, 49, 39);
+  Actions.GiveRoad(4, 49, 43);
+  Actions.GiveRoad(4, 49, 53);
+  Actions.GiveRoad(4, 50, 36);
+  Actions.GiveRoad(4, 50, 37);
+  Actions.GiveRoad(4, 50, 38);
+  Actions.GiveRoad(4, 50, 39);
+  Actions.GiveRoad(4, 50, 40);
+  Actions.GiveRoad(4, 50, 41);
+  Actions.GiveRoad(4, 50, 42);
+  Actions.GiveRoad(4, 50, 43);
+  Actions.GiveRoad(4, 50, 53);
+  Actions.GiveRoad(4, 51, 36);
+  Actions.GiveRoad(4, 51, 41);
+  Actions.GiveRoad(4, 51, 53);
+  Actions.GiveRoad(4, 52, 36);
+  Actions.GiveRoad(4, 52, 41);
+  Actions.GiveRoad(4, 52, 53);
+  Actions.GiveFieldAged(4, 37, 45, 4, True);
+  Actions.GiveFieldAged(4, 37, 46, 5, True);
+  Actions.GiveFieldAged(4, 38, 45, 0, True);
+  Actions.GiveFieldAged(4, 38, 46, 5, True);
+  Actions.GiveFieldAged(4, 39, 45, 4, True);
+  Actions.GiveFieldAged(4, 39, 46, 4, True);
+  Actions.GiveFieldAged(4, 40, 45, 5, True);
+  Actions.GiveFieldAged(4, 40, 46, 4, True);
+  Actions.GiveFieldAged(4, 42, 43, 0, True);
+  Actions.GiveFieldAged(4, 42, 44, 5, True);
+  Actions.GiveFieldAged(4, 42, 45, 5, True);
+  Actions.GiveFieldAged(4, 42, 46, 4, True);
+  Actions.GiveFieldAged(4, 43, 43, 5, True);
+  Actions.GiveFieldAged(4, 43, 44, 4, True);
+  Actions.GiveFieldAged(4, 43, 45, 0, True);
+  Actions.GiveFieldAged(4, 43, 46, 5, True);
+  Actions.GiveWineField(4, 31, 35);
+  Actions.GiveWineField(4, 31, 36);
+  Actions.GiveWineField(4, 32, 36);
+  Actions.GiveWineField(4, 33, 36);
+  Actions.GiveWineField(4, 33, 37);
+  Actions.GiveWineField(4, 34, 36);
+  Actions.GiveWineField(4, 34, 37);
+  Actions.GiveWineField(4, 34, 38);
+  Actions.GiveWineField(4, 34, 39);
+  Actions.GiveWineField(4, 35, 37);
+  Actions.GiveWineField(4, 35, 38);
+  Actions.GiveWineField(4, 35, 39);
+  Actions.GiveWineField(4, 36, 33);
+  Actions.GiveWineField(4, 36, 34);
+  Actions.GiveWineField(4, 36, 35);
+  Actions.GiveWineField(4, 36, 37);
+  Actions.GiveWineField(4, 36, 38);
+  Actions.GiveWineField(4, 36, 39);
+  Actions.GiveWineField(4, 37, 33);
+  Actions.GiveWineField(4, 37, 34);
+  Actions.GiveWineField(4, 37, 35);
+  Actions.GiveWineField(4, 38, 33);
+  Actions.GiveWineField(4, 38, 34);
+  Actions.GiveWineField(4, 38, 35);
+end;
+
+
+function CanBuildFields(FromX, FromY, ToX, ToY: Integer): Boolean;
+begin
+  Result := True;
+  for aX := FromX to ToX do
+    for aY := FromY to ToY do
+      if not (States.MapTilePassability(aX, aY, 5))
+      or not (States.MapTileIsSoil(aX, aY)) then
+      begin
+        Result := False;
+        Exit;
+      end;
+end;
+
+
+function CanBuildRoads(FromX, FromY, ToX, ToY: Integer): Boolean;
+begin
+  Result := True;
+  for aX := FromX to ToX do
+    for aY := FromY to ToY do
+      if not States.MapTilePassability(aX, aY, 5) then
+      begin
+        Result := False;
+        Exit;
+      end;
+end;
+
+
+procedure SetRandomMap;
+begin
+  Checks := 0;
+
+  while States.StatHouseTypeCount(4, 21) = 0 do
+    Actions.GiveHouse(4, 21, Utils.RandomRangeI(35, 40), Utils.RandomRangeI(30, 35));
+
+  while States.StatHouseTypeCount(4, 11) = 0 do
+    Actions.GiveHouse(4, 11, Utils.RandomRangeI(33, 38), Utils.RandomRangeI(33, 38));
+
+  while States.StatHouseTypeCount(4, 13) = 0 do
+    Actions.GiveHouse(4, 13, Utils.RandomRangeI(42, 46), Utils.RandomRangeI(32, 39));
+
+  while States.StatHouseTypeCount(4, 27) = 0 do
+    Actions.GiveHouse(4, 27, Utils.RandomRangeI(36, 42), Utils.RandomRangeI(36, 42));
+
+  if States.KaMRandom < FISHER_CHANCE then
+    while States.StatHouseTypeCount(4, 6) = 0 do
+    begin
+      if States.KaMRandom > 0.5 then
+        Actions.GiveHouse(4, 6, Utils.RandomRangeI(22, 28), Utils.RandomRangeI(36, 42))
+      else
+        Actions.GiveHouse(4, 6, Utils.RandomRangeI(53, 60), Utils.RandomRangeI(42, 47));
+    end;
+
+  while States.StatHouseTypeCount(4, 28) < 1 do
+  begin
+    X := Utils.RandomRangeI(28, 35);
+    Y := Utils.RandomRangeI(32, 40);
+    if (CanBuildRoads(X - 3, Y + 1, X + 1, Y + 1))
+    and (CanBuildFields(X - 2, Y + 2, X, Y + 4)) then
+      if Actions.PlanAddHouse(4, 28, X, Y) then
+      begin
+        Actions.PlanRemove(4, X, Y);
+        Actions.GiveHouse(4, 28, X, Y);
+        for aX := X - 2 to X do
+          for aY := Y + 2 to Y + 4 do
+            if Actions.PlanAddWinefield(4, aX, aY) then
+            begin
+              Actions.PlanRemove(4, aX, aY);
+              Actions.GiveWineFieldAged(4, aX, aY, States.KaMRandomI(3), True);
+            end;
+       end;
+  end;
+
+  while States.StatHouseTypeCount(4, 28) < WINEYARDS_COUNT do
+  begin
+    X := Utils.RandomRangeI(46, 53);
+    Y := Utils.RandomRangeI(32, 40);
+    if (CanBuildRoads(X - 3, Y + 1, X + 1, Y + 1))
+    and (CanBuildFields(X - 2, Y + 2, X, Y + 4)) then
+      if Actions.PlanAddHouse(4, 28, X, Y) then
+      begin
+        Actions.PlanRemove(4, X, Y);
+        Actions.GiveHouse(4, 28, X, Y);
+        for aX := X - 2 to X do
+          for aY := Y + 2 to Y + 4 do
+            if Actions.PlanAddWinefield(4, aX, aY) then
+            begin
+              Actions.PlanRemove(4, aX, aY);
+              Actions.GiveWineFieldAged(4, aX, aY, States.KaMRandomI(3), True);
+            end;
+       end;
+  end;
+
+  while States.StatHouseTypeCount(4, 8) < FARMS_COUNT do
+  begin
+    X := Utils.RandomRangeI(30, 53);
+    Y := Utils.RandomRangeI(27, 58);
+    if (CanBuildRoads(X - 1, Y + 1, X + 2, Y + 1))
+    and (CanBuildFields(X - 1, Y + 2, X + 2, Y + 5)) then
+      if Actions.PlanAddHouse(4, 8, X, Y) then
+      begin
+        Actions.PlanRemove(4, X, Y);
+        Actions.GiveHouse(4, 8, X, Y);
+        for aX := X - 1 to X + 2 do
+          for aY := Y + 2 to Y + 5 do
+            if Actions.PlanAddField(4, aX, aY) then
+            begin
+              Actions.PlanRemove(4, aX, aY);
+              Actions.GiveFieldAged(4, aX, aY, States.KaMRandomI(7), True);
+            end;
+       end;
+  end;
+
+  while Length(States.PlayerGetAllHouses(4)) < HOUSES_COUNT do
+  begin
+    Checks := Checks + 1;
+    if Checks >= MAX_CHECKS then
+      Break;
+    X := Utils.RandomRangeI(30, 53);
+    Y := Utils.RandomRangeI(27, 58);
+    T := Utils.RandomRangeI(0, 29); 
+    while (T = 26)
+    or (T = 6) 
+    or (T = 1)
+    or (T = 10)
+    or (T = 23)
+    or (T = 8)
+    or (T = 27)
+    or (T = 21) do
+      T := Utils.RandomRangeI(0, 29);
+    if CanBuildRoads(X - 2, Y + 1, X + 2, Y + 1) then
+      if Actions.PlanAddHouse(4, T, X, Y) then
+      begin
+        Actions.PlanRemove(4, X, Y);
+        Actions.GiveHouse(4, T, X, Y);
+      end;
+  end;
+
+  H := States.PlayerGetAllHouses(4);
+  for K := Low(H) to High(H) do
+    for I := High(H) downto Low(H) do
+      Actions.PlanConnectRoad(4, States.HousePositionX(H[K]), States.HousePositionY(H[K]) + 1, States.HousePositionX(H[I]), States.HousePositionY(H[I]) + 1, True);
+  
+  Actions.PlanConnectRoad(4, 46, 65, States.HousePositionX(H[0]), States.HousePositionY(H[0]) + 1, True);
+
+  for I := Low(H) to High(H) do
+    Actions.HouseDestroy(H[I], False);
+
+end;
+
+
+procedure OnMissionStart;
+begin
+  Actions.PlayerGoalsRemoveAll(4, False); //Set AI as neutral NPC
+
+  if States.MissionDifficulty = mdHard1 then
+    SetRandomMap;
+
+  if States.MissionDifficulty = mdNormal then
+    SetOriginalMap;
+
+  Actions.UnitKill(States.UnitAt(45, 8), True);
+
+end;

@@ -1,0 +1,393 @@
+{$I improvestaticai.script}
+
+procedure OnHouseDestroyed(aHouseID: Integer);
+begin
+	if ((aHouseID = States.HouseAt(152, 121)) AND (States.HouseOwner(aHouseID) = 5)) then
+	    begin
+		     Actions.HouseAllow(0, 10, true);
+		     Actions.HouseAllow(0, 2, true);
+		     Actions.HouseAllow(1, 10, true);
+		     Actions.HouseAllow(1, 2, true);
+		     Actions.HouseAllow(2, 10, true);
+		     Actions.HouseAllow(2, 2, true);
+	         Actions.HouseUnlock(0, 10);
+		     Actions.HouseUnlock(0, 2);
+		     Actions.HouseUnlock(1, 10);
+		     Actions.HouseUnlock(1, 2);
+		     Actions.HouseUnlock(2, 10);
+		     Actions.HouseUnlock(2, 2);
+	    end;
+end;
+		
+
+
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+begin
+	typeU := States.UnitType(aUnitID);
+	if (typeU = 16) and (States.UnitOwner(aUnitID) = 12) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 16 then
+		begin
+			typeU := 26;
+			temporary := Actions.GiveGroup(12, 26, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	if (typeU = 16) and (States.UnitOwner(aUnitID) = 11) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 16 then
+		begin
+			typeU := 26;
+			temporary := Actions.GiveGroup(11, 26, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	if (typeU = 16) and (States.UnitOwner(aUnitID) = 10) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 16 then
+		begin
+			typeU := 26;
+			temporary := Actions.GiveGroup(10, 26, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	if (typeU = 15) and (States.UnitOwner(aUnitID) = 4) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 15 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(4, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+		if (typeU = 15) and (States.UnitOwner(aUnitID) = 7) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 15 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(7, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+end;
+
+procedure OnTick;
+
+begin
+  if States.GameTime = 6000 then
+  begin
+    Actions.ShowMsg(-1, 'For the time being we are unable to build smithies because in this unwelcoming lands there is nobody who can prepare equipment necessary for our blacksmiths. Luckily our spies have located enemy garrison from where we can get what we are looking for. You should prepare an assault as soon as possible. ');
+	Actions.FogRevealCircle(1, 152, 122, 4);
+	Actions.FogRevealCircle(2, 152, 122, 4);
+	Actions.FogRevealCircle(0, 152, 122, 4);
+  end;
+  
+  if States.GameTime = 114900 then
+  begin
+    Actions.ShowMsg(-1, 'Emperor Fanstef had it enough. Armies are being mustered and cold factories roar to life. For the first time Empire Of Man will show us real strengh of its elite legions! ');
+	Actions.FogRevealCircle(1, 120, 199, 6);
+	Actions.FogRevealCircle(2, 120, 199, 6);
+	Actions.FogRevealCircle(0, 120, 199, 6);
+	Actions.FogRevealCircle(1, 120, 205, 6);
+	Actions.FogRevealCircle(2, 120, 205, 6);
+	Actions.FogRevealCircle(0, 120, 205, 6);
+	Actions.FogRevealCircle(1, 120, 211, 6);
+	Actions.FogRevealCircle(2, 120, 211, 6);
+	Actions.FogRevealCircle(0, 120, 211, 6);
+  end;
+  
+  if States.GameTime = 3000 then
+  begin
+    Actions.ShowMsg(-1, 'First flock of cursed spirits left the Netherworld and is heading towards our defences. Prepare for battle!');
+    Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+  if States.GameTime = 9200 then
+  begin
+    Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 27, 114, 4, 4, 9, 3);
+    Actions.GiveGroup(17, 24, 144, 4, 4, 15, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+    if States.GameTime = 14560 then
+  begin
+    Actions.GiveGroup(17, 14, 144, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 24, 129, 4, 4, 15, 5);
+    Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 27, 100, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 27, 119, 4, 4, 12, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+    if States.GameTime = 21600 then
+  begin
+    Actions.GiveGroup(17, 14, 100, 4, 4, 20, 5);
+    Actions.GiveGroup(17, 14, 129, 4, 4, 20, 5);
+    Actions.GiveGroup(17, 24, 114, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 25, 100, 4, 4, 8, 4);
+    Actions.GiveGroup(17, 25, 129, 4, 4, 8, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+    if States.GameTime = 31000 then
+  begin
+    Actions.ShowMsg(-1, 'Stench of blood started to attract stronger damned spirits. From now on accursed forces might start to pose real threat.');
+    Actions.GiveGroup(17, 19, 100, 4, 4, 12, 4);
+    Actions.GiveGroup(17, 15, 129, 4, 4, 9, 3);
+    Actions.GiveGroup(17, 19, 144, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 14, 130, 4, 4, 15, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+    if States.GameTime = 37100 then
+  begin
+	Actions.GiveGroup(17, 27, 94, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 21, 146, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 21, 118, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 27, 130, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 27, 124, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 27, 137, 4, 4, 20, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+    if States.GameTime = 41890 then
+  begin
+	Actions.GiveGroup(17, 14, 100, 4, 4, 8, 4);
+    Actions.GiveGroup(17, 14, 129, 4, 4, 8, 4);
+	Actions.GiveGroup(17, 15, 144, 4, 4, 12, 3);
+	Actions.GiveGroup(17, 15, 130, 4, 4, 12, 3);
+	Actions.GiveGroup(17, 15, 114, 4, 4, 12, 3);
+	Actions.GiveGroup(17, 24, 121, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 24, 89, 8, 4, 15, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+      if States.GameTime = 46700 then
+  begin
+	Actions.GiveGroup(17, 14, 94, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 15, 118, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 15, 94, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 23, 118, 4, 4, 6, 3);
+	Actions.GiveGroup(17, 24, 94, 4, 4, 30, 5);
+	Actions.PlayOGG(-1,'filename',1);
+
+  end;
+  
+      if States.GameTime = 51300 then
+  begin
+	Actions.GiveGroup(17, 14, 94, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 19, 130, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 15, 108, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 17, 118, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 27, 146, 4, 4, 20, 4);
+	Actions.GiveGroup(17, 23, 135, 4, 4, 9, 3);
+	Actions.GiveGroup(17, 20, 128, 4, 4, 6, 3);
+	Actions.PlayOGG(-1,'filename',1);
+	
+  end;
+  
+      if States.GameTime = 55200 then
+  begin
+	Actions.GiveGroup(17, 27, 118, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 23, 146, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 23, 94, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 20, 131, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 20, 102, 4, 4, 12, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+      if States.GameTime = 61000 then
+  begin
+	Actions.GiveGroup(17, 27, 144, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 27, 94, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 21, 144, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 21, 94, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 22, 118, 4, 4, 20, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+      if States.GameTime = 69000 then
+  begin
+	Actions.GiveGroup(17, 25, 94, 4, 4, 20, 4);
+	Actions.GiveGroup(17, 17, 102, 4, 4, 20, 4);
+	Actions.GiveGroup(17, 18, 118, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 25, 146, 4, 4, 20, 4);
+	Actions.GiveGroup(17, 17, 130, 4, 4, 20, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+      
+      if States.GameTime = 77200 then
+  begin
+	Actions.GiveGroup(17, 14, 94, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 14, 144, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 15, 102, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 23, 118, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 16, 130, 4, 4, 16, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+    
+      if States.GameTime = 83920 then
+  begin
+	Actions.GiveGroup(17, 24, 94, 4, 4, 50, 4);
+	Actions.GiveGroup(17, 24, 102, 4, 4, 50, 4);
+	Actions.GiveGroup(17, 19, 118, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 19, 146, 4, 4, 30, 4);
+	Actions.GiveGroup(17, 20, 130, 4, 4, 20, 4);
+	Actions.GiveGroup(17, 20, 120, 4, 4, 20, 4);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+    
+      if States.GameTime = 89900 then
+  begin
+	Actions.GiveGroup(17, 27, 94, 4, 4, 50, 4);
+	Actions.GiveGroup(17, 22, 102, 4, 4, 16, 4);
+	Actions.GiveGroup(17, 21, 118, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 17, 146, 4, 4, 12, 4);
+	Actions.GiveGroup(17, 26, 130, 4, 4, 28, 7);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+    
+      if States.GameTime = 95200 then
+  begin
+	Actions.GiveGroup(17, 15, 94, 4, 4, 40, 5);
+	Actions.GiveGroup(17, 16, 146, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 23, 118, 4, 4, 15, 5);
+	Actions.GiveGroup(17, 26, 130, 4, 4, 15, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+    
+      if States.GameTime = 110000 then
+  begin
+	Actions.GiveGroup(17, 27, 94, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 21, 102, 4, 4, 30, 4);
+	Actions.GiveGroup(17, 22, 118, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 27, 146, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 19, 130, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 20, 138, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 27, 118, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 27, 124, 4, 4, 45, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+        if States.GameTime = 117000 then
+  begin
+	Actions.GiveGroup(17, 19, 94, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 20, 102, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 19, 118, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 20, 146, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 24, 130, 4, 4, 50, 5);
+	Actions.GiveGroup(17, 24, 138, 4, 4, 50, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+        if States.GameTime = 123450 then
+  begin
+	Actions.GiveGroup(17, 25, 94, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 17, 102, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 18, 118, 4, 4, 20, 5);
+	Actions.GiveGroup(17, 25, 146, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 17, 130, 4, 4, 25, 5);
+	Actions.GiveGroup(17, 27, 126, 4, 4, 50, 5);
+	Actions.GiveGroup(17, 27, 114, 4, 4, 50, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+        if States.GameTime = 131500 then
+  begin
+	Actions.GiveGroup(17, 14, 94, 4, 4, 80, 4);
+	Actions.GiveGroup(17, 23, 102, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 26, 118, 4, 4, 40, 4);
+	Actions.GiveGroup(17, 14, 146, 4, 4, 80, 4);
+	Actions.GiveGroup(17, 19, 130, 4, 4, 60, 6);
+	Actions.GiveGroup(17, 20, 138, 4, 4, 40, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+        if States.GameTime = 138000 then
+  begin
+	Actions.GiveGroup(17, 27, 94, 4, 4, 60, 5);
+	Actions.GiveGroup(17, 21, 102, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 22, 118, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 27, 146, 4, 4, 60, 5);
+	Actions.GiveGroup(17, 21, 130, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 22, 138, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 27, 123, 4, 4, 50, 5);
+	Actions.GiveGroup(17, 27, 128, 4, 4, 50, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+          if States.GameTime = 144000 then
+  begin
+	Actions.GiveGroup(17, 14, 138, 4, 4, 60, 4);
+	Actions.GiveGroup(17, 15, 102, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 16, 118, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 24, 146, 4, 4, 60, 4);
+	Actions.GiveGroup(17, 19, 130, 4, 4, 45, 5);
+	Actions.GiveGroup(17, 20, 94, 4, 4, 35, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+            if States.GameTime = 153000 then
+  begin
+	Actions.GiveGroup(17, 23, 94, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 16, 102, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 20, 118, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 20, 146, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 16, 130, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 22, 138, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 27, 126, 4, 4, 60, 6);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+            if States.GameTime = 160500 then
+  begin
+	Actions.GiveGroup(17, 26, 94, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 23, 102, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 23, 118, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 26, 146, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 23, 130, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 26, 138, 4, 4, 35, 5);
+	Actions.PlayOGG(-1,'filename',1);
+  end;
+  
+   if States.GameTime > 167000 then
+	begin
+	  if (States.GameTime MOD 9000 = 0) then
+	begin
+	Actions.GiveGroup(17, 25, 118, 4, 4, 8, 4);
+	Actions.GiveGroup(17, 23, 94, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 22, 102, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 15, 146, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 16, 130, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 19, 138, 4, 4, 35, 5);
+	Actions.GiveGroup(17, 20, 134, 4, 4, 30, 5);
+	Actions.GiveGroup(17, 14, 138, 4, 4, 40, 5);
+	Actions.GiveGroup(17, 27, 126, 4, 4, 60, 6);
+	Actions.GiveGroup(17, 21, 110, 4, 4, 30, 6);
+    end;
+
+  end;
+   
+end;

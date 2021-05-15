@@ -1,0 +1,4 @@
+procedure OnMissionStart;
+begin
+  Actions.PlayWavAtLocationLooped(-1, 'Fall', 2, 32, 33, 18);
+end;

@@ -1,0 +1,108 @@
+﻿0:[$%s]%s[]: %d
+1:Punktestand
+2:Welle:
+3:Neue Soldaten verfügbar: %s!
+4:Um Barbaren anzuheuern, aktiviere Kasernenreparatur und rüste Milizen aus.
+5:Nächste Angriffswelle in: %.2d:%.2d
+6:Gratulation! Du hast die 18. Angriffswelle erreicht! Dein Bonus für dieses Spiel:
+7:Instant Kill
+8:Verdoppelung
+9:Neue Wehrpflicht
+10:Verstärkung
+11:Wiedergeboren
+12:Wiedergeborener Verbündeter
+13:Es besteht die Chance feindliche Soldaten mit einem Treffer zu töten.
+14:Es besteht die Chance zusätzliche Soldaten zu erhalten beim Ausrüsten von Soldaten.
+15:10 zusätzliche Rekruten pro Angriffswelle werden Dir folgen.
+16:Es besteht die Chance Verstärkung pro Welle zu erhalten.
+17:Deine Soldaten können wiedergeboren werden.
+18:Feindliche Soldaten können wiedergeboren werden und auf deiner Seite kämpfen.
+19:Der Anfang...
+20:Noob und seine Brüder
+21:Je mehr desto besser!
+22:Leder???
+23:Jap. Leder.
+24:Mehr Leder!
+25:Es wird interessant...
+26:Kannst du hier beobachten?
+27:Scharfschützen im Anmarsch?
+28:Pferde Rebellion? Ah, nein, ich hab mich vertan :D
+29:Beobachte alle...
+30:Eisen?
+31:Flanken!
+32:Hey, Ich bin Vaga-Vaga :D
+33:Mehr Vagazzz!
+34:Äquator?
+35:Wow, die können sogar Schwertkämpfer ausrüsten!
+36:Es wird noch interessanter...
+37:Schützen gefällig?
+38:Pikenwahnsinn...
+39:Du hast so lange überlebt... Oder nicht?
+40:Ritter!
+41:Wird es Wahnsinn?
+42:Brauchst du noch immer Schützen?
+43:Rittergarden. Schon wieder. Wütende Ritter!
+44:Wahnsinn? Nein, nur etwas Verstärkung.
+45:Bist du noch immer am Leben?
+46:Jetzt ist es wirklich Wahnsinn
+47:Noch am Leben? Kein Problem!
+48:Zeit zu sterben!
+49:Gratulation! Du hast die 26. Welle erreicht! Neuer Bonus verfügbar: Rettungsmannschaft: Du bekommst sofort Verstärkung wenn du zu wenig Soldaten übrig hast.|Um den Bonus zu nutzen, gib den Befehl %s in den Chat ein oder platziere einen Straßenplan auf einem speziellen Rettungskachel.|ACHTUNG: Du kannst diesen Bonus nur viermal nützen. Jede weitere Verwendung ist verzögert.|Du kannst diesen Bonus nicht verwenden wenn du genug Soldaten und Rekruten hast!
+50:[$%s]Rettungsmannschaften verfügbar: %d |Verzögerung: %.2d:%.2d ||Deine Armee (AKTUELL/LIMIT): %d/%d|Deine Rekruten (AKTUELL/LIMIT): %d/%d[]
+51:[$FE437A]Castle Defenders 3.2 (07.06.2020)[]||In dieser Mission musst du die Burg verteidigen und 35 Angriffe abwehren. Jeder weitere Angriff ist stärker als der vorherige. Du hast eine Menge Waffen, aber nicht viel Gold und kannst am Anfang keine starken Soldaten ausrüsten. Du kannst neue Soldaten freischalten wenn du gegnerischen Truppen besiegst.||SOLDATEN-FREISCHALTUNG AUF NORMALER SCHWIERIGKEITARMY:||50 Kills - Lanzenträger;|100 Kills - Axtkämpfer;|160 Kills - Bogenschütze;|250 Kills - Armbrustschütze;|400 Kills - Pikenier;|500 Kills - Späher;|700 Kills - Schwertkämpfer;|1000 Kills - Barbar;|1250 Kills - Rittergarde.||Um Barbaren zu erhalten, aktiviere Kasernenreparatur und rüste Milizen aus sobald du 1000 Punkte hast.||Du kannst auch Knappen und zusätzliche Rekruten erhalten wenn du Milizen ausrüstest.|Und wenn du die 18. 26. und 31. Angriffswelle erreichst, erhältst du nützliche Boni!||Made by andreus.
+52:Schützen-Division
+53:Es besteht die Chance zusätzliche Schützen zu erhalten wenn du Nahkämpfer ausrüstest.
+54:Barbaren im Anmarsch?
+55:Nein. Krieger Rebellion!
+56:Erschieß dich selbst!
+57:Niemand weiß was kommen wird...
+58:Apokalypse?
+59:Vergeltung
+60:Es besteht die Chance, dass feindliche Soldaten, welche es gewagt haben dich anzugreifen, sofort sterben.
+61:Gratulation! Du hast die 31. Welle erreicht! 3 Team Bonis sind verfügbar: %s, %s, %s. Das Team kann jeden Bonus nur einmal nützen. Jede weitere Bonusbenützung ist verzögert.
+62:Steinwall
+63:Burggraben
+64:Gift
+65:Dürre
+66:Der Bonus Steinwall blockiert den Zugang zu verbündeten Kasernen für 3 Minuten. Um diesen Bonus zu nützen, gib den Befehl %s in den Chat ein oder platziere ein Weinfeld auf dem speziellen Feld neben dem großen Stein.
+67:Der Bonus Burggraben blockiert zufällig 3-4 Burgeingänge mit Gräben für 3 Minuten. Um diesen Bonus zu nützen, gib den Befehl %s in den Chat ein oder platziere ein Weinfeld auf dem speziellen Feld neben dem Schilfrohr.
+68:Der Bonus Gift tötet zufällig der gegnerischen Soldaten, kann aber auch einige deiner Truppen treffen. Um diesen Bonus zu nützen, gib den Befehl %s in den Chat ein oder platziere ein Weinfeld auf dem speziellen Feld neben dem roten Pilz.
+69:Der Bonus Dürre setzt das Hungerlevel von der gegnerischen Soldaten auf Kritisch, kann aber auch einige deiner Truppen treffen. Um diesen Bonus zu nützen, gib den Befehl %s in den Chat ein oder platziere ein Weinfeld auf dem speziellen Feld neben dem Kaktus.
+70:[$CD9B4B]Castle Defenders[]
+71:Verfügbare Team Boni: [$%s]%s[], [$%s]%s[], [$%s]%s[] |Delay: %.2d:%.2d
+72:Vergiss nicht deine Rettungsmannschaften - du kannst sie gleich jetzt einsetzen! Gib den Befehl %s in den Chat ein oder platziere einfach eine Straße auf dem speziellen Rettungskachel in der Mauerecke von woher diese Nachricht kommt!
+73:Tipp #2: Verschwende kein Gold! Du hast nicht so viel Gold und zu früh eine Menge schwache Soldaten auszurüsten wird sich später als sinnlos herausstellen.
+74:Tipp #3: Macht euch die Verteidigungspositionen im Team aus. Der beste Weg ist die Ecken zu verteidigen (zwei Flanken und ein mittlerer Eingang pro Spieler).
+75:Tipp #4: Bis zur 13. Welle brauchst du nicht zu viele Soldaten ausschicken um die Flanken zu verteidigen. Nur wenige feindliche Soldaten werden dorthin kommen, also reicht eine kleine Truppe um diese zu töten.
+76:Tipp #5: Achte auf die Namen der Angriffswellen - manchmal können sie dir helfen die richtigen Truppen zur Verteidigung auszuwählen.
+77:Tipp #6: Ab jetzt musst du die Flanken verteidigen.
+78:Tipp #7: Um die Rettungsmannschaft anfordern zu können, darfst du nur mehr wenige Soldaten und Rekruten haben. Nutzungslimit: %d Soldaten und %d Rekruten.
+79:Tipp #9: Um den Lategame Bonus zu nützen, gib den Befehl in den Chat ein oder platziere ein Weinfeld ein Teil unterhalb der speziellen Objekte nahe verbündeter Kasernen.
+80:Tipp #8: Alle deine Gehilfen verloren? Keine Angst! Gib den Befehl %s in den Chat ein oder platziere ein Weinfeld innerhalb der Burg um sie wieder zu erhalten.
+81:Tipp #10: Ab jetzt werden Feinde zusätzliche Truppen für einen Hinterhalt auf die Burg aussenden. Bereite dich auf lange Belagerungen vor!
+82:Hinterhalt!
+83:Freigeschaltet: 
+84:Bonus Rettungsmannschaft verwendet!
+85:Bonus %s verwendet!
+86:und
+87:Bonus Steinwall verwendet!
+88:Bonus Burggraben verwendet!
+89:Bonus Gift verwendet!
+90:Bonus Dürre verwendet!
+91:Du kannst jetzt Wachtürme bauen. Deaktiviere die Lagerhaus-Reparatur und platziere einen Turm innerhalb der Burg wo du ihn haben möchtest. Momentan kannst du nur %d Türme bauen. Du kannst zusätzliche Türme kaufen, ein Turm kostet %d Gold. Um einen Turm zu kaufen gib den Befehl %s in den Chat ein oder aktiviere Lagerhaus Reparatur und platziere einen Turm. Du kannst maximal %d Türme haben.
+92:Du hast bereits genug Türme!
+93:Tipp #1: Soldaten werden freigeschalten bei: %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills; %s - %d Kills.
+94:Verstärkte Rüstung
+95:Deine Soldaten haben nun eine bessere Rüstung, welche einen Teil des erhaltenen Schadens abfedern können.
+96:Dein Bonus
+97:Zusätzlichen Turm gekauft!
+98:Nicht genug Gold (%d). Du benötigst %d um einen Turm zu kaufen.
+99:Turm Kauflimit erreicht.
+100:Türme: %d/%d
+101:Versuche zusätzliche zu kaufen
+102:Ein Fehler ist aufgetreten beim Bau eines Turms
+103:Ort
+104:ist zu weit von der Burg entfernt
+105:Turm Eingang könnte blockiert werden / kann nicht auf begehbare Straße bauen
+106:Kann diese Truppe nicht auf Gruppen von %d und %d Mitgliedern aufteilen. Jede Gruppe sollte mindestens %d Mitglieder haben nach der Teilung
+107:Kann diese Truppe mit %d Mitgliedern nicht aufteilen. Jede Gruppe sollte mindestens %d Mitglieder haben nach der Teilung

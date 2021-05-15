@@ -1,0 +1,17 @@
+Author
+andreus
+
+Version
+0.9.1 (19.04.2021)
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

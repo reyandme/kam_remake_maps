@@ -1,0 +1,37 @@
+﻿1:[$00FF00]Zornige Krieger[]
+2:[$%s]%s[]: %d
+3:[$00D7FF]Gold[]: %d
+4:[$00D7FF]Besiegt[]:
+5: +[$00FF00]%d[]
+6: /[$00D7FF]%d[]
+7: +[$32CD32]%d[]
+8:[$E6D8AD]Elite[]: %d/%d
+9: - [$E6D8AD]%d[]
+10: Nicht genug Münzen! Ihr benötigt [$00FF00]%d[] um diese Pläne zu kaufen ( [$00FF00]%s[] ).
+11: Ihr habt bereits die maximale Anzahl an Wachtürmen: %d.
+12: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]%s[]
+13: - [$FAFFF5]%s[]([$20A5DA]%d[])
+14: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]Aufrüsten zu Eisenkriegern[]
+15: Nicht genug Münzen! Ihr benötigt [$00FF00]%d[] um diesen Plan zu kaufen.
+16: <- [$00FF00]%d[]
+17:[$B48246]([][$EE687B]@[][$B48246])[] 
+18:[$EE687B]([][$000000]O[][$EE687B])[] 
+19:[$000000](o)[] 
+20:[$F0FFFF]Tag[] %d
+21:[$%s]Zornige Krieger[]
+22: +[$0000FF]%d[]
+23:[$F0FFFF]Tag[] [$0000FF]%d[]
+24:[$E6D8AD]Turm[]/%d
+25:[$F0FFFF]Tag[] [$00FF00]%d[]
+26:[$E6D8AD]Barbaren[]/%d
+27: <- Erstes [$2222B2]Blut[]!
+28: <- [$F5F5F5]Barbaren[]!
+30:[$00FF00]Tipp 1/6[] - Berittene Krieger in der ersten Reihe werden Schützen angreifen und versuchen Nahkämpfer zu ignorieren.
+31:[$00FF00]Tipp 2/6[] - Jedes Haus erhöht die Zahl der Defensiveinheiten etwas und macht Schwarze Magie stärker.
+32:[$00FF00]Tipp 3/6[] - Aktiviere Hausreparatur und dann Lieferung um alle Krieger des selben Typs freizulassen.
+33:[$00FF00]Tipp 4/6[] - Miliz Armeen sind größer wenn sie öfters entsendet werden.
+33:[$00FF00]Tipp 5/6[] - Aktiviere Hausreparatur um alle Krieger des selben Typs freizulassen sobald die Produktion abgeschlossen ist.
+34:[$00FF00]Tipp 6/6[] - Platziere einen Markthallen-Plan um die Häuserliste für 30 Sekunden zu sehen.
+50:[$8CE6F0]test_mode[]
+51:[$32CD32]Rückerstattung[]... %d
+52: Ihr habt euren ersten Barbaren gefangen! Baut ein Schulhaus um sie im Kampf zu behalten. Kostet [$00FF00]%d[] Gold.

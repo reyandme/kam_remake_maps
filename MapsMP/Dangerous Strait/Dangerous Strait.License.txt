@@ -1,0 +1,13 @@
+===MAP===
+
+Made by andreus
+
+
+===DYNAMIC SCRIPT===
+
+Simple script is written by andreus. Script is licensed under GPLv2, you can find its text here: http://www.gnu.org/licenses/gpl-2.0.html
+
+
+===SOUND CREDITS===
+
+'Fall.wav' derived from ingvellir waterfall hard 2.wav by dikolson under CC 0 License

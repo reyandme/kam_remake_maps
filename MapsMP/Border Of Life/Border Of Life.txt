@@ -1,0 +1,17 @@
+Author
+DontTalk
+
+Version
+1.2 Rebalanced resources
+
+BigDesc
+Map uses Strangelove's improved AI script.||Emperor Fanstef inherited united Empire Of Man from his ancestors. Empire was at peace because previous rulers conquered every other nation on the continent. Fanstef to prove himself worth legacy of forefathers chose to launch a campain against a place no man should enter, The Netherworld. His twisted ambition may only bring destruction by unleashing forces of all of world's evil unto the lands of mankind. It is your duty to stop him from doing this while keeping forces of Hell at bay.
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+

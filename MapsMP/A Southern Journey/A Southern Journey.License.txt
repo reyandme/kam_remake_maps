@@ -1,0 +1,14 @@
+===MAP===
+
+Made by andreus
+
+
+===DYNAMIC SCRIPT===
+
+Script is licensed under GPLv2, you can find its text here: http://www.gnu.org/licenses/gpl-2.0.html
+
+
+===SOUND CREDITS===
+
+'Offer.ogg' and 'Notification.ogg' derived from wav-library.net
+'Wolf.ogg' and 'Quack.ogg' derived from NoiseFX sound library
