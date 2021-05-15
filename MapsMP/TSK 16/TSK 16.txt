@@ -1,0 +1,11 @@
+BigDesc
+Mission 16 from The Shattered Kingdom campaign converted for co-operative by Lewin.
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+

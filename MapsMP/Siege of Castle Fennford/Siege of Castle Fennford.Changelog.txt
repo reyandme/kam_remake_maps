@@ -1,0 +1,82 @@
+Siege of Castle Fennford
+************************
+
+Version 0.8.1: (23.12.2019)
+- Fixed Gold Mountain on Loc3 so that more Goldmines can be build
+- Reduced one Group of Lancers on Loc1 by 4 from 16 to 12
+- Repeating Knight Attack of Player8 changed from 36 to 30
+- Fixed some Unbuildable Tiles on Loc3 Bridge
+- Changed AI Defense Radius for all Groups that guard bridges (for all those min-maxers out there ;)
+- Changed AI Colors
+- Increased amount of Coal on Loc1
+- Fixed a bug that was introduced with KaM Remake version r10745
+- Integrated newest version of "difficulty.script" (0.8.5b)
+
+Version 0.8.1b: (26.12.2019)
+- Added Wolfs to forests
+- Diversified mountain Tiles
+- Homogenised amount of Stone on all Player locations
+- Minor modifications to the main script
+- Added resources to enemy houses to jumpstart production
+
+Version 0.8.1c: (26.12.2019)
+- Moved Storehouse of Loc3 1 tile to the north
+- Stone Mountain on Loc2 is now more 'compact'
+
+Version 0.8.1d: (29.12.2019)
+- Removed Additional defense positions on 'Easier' difficulty
+- Removed 6 defense positions on 'Hard' difficulty
+- Enabled 'Harder' difficulty (all defense positions are active for this setting)
+- Reworked initial fight for yet untested difficulty modes 'Easier', 'Hard' and 'Harder'
+
+Version 0.8.1e: (03.04.2020)
+- Increased amount of Gold in Loc1's Gold Mountain
+- Replaced transitions from gold-abyss with new ones
+- Concentrated Iron of Loc2 to make it more accessable
+
+Version 0.8.1f: (29.04.2020)
+- Fixed some map tiles
+
+Version 0.8.1g: (17.05.2020)
+- Removed Version Data from *.libx-files
+- Finetuned Defense/Attack Position defense Radius of Player4 and Player5
++ Made adjustments to resources that are available to Human Players Locations
+  - Additional Objects added
+  - Added Wolfs
+  - Increased the density of Forests
+  - Increased amount of Gold on Loc1
+  - Increased amount of Coal on Loc2 below Gold Mountain
+  - Increased amount of Gold on Loc2
+  - Increased amount of Iron in Loc 3's Iron Mountain
+  - Decreased amount of Iron that is available to Player on Loc2
++ Increased amount of Starting Units for Human Players
+  - Loc1: +3 Lancers
+  - Loc2: +2 Crossbowman, +1 Swordman
+  - Loc3: +2 Crossbowman
+
+Version 0.8.2: (28.08.2020)
+- Added 16 tiles on the left side of the map (script adjusted accordingly)
+
+Version 0.8.2b: (03.09.2020)
+- Added objects to the new parts of the map
+- Checked new parts of the map with "can build" and fixed elevation
+- Added some details on gold mountain on northern side
+- Adjusted defense radius of some enemy groups
+- Used new tiles to blend 3-tile-transitions
+
+Version 0.8.2c: (24.09.2020)
+- Added Story and credits by DDDDestroyer
+- Deleted outdated/obsolete Libx Translation-Files
+
+Version 0.8.2d: (05.10.2020)
+- Added Translations by HISKI and DDDDestroyer
+
+Version 0.8.2e: (13.01.2021)
+- Diversified Hunger Level of Player starting groups
+
+Version 0.8.2f: (01.04.2021)
+- Used new tiles to blend 3-tile-transitions
+- Other minor tile fixes
++ Increased amount of Starting Units for Human Players
+  - Loc2: +2 Knights
+  - Loc3: +3 Swordman

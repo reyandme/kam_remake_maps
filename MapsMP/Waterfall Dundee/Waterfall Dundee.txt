@@ -1,0 +1,11 @@
+BigDesc
+Made by Creations. Special thanks to Edgar for testing this map and his support.
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+

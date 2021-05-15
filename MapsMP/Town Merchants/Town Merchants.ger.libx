@@ -1,0 +1,58 @@
+﻿1:[$00D7FF]Münzen[]:
+2:([$00FF00]%d[])[$%s]%s[]: %d
+3: - [$00FFFF]Gold[]
+4: - [$00FFFF]Haus[]
+5:Nicht genug Gold! Ihr benötigt %d für dieses Haus.
+6:Nicht genug Gold! Ihr benötigt %d um eine Goldtruhe zu kaufen.
+7:Ihr habt die maximale Anzahl an Gold in eurem Schulhaus! Kauft einige Arbeiter.
+8: << [$00FF00]arbeiten[]
+9: + [[$00FF00]%d[]]
+10: - [$00FFFF]Nahrung[]
+11:Nicht genug Münzen! Ihr benötigt %d um Nahrung zu kaufen.
+12: << [$00D7FF]befördert[]
+13:Nicht genug Münzen! Ihr benötigt %d um dieses Material zu kaufen.
+14: - [$00FFFF]Materialien[]
+15:Jemand legt Feuer! Repariert euer Haus so schnell Ihr könnt!
+16:Euer %s wurde getötet!
+17:Euer Haus wurde ausgeraubt!
+18: Hunger.
+19: Krieg.
+20: Aufstand.
+21:[$00FF00]Ereignis[]:
+22:[$00D7FF]Aufgabe[]:
+23:[$000000] - []
+24:[$00FFFF] - []
+25: ([$00D7FF]%d[])[$00FF00]%d[] %s.
+26: << [$00D7FF]belohnt[]
+27:[$00D7FF]Verkaufspreise[]:
+28: %s : %d
+29:[$00D7FF]Haus Münzen Kosten[]:
+30:Ihr habt die Aufgabe erfüllt und %d Münzen erhalten!
+31:[$00D7FF]%d[]: [$%s]%s[]([$00FF00]%d[]):
+32:[$00D7FF]Spielerübersicht[]:
+33: << [$00FF00]Gewinner![]
+34: - [$00FF00]%d%s[]von Anteilen der Stadt.
+35: - [$00FFFF]%d[] von allen Münzen.
+36: - [$00D7FF]%d[] von aktuellen Münzen.
+37:[$%s]%s[] hat das Spiel gewonnen! Siehe Details in der Spielerübersicht.
+38: + [$00FF00]verkauft[]
+39: Ihr könnt eure Hauptgebäude nicht verkaufen!
+40: Euer Haus ist abgebrannt.
+41:Der Große Kaufmann benötigt:
+42:Deine Münzen: [$00D7FF]%d[]
+43: + [$00FF00]verkauft[]
+44: [$00FF00]%s[]([$00D7FF]%d[]).
+45:[$00FF00]Angebote[]:
+46: - [$00FFFF]Angebot[]
+47:Nicht genug Münzen! Ihr benötigt %d für diese Erlaubnis.
+48: [$00FFFF]%d[]([$00D7FF]%d[]).
+49:Nicht genug Münzen! Ihr benötigt %d um diese Arbeiter auszubilden.
+50: - [$00FFFF]angeheuert[]
+51: << [$0000FF]Steuern:[][[$00FFFF]%d[]]
+52: Eure Steuern wurden erhöht, weil Ihr sie nicht bezahlt habt!
+53: << [$00FF00]Steuern bezahlt[]
+54: Nicht genug Münzen! Ihr benötigt %d um Eure Steuern zu zahlen.
+55: << [$0000FF]Steuern:[] [[$00FFFF]%d[]] - [[$00FFFF]%d[]]
+56:([$00FF00]%d[])
+57:[$0000FF]Steuerprüfung[] in ([$00FFFF]%d[])
+58: %s : [$00FF00]%d[]

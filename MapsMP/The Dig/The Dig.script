@@ -1,0 +1,200 @@
+//-- The Dig --//
+//By Strangelove
+//v0.9.2d
+//18.05.2020
+//Developed for r11740
+
+{$I dynamicmap.script}
+{$I improvestaticai.script}
+{$I difficulty.script}
+{$I add.script}
+
+{$COMMAND cmd: ShowCommands}
+{$COMMAND showmydeposits: RevealDepositsForPlayer}
+{$COMMAND skipopeningfight: SkipInitialFightSequence}
+{$COMMAND killmygroups: KillPlayerGroups}
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	iKnights: array[0..2] of Integer;
+
+
+procedure ShowCommands(P: Integer);
+begin
+	Actions.ShowMsg(P, '/cmd|/showmydeposits|/skipopeningfight|/killmygroups');
+end;
+
+procedure RevealDepositsForPlayer(P: Integer);
+begin
+	if not Utils.InRangeI(P, 0, 1) then
+		exit;
+	if P = 0 then
+	begin
+		Actions.FogRevealCircle(0, 55, 172, 1); //Gold Mines Loc1
+		Actions.FogRevealCircle(0, 59, 176, 1);
+		Actions.FogRevealCircle(0, 63, 182, 1);
+		Actions.FogRevealCircle(0, 67, 180, 1);
+		Actions.FogRevealCircle(0, 41, 145, 1); //Iron Mines Loc1
+		Actions.FogRevealCircle(0, 48, 123, 1);
+		Actions.FogRevealCircle(0, 45, 128, 1);
+		Actions.FogRevealCircle(0, 41, 129, 1);
+		Actions.FogRevealCircle(0, 37, 130, 1);
+		Actions.FogRevealCircle(0, 29, 126, 1);
+		Actions.FogRevealCircle(0, 27, 121, 1);
+		Actions.FogRevealCircle(0, 20, 114, 1);
+		Actions.FogRevealCircle(0, 19, 164, 1); //Stone Loc1
+		Actions.FogRevealCircle(0, 17, 168, 1);
+		Actions.FogRevealCircle(0, 14, 173, 1);
+		Actions.FogRevealCircle(0, 9, 175, 1);
+		Actions.FogRevealCircle(0, 3, 174, 1);
+	end else
+	begin
+		Actions.FogRevealCircle(1, 92, 181, 1); //Gold Mines Loc2
+		Actions.FogRevealCircle(1, 89, 182, 1);
+		Actions.FogRevealCircle(1, 86, 184, 1);
+		Actions.FogRevealCircle(1, 83, 186, 1);
+		Actions.FogRevealCircle(1, 77, 184, 1);
+		Actions.FogRevealCircle(1, 120, 165, 1); //Iron Mines Loc2
+		Actions.FogRevealCircle(1, 124, 164, 1);
+		Actions.FogRevealCircle(1, 130, 171, 1);
+		Actions.FogRevealCircle(1, 135, 169, 1);
+		Actions.FogRevealCircle(1, 141, 171, 1);
+		Actions.FogRevealCircle(1, 147, 174, 1);
+		Actions.FogRevealCircle(1, 151, 170, 1);
+		Actions.FogRevealCircle(1, 136, 191, 1); //Stone Loc2
+		Actions.FogRevealCircle(1, 139, 198, 1);
+		Actions.FogRevealCircle(1, 144, 201, 1);
+		Actions.FogRevealCircle(1, 148, 200, 1);
+		Actions.FogRevealCircle(1, 153, 199, 1);
+	end;
+end;
+
+procedure SkipInitialFightSequence(P: Integer); //Kill all Knights involved in initial Attack
+var
+	g: ShortInt;
+begin
+	if P = 2 then
+		for g := 0 to Length(iKnights) -1 do
+			Actions.GroupKillAll(iKnights[g], false);
+end;
+
+procedure KillPlayerGroups(P: Integer);
+var
+	g: ShortInt;
+	iGroups: array of Integer;
+begin
+	iGroups := States.PlayerGetAllGroups(P);
+	for g := 0 to Length(iGroups) -1 do
+		Actions.GroupKillAll(iGroups[g], false);
+end;
+
+
+procedure OnMissionStart();
+begin
+	DifficultySetting := States.MissionDifficulty();
+
+	//Add Soundeffects
+	//Actions.PlayWAVAtLocationLooped(-1, 'Waterfall1', 0.6, 32, 108, 41);
+	//Actions.PlayWAVAtLocationLooped(-1, 'Waterfall1', 1.0, 32, 108, 91);
+	
+	//Dispose of activation Unit
+	Actions.UnitKill(States.UnitAt(1, 95), true);
+	
+	//Add Enemy Knights for initial attack
+	case DifficultySetting of
+		mdEasy2: 	
+		begin
+			iKnights[0] := Actions.GiveGroup(8, 22, 4, 76, 0, 6, 3); //20
+			iKnights[1] := Actions.GiveGroup(8, 22, 9, 75, 0, 8, 4);
+			iKnights[2] := Actions.GiveGroup(8, 22, 13, 74, 0, 6, 3);
+		end;
+		mdEasy1:
+		begin
+			iKnights[0] := Actions.GiveGroup(8, 22, 4, 76, 0, 8, 4); //24
+			iKnights[1] := Actions.GiveGroup(8, 22, 9, 75, 0, 8, 4);
+			iKnights[2] := Actions.GiveGroup(8, 22, 14, 74, 0, 8, 4);
+		end;
+		mdNormal:
+		begin
+			iKnights[0] := Actions.GiveGroup(8, 22, 3, 75, 0, 9, 3); //27
+			iKnights[1] := Actions.GiveGroup(8, 22, 8, 74, 0, 9, 3);
+			iKnights[2] := Actions.GiveGroup(8, 22, 13, 73, 0, 9, 3);
+		end;
+		mdHard1:
+		begin
+			iKnights[0] := Actions.GiveGroup(8, 22, 4, 76, 0, 9, 3); //30
+			iKnights[1] := Actions.GiveGroup(8, 22, 9, 75, 0, 12, 4);
+			iKnights[2] := Actions.GiveGroup(8, 22, 13, 74, 0, 9, 3);
+		end;
+		mdHard2:
+		begin
+			iKnights[0] := Actions.GiveGroup(8, 22, 4, 76, 0, 12, 4); //32
+			iKnights[1] := Actions.GiveGroup(8, 22, 9, 75, 0, 8, 4);
+			iKnights[2] := Actions.GiveGroup(8, 22, 14, 74, 0, 12, 4);
+		end;
+	end;
+end;
+
+procedure OnTick();
+begin
+	//Make Waterfalls more dynamic (Change end tiles) Not automated yet...
+	if States.GameTime() mod 6 = 0 then
+		ChangeWaterfallEndTiles(108, 109, 91);
+		
+	//Remove/Add Enemy Defence Positions and Groups
+	if States.GameTime() = (MAX_HANDS +1) then
+		case DifficultySetting of
+			mdEasy2: 	
+			begin
+				RemoveDefencePositionAndGroup(8, 3, 86); //Blue Left: Pikes
+				RemoveDefencePositionAndGroup(8, 23, 81);
+				RemoveDefencePositionAndGroup(3, 40, 102); //Swordmen
+				RemoveDefencePositionAndGroup(4, 84, 34); //Blue Middle: Knights
+				RemoveDefencePositionAndGroup(4, 78, 50); //Pikes
+				RemoveDefencePositionAndGroup(4, 81, 71); //Knights
+				RemoveDefencePositionAndGroup(6, 120, 46); //Purple Right: Knights
+				RemoveDefencePositionAndGroup(6, 119, 83);
+				RemoveDefencePositionAndGroup(5, 157, 13); //Purple Top-Right: Pikes
+				RemoveDefencePositionAndGroup(7, 115, 115); //Grey: Axefighter
+				RemoveDefencePositionAndGroup(7, 113, 119);
+				RemoveDefencePositionAndGroup(7, 113, 124); //Scout
+				RemoveDefencePositionAndGroup(7, 114, 129); //Lancer
+			end;
+			mdEasy1:
+			begin
+				RemoveDefencePositionAndGroup(8, 13, 84); //Blue Left: Pikes
+				RemoveDefencePositionAndGroup(4, 84, 34); //Blue Middle: Knights
+				RemoveDefencePositionAndGroup(4, 99, 54); //Pikes
+				RemoveDefencePositionAndGroup(6, 123, 63); //Purple Right: Pikes
+				RemoveDefencePositionAndGroup(7, 113, 119); //Grey: Axefighter
+				RemoveDefencePositionAndGroup(7, 114, 129); //Lancer
+			end;
+			mdNormal:
+				exit;
+			mdHard1, mdHard2: //AI Attacks set in MapEd
+			begin
+				Actions.AIDefencePositionAdd(4, 104, 61, 6, 1, 30, 1); //Pikes
+				Actions.AIDefencePositionAdd(4, 108, 61, 6, 2, 30, 1); //Xbows
+				Actions.AIDefencePositionAdd(4, 107, 56, 6, 3, 30, 1); //Knights
+				Actions.AIDefencePositionAdd(4, 105, 65, 6, 3, 30, 1);
+			end;
+			//Additional mdHard2 changes in "add.script"
+		end;
+	
+	//Schedule Messages
+	if States.GameTime() = 300 then //@0.5Minutes
+		if DifficultySetting = mdHard2 then
+		begin
+			Actions.ShowMsg(0, '<$3>');
+			Actions.ShowMsg(1, '<$3>');
+		end;
+	if States.GameTime() = 1500 then //@2.5Minutes
+		Actions.ShowMsg(2, '<$0>');
+	if States.GameTime() = 2700 then //@4.5Minutes
+	begin
+		Actions.ShowMsg(0, '<$1>');
+		Actions.ShowMsg(1, '<$1>');
+	end;
+	if States.GameTime() = States.AIRecruitDelay(3) then
+		Actions.ShowMsg(2, '<$2>');
+end;

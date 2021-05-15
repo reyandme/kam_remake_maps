@@ -1,0 +1,21 @@
+===MAP===
+
+Made by andreus
+
+
+===DYNAMIC SCRIPT===
+
+Script is licensed under GPLv2, you can find its text here: http://www.gnu.org/licenses/gpl-2.0.html
+
+
+===SOUND CREDITS===
+
+'Waterfall Creek.wav' derived from waterfall_creek.wav by koroz under CC 3.0 by NC license http://creativecommons.org/licenses/by-nc/3.0/
+
+'Fall.wav' derived from ingvellir waterfall hard 2.wav by dikolson under CC 0 License
+
+'Small Fall.wav' derived from waterfall_loop_01.mp3 by stuartduffield under http://www.freesfx.co.uk/license
+
+'Flood.ogg' and 'Flood2.ogg' derived from noisefx.ru, sound IDs 5717 and 3082, under CC 3.0 by NC license http://creativecommons.org/licenses/by-nc/3.0/
+
+'Wolf.ogg' and 'Quack.ogg' derived from NoiseFX sound library

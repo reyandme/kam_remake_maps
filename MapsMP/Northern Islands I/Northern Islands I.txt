@@ -1,0 +1,20 @@
+Author
+andreus & Rayzel
+
+Version
+1.7 (06.06.2020)
+
+BigDesc
+- My Lord, I heard legends about Northern Islands. What is that mythical place? An impossible one?|- It's filled with brainless zombies of those who once were men. If you dare to enter their lands, they'll surround you and eat you alive. Noone has ever returned from there. Legends speak of two mythical generals, that will enter the lands and restore peace once for all. But legends do not mention when will this happen and who will be the generals, so the only thing we can do now is patiently await and hope...||Story by thunder and greeny
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
+

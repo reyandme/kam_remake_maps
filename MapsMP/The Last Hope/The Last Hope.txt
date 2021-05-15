@@ -1,0 +1,12 @@
+BigDesc
+Help the allied village in the battle against a Tyrant!
+
+Author
+andreus
+
+SetSpecial
+
+BlockPeacetime
+
+BlockTeamSelection
+

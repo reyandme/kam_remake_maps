@@ -1,0 +1,34 @@
+﻿0:Place your Battleship
+1:Place your Cruiser
+2:Place your Destroyer
+3:Place your Boat
+4:You can place your ships randomly. Use Marketplace plan
+5:You can place your ships horizontally or vertically. Place field plan (left to right) or vinefield plan (top down).
+6:Ready? Place Barracks plan
+7:'s turn
+8:You won.
+9:You lose.
+10:Waiting for opponent...
+11:To start a new game, place Watchtower plan
+12:To attack enemy ships, place road plan.
+13:Get ready
+14:Score
+15:Your ships:
+16:Enemy ships:
+17:Game over. Winner is
+18:Time left:
+19:To cancel all ships placement, place Storehouse plan
+20:To undo ships placement one step backwards, place Schoolhouse plan
+21:Classic sea battle. Now in KaM too :D||Enter [$6BD0FA]/help[] command into chat to get more info||You can place your ships horizontally or vertically. Place field plan (left to right) or vinefield plan (top down).||You can place your ships randomly. Use Marketplace plan or [$6BD0FA]/random[] command.||Place Barracks plan or use [$6BD0FA]/ready[] to get ready.||To attack enemy ships, place road plan.||To start a new game, place Watchtower plan or enter [$6BD0FA]/new[].||Place Storehouse plan or use [$6BD0FA]/clear[] or [$6BD0FA]/undo 10[] to cancel all ships placement.||Place Schoolhouse plan or use [$6BD0FA]/undo 1[] to undo ships placement one step backwards.||Use [$6BD0FA]/gameformat[] command to set game format. Just set needed victorious rounds count. For example, command [$6BD0FA]/gameformat 2[] will set best of 3 game format
+22:or
+23:enter a console commant into chat:
+24:change ships placement to random
+25:You can cancel any number of steps from 1 to 10, for example
+26:command
+27:will cancel 5 steps
+
+28:To change game format (victorious rounds count),
+29:Game format has been changed. You have to win %d rounds to claim victory!
+30:will set best of 3 game format
+31:For example,
+32:Game format

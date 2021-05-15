@@ -1,0 +1,9 @@
+BigDesc
+Four armies eye each other across the snow covered forest. Who shall outmanoeuvre their opponents and claim victory?||[$74AE78]Normal difficulty[]: classic edition|[$35ABAD]Hard difficulty[]: random edition|[$1162AF]Harder difficulty[]: epic madness full random edition
+
+Author
+andreus
+
+DifficultyLevels
+mdNormal,mdHard1,mdHard2
+
