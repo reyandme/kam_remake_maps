@@ -1,0 +1,151 @@
+//-- TBK01 --//
+//by Strangelove
+//v2.2
+//29.12.2019
+
+{$I dynamicmap.script}
+{$I improvestaticai.script}
+
+
+{$DEFINE DEBUG} //Enable extended Debug
+//{$UNDEF DEBUG}
+
+{$DEFINE TESTMODE}
+{$UNDEF TESTMODE}
+
+
+const 
+	SPAWN_TIMER = 9000; //15Minutes
+
+var 
+	iTicks: Integer;
+	iWave, iDefeatCounter: Byte;
+	
+	aBarbarian: array of Integer;
+
+
+procedure OnMissionStart();
+var
+	h: Integer;
+	aHouse: array of Integer;
+begin
+	iTicks := SPAWN_TIMER;
+	iWave := 0; //Max 6!
+	//Destory Houses of Fortress
+	aHouse := States.PlayerGetAllHouses(1);
+	for h := 0 to Length(aHouse)-1 do
+		Actions.HouseDestroy(aHouse[h], false);
+	//Killkill-diedie
+	Actions.UnitKill(States.UnitAt(72, 159), true);
+	//Order Weapons&Armor
+	Actions.HouseWeaponsOrderSet(States.HouseAt(26, 138), 17, 10);
+	Actions.HouseWeaponsOrderSet(States.HouseAt(26, 138), 19, 10);
+	Actions.HouseWeaponsOrderSet(States.HouseAt(32, 140), 19, 10);
+	Actions.HouseWeaponsOrderSet(States.HouseAt(32, 140), 17, 10);
+	Actions.HouseWeaponsOrderSet(States.HouseAt(27, 142), 21, 20);
+	Actions.HouseWeaponsOrderSet(States.HouseAt(46, 129), 20, 25);
+end;
+
+procedure OnTick();
+var
+	i, Selector: Byte;
+	iX, iY, iD: array of Byte;
+begin
+	//Fill Array with Barbarian Spawn positions
+	iX := [47, 52, 42, 38, 57, 188, 188, 188, 188, 188];
+	iY := [4, 4, 4, 4, 4, 164, 159, 169, 154, 149];
+	iD := [4, 4, 4, 4, 4, 6, 6, 6, 6, 6];
+	
+	//Animate!
+	if States.GameTime() mod  61 = 30 then
+	begin
+		ChangeWaterfallEndTiles(88, 91, 15);
+		ChangeWaterfallEndTiles(101, 103, 16);
+		ChangeWaterfallEndTiles(88, 91, 90);
+	end;
+	
+	//Initial Msg
+	if States.GameTime() = 30 then
+		Actions.ShowMsg(-1, '<$0>');
+	
+	if States.GameTime() = Round(SPAWN_TIMER *0.8) then
+		Actions.ShowMsg(-1, '<$1>');
+
+	if iTicks <> 0 then
+	begin
+		iTicks := iTicks -1; //Count down...
+		Actions.OverlayTextSet(-1,'<$5>: ' + inttostr(iWave)+ '/7' + '|<$6>: ' + Utils.TimeToString(iTicks));
+	end else
+	begin
+		iTicks := SPAWN_TIMER; //Reset timer!
+		Inc(iWave);
+		//Create more Barbarian-Groups
+		case States.MissionDifficulty() of
+			mdEasy1:	
+				case iWave of	
+					1,2: 	SetLength(aBarbarian, 2);
+					3,4: 	SetLength(aBarbarian, 3);
+					5: 		SetLength(aBarbarian, 4);
+					6: 		SetLength(aBarbarian, 5);
+					7: 		SetLength(aBarbarian, 10);
+				end;
+			mdNormal:	
+				case iWave of
+					1,2,3: 	SetLength(aBarbarian, 3);
+					4,5: 	SetLength(aBarbarian, 4);
+					6: 		SetLength(aBarbarian, 5);
+					7: 		SetLength(aBarbarian, 10);
+				end;
+			mdHard1:	
+				case iWave of
+					1: 		SetLength(aBarbarian, 3);
+					2,3: 	SetLength(aBarbarian, 4);
+					4,5,6: 	SetLength(aBarbarian, 5);
+					7: 		SetLength(aBarbarian, 10);
+				end;
+		end;
+		
+		//Random Spawn-Point (North or SouthEast)
+		if iWave <> 7 then
+		begin
+			if States.KaMRandomI(2) = 0 then
+			begin
+				Selector := 0; //North
+			end else
+				Selector := 5; //South
+		end else
+			Selector := 0; //Last wave (Spawn all at once)
+			
+		//Spawn Barbarians
+		for i := 0 to Length(aBarbarian) -1 do
+		begin
+			Actions.AIGroupsFormationSet(7, 0, 12, 4);
+			aBarbarian[i] := Actions.GiveGroup(7, 23, iX[i +Selector], iY[i +Selector], iD[i +Selector], 12, 4);
+			Actions.GroupHungerSet(aBarbarian[i], States.UnitMaxHunger); //Set Hunger level to max
+		end;
+	end;	
+
+	//Msg before last wave!
+	if ((iWave = 6) and (iTicks = (SPAWN_TIMER /2))) then
+		Actions.ShowMsg(-1, '<$4>');
+	
+	//Win-Condition!
+	if iWave = 7 then
+	begin
+		iTicks := SPAWN_TIMER; //Freeze Timer!
+		Actions.OverlayTextSet(-1,'<$5>: ' + inttostr(iWave)+ '/7');
+		if States.StatUnitCount(7) = 0 then
+			Actions.PlayerWin([0], true);		
+	end;
+end;
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+	if States.PlayerAllianceCheck(0, aIndex) then
+		Inc(iDefeatCounter);
+	case iDefeatCounter of
+		1: Actions.ShowMsg(-1, '<$2>');
+		2: Actions.ShowMsg(-1, '<$3>');
+		3: Actions.PlayerDefeat(0);
+	end;
+end;

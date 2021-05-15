@@ -1,0 +1,11 @@
+﻿0:Generale, przywódca powstańców wysyła Ci wiadomość. Pozwól mi ją odczytać: Drogi generale, dziękuję za wsparcie. Chcielibyśmy poprosić o przysługę, czy mógłbyś wysłać nam %d kamienia do naszego spichrza, wtedy moglibyśmy wysłać nasze dobra do twojego targu.
+1:Generale, wygląda na to, że umocnienia wroga są zbyt silne!
+2:Dzięki Ci, generale, natychmiast wysyłamy nasze surowce.
+3:Potrzebujemy targu aby wysłać surowce!
+4:[$0000FC]Zadanie[]: 
+5:[$8CE6F0] - []
+6:[$00FF7F]Zaatakuj Niss[]
+7: - [$D2FAFA]Surowce[] w %d
+8: - %d [$D2FAFA]%s[]
+9:Dzięki Ci, generale, będziemy czekać aż zbudujesz targ.
+10:Teraz, po prostu przynieś nam %d kamienia.

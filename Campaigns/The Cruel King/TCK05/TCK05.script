@@ -1,0 +1,162 @@
+//Returns Sight Ranges for Houses
+function HouseSightRange(aHouseID: Integer): Byte;
+begin
+	case States.HouseType(aHouseID) of
+		0..10, 12..16, 19, 20, 22..29: Result := 10; //Normal Houses
+		11, 18, 21: Result := 13; //Barracks/Storehouse/Townhall
+		17: Result := 18; //Tower
+	end;
+end;
+
+//Returns Sight Ranges for Units
+function UnitSightRange(aUnitsID: Integer): Byte;
+begin
+	case States.UnitType(aUnitsID) of
+		0..13: Result := 4; //Civilians
+		14..20, 22..27: Result := 9; //Fighting Units
+		21: Result := 16; //Scout
+		//28..37: Animals
+	end;
+end;
+
+
+procedure OnMissionStart();
+var
+	i, j: Integer;
+	aUnits, aHouses: array of Integer;
+begin
+	//Disable Sharing Fog With Ally
+	Actions.PlayerShareFog(0, 4, false);
+	Actions.PlayerShareFog(4, 0, false);
+	//Cover All In Fog
+	Actions.FogCoverAll(0);
+	//Reveal Terrain For Units And Buildings
+	aUnits := States.PlayerGetAllUnits(0);
+	for i := 0 to Length(aUnits) -1 do
+		Actions.FogRevealCircle(0, States.UnitPositionX(aUnits[i]), States.UnitPositionY(aUnits[i]), UnitSightRange(aUnits[i]));
+	aHouses := States.PlayerGetAllHouses(0);
+	for j := 0 to Length(aHouses) -1 do
+		Actions.FogRevealCircle(0, States.HousePositionX(aHouses[j]), States.HousePositionY(aHouses[j]), HouseSightRange(aHouses[j]));
+	//Reveal certain areas of the Map to Player0
+	Actions.FogRevealCircle(0, 95, 22, 5)
+Actions.FogRevealCircle(0, 48, 34, 5)
+Actions.FogRevealCircle(0, 48, 40, 5)
+Actions.FogRevealCircle(0, 54, 93, 5)
+Actions.FogRevealCircle(0, 56, 92, 5)
+Actions.FogRevealCircle(0, 57, 88, 5)
+Actions.FogRevealCircle(0, 61, 87, 5)
+Actions.FogRevealCircle(0, 57, 85, 5)
+Actions.FogRevealCircle(0, 37, 67, 5)
+Actions.FogRevealCircle(0, 38, 70, 5)
+Actions.FogRevealCircle(0, 42, 73, 5)
+Actions.FogRevealCircle(0, 40, 76, 5)
+Actions.FogRevealCircle(0, 35, 80, 5)
+Actions.FogRevealCircle(0, 30, 80, 5)
+Actions.FogRevealCircle(0, 29, 71, 5)
+Actions.FogRevealCircle(0, 30, 77, 5)
+Actions.FogRevealCircle(0, 25, 81, 5)
+Actions.FogRevealCircle(0, 64, 27, 5)
+Actions.FogRevealCircle(0, 68, 26, 5)
+Actions.FogRevealCircle(0, 76, 25, 5)
+Actions.FogRevealCircle(0, 79, 28, 5)
+Actions.FogRevealCircle(0, 79, 32, 5)
+Actions.FogRevealCircle(0, 85, 35, 5)
+Actions.FogRevealCircle(0, 89, 40, 5)
+Actions.FogRevealCircle(0, 86, 46, 5)
+Actions.FogRevealCircle(0, 93, 42, 5)
+Actions.FogRevealCircle(0, 81, 45, 5)
+Actions.FogRevealCircle(0, 75, 45, 5)
+Actions.FogRevealCircle(0, 73, 48, 5)
+Actions.FogRevealCircle(0, 68, 48, 5)
+Actions.FogRevealCircle(0, 81, 48, 5)
+Actions.FogRevealCircle(0, 86, 48, 5)
+Actions.FogRevealCircle(0, 59, 50, 5)
+Actions.FogRevealCircle(0, 59, 42, 5)
+Actions.FogRevealCircle(0, 59, 32, 5)
+Actions.FogRevealCircle(0, 53, 37, 5)
+Actions.FogRevealCircle(0, 59, 37, 5)
+Actions.FogRevealCircle(0, 64, 37, 5)
+Actions.FogRevealCircle(0, 70, 34, 5)
+Actions.FogRevealCircle(0, 68, 39, 5)
+Actions.FogRevealCircle(0, 73, 38, 5)
+Actions.FogRevealCircle(0, 61, 84, 5)
+Actions.FogRevealCircle(0, 52, 87, 5)
+Actions.FogRevealCircle(0, 4, 32, 5)
+Actions.FogRevealCircle(0, 9, 78, 3)
+Actions.FogRevealCircle(0, 12, 80, 2)
+Actions.FogRevealCircle(0, 15, 80, 2)
+Actions.FogRevealCircle(0, 18, 81, 2)
+Actions.FogRevealCircle(0, 22, 82, 2)
+Actions.FogRevealCircle(0, 20, 81, 2)
+Actions.FogRevealCircle(0, 15, 78, 3)
+Actions.FogRevealCircle(0, 9, 77, 3)
+Actions.FogRevealCircle(0, 25, 69, 2)
+Actions.FogRevealCircle(0, 94, 50, 5)
+Actions.FogRevealCircle(0, 88, 50, 5)
+Actions.FogRevealCircle(0, 82, 50, 5)
+Actions.FogRevealCircle(0, 73, 50, 5)
+Actions.FogRevealCircle(0, 65, 50, 5)
+Actions.FogRevealCircle(0, 59, 47, 5)
+Actions.FogRevealCircle(0, 59, 27, 5)
+Actions.FogRevealCircle(0, 43, 38, 5)
+Actions.FogRevealCircle(0, 38, 42, 5)
+Actions.FogRevealCircle(0, 33, 46, 5)
+Actions.FogRevealCircle(0, 28, 50, 5)
+Actions.FogRevealCircle(0, 43, 74, 5)
+Actions.FogRevealCircle(0, 43, 76, 5)
+Actions.FogRevealCircle(0, 4, 54, 5)
+Actions.FogRevealCircle(0, 12, 52, 5)
+Actions.FogRevealCircle(0, 20, 51, 5)
+Actions.FogRevealCircle(0, 20, 46, 5)
+Actions.FogRevealCircle(0, 15, 41, 5)
+Actions.FogRevealCircle(0, 10, 36, 5)
+Actions.FogRevealCircle(0, 7, 41, 5)
+Actions.FogRevealCircle(0, 12, 45, 5)
+Actions.FogRevealCircle(0, 2, 46, 5)
+Actions.FogRevealCircle(0, 7, 47, 5)
+Actions.FogRevealCircle(0, 35, 56, 5)
+Actions.FogRevealCircle(0, 31, 60, 5)
+Actions.FogRevealCircle(0, 35, 52, 5)
+Actions.FogRevealCircle(0, 28, 53, 5)
+Actions.FogRevealCircle(0, 32, 55, 5)
+Actions.FogRevealCircle(0, 36, 47, 5)
+Actions.FogRevealCircle(0, 26, 43, 5)
+Actions.FogRevealCircle(0, 31, 43, 5)
+Actions.FogRevealCircle(0, 31, 42, 5)
+Actions.FogRevealCircle(0, 22, 42, 5)
+Actions.FogRevealCircle(0, 34, 42, 5)
+Actions.FogRevealCircle(0, 35, 42, 5)
+Actions.FogRevealCircle(0, 18, 40, 5)
+Actions.FogRevealCircle(0, 57, 94, 5)
+Actions.FogRevealCircle(0, 43, 43, 5)
+Actions.FogRevealCircle(0, 29, 37, 5)
+Actions.FogRevealCircle(0, 25, 37, 5)
+Actions.FogRevealCircle(0, 35, 37, 5)
+Actions.FogRevealCircle(0, 32, 37, 5)
+Actions.FogRevealCircle(0, 21, 37, 5)
+Actions.FogRevealCircle(0, 39, 37, 5)
+Actions.FogRevealCircle(0, 45, 60, 5)
+Actions.FogRevealCircle(0, 44, 64, 5)
+Actions.FogRevealCircle(0, 46, 69, 5)
+Actions.FogRevealCircle(0, 47, 73, 5)
+Actions.FogRevealCircle(0, 52, 79, 5)
+Actions.FogRevealCircle(0, 44, 51, 5)
+Actions.FogRevealCircle(0, 41, 57, 5)
+Actions.FogRevealCircle(0, 20, 77, 3)
+Actions.FogRevealCircle(0, 21, 75, 3)
+Actions.FogRevealCircle(0, 23, 73, 3)
+Actions.FogRevealCircle(0, 16, 77, 3)
+Actions.FogRevealCircle(0, 13, 78, 3)
+Actions.FogRevealCircle(0, 80, 92, 2)
+Actions.FogRevealCircle(0, 34, 85, 3)
+Actions.FogRevealCircle(0, 49, 88, 5)
+Actions.FogRevealCircle(0, 65, 82, 5)
+Actions.FogRevealCircle(0, 35, 68, 8)
+
+end;
+
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+  if aIndex = 6 then Actions.ShowMsg(0, '<$1>');
+end;

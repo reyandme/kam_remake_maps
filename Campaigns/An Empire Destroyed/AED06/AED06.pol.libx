@@ -1,0 +1,16 @@
+﻿0:Wojacy, naszym zadaniem jest zdobycie miasta za wszelką cenę, przeciwnik nie podda się bez walki, jednak to nas nie powstrzyma!
+1:
+2:Nie mogę w to uwierzyć, spodziewali się nas! Zabierz resztki żelaza jakie nam zostały i przygotuj naszą obronę! Nasi budowniczy nadchodzą.1
+3:Generale, nasi zwiadowcy znaleźli pobliskie obozy wroga, skąd przybywają jego posiłki. Musimy je pokonać, aby zabezpieczyć miasto!
+4:[$0000FC]Zadanie[]: 
+5:[$8CE6F0] - []
+6:[$00FF7F]Zajmij Maul[]
+7:Liczba barbarzyńców: [$00FF7F]%d[]
+8:[$00FF7F]Obroń Maul[]
+9: Fala [$00FF7F]%d[] z [$00FF7F]%d[]
+10:[$00FF7F]Przygotuj się do obrony Maul[]
+11:Pozostały czas: [$00FF7F]%s[]
+12:[$00FF7F]Fala:[] %d/%d
+13: za [$00FF7F]%s[]
+14: - [$00FF7F]%d[]
+15:[$00FF7F]Zniszcz wrogie obozowiska[]

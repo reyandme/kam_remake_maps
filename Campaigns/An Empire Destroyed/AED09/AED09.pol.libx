@@ -1,0 +1,11 @@
+﻿0:Generale, król powierzył Ci zadanie zebrania zapasów oraz ludzi, aby był w stanie przekonać pozostałych powstańców aby zjednoczyli się i pomogli nam w naszej ostatecznej bitwie.
+1:Generale, nasi zwiadowcy wrócili ze złymi wieściami. Wojska wroga maszerują w kierunku naszego miasta i wkrótce doń dotrą!
+4:[$0000FC]Zadanie[]: 
+5:[$8CE6F0] - []
+6:[$00FF7F]Gromadź surowce:[]
+7: %d [$D2FAFA]Fala[] za %d
+8:[$D2FAFA]%s[] - %d/%d
+9:[$2FFFAD]%s[]
+10:[$00FF7F]Zdobądź armię:[]
+11:[$00FF7F]Przetrwaj atak[]
+12:Zachowaj ostrożność, wróg wysłał kilka małych oddziałów w celu penetracji miasta. Mogą być wszędzie.

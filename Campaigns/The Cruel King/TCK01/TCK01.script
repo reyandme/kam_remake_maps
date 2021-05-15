@@ -1,0 +1,92 @@
+//Returns Sight Ranges for Houses
+function HouseSightRange(aHouseID: Integer): Byte;
+begin
+	case States.HouseType(aHouseID) of
+		0..10, 12..16, 19, 20, 22..29: Result := 10; //Normal Houses
+		11, 18, 21: Result := 13; //Barracks/Storehouse/Townhall
+		17: Result := 18; //Tower
+	end;
+end;
+
+//Returns Sight Ranges for Units
+function UnitSightRange(aUnitsID: Integer): Byte;
+begin
+	case States.UnitType(aUnitsID) of
+		0..13: Result := 4; //Civilians
+		14..20, 22..27: Result := 9; //Fighting Units
+		21: Result := 16; //Scout
+		//28..37: Animals
+	end;
+end;
+
+
+procedure OnMissionStart();
+var
+	i, j: Integer;
+	aUnits, aHouses: array of Integer;
+begin
+	//Disable Sharing Fog With Ally
+	Actions.PlayerShareFog(0, 3, false);
+	Actions.PlayerShareFog(3, 0, false);
+	//Cover All In Fog
+	Actions.FogCoverAll(0);
+	//Reveal Terrain For Units And Buildings
+	aUnits := States.PlayerGetAllUnits(0);
+	for i := 0 to Length(aUnits) -1 do
+		Actions.FogRevealCircle(0, States.UnitPositionX(aUnits[i]), States.UnitPositionY(aUnits[i]), UnitSightRange(aUnits[i]));
+	aHouses := States.PlayerGetAllHouses(0);
+	for j := 0 to Length(aHouses) -1 do
+		Actions.FogRevealCircle(0, States.HousePositionX(aHouses[j]), States.HousePositionY(aHouses[j]), HouseSightRange(aHouses[j]));
+	//Reveal certain areas of the Map to Player0
+	Actions.FogRevealCircle(0, 33, 31, 3);
+	Actions.FogRevealCircle(0, 35, 30, 3);
+	Actions.FogRevealCircle(0, 38, 29, 3);
+	Actions.FogRevealCircle(0, 40, 28, 3);
+	Actions.FogRevealCircle(0, 42, 28, 3);
+	Actions.FogRevealCircle(0, 44, 28, 3);
+	Actions.FogRevealCircle(0, 46, 28, 3);
+	Actions.FogRevealCircle(0, 48, 30, 3);
+	Actions.FogRevealCircle(0, 49, 30, 3);
+	Actions.FogRevealCircle(0, 50, 30, 3);
+	Actions.FogRevealCircle(0, 51, 30, 3);
+	Actions.FogRevealCircle(0, 52, 30, 3);
+	Actions.FogRevealCircle(0, 53, 30, 3);
+	Actions.FogRevealCircle(0, 54, 30, 3);
+	Actions.FogRevealCircle(0, 55, 30, 3);
+	Actions.FogRevealCircle(0, 56, 30, 3);
+	Actions.FogRevealCircle(0, 57, 30, 3);
+	Actions.FogRevealCircle(0, 58, 30, 3);
+	Actions.FogRevealCircle(0, 59, 30, 3);
+	Actions.FogRevealCircle(0, 60, 30, 3);
+	Actions.FogRevealCircle(0, 61, 30, 3);
+	Actions.FogRevealCircle(0, 62, 30, 3);
+	Actions.FogRevealCircle(0, 63, 30, 3);
+	Actions.FogRevealCircle(0, 64, 30, 3);
+	Actions.FogRevealCircle(0, 66, 25, 2);
+	Actions.FogRevealCircle(0, 66, 26, 2);
+	Actions.FogRevealCircle(0, 66, 27, 2);
+	Actions.FogRevealCircle(0, 66, 28, 2);
+	Actions.FogRevealCircle(0, 66, 29, 2);
+	Actions.FogRevealCircle(0, 66, 30, 2);
+	Actions.FogRevealCircle(0, 66, 31, 2);
+	Actions.FogRevealCircle(0, 66, 32, 2);
+	Actions.FogRevealCircle(0, 66, 33, 2);
+	Actions.FogRevealCircle(0, 68, 24, 2);
+	Actions.FogRevealCircle(0, 68, 25, 2);
+	Actions.FogRevealCircle(0, 68, 26, 2);
+	Actions.FogRevealCircle(0, 68, 27, 2);
+	Actions.FogRevealCircle(0, 68, 28, 2);
+	Actions.FogRevealCircle(0, 68, 29, 2);
+	Actions.FogRevealCircle(0, 68, 30, 2);
+	Actions.FogRevealCircle(0, 68, 31, 2);
+	Actions.FogRevealCircle(0, 68, 31, 2);
+	Actions.FogRevealCircle(0, 68, 33, 2);
+end;
+
+
+procedure OnTick;
+begin
+  if States.GameTime = 2 then Actions.ShowMsgGoto(0, 6, 83, '<$1>');
+  if States.GameTime = 600 then Actions.ShowMsg(0, '<$2>');
+  if States.GameTime = 1200 then Actions.ShowMsg(0, '<$3>');
+end;

@@ -1,0 +1,8 @@
+{$EVENT evtTick:OnTickL}
+procedure OnTickL;
+begin
+	if States.GameTime = 1 then begin
+		Actions.StopSound(0);
+		Actions.PlayOggFadeMusic(-1,'01',1);
+	end;
+end;

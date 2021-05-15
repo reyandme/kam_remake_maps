@@ -1,0 +1,48 @@
+//-- TSK19 --//
+//07.11.2019
+
+{$I difficulty.script}
+
+var
+	iGroup: array[0..1] of Integer;
+
+
+procedure OnMissionStart();
+begin
+	case States.MissionDifficulty() of
+		mdEasy2:
+			IncreaseGroupSize(0, 0);
+		mdEasy1:
+		begin
+			IncreaseTargetGroupSize(0, 15, 58, 0);
+			IncreaseTargetGroupSize(0, 27, 74, 0);
+			IncreaseTargetGroupSize(0, 40, 71, 0);
+			IncreaseTargetGroupSize(0, 55, 75, 0);
+			IncreaseTargetGroupSize(0, 53, 55, 0);
+		end;
+		mdHard1: //4 Groups increased
+		begin
+			IncreaseGroupSize(3, 0);
+			IncreaseTargetGroupSize(1, 29, 41, 0);
+			IncreaseTargetGroupSize(1, 32, 33, 0);
+		end;
+		mdHard2: //7 Groups increased
+			IncreaseGroupSize(1, 0);
+	end;
+	//Assigning Knights To Variables
+	iGroup[0] := States.GroupAt(26, 46);
+	iGroup[1] := States.GroupAt(34, 45);
+end;
+
+procedure OnTick();
+begin
+	//Message On Mission Start
+	if States.GameTime = 10 then
+		Actions.ShowMsg(0, '<$0>');
+	//Knight Attack After 2,5 Minutes
+	if States.GameTime = 150 then
+	begin
+		Actions.GroupOrderWalk(iGroup[0], 39, 70, 3);
+		Actions.GroupOrderWalk(iGroup[1], 46, 73, 3);
+	end;
+end;

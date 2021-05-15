@@ -1,0 +1,11 @@
+﻿0:General, der Führer des Widerstands hat Euch eine Nachricht übermittelt. Erlaubt mir sie zu verlesen: Verehrter General, vielen Dank für Eure Unterstützung. Wir möchten Euch um einen Gefallen bitten, könnte einer Eurer Krieger %d Stein zu unserem Lagerhaus bringen, dann könnten wir unsere Güter zu eurer Markthalle schicken?
+1:General, der Feind scheint schwer befestigt, ihre Verteidigung ist undurchdringlich!
+2:Vielen Dank General, wir werden unverzüglich mit der Sendung von Waren beginnen.
+3:Wir benötigen eine Markthalle um Waren zu versenden!
+4:[$0000FC]Ziel[]: 
+5:[$8CE6F0] - []
+6:[$00FF7F]Überfalle Niss[]
+7: - [$D2FAFA]Waren[] in %d
+8: - %d [$D2FAFA]%s[]
+9:Vielen Dank Herr General, wir werden auf die Errichtung eurer Markthalle warten.
+10:Jetzt bringt uns nur mehr die %d Steine.

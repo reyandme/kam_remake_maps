@@ -1,0 +1,16 @@
+﻿0:Männer, es ist unsere Aufgabe diese Stadt um jeden Preis einzunehmen. Sie werden nicht ohne einen Kampf aufgeben, aber wir werden siegreich sein!
+1:
+2:Ich kann es nicht glauben, sie haben uns erwartet! Nehmt das Eisen, welches noch übrig ist, und bereitet unsere Verteidigung vor! Unsere Arbeiter sind in Bewegung.
+3:General, es scheint unsere Späher hätten in der Nähe Lagerplätze entdeckt welche es unserem Feind erlauben Verstärkung zu schicken. Wir müssen sie ausschalten um Maul zu retten!
+4:[$0000FC]Ziel[]: 
+5:[$8CE6F0] - []
+6:[$00FF7F]Nimm Maul ein[]
+7:Barbaren übrig: [$00FF7F]%d[]
+8:[$00FF7F]Verteidige Maul[]
+9: Wave [$00FF7F]%d[] in [$00FF7F]%d[]
+10:[$00FF7F]Bereite Dich vor Maul zu verteidigen[]
+11:Zeit übrig: [$00FF7F]%s[]
+12:[$00FF7F]Welle:[] %d/%d
+13: in [$00FF7F]%s[]
+14: - [$00FF7F]%d[]
+15:[$00FF7F]Zerstöre feindliche Feldlager[]

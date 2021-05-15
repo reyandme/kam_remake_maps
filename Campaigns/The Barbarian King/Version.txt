@@ -1,0 +1,4 @@
+0.9.8d
+Released on 01.09.2020
+KaMRemake r12485 (beta)
+By Strangelove
