@@ -1,0 +1,8 @@
+SmallDesc
+A minigame by sado
+
+BigDescLIBX
+0
+
+SetSpecial
+
