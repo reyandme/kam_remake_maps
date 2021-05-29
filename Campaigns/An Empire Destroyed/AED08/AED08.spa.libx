@@ -1,0 +1,11 @@
+﻿0:General, el líder de la resistencia le envió este mensaje. Permítame leerlo: Estimado general, gracias por su apoyo. Nos gustaría pedirle un favor, ¿podría traer %d piedras por uno de sus soldados a nuestro almacén, luego podríamos enviar a su mercado nuestros productos?
+1:General, parece que el enemigo está fuertemente fortificado, ¡la defensa parece impenetrable!
+2:Gracias general, comenzaremos a enviarle mercancías ahora mismo.
+3:¡Necesitamos un mercado para enviarle las mercancías!
+4:[$0000FC]Objetivo:[]
+5:[$8CE6F0] - []
+6:[$00FF7F] Asaslo a Niss[]
+7: - [$D2FAFA]Mercancias[] en %d
+8: - %d [$D2FAFA]%s[]
+9:Gracias general, estaremos esperando a que construya su mercado.
+10:Ahora, solo tráenos %d piedras.

@@ -1,0 +1,110 @@
+﻿0:[$%s]%s[]: %d
+1:Puntuaciones:
+2:Oleada:
+3:Nuevos soldados disponibles: ¡%s!
+4:Para contratar bárbaros, habilite la reparación de cuarteles y equipe a la milicia.
+5:Siguiente oleada en: %.2d:%.2d
+6:¡Felicidades! ¡Has alcanzado la 18ª oleada! Tu bonificación para este juego:
+7:Muerte inmediata
+8:Doble
+9:Nueva inscripción
+10:Refuerzos
+11:Renacer
+12:Renacimiento Aliado
+13:Tienes posibilidades de matar a un soldado enemigo de un solo golpe
+14:Tienes posibilidades de obtener soldados adicionales al equipar el ejército.
+15:Se le unirán 10 reclutas adicionales por oleada.
+16:Tienes posibilidades de conseguir refuerzos en cada oleada.
+17:Tus soldados pueden renacer.
+18:Los soldados enemigos pueden renacer y luchar de tu lado.
+19:El inicio...
+20:Novatos y sus hermanos
+21:¡Hay confianza en los números!
+22:¿¿¿Cuero???
+23:Sí, Cuero.
+24:¡Más cuero!
+25:Se vuelve interesante ...
+26:¿Puedes explorar aquí?
+27:¿Vienen Francotiradores?
+28:¿Rebelión de los caballos? Ah, no, me equivoqué: D
+29:Explorar toda la...
+30:¿Hierro?
+31:¡Flancos!
+32:Hola, soy Vaga-Vaga: D
+33:Más Vagazzz!
+34:¿El ecuador?
+35:¡Vaya, incluso pueden equipar soldados con espada!
+36:Se vuelve más interesante ...
+37:¿Necesitas a distancia?
+38:Pikeros locos
+39:Has sobrevivido tanto tiempo ... ¿O no?
+40:Caballería
+41:¿Se está volviendo un infierno?
+42:¿Aún necesitas a distancia?
+43:Caballería. otra vez. Caballería enfurecida
+44:¿Locura? No, solo un refuerzo.
+45:¿Sigues vivo?
+46:Ahora es realmente una locura
+47:¿Aún vivo? ¡No hay problema!
+48:¡Hora de morir!
+49:¡Felicidades! ¡Has alcanzado la 26ª oleada! Nueva bonificación disponible: Escuadrón de rescate: puede obtener un refuerzo inmediatamente si tiene muy pocos soldados.|Para usar esta bonificación, ingrese el comando %s en el chat o coloque en el modo construir carretera en la zona especial debajo del castillo central.|NOTA: Puede usar esta bonificación 4 veces. Cada siguiente uso se retrasa.|¡No puedes usar esta bonificación si tienes suficientes soldados y reclutas!
+50:[$%s]Escuadrones de rescate disponibles: %d |Retraso: %.2d:%.2d ||Tu ejército (ACTUAL/LÍMITE DE USO): %d/%d|Tus reclutas (ACTUAL/LÍMITE DE USO): %d/%re[]
+51:[$FE437A]Defensores Del Castillo 3.2 (07.06.2020)[]||En esta misión debes de defender el castillo y derrotar las 35 oleadas de ataques enemigos. Cada siguiente ataque es más fuerte que el anterior. Tienes muchas armas, pero no hay tanto oro y no puedes equipar soldados fuertes al principio. Podrás desbloquear nuevos soldados matando tropas enemigas.||EL ORDEN DE DESBLOQUEO DEL EJÉRCITO EN DIFICULTAD NORMAL LVL:|| 50 muertes - Lancero;|100 muertes - Soldado con hacha;|160 muertes - Arquero;|250 muertes - Ballestero;|400 muertes - Piquero;|500 muertes - Vigía;|700 muertes - Soldado con espada;|1000 muertes - Bárbaro;|1250 muertes - Caballería.||Para obtener Bárbaros, habilita la reparación de barracones y equipa a la milicia cuando tengas más de 1000 puntos.||También puedes conseguir honderos al equipar a las milicias y conseguir reclutas adicionales. | Además, si llegas a las oleadas 18, 26 y 31, ¡obtienes bonificaciones muy útiles!||Hecho por andreus.
+52:División de fusileros
+53:Tienes posibilidades de obtener unidades de rango extra al equipar unidades cuerpo a cuerpo.
+54:¿Vienen los Bárbaros?
+55:No. ¡Rebelión de guerreros!
+56:¡Dispararte a ti mismo!
+57:Nadie sabe lo que vendrá...
+58:¿Apocalipsis?
+59:Venganza
+60:Hay algunas posibilidades de que los soldados enemigos se atrevan a atacarte y mueran de inmediato.
+61:¡Felicidades! ¡Has alcanzado la ola 31! 3 bonificaciones de equipo disponibles: %s,%s,%s. El equipo puede usar cada bonificación solo una vez. Cada siguiente uso del bonificación se retrasa.
+62:Muro de piedra
+63:Foso
+64:Envenenar
+65:Sequía
+66:La bonificación Muro de piedra bloqueará las entradas de los cuarteles aliados durante 3 minutos. Para usar este bono, ingrese el comando %s en el chat o coloque en modo construcción las viñas en la zona especial debajo del castillo central junto a la gran piedra.
+67:La bonificación de foso bloqueará entre 3 a 4 entradas de forma aleatoria al castillo mediante fosos durante 3 minutos. Para usar esta bonificación, ingrese el comando %s en el chat o coloque en modo construcción las viñas en la zona especial debajo del castillo central junto al junco.
+68:La bonificación de envenenamiento matará una parte significativa al azar de los soldados enemigos, pero también puede matar a algunas de tus tropas. Para usar esta bonificación, ingrese el comando %s en el chat o coloque en modo construcción las viñas en la zona especial debajo del castillo central junto a la Seta roja.
+69:La bonificación de sequía establecerá el nivel de Energía de una parte significativa de los soldados enemigos en situación crítica, pero también puede hacer esto para algunas de tus tropas. Para usar esta bonificación, ingrese el comando %s en el chat o coloque en modo construcción las viñas en la zona especial debajo del castillo central junto a Cactus.
+70:[$CD9B4B]Defensores Del Castillo[]
+71:Bonificaciones de equipo disponibles: [$%s]%s[], [$%s]%s[], [$%s]%s[] |Retraso:%.2d:%.2d
+72:No te olvides de la bonificación del Escuadrón de rescate: ¡puedes usarlo ahora mismo! ¡Simplemente ingrese el comando %s en el chat o coloque en el modo construir carretera una baldosa en el mosaico de rescate especial ubicado en la esquina de la pared donde se le envía este mensaje!
+73:Consejo #2: ¡No malgastes el oro! No tienes tanto oro, muchos soldados débiles equipados demasiado pronto serán inútiles más tarde.
+74:Consejo #3: Organizar posiciones de defensa dentro del equipo. La mejor forma es defender las esquinas (dos entradas de flanco y una por el medio, por jugador).
+75:Consejo #4: No es necesario enviar muchos soldados para defender los flancos hasta la 13ª oleada. Solo algunos soldados enemigos podrían ir allí, por lo que un pequeño escuadrón será suficiente para matarlos.
+76:Consejo #5: Comprueba los nombres de las oleadas: a veces pueden ayudarte a elegir tropas para la defensa.
+77:Consejo #6: A partir de ahora tienes que defender los flancos.
+78:Consejo #7: Para usar la bonificación de Equipo de rescate, debes tener pocos soldados y reclutas. Límite para su uso: %d soldados y %d reclutas.
+79:Consejo #9: Para usar las siguientes bonificaciones, coloca viñedos una casilla más abajo de los objetos especiales cerca de los cuarteles aliados.
+80:Consejo #8: ¿Has perdido a todos tus siervos? ¡No te preocupes! Coloca campos de trigo dentro del castillo para que reaparezcan o ingresa el comando de consola %s en el chat.
+81:Consejo #10: A partir de ahora, los enemigos enviarán escuadrones de emboscada adicionales para atacar el Castillo. ¡Prepárate para sufrir largos asedios!
+82:¡Emboscada!
+83:Desbloqueado
+84:¡Escuadrón de rescate usado!
+85:¡Has usado %s bonificaciones!
+86:y
+87:Bonificación de Muro de piedra usado
+88:Bonificación Foso usado
+89:Bonificación Veneno usado
+90:Bonificación Sequia usado
+91:Ahora puedes construir Atalayas de vigilancia. Deshabilite la reparación del almacén y coloque un plano de la atalaya dentro del castillo, donde lo necesite. Por el momento, solo puedes construir %d atalayas. Puedes comprar atalayas adicionales, cada una de ellas cuesta %d de oro. Para comprar una torre, ingrese el comando %s en el chat o habilite la reparación del almacén y coloque el plano de la atalaya. Puede tener un máximo de %d atalayas.
+92:¡Ya tienes suficientes Atalayas!
+93:Consejo #1: orden de desbloqueo de soldados: %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes; %s - %d muertes.
+94:Armadura reforzada
+95:Tus soldados ahora tienen una mejor armadura, que puede absorber una parte del daño recibido.
+96:Tus Bonificaciones
+97:¡Compré una atalaya extra!
+98:No hay suficiente oro (%d). Necesitas %d para comprar una Atalaya.
+99:Se ha alcanzado el límite de compra de Atalayas.
+100:Equipo Rojo
+101:Equipo Azul
+102:Equipo Verde
+103:Equipo Rosa
+104:está demasiado lejos del castillo
+105:la entrada de la torre podría estar bloqueada o no se puede construir un camino transitable hacia el lugar
+106:No se puede dividir esta tropa en grupos de %d y %d miembros. Cada grupo debe tener al menos %d miembros del grupo después de dividirse
+107:No se puede dividir esta tropa de %d miembros. Cada grupo debe tener al menos %d miembros en el grupo
+108:está ocupado por una unidad
+109:El Rey ha enviado refuerzos: %d %s

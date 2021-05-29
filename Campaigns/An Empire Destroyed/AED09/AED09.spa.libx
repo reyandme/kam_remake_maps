@@ -1,0 +1,11 @@
+﻿0:General, el rey le ha encomendado reunir los siguientes suministros y hombres que necesitamos para poder convencer a las otras resistencias de que se unan y nos ayuden en nuestra batalla final.
+1:General, nuestro grupo de exploradores ha regresado con malas noticias. Las tropas enemigas están de camino hacia nuestra ciudad y pronto estarán sobre nosotros.
+4:[$0000FC]Objetivo:[]
+5:[$8CE6F0] - []
+6:[$00FF7F]Reúna los siguientes recursos:[]
+7: %d [$D2FAFA]Oleada[] en %d
+8:[$D2FAFA]%s[] - %d/%d
+9:[$2FFFAD]%s[]
+10:[$00FF7F]Ejército:[]
+11:[$00FF7F]Sobrevive[]
+12:Tenga cuidado, el enemigo tiene pequeños grupos de asalto que se dirigen hacia su ciudad. podrían venir de todas partes

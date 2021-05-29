@@ -1,0 +1,15 @@
+﻿0:Hombres, nuestro trabajo es capturar esta ciudad a toda costa, no la abandonarán sin luchar, ¡pero saldremos victoriosos!
+2:No puedo creerlo, ¡nos estaban esperando! ¡Utiliza el hierro que disponemos y prepara las defensas! Nuestros trabajadores se dirigen a Maul.
+3:General, parece que nuestros exploradores encontraron campamentos cercanos que permiten al enemigo enviar refuerzos. ¡Tenemos que eliminarlos para asegurar a Maul!
+4:[$0000FC]Objetivo: []
+5:[$8CE6F0] - []
+6:[$00FF7F]Captura Maul[]
+7:Barbaros restantes: [$00FF7F]%d[]
+8:[$00FF7F]Defiende Maul[]
+9: Oleada [$00FF7F]%d[] en [$00FF7F]%d[]
+10:[$00FF7F]Preparate para defender Maul[]
+11:Tiempo restante: [$00FF7F]%s[]
+12:[$00FF7F]Oleada:[] %d/%d
+13: en [$00FF7F]%s[]
+14: - [$00FF7F]%d[]
+15:[$00FF7F]Destruye los campamentos enemigos[]

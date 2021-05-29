@@ -1,2 +1,133 @@
-﻿0:RECREACIÓN: Usted, Lothar, el nuevo caballero que acaba de terminar su formación, has sido llamado por el propio rey Clovis para su primera misión. ¡La crisis en el continente está empeorando cada día y el reino te necesita! La carta que tenía el sello real les a sido dada esta mañana.
+﻿0:RECREACIÓN: Usted, Lothar, el nuevo caballero que acaba de terminar su formación, has sido llamado por el propio rey Clovis para su primera misión. ¡La crisis en el continente está empeorando cada día y el reino le necesita! Se le ha entregado una carta que tenía el sello real esta misma mañana.
 1:ESCENARIO: El lugar donde te encuentras representa el interior del castillo real. Empiezas sin ejército, pero el caballero que controles representa tus tropas enteras y su personaje principal, Lothar.
+2:TUTORIAL: Para hablar con los personajes que asignan las misiones, debes pararte junto a ellos y la historia avanzará. Sigue las instrucciones de cada misión. Por ahora, el rey te espera, él es el personaje protegido por dos piqueros en la parte inferior izquierda del salón del castillo, ve a su lado. Guarde con frecuencia y no olvide eliminar los mensajes.
+3:Debes hablar con el Rey Clovis
+4:Rey Clovis: ¡Bienvenido Lothar, nuestro nuevo caballero! Oscuros son los tiempos y pesada será tu tarea, todavía eres un novato pero muchos de nuestros caballeros experimentados han caído en batalla. Actualmente te doy el poder de comandar una pequeña fuerza militar.
+5:King Clovis: ahora puedes entrar en el área de reclutamiento del castillo, ubicada en la última habitación del corredor, allí podrás obtener un ejército decente, aunque tiene un coste. También te doy 1000 monedas de oro y a medida que nuestro reino progresa, ganarás más.
+6:Rey Clovis: Ven a verme después de que reclutes algunas fuerzas, más de 15 hombres deberían servir para hacer el trabajo, ¡y te daré la primera misión!
+7:El rey Clovis te ha abierto el área de reclutamiento, ubicada en el subterráneo del castillo. Ven a verlo nuevamente cuando reclutes al menos a 15 hombres.
+8:Rey Clovis: ¡Genial, veo que has reunido una fuerza armada! Hemos recibido una queja de un pueblo de pescadores, nos piden que enviemos a alguien y esa será su primera misión.
+9:King Clovis: Los aldeanos amenazan con rebelarse junto con otras aldeas si nadie va a ayudarles, así que esta es una misión importante, aunque si tienes éxito, tendrás mucho más que hacer.
+10:King Clovis: Ve al pueblo, está ubicado al noreste de la ciudad capital, justo al lado de la costa, ¡y descubre lo que está provocando el descontento en los aldeanos!
+11:El rey Clovis te envió a averiguar qué está sucediendo en|el pueblo de pescadores, al noreste de la ciudad capital,|¡ve aquí lo más rápido posible!
+12:Hombre en un campamento forestal: Saludos, caballero, estás en nuestra tierra, pero como eres un representante de la ley, toleran tu presencia aquí, aunque no esperes que hagamos nada por ti, ¿qué quiere? lo que sucede aquí no es asunto tuyo.
+13:Pescador enfadado: ¿Te envía el Rey? ¡¡Ya era hora !! ¡Los tiempos son duros para los campesinos y muchos hablan de revuelta! ¡Debes cambiar la situación tan pronto como puedas o el reino se romperá!
+14:Pescador enfadado: Por el momento tenemos un problema. Algunos saqueadores han instalado un campamento en el bosque, cerca de la capital. Dado que la capital nunca nos ayudó, piensan que están fuera de peligro, ¡por eso hicieron su campamento tan cerca del castillo!
+15:Pescador enfadado: ¡Ayúdanos y mata a los ladrones! Si lo hace, regresaremos al trabajo, pero necesitaremos más ayuda del Rey. Le enviará un mensaje nuestro si tiene éxito. ¡Ve y mata a estos villanos!
+16:Los aldeanos te enviaron para matar a los bandidos|ubicados en un campamento forestal al norte de la capital.|¡Elimínalos y destruye su campamento!
+17:Bandido: ¿Quieres atacarnos? ¡¡Morirás, perro del Rey!!
+18:Bandido: ¡No eres el primero que quiere defender a los campesinos, ven y únete a los otros!
+19:Deberías volver a encontrarte con el pescador y comunicarle el éxito de la misión, ¡ve al pueblo lo más rápido posible!
+20:Ve al pueblo y habla con el pescador.
+21:Pescador: ¿Entonces lo lograste? ¡Finalmente hemos terminado con estos ataques de bandidos! Todo nuestro pueblo le estará eternamente agradecido, señor, y me gustaría hablar sobre otros asuntos importantes.
+22:Pescador: ¿Puede entregarle una carta al Rey Clovis? ¡Es una petición de muchas de las aldeas que ruegan la presencia de más patrullas y mucha más atención para nuestros pueblos!
+23:Pescador: ¡No podemos ofrecerle nada excepto la seguridad de que siempre será bien recibido por nosotros!
+24:Vuelve al castillo, lleva la petición del pueblo de los pescadores al Rey Clovis y espera más instrucciones.
+25:Rey Clovis: ¿Fuiste al pueblo? Bandidos dices ... bueno, déjame explicarte. Desde hace un mes, los bandidos del otro continente han venido a saquear nuestro reino.
+26:Rey Clovis: Todos los pueblos occidentales fueron atacados por bandidos, enviamos al ejército por todas partes y perdimos a muchos caballeros experimentados en las batallas. Estos deben haber sido los bandidos restantes que quedaron de las otras batallas.
+27:Rey Clovis: Es cierto que durante este período no enviamos tropas para proteger las aldeas occidentales, pero también tuvimos que proteger la capital de algunas escaramuzas, si la capital fuera destruida, nuestro reino debilitado caería en el caos.
+28:Rey Clovis: ¡Como saben desde el año pasado, el súbdito oriental, nuestro súbdito más grande, está tratando de separarse de nuestro reino! Me temo que si realmente declara una guerra, este será el fin de la paz que hemos traído desde décadas en nuestro continente y que todos querrán su propio reino.
+29:Rey Clovis: Tendrás una tarea importante que hacer antes de encargarte del súbdito, no hemos recibido nuestro informe diario de las minas de oro del desierto del sur, ¡descubre lo que ha sucedido! Se encuentra al suroeste del continente.
+30:Rey Clovis: Sobre la petición de los pescadores, estoy de acuerdo con ella y enviaré guardias a cada aldea y reduciré los impuestos durante el próximo año. Me aseguraré de que los pescadores y campesinos sepan que me trajo la petición.
+31:RECREACIÓN: El reino tiene una autoridad central sobre el del Rey Clovis y también está representado por la ciudad capital. Sin embargo, hay súbditos, que tienen partes de los reinos, que representan a las antiguas tribus del continente cuando no estaba unido.
+32:RECREACIÓN: El Súbdito oriental es el más grande del reino, es una entidad muy poderosa que proporcionó muchas armas a todo el reino. Recientemente, las tensiones han llegado al máximo y ya no comercian, mientras amenazan al Rey.
+33:RECREACIÓN: El desierto del suroeste es conocido por sus minas de oro, está bastante aislado del resto del reino pero es una parte importante de la economía. El gobernador de las minas del desierto envía un informe todos los días a la capital.
+34:Ve al desierto y descubre por qué el informe|de las minas de oro no llegó al|castillo. Está en el suroeste del|continente.
+35:TUTORIAL: Para entablar una pelea con una tropa, debes acercarte al personaje que representa a esta tropa. Actualmente ve al campamento del bosque y acércate a cada bandido para entablar una pelea, tus tropas y sus tropas se colocarán en un campo de batalla. Si pierdes la batalla, pierdes el juego.
+36:TUTORIAL: Ahora puedes salir del castillo. Para salir, ve cerca de la puerta del castillo que está en la parte superior del pasillo (el área negra). Una vez que salgas, también puedes regresar acercándote a la entrada del castillo.
+37:ESCENARIO: Cuando atraviesas la puerta del castillo, estás en un mapa global. ¡Este mapa representa todo el mundo de la aventura! Imagine que cada casa es un paquete de casas, que cada siervo es un convoy o un grupo de personas que transportan mercancías.
+38:ESCENARIO: Aparecerás en la capital, en la que se encuentra el castillo, esto parece poco impresionante en el mapa global pero imagínala como una gran ciudad, tu imaginación es tu mejor amiga para navegar y sumergirte en este mundo. Tu caballero representa tu personaje, Lothar y tus tropas.
+39:RECREACIÓN: Hay dos continentes en el mundo, uno es la guarida de los bandidos, donde nadie va desde generaciones excepto los villanos. El otro es un continente propicio que estaba compuesto por muchas tribus enfrentadas entre ellas, pero hace décadas surgió una paz con una autoridad central.
+40:RECREACIÓN: Ahora gobierna Rey en el continente y no hay conflicto interno. Los tiempos fueron felices, hasta el año pasado cuando un súbdito oriental dejó de comerciar con las demás entidades del reino y desde el mes pasado están llegando bandidos del otro continente. Los dos continentes están conectados por un túnel por debajo del agua.
+41:RECREACIÓN: Durante la batalla y en los cadáveres que yacen en el suelo, viste que los hombres que atacaron las minas de oro llevaban el escudo de Súbdito del este. ¡Debes informar al Rey inmediatamente!
+42:¡Fuiste atacado por tropas del vasallo del este, debes informar al Rey lo más rápido posible!
+43:Rey Clovis: ¿Dices que la tropa de súbditos del este? ¿Se atrevieron a atacar las minas de oro? ¡Enviaré allí una tropa de guardia con experiencia para protegerlas! Tendrás que hacer algo mucho más importante ahora.
+44:Novato
+45:Guardia
+46:King Clovis: para la próxima misión necesitarás más tropas y mejor preparadas. En este momento te doy el rango de caballero Guardian, ¡que sirvas bien a nuestro Reino como ya lo hiciste! Ve al área de reclutamiento, necesitarás estas tropas.
+47:King Clovis: Ahora sobre la misión en sí. ¡Necesito que asedies el castillo y me traigas vivo a este maldito lord Childebert para que pueda restaurar la unidad! La guerra está declarada oficialmente y estoy seguro de que tendrá miedo en su castillo.
+48:Rey Clovis: Esta es una misión difícil y podrías pensar que te estoy enviando a la muerte. Esto es casi cierto, no puedo permitirme perder a ninguno de los cinco caballeros y conciliadores experimentados, serán necesarios para restaurar la paz.
+49:Rey Clovis: Por eso te envío, eres el más prometedor de nuestros nuevos caballeros y has demostrado que sabes cómo comandar una fuerza, así que no estoy preocupado por ti, tráeme este traidor y recibirás alto prestigio. Te doy 580 de oro para ayudarte.
+50:¡En el lejano oriente se encuentra el castillo de Lord Childebert, el traidor! ¡Asalta el castillo y tráelo a la capital!
+51:King Clovis: El castillo está ubicado en el lejano oriente del continente, no te lo puedes perder. No olvides conseguir una tropa completa, ¡buena suerte!
+52:TUTORIAL: Debes vender todos los soldados de un espacio antes de cambiar el tipo de soldado, ¡incluso si quieres mejorar un tipo de soldado después de que el Rey te haya puesto más a tu disposición! Ejemplo: si compraste milicias, ahora no están disponibles, debes venderlas antes de comprar soldados con hachas.
+53:RECREACIÓN: Ganaste el asedio y saqueaste el castillo, pero no encontraste a Lord Childebert. ¡Este cobarde debe haber escapado antes de que tú llegaras! Debes llevarle esta mala noticia al Rey.
+54:Completaste el asedio al castillo pero no encontraste a Lord Childebert, Informa al Rey.
+55:Rey Clovis: ¡¡Este Lord Childebert ... donde quiera que se esconda, pagará por sus crímenes !! No me trajiste al traidor, pero no ha sido culpa tuya, lograste asediar con éxito el castillo, lo cual es un gran logro de guerra.
+56:King Clovis: Te daré un nuevo título, ¡ahora serás un explorador! Puedes reclutar nuevas tropas. Sin embargo, tengo malas noticias, han visto a bandidos en el túnel entre los dos continentes, ¡debes reforzar la guardia en la entrada del túnel!
+57:Rey Clovis: Buena suerte, Lothar. El túnel está cerca de una aldea que fue incendiada durante los ataques del mes pasado, al sureste de la capital. Te doy 1600 de oro para ayudarte a conseguir un ejército. ¡No ingreses al túnel todavía, solo ayuda a los guardias!
+58:Ve al sudeste de la capital y encuentra|la entrada del túnel, ayuda a los guardias|a mantener la línea.
+59:Guardia: Caballero desafortunadamente , te pediré que no entres a esta cueva, fue sellada por orden del Rey.
+60:Explorador
+61:RECREACIÓN: Cuando te acercas al túnel, comprendes que los guardias fueron asesinados, el campo está en silencio y ¡tres campamentos de bandidos están sentados junto a la entrada del túnel! ¡Sientes la necesidad de aplastarlos, por el reino!
+62:¡Los guardias fueron asesinados, véngalos! Destruye a los tres ejércitos de bandidos.
+63:Rey Clovis: Gracias de nuevo Lothar por defender el Reino, parece que esta locura nunca terminará ... Me ocuparé de los asuntos defensivos y me aseguraré de que ningún bandido pueda volver a salir del túnel. Estaré ocupado organizando la defensa, debería hablar con mi asesor militar, Lord Chilpéric.
+64:Rey Clovis: Según nuestros patrulleros, quedan tropas de bandidos en el lado occidental del continente, probablemente formaron parte del último ataque de bandidos al túnel. Te doy 1100 de oro para ayudarte en tus tareas.
+65:IMPORTANTE: Lord Chilpéric se encuentra donde le envía este mensaje.
+66:Deberías encontrar a Lord Chilpéric|en el castillo y hablar con él. Está|cerca del subterráneo del castillo.
+67:RECREACIÓN: ¡Lograste repeler a los bandidos, tu soberano debe saber sobre este ataque! Date prisa al castillo.
+68:Ve al castillo y habla con el | Rey.
+69:Lord Chilpéric: Escuché de ti Lothar, pareces ser un caballero prometedor; ¡y eso es lo que necesitamos para matar a esa escoria de bandidos! Algunas tropas de bandidos todavía están en nuestro reino, esto no puede quedar impune. Tenemos informes y sabemos dónde están.
+70:Lord Chilpéric: Ya enviamos caballeros para eliminar a algunos de ellos, pero quedan tres tropas de bandidos en el lado occidental del continente, una en el desierto y dos en el noroeste, ¡mátalos a todos!
+71:Tienes que matar a las tres tropas de bandidos,|una está en el desierto, las otras están en el|noroeste del continente.
+72:Bandido: ¡Muere pequeño caballero!
+73:RECREACIÓN: ¡Los ejércitos contra los que luchaste eran una mezcla de bandidos y soldados del ejército de Lord Childebert! Cuéntale a Lord Chilpéric sobre las batallas contra ellos.
+74:Lord Chilpéric necesita un informe de sus luchas.
+75:Defensor del Reino
+76:Lord Chilpéric: ¡Parece que Lord Childebert ha tomado la delantera en el segundo continente y comanda las fuerzas de bandidos! Debemos detener a este maldito idiota antes de que sea demasiado tarde. Ve al segundo continente por el túnel.
+77:Lord Chilpéric: Te doy el título y la medalla de Defensor del Reino, eres un honor para nuestro ejército. Sospechamos que Lord Childebert se esconderá en su castillo y que habrá tropas desorganizadas alrededor.
+78:Lord Chilpéric: Te necesitamos en la batalla final, ¡atacaremos el castillo todos juntos! Si necesita más ejército, puede reunir recursos atacando los campamentos de bandidos en la carretera que, según se informa, protegen el oro.
+79:Lord Chilpéric: ¡Cuando estés listo, ataca el castillo y vendrán refuerzos liderados por nuestro Rey y yo para ayudarte a matar al traidor! No olvides utilizar las mejores tropas que le proporcionamos.
+80:Ataca el castillo cuando estés listo.|Si necesitas oro, ataca los campamentos de bandidos|ubicados en el túnel y en el otro continente.
+81:RESULTADO DE LA BATALLA: || Ganaste %d de oro en esta batalla.|Mataste a un total de %d enemigos.|Perdiste un total de %d tropas.
+82:[$%s]Estadísticas de batalla : Tus tropas[]|
+83:Espacio 1 : %d perdió %s de %d|
+84:Espacio 1 : Sin ejército|
+85:Espacio 2 : %d perdió %s de %d|
+86:Espacio 2 : Sin ejército|
+87:Espacio 3 : %d perdió %s de %d|
+88:Espacio 3 : Sin ejército|
+89:Espacio 4 : %d perdió %s de %d|
+90:Espacio 4 : Sin ejército|
+91:[$%s]Estadísticas de batalla : tropas enemigas[]|
+92:Ranura 1 : %d mató a %s de %d|
+93:Espacio 1 : Sin ejército|
+94:Ranura 2 : %d mató a %s de %d|
+95:Espacio 2 : Sin ejército|
+96:Ranura 3 : %d mató a %s de %d|
+97:Espacio 3 : Sin ejército|
+98:Ranura 4 : %d mató a %s de %d|
+99:Espacio 4 : Sin ejército|
+110:[$%s]Misión Principal[]|%s||
+111:Misión secundaria:|%s||
+112:Misión secundaria:|%s||
+113:Sin ejército
+114:Milicia
+115:Arqueros
+116:Lanceros
+117:Vigías
+118:Caballería
+119:Soldados con hacha
+120:Soldados con espada
+121:Ballesteros
+122:Piqueros
+123:Bárbaros
+124:Rebeldes
+125:Honderos
+126:Guerreros
+127:Vagabundos
+128:TUTORIAL: Para comprar tropas, párese en el camino de piedra debajo de cada tipo de unidad. cada línea representa un espacio de ejército diferente (1 a 4 de arriba a abajo). Cada herrero es el vendedor de una ranura. Debes vender todas las unidades de una ranura antes de cambiar el tipo de unidad.
+129:Por cada segundo en el camino de piedra estacionado compra o vende una unidad. Vendes unidades al mismo precio que las compras. Puede utilizar las teclas de acceso rápido f5 f6 f7 f8 para agilizar la contratación y venta.
+130:Coste de Milícia: 20|Coste de Arqueros: 35|Coste de Lanceros: 30|Coste de Vigías: 80|Coste de soldados con hacha: 55
+131:Coste soldado con espada: 110|Coste Picadores: 100|Coste Ballesteros: 80|Coste Caballería: 160
+132:TUTORIAL: Para que estos mensajes vuelvan a aparecer, párate en las carreteras de la entrada del área de reclutamiento durante unos segundos.
+150:Ranura 5 : %d mató a %s de %d|
+151:Espacio 5 : Sin ejército|
+152:[$%s]Estadísticas:[]|
+153:Oro : %d|
+154:Rango : %s||
+155:[$%s]Ejército disponible:[]|
+156:Espacio 1 : %s  %d/%d|
+157:Espacio 2 : %s  %d/%d|
+158:Espacio 3 : %s  %d/%d|
+159:Espacio 4 : %s  %d/%d||
