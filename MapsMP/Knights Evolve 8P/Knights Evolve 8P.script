@@ -312,7 +312,6 @@ procedure AIThink;
 var
 aA: array of integer;
 j, k, x, y, p: integer;
-pass: boolean;
 begin
 	j:= AI_COUNTER;
 	if States.PlayerEnabled(j) and States.PlayerIsAI(j) and ( States.PlayerDefeated(j) = false ) then begin
@@ -633,7 +632,7 @@ procedure SortPlayerByKills;
 var j, temp: integer;
 begin
 	for j:= MAX_PLAYERS-1 downto 1 do begin
-		if States.PlayerEnabled(j) then begin
+		if ( States.PlayerEnabled(j-1) and (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) ) then begin
 			if (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) then begin
 				temp := PLAYERS_SORTED[j-1];
 				PLAYERS_SORTED[j-1] := PLAYERS_SORTED[j];
@@ -777,7 +776,6 @@ end;
 
 // ON TICK
 procedure OnTick;
-var j, k: integer;
 begin
 	if ( States.GameTime mod 10 = 0 ) then begin
 		if GAME_STATE = 0 then begin
@@ -803,8 +801,6 @@ end;
 
 // ON MISSION START
 procedure OnMissionStart;
-var 
-j: integer;
 begin
 	GAME_STATE:= 0; //game
 	BARB_AMOUNT:= START_BARB_AMOUNT;

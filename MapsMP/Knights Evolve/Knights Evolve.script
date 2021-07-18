@@ -634,7 +634,7 @@ var j, temp: integer;
 begin
 	for j:= MAX_PLAYERS-1 downto 1 do begin
 		if States.PlayerEnabled(j) then begin
-			if (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) then begin
+			if ( States.PlayerEnabled(j-1) and (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) ) then begin
 				temp := PLAYERS_SORTED[j-1];
 				PLAYERS_SORTED[j-1] := PLAYERS_SORTED[j];
 				PLAYERS_SORTED[j] := temp;
