@@ -5,10 +5,10 @@ type TFoundNotification = record
                             TimeToHide: Integer;
                           end;
 const
-  CASTLE_LEFT = 121;
-  CASTLE_RIGHT = 135;
-  CASTLE_TOP = 139;
-  CASTLE_BOTTOM = 149;
+  CASTLE_LEFT = 125;
+  CASTLE_RIGHT = 141;
+  CASTLE_TOP = 145;
+  CASTLE_BOTTOM = 155;
   LOC_COUNT = 8; //Total number of locations on this map
   NOTIFICATION_TIME = 100; //Time to show notifications
 var
