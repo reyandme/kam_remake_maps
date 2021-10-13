@@ -36,7 +36,7 @@ procedure LockBuildings(iPlayer: Byte);
 var i: Byte;
 begin
 	for i := 0 to 29 do
-		if i <> 26 then //26 is not in use
+		if not U.ArrayHasElementI(i, [17,26]) then //26/17 is not in use
 			Actions.HouseAllow(iPlayer, i, false);
 	Actions.HouseAllow(iPlayer, 11, true); //Storehouse always unlocked
 end;
