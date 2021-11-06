@@ -187,9 +187,9 @@ end;
 
 function SoldiersToEquip(P: Integer): Integer;
 begin
-  Result := SoldiersForDefence(P) + AttackAmount(P) - States.StatArmyCount(P) - States.StatUnitTypeCount(P, 13) + States.StatHouseTypeCount(P, 17) + 5;
+  Result := Utils.MaxI(SoldiersForDefence(P) + AttackAmount(P) - States.StatArmyCount(P) - States.StatUnitTypeCount(P, 13) + States.StatHouseTypeCount(P, 17) + 5, 0);
   if Utils.InRangeI(P, 3, 4) then
-    Result := Result - 5 - Round(0.55 * AttackAmount(P));
+    Result := Utils.MaxI(Result - 5 - Round(0.55 * AttackAmount(P)), 0);
 end;
 
 
@@ -607,7 +607,7 @@ begin
                  RN2 := States.KaMRandomI(4);
                CurrentType[P][RN2] := 1;
                while CurrentType[P][RN3] <> -1 do
-                 RN2 := States.KaMRandomI(4);
+                 RN3 := States.KaMRandomI(4);
                CurrentType[P][RN3] := 1;
                for K := 0 to 4 do
                  if CurrentType[P][K] = -1 then
