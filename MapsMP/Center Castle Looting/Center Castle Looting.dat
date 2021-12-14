@@ -555,7 +555,6 @@
 !CENTER_SCREEN 22 73
 !CLEAR_UP 12 56 10
 !CLEAR_UP 22 63 21
-!CLEAR_UP 61 24 8
 !CLEAR_UP 28 75 21
 
 
@@ -1587,4 +1586,4 @@
 !SET_UNIT 24 129 140
 !SET_UNIT 24 199 183
 
-//This mission was made with KaM Remake Map Editor version r13651 at 2021-12-10 11:50:58
+//This mission was made with KaM Remake Map Editor version r13651 at 2021-12-13 11:17:16
