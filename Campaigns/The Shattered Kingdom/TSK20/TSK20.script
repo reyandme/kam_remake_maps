@@ -148,7 +148,7 @@ begin
 					Actions.HouseWareBlock(aHouses[h], 12, true); //Leather
 					//Actions.HouseWareBlock(aHouses[h], 13, true); //Sausages
 					Actions.HouseWareBlock(aHouses[h], 14, true); //Pig
-					Actions.HouseWareBlock(aHouses[h], 15, true); //Skin
+					//Actions.HouseWareBlock(aHouses[h], 15, true); //Skin
 					//16-26 = Military Equipment
 					//Actions.HouseWareBlock(aHouses[h], 15, true); //Fish
 				end;
