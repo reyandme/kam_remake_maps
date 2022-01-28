@@ -1,6 +1,6 @@
 {$I improvestaticai.script}
 
-procedure OnHouseDestroyed(aHouseID: Integer);
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
 begin
 	if ((aHouseID = States.HouseAt(152, 121)) AND (States.HouseOwner(aHouseID) = 5)) then
 	    begin
