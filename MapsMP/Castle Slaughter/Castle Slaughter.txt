@@ -4,5 +4,3 @@ Original map from KaM TSK
 BigDesc
 Thine storehouse is stocked. The walls are defended. Build your army from this and we shall see who is victor!||Original map from Knights and Merchants The Shattered Kingdom
 
-PlayableAsSP
-
