@@ -1,0 +1,399 @@
+//-- Improve Static AI --//
+//By Strangelove
+//v0.4.2c
+//22.11.2021
+//Developed for r8754
+//Last modified on r12945
+
+// This script tweaks the AI settings of non-autobuild AIs by making them Rebuild destroyed Houses, blocks unfinished wares to the storehouse and maxes out the Ware distribution.
+// Just copy this file into the map folder and type "{$I improvestaticai.script}"
+// Do not use this script without permission from its author!
+
+{$EVENT evtMissionStart:ImproveStaticAIOnMissionStart}
+{$EVENT evtHouseDestroyed:ImproveStaticAIOnHouseDestroyed}
+{$EVENT evtTick:ImproveStaticAIOnTick}
+{$EVENT evtPlayerDefeated:ImproveStaticAIOnPlayerDefeated}
+{$EVENT evtHouseBuilt:ImproveStaticAIOnHouseBuilt}
+
+{$DEFINE DEBUG}
+{$UNDEF DEBUG}
+
+{$DEFINE REBUILD} //Enable Rebuilding of AI Houses
+//{$UNDEF REBUILD}
+{$DEFINE SETHUNGER} //Set Hunger Level of AI Players
+//{$UNDEF SETHUNGER}
+{$DEFINE AIDEF} //Enables to set AI defaults
+//{$UNDEF AIDEF}
+
+
+{$IFDEF REBUILD}
+const
+	DELAY = 300; 		//Cant be 0; Destroyed House needs time to be removed from game (in Ticks)
+	UPDATE_FREQ = 101; 	//How frequently aDestroyedHouses array will be checked (in Ticks)
+	RADIUS = 2;			//Acceptable Radius for newly placed houseplans (performance intensive; recommended values: 1..3)
+
+	
+Type
+	TDestroyedHouse = record
+		aHouse, iTime: Integer;
+		iX, iY: Word;
+		iType, iOwner: Byte;
+	end;
+
+var
+	aDestroyedHouses: array of TDestroyedHouse;
+
+
+var
+	gTries: Byte;
+
+
+
+//Save Destroyed Houses
+procedure DestroyedHouseData(aHouseID: Integer; j: Byte);
+begin
+	aDestroyedHouses[j].iX := States.HousePositionX(aHouseID);
+	aDestroyedHouses[j].iY := States.HousePositionY(aHouseID);
+	aDestroyedHouses[j].iOwner := States.HouseOwner(aHouseID);
+	aDestroyedHouses[j].iType := States.HouseType(aHouseID);
+	aDestroyedHouses[j].iTime := States.GameTime();
+	aDestroyedHouses[j].aHouse := aHouseID;
+end;
+
+
+//Needed to scale arrays accordingly
+function ImproveStaticAIPlayerCount(): Byte;
+var
+	p, AIPlayer: Byte;
+begin
+	for p := 0 to States.LocationCount() -1 do
+		if States.PlayerEnabled(p) then
+			if States.PlayerIsAI(p) then
+				Inc(AIPlayer);
+	Result := AIPlayer;
+end;
+
+
+procedure ConnectToClosestHouse(Player: Byte; X, Y: Word; HouseType: SmallInt);
+var
+	iClosestHouse: Integer;
+begin
+	//Find closest House of prefered type
+	iClosestHouse := States.ClosestHouse(Player, X, Y, HouseType);
+	//Use any Housetype if not found
+	if iClosestHouse = -1 then
+		iClosestHouse := States.ClosestHouse(Player, X, Y, -1);
+	//New house plan not connected? Connect to closest house
+	if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
+		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
+end;
+
+
+function GetNewCoordinate(Coordinate, LowerLimit, UpperLimit: Word): Word;
+var
+	Value: Integer;
+begin
+	Value := Coordinate +States.KaMRandomI(RADIUS*2 +1) -RADIUS;
+	//Limit new coordinates to a certain area
+	if Utils.InRangeI(Value, LowerLimit, UpperLimit) then 
+	begin
+		Result := Value;
+	end else
+		Result := Coordinate; //Use original coordinate if out of bounds
+end;
+
+
+procedure PlanAddHouseAndConnect(Player, HouseType: Byte; X, Y: Word);
+var
+	t: Byte;
+	X1, Y1: Word;
+begin
+	if not Actions.PlanAddHouse(Player, HouseType, X, Y) then
+	begin
+		while t < gTries do
+		begin
+			X1 := GetNewCoordinate(X, 2, States.MapWidth() -2); //Limit new coordinates to buidable area (cant build on the very borders of a map)
+			Y1 := GetNewCoordinate(Y, 3, States.MapHeight() -2);
+			{$IFDEF DEBUG}
+			Actions.Log('Original Coordinates: X: ' +inttostr(X) +', Y: ' +inttostr(Y) + '; New Coordinates: X1: ' +inttostr(X1) + ', Y1: ' +inttostr(Y1) + '; Try: ' +inttostr(t));
+			{$ENDIF}
+			if Actions.PlanAddHouse(Player, HouseType, X1, Y1) then
+			begin
+				{$IFDEF DEBUG}
+				Actions.Log('House plan could not be placed at first try: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X) + ', ' + inttostr(Y) + ');' + ' House plan placed at: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X1) + ', ' + inttostr(Y1) + ');' + ' GameTime: ' + inttostr(States.GameTime()) + ' Tries: ' + inttostr(t));
+				{$ENDIF}
+				ConnectToClosestHouse(Player, X1, Y1, 11); //Closest Storehouse
+				break;
+			end else
+				Inc(t);
+		end;
+		{$IFDEF DEBUG}
+		Actions.Log('House plan could not be placed: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X) + ', ' + inttostr(Y) + ');');
+		{$ENDIF}
+	end else
+		ConnectToClosestHouse(Player, X, Y, 11); //Check and (re)connect even when plan is placed on the same coordinates
+end;
+{$ENDIF}
+
+
+{$IFDEF SETHUNGER}
+function GetRandomHungerLevel(): Word;
+var
+	UnitMaxHunger: Word;
+begin
+	UnitMaxHunger := States.UnitMaxHunger();
+	Result := Utils.RandomRangeI(UnitMaxHunger/2, UnitMaxHunger);
+end;
+
+
+//Sets the HungerLevel of AI Players to a random amount
+procedure UnitsRandomHungerSet();
+var
+	aUnits, aGroups: array of Integer;
+	i: Integer;
+	p: Byte;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+		begin
+			aUnits := States.PlayerGetAllUnits(p);
+			for i := 0 to Length(aUnits) -1 do
+				if States.UnitsGroup(aUnits[i]) = -1 then
+					Actions.UnitHungerSet(aUnits[i], GetRandomHungerLevel());
+			aGroups := States.PlayerGetAllGroups(p);
+			for i := 0 to Length(aGroups) -1 do
+				Actions.GroupHungerSet(aGroups[i], GetRandomHungerLevel());	
+		end;
+end;
+{$ENDIF}
+
+
+{$IFDEF AIDEF}
+procedure BlockWareInStorehouse(Player, WareType: Byte; Block: Boolean); //Block specific Ware in all Storehouses target Player controls
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to Length(aHouses) -1 do
+		if States.HouseType(aHouses[h]) = 11 then
+			Actions.HouseWareBlock(aHouses[h], WareType, Block);
+end;
+
+
+procedure ExecuteWareBlock(Player: Byte);
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to Length(aHouses) -1 do
+		case States.HouseType(aHouses[h]) of
+			0: 	BlockWareInStorehouse(Player, 0, true); //Sawmill: Treetrunk
+			1:	begin //Iron Smithy
+					BlockWareInStorehouse(Player, 3, true); //Iron Ore
+					BlockWareInStorehouse(Player, 5, true); //Coal
+				end;
+			2:  begin //Weapon Smithy
+					BlockWareInStorehouse(Player, 5, true); //Coal
+					BlockWareInStorehouse(Player, 6, true); //Iron
+				end;
+			3: 	; //Coal Mine
+			4:	; //Iron Mine
+			5: 	; //Coal Mine
+			6:	; //Fisherhut
+			7: 	BlockWareInStorehouse(Player, 11, true); //Bakery: Flour
+			8:	; //Farm
+			9:	; //Woodcutter
+			10:	begin //Weapon Smithy
+					BlockWareInStorehouse(Player, 5, true); //Coal
+					BlockWareInStorehouse(Player, 6, true); //Iron
+				end;
+			11: ; //Storehouses
+			12: BlockWareInStorehouse(Player, 9, true); //Stables: Corn
+			13: ; //Schools
+			14: ; //Quarry
+			15: begin //Metallurgists
+					BlockWareInStorehouse(Player, 4, true); //Gold Ore
+					BlockWareInStorehouse(Player, 5, true); //Coal
+				end;
+			16: BlockWareInStorehouse(Player, 9, true); //Swinefarm: Corn
+			17: ; //Watchtower
+			18: ; //Townhall
+			19: ; //BlockWareInStorehouse(Player, 2, true); //Weapons Workshop: Timber
+			20: begin
+					BlockWareInStorehouse(Player, 12, true); //Armory Workshop
+					//BlockWareInStorehouse(Player, 2, true); //Timber
+				end;
+			21: ; //Barracks
+			22: BlockWareInStorehouse(Player, 9, true); //Mill: Corn
+			23: ; //Vehicles Workshop
+			24: BlockWareInStorehouse(Player, 14, true); //Butcher: Pig
+			25: BlockWareInStorehouse(Player, 15, true); //Tannery: Skin
+			26: ; //Unused
+			27: ; //Inn
+			28: ; //Vineyard
+			29: ; //MarketFromWare
+		end;
+end;
+
+
+//Blocks Wares in AI Storehouses depending on its structures
+procedure AISetupWareBlock();
+var
+	p: Byte;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+			if not States.AIAutoBuild(p) then //Igrone if AI has AutoBuild enabled
+				ExecuteWareBlock(p);
+end;
+
+
+//Change default Ware Distribution for AI
+procedure AISetupWareDistribution();
+var
+	p: Byte;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+			if not States.AIAutoBuild(p) then //Igrone if AI has AutoBuild enabled
+			begin
+				//Adjust Ware Distribution
+				//Iron
+				Actions.PlayerWareDistribution(p, 6, 2, 5); //Weapon Smithy
+				Actions.PlayerWareDistribution(p, 6, 10, 5); //Armor smithy
+				//Coal
+				Actions.PlayerWareDistribution(p, 5, 1, 5);	//Iron smity
+				Actions.PlayerWareDistribution(p, 5, 15, 5); //Metallurgist
+				Actions.PlayerWareDistribution(p, 5, 2, 5);	//Weapon Smithy
+				Actions.PlayerWareDistribution(p, 5, 10, 5); //Armor Smithy
+				//Timber
+				Actions.PlayerWareDistribution(p, 2, 20, 5); //Armory workshop
+				Actions.PlayerWareDistribution(p, 2, 19, 5); //Weapon Workshop
+				//Corn
+				Actions.PlayerWareDistribution(p, 9, 22, 5); //Mill
+				Actions.PlayerWareDistribution(p, 9, 16, 5); //Swine farm
+				Actions.PlayerWareDistribution(p, 9, 12, 5); //Stables
+			end;
+end;
+{$ENDIF}
+
+
+procedure ImproveStaticAIOnMissionStart();
+{$IFDEF REBUILD}
+var
+	j: Byte;
+	{$ENDIF}
+begin
+	//Apply...
+	{$IFDEF AIDEF}
+	AISetupWareBlock();
+	AISetupWareDistribution();
+	{$ENDIF}
+	{$IFDEF SETHUNGER}
+	UnitsRandomHungerSet();
+	{$ENDIF}
+	{$IFDEF REBUILD}
+	//Scale Array dynamicly
+	SetLength(aDestroyedHouses, 5 +(ImproveStaticAIPlayerCount() *2));
+	//Assign values to arrays
+	for j := 0 to Length(aDestroyedHouses) -1 do
+		aDestroyedHouses[j].aHouse := -1;
+	//Calculate the number of tries
+	gTries := Round(Utils.Power((RADIUS*2 +1), 2));
+	{$ENDIF}
+end;
+
+
+{$IFDEF AIDEF}
+//Block Wares in newly built Storehouses
+procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
+var
+	HouseOwner: Byte;
+begin
+	if States.HouseType(aHouse) = 11 then
+		HouseOwner := States.HouseOwner(aHouse);
+		if States.PlayerIsAI(HouseOwner) then
+			if not States.AIAutoBuild(HouseOwner) then	
+				ExecuteWareBlock(HouseOwner);
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
+begin
+	exit;
+end;
+{$ENDIF}
+
+
+
+{$IFDEF REBUILD}
+procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
+var
+	HouseOwner, j: Byte;
+begin
+	HouseOwner := States.HouseOwner(aHouseID);
+	if States.PlayerIsAI(HouseOwner) then
+		if not States.AIAutoBuild(HouseOwner) then
+			if (aDestroyerIndex <> -1) and (aDestroyerIndex <> HouseOwner) then	//Ignore if Building was destroyed by original Owner or script
+				for j := 0 to Length(aDestroyedHouses) -1 do
+					if (aDestroyedHouses[j].aHouse = -1) then //Save House Data to next empty position in array
+					begin
+						DestroyedHouseData(aHouseID, j);
+						exit;
+					end;
+end;
+
+
+//Make AI rebuild destroyed Houses
+procedure ImproveStaticAIOnTick();
+var 
+	j: Byte;
+begin
+	if States.GameTime() mod UPDATE_FREQ = 0 then
+		for j := 0 to Length(aDestroyedHouses) -1 do
+			if (aDestroyedHouses[j].aHouse <> -1) then
+				if ((aDestroyedHouses[j].iTime +DELAY) <= States.GameTime()) then
+				begin
+					aDestroyedHouses[j].aHouse := -1;
+					PlanAddHouseAndConnect(aDestroyedHouses[j].iOwner, aDestroyedHouses[j].iType, aDestroyedHouses[j].iX, aDestroyedHouses[j].iY);
+					break; //Better performance
+				end;
+end;
+
+
+//Remove stored buildings of defeated AIPlayer from Array to free up space
+procedure ImproveStaticAIOnPlayerDefeated(aIndex: Integer);
+var
+	j: Byte;
+begin
+	if States.PlayerIsAI(aIndex) then
+		for j := 0 to Length(aDestroyedHouses) -1 do
+			if aDestroyedHouses[j].iOwner = aIndex then
+				aDestroyedHouses[j].aHouse := -1;
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
+begin
+	exit;
+end;
+
+procedure ImproveStaticAIOnTick();
+begin
+	exit;
+end;
+
+procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
+begin
+	exit;
+end;
+
+procedure ImproveStaticAIOnPlayerDefeated(aIndex: Integer);
+begin
+	exit;
+end;
+{$ENDIF}

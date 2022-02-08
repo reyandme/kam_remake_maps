@@ -43,3 +43,6 @@ Version 2.2: (29.12.2019)
   - Increased Recruit Delay of Player1 from 0 to 10
   - Increased Recruit Delay of Player2 from 60 to 75
   - Decreased Recruit Delay of Player3 from 55 to 45
+
+Version 2.2b: (02.05.2021)
+- Added another message at Gamestart to inform player that the Enemy will be back quite soon

@@ -1,0 +1,58 @@
+Home of Once Brave
+******************
+
+0.7.1b: (28.11.2021)
+- Fixed broken Tiles
+- Finished placing 3-tile-transitions
+- Moved 1 none-walkable Stone-Object that was messing up an AI defense formation
+- Placed missing street
+- Moved AI Start Position of Player13 closer to southern wood bridge
+
+
+0.7.1c: (29.11.2021)
++ South-East-Ally Rebelance/Changes (Player3)
+  - Reduced Goldore in Mines and Smelters at gamestart
+  - Changed resources in storehouse
+  - Switch Trade from Skin/Coal to Skin/Goldchest once all Goldmines have been exhausted
+  - Increased Amount of Attack Positions
+  - Previous repeating attack only happens once; All further attacks are now stronger (scaling with difficulty settings)
+
+
+0.7.1d: (01.12.2021)
+- Small adjustments to Player5's Defense Position Radius on 'Normal' and 'Hard1'
+- Fixed more broken tiles
+
+
+0.7.1e: (05.12.2021)
+- Adjusted AI start positions of Player6 and Player7 to improve unitpathing
+- Moved AI start position of Player8 from woodbridge closer to stone to avoid groups from splitting and improve unitpathing
+
+
+0.7.2: (06.12.2021)
+- Fixed elevation on loc1
+- Fixed elevation on player9s base (messed up defense positon)
++ Changes to Player4
+  - Unnecessary Roads removed
+  - Dispose of activation unit in top right corner
++ Changes to Player3
+  - Disabled Building in allied City
+  - Attack target is now set randomly OnMissionStart, to avoid Units changing their mind
+  - Changed attack targets (Only attacks positions that do not pull enemies)
+  - Changed Unit compositions of attacks (Mounted Units attack seperatly)
+
+
+0.7.2b: (07.12.2021)
+- Switch Player5 Attacks from 'closest house from start position' to 'closest house from army' (on Hard2 and Hard3 only)
+- Moved Player5 AI start position from stone to woodbridge
+
+
+0.7.2c: (12.12.2021)
+- Added missing roads for player4 ally on Normal and Hard1
+
+0.7.2d: (03.02.2022)
++ Player3:
+  - Fixed a bug where script broke when townhall or/and marketplace was destroyed
+  - Now has workers on Easy1, Easy2 and Easy3
+  - Enabled AutoRepair
+- Enabled "Defend Allies" of Player7, 10 and 13 on Hard3
+- Reduced Defense Position Radius of one of Player13's Pike Groups

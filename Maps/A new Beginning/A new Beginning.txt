@@ -1,0 +1,25 @@
+Author
+Strangelove
+
+Version
+0.8.1 (23.09.2021)
+
+SmallDescLIBX
+10
+
+BigDescLIBX
+11
+
+PlayableAsSP
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

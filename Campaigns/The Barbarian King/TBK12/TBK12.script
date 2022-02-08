@@ -1,283 +1,259 @@
 //-- TBK12 --//
 //By Strangelove
-//v2.2b
-//01.09.2020
+//v1.1
+//17.05.2021
+
 
 {$I improvestaticai.script}
 {$I transformunits.script}
 {$I helpers.script}
 {$I difficulty.script}
-
-{$DEFINE DEBUG} //Enable extended Debug
-//{$UNDEF DEBUG}
+{$I dynamicmap.script}
 
 
-const
-	DEFAULT_SCHEDULER = 36000; //1h default
+const 
+	SPAWN_TIMER = 9000; //15Minutes
+	SPAWN_DELAY = 27000; //45Minutes
 
 var 
-	iCoalBuildIndex: Integer;
-	bExpand: Boolean;
-	Start: Word;
-	GlobalDifficulty: TKMMissionDifficulty;
+	DifficultySetting: TKMMissionDifficulty;
+	aAttackGroups: array of Integer;
 	
+	iTicks: Integer;
+	iWave: Byte;
+	aReinforcements: array of Integer;
+	bDefeated: Boolean;
+	
+	iGoldOffset: Word;
+	
+
+
+function RandomHouse(aPlayer: Byte): Integer;
+var
+	aHouses: array of Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(aPlayer);
+	Result := aHouses[States.KaMRandomI(Length(aHouses) -1)];
+end;
+
+
 procedure OnMissionStart();
 begin
-	iCoalBuildIndex := 0;
-	bExpand := false;
-	Start := DEFAULT_SCHEDULER;
-	GlobalDifficulty := States.MissionDifficulty();
+	//Set Variables
+	iWave := 0;
+	iTicks := SPAWN_TIMER; //Updated in OnTick
+	
+	DifficultySetting := States.MissionDifficulty();
+	
+	//Check Gold supplies of Player1
+	iGoldOffset := States.HouseResourceAmount(States.HouseAt(22, 62), 7);
+	
+	//Disable vision sharing
+	Actions.PlayerShareFog(1, 0, false);
+	Actions.PlayerShareFog(0, 1, false);
+	
+	//Add Groups for First Attack according to difficulty settings (Feed them in OnTick)
+	SetLength(aAttackGroups, 4);
+	aAttackGroups[0] :=	Actions.GiveGroup(5, 20, 60, 23, 4, 9, 3); //Pikes
+	aAttackGroups[1] := Actions.GiveGroup(5, 18, 64, 21, 4, 9, 3); //Xbows
+	case DifficultySetting of
+		mdEasy1:
+		begin
+			aAttackGroups[2] :=	Actions.GiveGroup(5, 16, 59, 18, 4, 9, 3); //Swords
+			aAttackGroups[3] := Actions.GiveGroup(5, 16, 62, 12, 4, 9, 3);
+		end;
+		mdNormal:
+		begin
+			aAttackGroups[2] :=	Actions.GiveGroup(5, 16, 59, 18, 4, 12, 4);
+			aAttackGroups[3] := Actions.GiveGroup(5, 16, 62, 12, 4, 9, 3);
+		end;
+		mdHard1:
+		begin
+			aAttackGroups[2] :=	Actions.GiveGroup(5, 16, 59, 18, 4, 12, 4);
+			aAttackGroups[3] := Actions.GiveGroup(5, 16, 62, 12, 4, 12, 4);
+		end;
+	end;
+	
+	//Cleanup
+	Actions.UnitKill(States.UnitAt(135, 21), true);
+	Actions.UnitKill(States.UnitAt(136, 21), true);
 end;
+
+
+procedure OnPlayerDefeated(aPlayer: Integer);
+begin
+	//Allied Village Settings
+	if aPlayer = 2 then
+	begin
+		Actions.AIDefendAllies(1, true);
+		//Add Attack Positions (Attacks handled in MapEd)
+		Actions.AIDefencePositionAdd(1, 44, 85, 1, 0, 20, 1); //Melee
+		Actions.AIDefencePositionAdd(1, 50, 61, 2, 0, 20, 1); //Melee
+		Actions.AIDefencePositionAdd(1, 45, 66, 2, 1, 20, 1); //Anti-Horse
+	end;
+	//Disable Reinforcements
+	if aPlayer = 3 then
+		bDefeated := true;
+end;
+
 
 procedure OnTick();
 var
-	k: SmallInt;
-	aHouses: array of Integer;
+	iGoldSupply, GameTime: Word;
+	i, G: Byte;
+	iX, iY, iUnitID: array of Byte;
+	RandomHouseID: Integer;
 begin
-	if States.GameTime() = (MAX_HANDS +1) then
+	//Fill Arrays with Reinforcement Spawn positions
+	iX := [123, 127, 123, 127, 123, 127];
+	iY := [28, 28, 35, 35, 42, 42];
+	iUnitID := [16, 18, 20, 22, 16, 18];
+
+	GameTime := States.GameTime(); //Get GameTime only once
+	
+	//Make Waterfalls more dynamic (Change end tiles) Not automated yet...
+	if GameTime mod 9 = 0 then
+		ChangeWaterfallEndTiles(95, 97, 13);
+
+	//For every 2nd Gold Chest delivered to Player1's Storehouse add one Gold Chest to Human Players Storehouse (~350 total)
+	iGoldSupply := States.HouseResourceAmount(States.HouseAt(22, 62), 7);
+	if iGoldSupply > (iGoldOffset +1) then
 	begin
-		Start := Round(DEFAULT_SCHEDULER *EquipRateMod[dMod]); //Modify Schedule
-		case GlobalDifficulty of
+		Actions.GiveWares(0, 7, 1);
+		iGoldOffset := iGoldSupply;
+	end;
+
+	//Difficulty modifications
+	if GameTime = (MAX_HANDS +1) then
+	begin
+		//Update iTicks here!
+		iTicks := Round(SPAWN_TIMER *EquipRateMod[dMod]) +SPAWN_DELAY; //On Normal: 1st Spawn @1hour
+		
+		//Remove/Add Enemy Defence Positions and Groups
+		case DifficultySetting of
 			mdEasy1:
 			begin
-				RemoveDefencePositionAndGroup(1, 21, 113); //Bows
-				RemoveDefencePositionAndGroup(1, 42, 108);
-				RemoveDefencePositionAndGroup(2, 69, 98); //xbows
-				RemoveDefencePositionAndGroup(3, 77, 38); //Pikes
-				RemoveDefencePositionAndGroup(4, 99, 38); //swords
-				RemoveDefencePositionAndGroup(4, 105, 51); //xbows
+				RemoveDefencePositionAndGroup(2, 93, 40); //Pikes
+				RemoveDefencePositionAndGroup(2, 95, 31); //Knights
+				RemoveDefencePositionAndGroup(2, 84, 34); //Knights
+				RemoveDefencePositionAndGroup(3, 100, 31); //Xbows
+				RemoveDefencePositionAndGroup(3, 112, 32); //Knights
 			end;
-			mdHard1:
+			mdNormal:
 			begin
-				AddDefencePositionAndGroup(1, 21, 69, 110, 7, 21); //Scouts
-				AddDefencePositionAndGroup(2, 22, 86, 64, 4, 24); //Knights
-				AddDefencePositionAndGroup(2, 22, 91, 65, 4, 24);
-				AddDefencePositionAndGroup(4, 16, 85, 43, 4, 16); //Swords
-				AddDefencePositionAndGroup(4, 20, 118, 48, 6, 18); //Pikes
+				RemoveDefencePositionAndGroup(2, 93, 40); //Pikes
+				RemoveDefencePositionAndGroup(2, 95, 31); //Knights
+				RemoveDefencePositionAndGroup(3, 100, 31); //Xbows
 			end;
 		end;
+		
+		//Feed aAttackGroups here
+		for G := 0 to Length(aAttackGroups) -1 do
+			Actions.GroupHungerSet(aAttackGroups[G], States.UnitMaxHunger); //Set Hunger level to max
 	end;
-	//AI1 starts building Iron Production after 1hour (see OnHouseBuilt-procedure)
-	if States.GameTime() = Start then
-	begin
-		Actions.AIWorkerLimit(1, 6);
-		//Build Iron Mines
-		PlanAddHouse(1, 4, 33, 109);
-		//Roads to 1st Iron Mines
-		PlanAddRoad(1, 33, 110);
-		PlanAddRoad(1, 33, 111);
-		PlanAddRoad(1, 33, 112);
-		PlanAddRoad(1, 32, 112);
-		PlanAddRoad(1, 32, 113);
-		//Add 1st Coal Mines
-		PlanAddHouse(1, 3, 34, 114);
-		//Add 2nd Coal Mines
-		PlanAddHouse(1, 3, 29, 117);
-		//Roads to 2st CoalMine
-		PlanAddRoad(1, 32, 116);
-		PlanAddRoad(1, 32, 117);
-		PlanAddRoad(1, 32, 118);
-		PlanAddRoad(1, 31, 118);
-		PlanAddRoad(1, 30, 118);
-		PlanAddRoad(1, 29, 118);
-		bExpand := true;
+	
+	//Schedule Events
+	case GameTime of
+		1200:
+			Actions.AIWorkerLimit(1, 6);
+		3000:
+		begin
+			PlanAddHouse(1, 19, 8, 63); //Weapon Workshop
+			PlanAddRoad(1, 11, 63);
+			PlanAddRoad(1, 11, 64);
+			PlanAddRoad(1, 10, 64);
+			PlanAddRoad(1, 9, 64);
+			PlanAddRoad(1, 8, 64);
+			PlanAddRoad(1, 10, 65);
+			PlanAddRoad(1, 10, 66);
+			PlanAddRoad(1, 11, 66);
+			PlanAddRoad(1, 12, 66);
+		end;
+		3750:
+			Actions.ShowMsg(-1, '<$0>'); //Give Msg to Player about upcoming attack
+		4500:
+		begin
+			PlanAddHouse(1, 25, 13, 70); //Tannery
+			PlanAddRoad(1, 11, 67);
+			PlanAddRoad(1, 11, 68);
+			PlanAddRoad(1, 11, 69);
+			PlanAddRoad(1, 11, 70);
+			PlanAddRoad(1, 11, 71);
+			PlanAddRoad(1, 12, 71);
+			PlanAddRoad(1, 13, 71);
+		end;
+		6000:
+		begin
+			PlanAddHouse(1, 20, 8, 68); //Armor Workshop
+			PlanAddRoad(1, 8, 69);
+			PlanAddRoad(1, 8, 70);
+			PlanAddRoad(1, 9, 70);
+			PlanAddRoad(1, 10, 70);
+		end;
+		7500:
+		begin
+			PlanAddHouse(1, 21, 3, 67); //Rax
+			PlanAddRoad(1, 3, 68);
+			PlanAddRoad(1, 4, 68);
+			PlanAddRoad(1, 5, 68);
+			PlanAddRoad(1, 6, 68);
+			PlanAddRoad(1, 6, 69);
+			PlanAddRoad(1, 7, 69);
+		end;
+		9000:
+		begin
+			PlanAddHouse(1, 19, 5, 71); //Weapon Workshop
+			PlanAddRoad(1, 5, 72);
+			PlanAddRoad(1, 6, 72);
+			PlanAddRoad(1, 7, 72);
+			PlanAddRoad(1, 8, 72);
+			PlanAddRoad(1, 8, 71);
+			
+		end;
+		10000: //Connect Rax again
+		begin
+			PlanAddRoad(1, 6, 67);
+			PlanAddRoad(1, 6, 66);
+			PlanAddRoad(1, 6, 65);
+			PlanAddRoad(1, 7, 65);
+			PlanAddRoad(1, 7, 64);
+		end;
+		12000:
+		begin
+			PlanAddHouse(1, 6, 5, 54); //Fisherman
+			PlanConnectRoad(1, 5, 55, 6, 58, false);
+		end;
+		//Maybe add more Buildings later?
 	end;
-
-	//Destory CoalMines of AIPlayer1 when exhausted
-	if iCoalBuildIndex < 5 then
-		if States.GameTime mod 601 = 0 then
+	
+	//Reinforcements for Haven
+	if not bDefeated then //Stop when Player3 is defeated
+		if iTicks <> 0 then
 		begin
-			aHouses := States.PlayerGetAllHouses(1); 
-			for k := 0 to Length(aHouses) -1 do
-				if States.HouseType(aHouses[k]) = 3 then
-					if not States.HouseCanReachResources(aHouses[k]) and (States.HouseResourceAmount(aHouses[k], 5) = 0) then
-					begin
-						Actions.HouseDestroy(aHouses[k], false);
-						break; //only one each time
-					end;
-		end;
-end;
-
-procedure OnHouseBuilt(aHouseID: Integer);
-begin
-	if bExpand then
-	begin
-		if (aHouseID = States.HouseAt(34, 114)) then
+			iTicks := iTicks -1; //Count down...
+		//	Actions.OverlayTextSet(-1,'Wave: ' + inttostr(iWave) + '|Time: ' + Utils.TimeToString(iTicks));
+		end else
 		begin
-			//Add 3rd Coal Mines
-			PlanAddHouse(1, 3, 28, 121);
-			//Roads to 3rd CoalMine
-			PlanAddRoad(1, 28, 122);
-			PlanAddRoad(1, 29, 122);
-			PlanAddRoad(1, 30, 122);
-			PlanAddRoad(1, 31, 122);
-			PlanAddRoad(1, 32, 122);
-			PlanAddRoad(1, 33, 122);
-			PlanAddRoad(1, 31, 119);
-			PlanAddRoad(1, 31, 120);
-			PlanAddRoad(1, 31, 121);
-			//Add 4th Coal Mines
-			PlanAddHouse(1, 3, 23, 122);
-			//Roads to 4th CoalMine
-			PlanAddRoad(1, 23, 123);
-			PlanAddRoad(1, 24, 123);
-			PlanAddRoad(1, 25, 123);
-			PlanAddRoad(1, 26, 123);
-			PlanAddRoad(1, 27, 123);
-			PlanAddRoad(1, 28, 123);
-			//Add 5th Coal Mines
-			PlanAddHouse(1, 3, 26, 125);
-			//Roads to 5th CoalMine
-			PlanAddRoad(1, 26, 126);
-			PlanAddRoad(1, 27, 126);
-			PlanAddRoad(1, 28, 126);
-			PlanAddRoad(1, 29, 126);
-			PlanAddRoad(1, 30, 126);
-			PlanAddRoad(1, 31, 126);
-		end;
-		if (aHouseID = States.HouseAt(29, 117)) then
-		begin
-			//Add 2nd and 3rd Iron Mine
-			PlanAddHouse(1, 4, 55, 100);
-			PlanAddHouse(1, 4, 61, 97);
-			//Autoconnect 2nd and 3rd Iron Mine
-			PlanConnectRoad(1, 55, 100, 53, 102, false);
-			PlanConnectRoad(1, 61, 98, 56, 101, false);
-		end;
-		if (aHouseID = States.HouseAt(34, 114)) then
-		begin
-			//Add Coal and Iron to Storehouse
-			if GlobalDifficulty = mdHard1 then
+			//Reset timer! Keep Difficulty settings in mind
+			iTicks := Round(SPAWN_TIMER *EquipRateMod[dMod]);
+			
+			//Don't go higher than 2
+			if iWave < 2 then
+				Inc(iWave); 
+			case iWave of
+				1:	SetLength(aReinforcements, 5); //40
+				2: 	SetLength(aReinforcements, 6); //48
+			end;
+			
+			//Set Target...
+			RandomHouseID := RandomHouse(0); //...to a random House of HumanPlayer
+			Actions.AIStartPosition(4, States.HousePositionX(RandomHouseID), States.HousePositionY(RandomHouseID));
+			
+			//Spawn Reinforcements
+			for i := 0 to Length(aReinforcements) -1 do
 			begin
-				Actions.HouseAddWaresTo(States.HouseAt(32, 125), 3, 9000);
-				Actions.HouseAddWaresTo(States.HouseAt(32, 125), 5, 9000);
+				aReinforcements[i] := Actions.GiveGroup(4, iUnitID[i], iX[i], iY[i], 0, 8, 4);
+				Actions.GroupHungerSet(aReinforcements[i], States.UnitMaxHunger); //Set Hunger level to max
 			end;
-			//Add 2 Iron smitheries
-			PlanAddHouse(1, 1, 33, 133);
-			PlanAddHouse(1, 1, 31, 136);
-			PlanAddRoad(1, 35, 131);
-			PlanAddRoad(1, 35, 132);
-			PlanAddRoad(1, 35, 133);
-			PlanAddRoad(1, 35, 134);
-			PlanAddRoad(1, 34, 134);
-			PlanAddRoad(1, 33, 134);
-			PlanAddRoad(1, 33, 135);
-			PlanAddRoad(1, 33, 136);
-			PlanAddRoad(1, 33, 137);
-			PlanAddRoad(1, 32, 137);
-			PlanAddRoad(1, 31, 137);
-		end;
-		if (aHouseID = States.HouseAt(33, 133)) then
-		begin
-			PlanAddRoad(1, 28, 124);
-			PlanAddRoad(1, 28, 125);
-			//Add 1 Weapon and armor smithery
-			PlanAddHouse(1, 10, 37, 132);
-			PlanAddHouse(1, 2, 42, 131);
-			PlanAddRoad(1, 36, 133);
-			PlanAddRoad(1, 37, 133);
-			PlanAddRoad(1, 38, 133);
-			PlanAddRoad(1, 39, 133);
-			PlanAddRoad(1, 40, 133);
-			PlanAddRoad(1, 40, 132);
-			PlanAddRoad(1, 40, 131);
-			PlanAddRoad(1, 40, 130);
-			PlanAddRoad(1, 41, 132);
-			PlanAddRoad(1, 42, 132);
-		end;
-		if (aHouseID = States.HouseAt(37, 132)) then
-		begin
-			PlanAddRoad(1, 29, 127);
-			PlanAddRoad(1, 29, 128);
-			PlanAddRoad(1, 29, 129);
-			PlanAddRoad(1, 29, 130);
-			PlanAddRoad(1, 29, 131);
-			PlanAddRoad(1, 30, 131);
-			//Add 3rd Iron smithery and an additional Armor smithery
-			PlanAddHouse(1, 1, 36, 136);
-			PlanAddHouse(1, 10, 40, 137);
-			PlanAddRoad(1, 34, 137);
-			PlanAddRoad(1, 35, 137);
-			PlanAddRoad(1, 36, 137);
-			PlanAddRoad(1, 37, 137);
-			PlanAddRoad(1, 38, 137);
-			PlanAddRoad(1, 38, 138);
-			PlanAddRoad(1, 39, 138);
-			PlanAddRoad(1, 40, 138);
-			PlanAddRoad(1, 38, 136);
-			PlanAddRoad(1, 38, 135);
-			PlanAddRoad(1, 39, 135);
-			PlanAddRoad(1, 39, 134);
-		end;
-		if (aHouseID = States.HouseAt(40, 137)) then
-		begin
-			//More roads
-			PlanAddRoad(1, 30, 127);
-			PlanAddRoad(1, 31, 127);
-			PlanAddRoad(1, 32, 127);
-			PlanAddRoad(1, 33, 127);
-			bExpand := false;
-		end;
-	end;
-end;
-
-procedure OnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
-begin
-	//Coal Mines exhausted -> Build additional Coal Mines
-	if (States.HouseType(aHouseID) = 3) and (States.HouseOwner(aHouseID) = 1) and (aDestroyerIndex = -1) then
-	begin
-		iCoalBuildIndex := iCoalBuildIndex + 1;
-		if iCoalBuildIndex = 1 then
-		begin
-			PlanAddHouse(1, 3, 28, 133);
-			PlanAddRoad(1, 30, 132);
-			PlanAddRoad(1, 30, 133);
-			PlanAddRoad(1, 30, 134);
-			PlanAddRoad(1, 29, 134);
-			PlanAddRoad(1, 28, 134);
-			PlanAddRoad(1, 31, 134);
-			PlanAddRoad(1, 32, 134);
-		end;
-		if iCoalBuildIndex = 2 then
-		begin
-			PlanAddHouse(1, 3, 25, 129);
-			PlanAddRoad(1, 28, 130);
-			PlanAddRoad(1, 27, 130);
-			PlanAddRoad(1, 26, 130);
-			PlanAddRoad(1, 25, 130);
-		end;
-		if iCoalBuildIndex = 3 then
-		begin
-			PlanAddHouse(1, 3, 21, 126);
-			PlanAddRoad(1, 24, 130);
-			PlanAddRoad(1, 23, 130);
-			PlanAddRoad(1, 23, 129);
-			PlanAddRoad(1, 23, 128);
-			PlanAddRoad(1, 23, 127);
-			PlanAddRoad(1, 22, 127);
-			PlanAddRoad(1, 21, 127);
-			PlanAddRoad(1, 24, 127);
-			PlanAddRoad(1, 24, 126);
-			PlanAddRoad(1, 24, 125);
-			PlanAddRoad(1, 24, 124);
-			PlanAddRoad(1, 25, 126);
-		end;
-		if iCoalBuildIndex = 4 then
-		begin
-			PlanAddHouse(1, 3, 17, 126);
-			PlanAddRoad(1, 20, 127);
-			PlanAddRoad(1, 19, 127);
-			PlanAddRoad(1, 18, 127);
-			PlanAddRoad(1, 17, 127);
-		end;
-		if iCoalBuildIndex = 5 then
-		begin
-			PlanAddHouse(1, 3, 13, 125);
-			PlanAddRoad(1, 16, 127);
-			PlanAddRoad(1, 15, 127);
-			PlanAddRoad(1, 15, 126);
-			PlanAddRoad(1, 14, 126);
-			PlanAddRoad(1, 13, 126);
-		end;
-	end;
+		end;	
 end;

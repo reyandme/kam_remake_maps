@@ -1,24 +1,34 @@
 //-- Dynamic Map --//
 //By Strangelove
-//v0.2b
-//02.04.2019
-//Developed for r8746
+//v0.3.1 (Version without SFX Support)
+//02.10.2021
+//Developed for r12485
 
 {$EVENT evtMissionStart:DynamicMapOnMissionStart}
 {$EVENT evtTick:DynamicMapOnTick}
 
+
+{$DEFINE ANIMATETILES} //Enables (Lava-)Tile Animation
+{$UNDEF ANIMATETILES}
+
+
+{$IFDEF ANIMATETILES}
 var
 	aLavaTiles: array of TKMTerrainTileBrief;
-	iLavaTileCount: Integer;
+	iLavaTileCount: Word;
 
 	
-procedure SaveTile(X, Y: Byte);
+procedure SaveLavaTile(X, Y: Word);
 begin
-	aLavaTiles[iLavaTileCount].X := X;
-	aLavaTiles[iLavaTileCount].Y := Y;
-	aLavaTiles[iLavaTileCount].UpdateRotation := True;
-	iLavaTileCount := iLavaTileCount +1;
+	if States.MapTileType(X, Y) = 7 then
+	begin
+		aLavaTiles[iLavaTileCount].X := X;
+		aLavaTiles[iLavaTileCount].Y := Y;
+		aLavaTiles[iLavaTileCount].UpdateRotation := True;
+		Inc(iLavaTileCount);
+	end;
 end;
+
 
 procedure AnimateLavaTiles();
 var 
@@ -29,18 +39,18 @@ begin
 	Actions.MapTilesArraySet(aLavaTiles, False, False); 
 end;
 
+
 procedure DynamicMapOnMissionStart();
 var
-	X, Y: Byte;
+	X, Y: Word;
 begin
-	iLavaTileCount := 0;
 	SetLength(aLavaTiles, States.MapWidth() *States.MapHeight());
 	for X := 1 to States.MapWidth() -1 do
 		for Y := 1 to States.MapHeight() -1 do
-			if (States.MapTileType(X, Y) = 7) then
-				SaveTile(X, Y);
+			SaveLavaTile(X, Y);
 	SetLength(aLavaTiles, iLavaTileCount);
 end;
+
 
 procedure DynamicMapOnTick();
 begin
@@ -49,13 +59,28 @@ begin
 end;
 
 
+{$ELSE}
+procedure DynamicMapOnMissionStart();
+begin
+	exit;
+end;
+
+
+procedure DynamicMapOnTick();
+begin
+	exit;
+end;
+{$ENDIF}
+
+
+
 //Changes Waterfall End-Tiles (Not automated yet)
-procedure ChangeWaterfallEndTiles(X1, X2, Y: Byte);
+procedure ChangeWaterfallEndTiles(X1, X2, Y: Word);
 var
 	aTiles: array of Byte;
-	X, i, k, iTile: Byte;
+	i, k, iTile: Byte;
+	X: Word;
 begin
-	k := 0;
 	SetLength(aTiles, (X2-X1+1));
 	for i := 0 to Length(aTiles) -1 do
 	begin
@@ -74,6 +99,6 @@ begin
 	for X := X1 to X2 do
 	begin
 		Actions.MapTileSet(X, Y, aTiles[k], 0);
-		k := k +1;
+		Inc(k);
 	end;
 end;

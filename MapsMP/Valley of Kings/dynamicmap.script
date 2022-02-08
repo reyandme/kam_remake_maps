@@ -1,24 +1,24 @@
 //-- Dynamic Map --//
 //By Strangelove
-//v0.3.0 (Version without SFX Support)
-//23.04.2021
+//v0.3.1 (Version without SFX Support)
+//02.10.2021
 //Developed for r12485
 
 {$EVENT evtMissionStart:DynamicMapOnMissionStart}
 {$EVENT evtTick:DynamicMapOnTick}
 
 
-//{$DEFINE ANIMATETILES} //Enables (Lava-)Tile Animation
-//{$UNDEF ANIMATETILES}
+{$DEFINE ANIMATETILES} //Enables (Lava-)Tile Animation
+{$UNDEF ANIMATETILES}
 
 
 {$IFDEF ANIMATETILES}
 var
 	aLavaTiles: array of TKMTerrainTileBrief;
-	iLavaTileCount: Integer;
+	iLavaTileCount: Word;
 
 	
-procedure SaveLavaTile(X, Y: Byte);
+procedure SaveLavaTile(X, Y: Word);
 begin
 	if States.MapTileType(X, Y) = 7 then
 	begin
@@ -74,13 +74,14 @@ end;
 {$ENDIF}
 
 
+
 //Changes Waterfall End-Tiles (Not automated yet)
-procedure ChangeWaterfallEndTiles(X1, X2, Y: Byte);
+procedure ChangeWaterfallEndTiles(X1, X2, Y: Word);
 var
 	aTiles: array of Byte;
-	X, i, k, iTile: Byte;
+	i, k, iTile: Byte;
+	X: Word;
 begin
-	k := 0;
 	SetLength(aTiles, (X2-X1+1));
 	for i := 0 to Length(aTiles) -1 do
 	begin
@@ -99,6 +100,6 @@ begin
 	for X := X1 to X2 do
 	begin
 		Actions.MapTileSet(X, Y, aTiles[k], 0);
-		k := k +1;
+		Inc(k);
 	end;
 end;

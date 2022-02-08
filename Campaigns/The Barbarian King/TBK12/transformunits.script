@@ -73,10 +73,11 @@ end;
 
 procedure TransformUnitsOnWarriorEquipped(aUnitID, aGroupID: Integer);
 var
-	i, iTypeLocal: Byte;
+	i, iTypeLocal, iOwnerLocal: Byte;
 begin
+	iOwnerLocal := States.UnitOwner(aUnitID);
 	//"Transform" Units of AI Players
-	if States.PlayerIsAI(States.UnitOwner(aUnitID)) then
+	if States.PlayerIsAI(iOwnerLocal) then
 	begin
 		iTypeLocal := States.UnitType(aUnitID);
 		//UnitType is the same as the Units in the Group its gonna get linked to: Do nothing
@@ -88,9 +89,8 @@ begin
 				if (aTransformer[i].iGiveU = -1) then
 				begin
 					//Map specific
-					if iTypeLocal = 16 then KilledUnitData(aUnitID, aGroupID, i); //Swordmen
-					if iTypeLocal = 15 then KilledUnitData(aUnitID, aGroupID, i); //Axe Fighter
-					//if iTypeLocal = 14 then KilledUnitData(aUnitID, aGroupID, i); //Militia
+					//if (iOwnerLocal = 4) and (iTypeLocal = 16) then KilledUnitData(aUnitID, aGroupID, i);
+					if ((iOwnerLocal = 2) or (iOwnerLocal = 3)) and (iTypeLocal = 16) then KilledUnitData(aUnitID, aGroupID, i);
 					exit;
 				end;
 		//First Member of a Group (New Group): Leave as is or kill (by chance)
@@ -100,9 +100,8 @@ begin
 					if (aTransformer[i].iGiveU = -1) then
 					begin
 						//Map specific
-						if iTypeLocal = 16 then KilledUnitData(aUnitID, aGroupID, i); //Swordmen
-						if iTypeLocal = 15 then KilledUnitData(aUnitID, aGroupID, i); //Axe Fighter
-						//if iTypeLocal = 14 then KilledUnitData(aUnitID, aGroupID, i); //Militia
+						//if (iOwnerLocal = 4) and (iTypeLocal = 16) then KilledUnitData(aUnitID, aGroupID, i);
+						if ((iOwnerLocal = 2) or (iOwnerLocal = 3)) and (iTypeLocal = 16) then KilledUnitData(aUnitID, aGroupID, i);
 						exit;
 					end;
 	end;
@@ -125,8 +124,9 @@ begin
 				//if aTransformer[i].iType = 19 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 24, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Lancer -> Rebel
 				//if aTransformer[i].iType = 17 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 25, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Bowman -> Rogue
 				//if aTransformer[i].iType = 14 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 23, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Milita -> Barbarian
-				if aTransformer[i].iType = 15 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 23, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Axefighter -> Barbarian
+				//if aTransformer[i].iType = 15 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 23, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Axefighter -> Barbarian
 				if aTransformer[i].iType = 16 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 26, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Swordmen -> Warrior
+				//if aTransformer[i].iType = 21 then iGroup := GiveTransformedUnit(aTransformer[i].iOwner, 27, aTransformer[i].iX, aTransformer[i].iY, aTransformer[i].iD, 1, 1); //Scout -> Vagabond
 				//Check if Unit belongs to a Group and Link it
 				if not States.GroupDead(aTransformer[i].iGiveG) then 
 					Actions.GroupOrderLink(iGroup, aTransformer[i].iGiveG);

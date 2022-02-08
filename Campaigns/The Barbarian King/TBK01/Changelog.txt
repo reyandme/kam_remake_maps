@@ -53,3 +53,7 @@ Version 2.2 (29.12.2019)
 
 Version 2.2b (12.04.2020)
 - Fixed a bug where it was not possible to win this mission
+
+Version 2.2c (01.05.2021)
+- Fixed TBK01.ger.libx
+- Removed chinese libx files, as it was outdated

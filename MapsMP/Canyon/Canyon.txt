@@ -1,3 +1,15 @@
-BigDesc
-2-4 Players||Map and script by Strangelove|Sounds provided by Tiank|(Check SoundCredits.txt for additional info)||Version 1.1
+Author
+Strangelove
+
+Version
+2.0 (23.09.2021)
+
+SmallDescLIBX
+10
+
+BigDescLIBX
+11
+
+DifficultyLevels
+mdEasy3,mdEasy2,mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
 

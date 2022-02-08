@@ -1,30 +1,102 @@
 //-- Siege of Castle Fennford --//
 //By Strangelove
-//v0.8.2
-//28.08.2019
+//v0.8.4
+//08.10.2021
 //Developed for r10548
-//Last tested on r10745
+//Last tested on r12945
 
 {$I dynamicmap.script}
 {$I improvestaticai.script}
 {$I difficulty.script}
 {$I transformunits.script}
 
+{$COMMAND cmd: ShowCommands}
+{$COMMAND skipopeningfight: SkipInitialFightSequence}
+{$COMMAND killmygroups: KillPlayerGroups}
+
 const
 	Offset_X = 16; //Adjust for new MapSize
+	MAX_HUMAN_PLAYERS = 3; //Maximum Amount of Human Players
 
 
 var
 	DifficultySetting: TKMMissionDifficulty; 
 
 
+
+procedure ShowCommands(P: Integer);
+begin
+	Actions.ShowMsg(P, '/cmd|/skipopeningfight|/killmygroups');
+end;
+
+
+procedure KillPlayerGroups(P: Integer);
+var
+	g: ShortInt;
+	iGroups: array of Integer;
+begin
+	iGroups := States.PlayerGetAllGroups(P);
+	for g := 0 to Length(iGroups) -1 do
+		Actions.GroupKillAll(iGroups[g], false);
+end;
+
+
+procedure SkipInitialFightSequence(P: Integer); //Kill all Groups involved in initial Attack
+var
+	g: Byte;
+begin
+	for g := 9 to 11 do
+		KillPlayerGroups(g);
+end;
+
+
+//Check amount of Active Human Players on the Map
+function GetHumanPlayerCount(): Byte;
+var
+	p, HumanPlayerCount: Byte;
+begin
+    for	p := 0 to States.StatPlayerCount() -1 do
+		if not States.PlayerIsAI(p) then
+			if States.PlayerEnabled(p) then
+				Inc(HumanPlayerCount);
+	Result := HumanPlayerCount;
+end;
+
+
 procedure OnMissionStart();
 var
+	p, w: Byte;
 	Cavalry: array[0..1] of Integer;
-begin
+begin	
 	DifficultySetting := States.MissionDifficulty();
+
+	//[Very Easy, Easier, Easy, Normal, Hard, Harder, Very Hard]
+	EquipRateMod := [2, 1.5, 1.25, 1, 0.75, 0.5, 0.3];
+	RecruitDelayMod := [2, 1.5, 1.25, 1, 1, 1, 1];
+	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+
 	//Scale initial Fight with difficulty
 	case DifficultySetting of
+		mdEasy3:
+		begin
+			//Player9 (Leather)
+			Cavalry[0] := Actions.GiveGroup(9, 27, 74 +Offset_X, 3, 6, 9, 3); //Vagabond
+			Cavalry[1] := Actions.GiveGroup(9, 27, 76 +Offset_X, 7, 6, 12, 4);
+			Actions.GiveGroup(9, 15, 75 +Offset_X, 13, 6, 12, 4); //Axefighter
+			Actions.GiveGroup(9, 17, 78 +Offset_X, 13, 6, 8, 4); //Bowman
+			Actions.GiveGroup(9, 19, 78 +Offset_X, 19, 6, 9, 3); //Lancers
+			//Player10
+			Actions.GiveGroup(10, 22, 77 +Offset_X, 54, 6, 9, 3); //Knights
+			Actions.GiveGroup(10, 22, 81 +Offset_X, 54, 6, 9, 3); 
+			Actions.GiveGroup(10, 22, 85 +Offset_X, 54, 6, 6, 3); 
+			//Player11
+			Actions.GiveGroup(11, 16, 104 +Offset_X, 80, 4, 8, 4); //Swordman
+			Actions.GiveGroup(11, 20, 109 +Offset_X, 77, 4, 9, 3); //Pikes
+			Actions.GiveGroup(11, 18, 103 +Offset_X, 76, 4, 8, 4); //Crossbow
+			Actions.GiveGroup(11, 22, 124 +Offset_X, 125, 6, 9, 3); //Knights
+			Actions.GiveGroup(11, 22, 128 +Offset_X, 125, 6, 9, 3); 
+		end;
 		mdEasy2:
 		begin
 			//Player9 (Leather)
@@ -73,8 +145,8 @@ begin
 			Actions.GiveGroup(9, 19, 78 +Offset_X, 19, 6, 9, 3); //Lancers
 			//Player10
 			Actions.GiveGroup(10, 22, 77 +Offset_X, 53, 6, 12, 4); //Knights
-			Actions.GiveGroup(10, 22, 81 +Offset_X, 54, 6, 9, 3); 
-			Actions.GiveGroup(10, 22, 85 +Offset_X, 53, 6, 12, 4); 
+			Actions.GiveGroup(10, 22, 81 +Offset_X, 53, 6, 12, 4); 
+			Actions.GiveGroup(10, 22, 85 +Offset_X, 53, 6, 8, 4); 
 			//Player11
 			Actions.GiveGroup(11, 16, 104 +Offset_X, 80, 4, 12, 4); //Swordman
 			Actions.GiveGroup(11, 20, 109 +Offset_X, 77, 4, 9, 3); //Pikes
@@ -128,6 +200,34 @@ begin
 	Actions.UnitKill(States.UnitAt(145 +Offset_X, 127), true);
 	Actions.UnitKill(States.UnitAt(146 +Offset_X, 127), true);
 	Actions.UnitKill(States.UnitAt(147 +Offset_X, 127), true);
+	
+	//Modify  if there are less then MAX_HUMAN_PLAYERS in the game
+	if GetHumanPlayerCount() < MAX_HUMAN_PLAYERS then
+	begin
+		//Reduce Recruit Rate of AI Players
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.PlayerIsAI(p) then
+				SetEquipRate(p, MAX_HUMAN_PLAYERS /GetHumanPlayerCount(), 0);
+		
+		for p := 0 to States.LocationCount() -1 do
+			if not States.PlayerEnabled(p) then		
+			begin
+				//Kill Enemy units that would attack disabled Player
+				case p of
+					0: KillPlayerGroups(9);
+					1: KillPlayerGroups(10);
+					2: KillPlayerGroups(11);
+				end;
+			end else
+			begin
+				//Allow all trades
+				for w := 0 to 27 do
+					Actions.SetTradeAllowed(p, w, true);
+				//Allow all houses to be built
+				for w := 0 to 29 do
+					Actions.HouseAllow(p, w, true);
+			end;
+	end;
 end;
 
 procedure OnTick();
@@ -140,7 +240,7 @@ begin
 	if States.GameTime() = (MAX_HANDS +1) then
 	begin
 		case DifficultySetting of
-			mdEasy2: //20
+			mdEasy3, mdEasy2: //20
 			begin
 				//Leather
 				RemoveDefencePositionAndGroup(3, 81 +Offset_X, 2);

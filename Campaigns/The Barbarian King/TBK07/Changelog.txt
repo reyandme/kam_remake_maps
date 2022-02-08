@@ -13,3 +13,6 @@ Version 2.2: (30.12.2019)
 - 'Easy' decreases Recruit Rate by 50% instead of 33%
 - Fixed a bug that was introduced when moving the campaign to version r10745
 - Updated Elevation of Stone mountain in enemy base
+
+Version 2.2b: (28.05.2021)
+- Visual update to Player0's stone mountain

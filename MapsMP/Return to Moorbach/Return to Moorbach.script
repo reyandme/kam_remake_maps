@@ -1,9 +1,9 @@
 //-- Return to Moorbach --//
 //By Strangelove
-//v0.8.4
-//28.08.2020
+//v0.8.5
+//08.10.2021
 //Developed for r10540
-//Last Tested in r10745
+//Last Tested on 12945
 
 {$I dynamicmap.script}
 {$I improvestaticai.script}
@@ -69,6 +69,12 @@ var
 begin
 	DifficultySetting := States.MissionDifficulty();
 
+	//[Very Easy, Easier, Easy, Normal, Hard, Harder, Very Hard]
+	EquipRateMod := [2, 1.5, 1.25, 1, 0.75, 0.5, 0.3];
+	RecruitDelayMod := [2, 1.5, 1.25, 1, 1, 1, 1];
+	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	
 	case DifficultySetting of
 		mdHard1, mdHard2:
 		begin
@@ -106,7 +112,24 @@ begin
 	//Remove/Add Enemy Defence Positions and Groups
 	if States.GameTime() = (MAX_HANDS +1) then
 		case DifficultySetting of
-			mdEasy2:
+			mdEasy3: //-14
+			begin
+				RemoveDefencePositionAndGroup(3, 17, 43);
+				RemoveDefencePositionAndGroup(4, 156, 97);
+				RemoveDefencePositionAndGroup(5, 83, 4);
+				RemoveDefencePositionAndGroup(3, 12, 9);
+				RemoveDefencePositionAndGroup(4, 157, 71);
+				RemoveDefencePositionAndGroup(6, 125, 10);
+				RemoveDefencePositionAndGroup(6, 144, 38);
+				RemoveDefencePositionAndGroup(5, 81, 10);
+				RemoveDefencePositionAndGroup(5, 144, 38);
+				RemoveDefencePositionAndGroup(5, 75, 13);
+				RemoveDefencePositionAndGroup(5, 78, 18);
+				RemoveDefencePositionAndGroup(4, 124, 69);
+				RemoveDefencePositionAndGroup(4, 127, 69);
+				RemoveDefencePositionAndGroup(3, 8, 41);
+			end;
+			mdEasy2: //-12
 			begin
 				RemoveDefencePositionAndGroup(5, 83, 4);
 				RemoveDefencePositionAndGroup(3, 12, 9);
@@ -121,7 +144,7 @@ begin
 				RemoveDefencePositionAndGroup(4, 127, 69);
 				RemoveDefencePositionAndGroup(3, 8, 41);
 			end;
-			mdEasy1: 	
+			mdEasy1: //-9
 			begin
 				RemoveDefencePositionAndGroup(6, 125, 10);
 				RemoveDefencePositionAndGroup(6, 144, 38);
@@ -133,7 +156,7 @@ begin
 				RemoveDefencePositionAndGroup(4, 127, 69);
 				RemoveDefencePositionAndGroup(3, 8, 41);
 			end;
-			mdNormal:
+			mdNormal: //-4
 			begin
 				RemoveDefencePositionAndGroup(5, 75, 13);
 				RemoveDefencePositionAndGroup(5, 81, 10);

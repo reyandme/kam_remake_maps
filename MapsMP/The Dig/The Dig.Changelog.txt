@@ -200,3 +200,9 @@ Version 0.9.3 (22.05.2020):
   - Updated visuals of Stone Mountains on Loc1 and Loc2
   - Updated parts of the Gold Mountain below Player3
   - Increased amount of Coal on Loc2 under Iron Mountain
+
+Version 0.9.3b (10.05.2021)
+- Updated "dynamicmap.script" to the newest version
+
+Version 0.9.4 (08.10.2021)
+- Updated scripts to the newest version

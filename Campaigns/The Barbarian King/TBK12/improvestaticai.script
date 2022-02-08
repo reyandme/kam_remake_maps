@@ -145,7 +145,7 @@ begin
 					Actions.HouseWareBlock(aHouses[h], 12, true); //Leather
 					//Actions.HouseWareBlock(aHouses[h], 13, true); //Sausages
 					Actions.HouseWareBlock(aHouses[h], 14, true); //Pig
-					Actions.HouseWareBlock(aHouses[h], 15, true); //Skin
+					//Actions.HouseWareBlock(aHouses[h], 15, true); //Skin //Map specific adjustment
 					//16-26 = Military Equipment
 					//Actions.HouseWareBlock(aHouses[h], 15, true); //Fish
 				end;
@@ -181,7 +181,7 @@ procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
 var
 	j: Byte;
 begin
-	if States.PlayerIsAI(States.HouseOwner(aHouseID)) and (aDestroyerIndex <> -1) then
+	if States.PlayerIsAI(States.HouseOwner(aHouseID)) and (aDestroyerIndex <> -1) and not States.PlayerAllianceCheck(0, States.HouseOwner(aHouseID)) then //Map specific adjustment
 		for j := 0 to Length(aDestroyedHouses) -1 do
 			if (aDestroyedHouses[j].aHouse = -1) then //Save House Data to next empty position in array
 			begin
@@ -202,7 +202,7 @@ begin
 				begin
 					aDestroyedHouses[j].aHouse := -1;
 					PlanRebuildHouse(aDestroyedHouses[j].iOwner, aDestroyedHouses[j].iType, aDestroyedHouses[j].iX, aDestroyedHouses[j].iY);
-					//break;
+					break;
 				end;
 end;
 

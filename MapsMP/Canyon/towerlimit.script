@@ -1,0 +1,96 @@
+//-- Towerlimit --//
+//Credits to Toxic for the original script
+//Modified by Strangelove
+//v1.1
+//23.04.2021
+
+
+{$EVENT evtHousePlanPlaced:TowerLimitOnHousePlanPlaced}
+{$EVENT evtHousePlanRemoved:TowerLimitOnHousePlanRemoved}
+{$EVENT evtHouseDestroyed:TowerLimitOnHouseDestroyed}
+{$EVENT evtMissionStart:TowerLimitOnMissionStart}
+{$EVENT evtTick:TowerLimitOnTick}
+
+
+type aPlayer = record
+	TowersCount: Byte;
+end;
+
+var
+	Player: array of aPlayer;
+
+const 
+	TOWER_LIMIT = 8;
+	TOWER_ID = 17;
+
+var
+	Towerlimit: Word;
+	
+	
+// Check when a player places a plan if it is a tower, and increment the tower count. 
+// If the tower limit is reached, notify the player and remove the plan.
+procedure TowerLimitOnHousePlanPlaced(aPlayer: Integer; aX: Integer; aY: Integer; THouseType: Integer);
+begin
+	if THouseType = TOWER_ID then
+		if Player[aPlayer].TowersCount < Towerlimit then
+			Player[aPlayer].TowersCount := Player[aPlayer].TowersCount + 1
+		else begin
+			//Actions.ShowMSG(aPlayer, 'The maximum amount of towers is limited to '+IntToStr(Towerlimit)+'!'); //Disabled; Now shown as an overlay in OnTick
+			Actions.PlanRemove(aPlayer, aX, aY);
+	end;
+end;
+
+
+// When a player removes a tower plan, decrement the tower count.
+procedure TowerLimitOnHousePlanRemoved(aPlayer: Integer; aX: Integer; aY: Integer; THouseType: Integer);
+begin
+	if THouseType = TOWER_ID then
+		Player[aPlayer].TowersCount := Player[aPlayer].TowersCount - 1;
+end;
+
+
+// When a tower is destroyed, decrement the tower count.
+procedure TowerLimitOnHouseDestroyed(aHouse, aDestroyerIndex: Integer);
+begin
+	if (States.HouseType(aHouse) = TOWER_ID) then
+		Player[States.HouseOwner(aHouse)].TowersCount := Player[States.HouseOwner(aHouse)].TowersCount - 1;
+end;
+
+
+procedure TowerLimitOnMissionStart;
+var aPlayer, i: Integer;
+aiHouses: array of Integer;
+begin
+	SetLength(Player, States.LocationCount);
+	//Modify Towerlimit according to Difficulty setting
+	case States.MissionDifficulty() of
+		mdEasy3:	Towerlimit := 10;
+		mdEasy2:	Towerlimit := 8;
+		mdEasy1:	Towerlimit := 6;
+		mdNormal:	Towerlimit := 5;
+		mdHard1:	Towerlimit := 4;
+		mdHard2:	Towerlimit := 2;
+		mdHard3:	Towerlimit := 0;
+		else
+			TowerLimit := TOWER_LIMIT; //If Difficulty Settings arent enabled in MapEd fall back to default TOWER_LIMIT
+	end;
+	// Loop through all the players and add all the existing towers to the player's tower count.
+	for aPlayer := 0 to States.LocationCount-1 do if States.PlayerEnabled(aPlayer) then
+	begin
+		aiHouses := States.PlayerGetAllHouses(aPlayer);
+		for i := 0 to Length(aiHouses) - 1 do begin
+			if (States.HouseType(aiHouses[i]) = TOWER_ID) then
+				Player[aPlayer].TowersCount := Player[aPlayer].TowersCount + 1;
+		end;
+	end;
+end;
+
+
+//Show Amount of Towers and Limit with a TextOverlay
+procedure TowerLimitOnTick();
+var aPlayer: Integer;
+begin
+	for aPlayer := 0 to States.LocationCount() -1 do
+		if States.PlayerEnabled(aPlayer) then
+			Actions.OverlayTextSet(aPlayer, States.HouseTypeName(TOWER_ID) + ': ' + inttostr(Player[aPlayer].TowersCount) + '/' + inttostr(Towerlimit));
+end;

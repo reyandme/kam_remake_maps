@@ -80,3 +80,33 @@ Version 0.8.2f: (01.04.2021)
 + Increased amount of Starting Units for Human Players
   - Loc2: +2 Knights
   - Loc3: +3 Swordman
+
+Version 0.8.2g: (10.05.2021)
+- Updated "dynamicmap.script" to the newest version
+
+Version 0.8.2h: (24.06.2021)
++ Changes to Mission Difficulty
+  - Reduced initial attack on Player1 by 1 Knight and reformatted Knight groups
+  - Updated 'difficulty.script' to the newest version (v0.8.5c)
+  - Added 'Very Easy' Difficulty options; Initial Attack scaling included;
+  - Difficulty modifiers changed for 'Easy', 'Easier' and 'Very Easy'; First attack comes later, after that attacks are alittle more frequent;
+
+Version 0.8.3: (16.07.2021)
++ Map can now be played with less than 3 players without becoming unbeatable (would still recommend to play this map with 3 players tho!)
+  - Dynamically change recruit rate in regard to how many players are present on the map
+  - Kill Enemy groups that would attack disabled Players
+  - Option is mentioned with a warning in the english and german libx-file
++ Added console commands
+  - Show availible commands: /cmd
+  - It is now possible to skip initial fighting sequence with following script command: /skipopeningfight
+  - Kill all groups of the player: /killmygroups
+
+Version 0.8.3b: (20.08.2021)
+- Increased Recruit delay of all AI Players by 5mins in MapEd
++ Balance changes if Map is played with less than 3 Players:
+  - When played with less than 3 Players, all houses and trades are enabled for all players
+  - Disabled all Townhall units other than Warriors for Loc3 in MapEd
+  - Enabled all Townhall units for Loc2 in MapEd
+
+Version 0.8.4: (08.10.2021)
+- Updated scripts to the newest version

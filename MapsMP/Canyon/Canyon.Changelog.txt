@@ -1,0 +1,21 @@
+Canyon 4P
+*********
+
+Version 1.1:
+- Map is now bigger and supports 4 Players
+- Normalised amount of Places for Gold Mines (5 for each Player)
+- Every Player can now build 3.5 Iron Mines instead of 5
+- Increased amount of Iron from ~200 to 250
+- Mayor Elevation fixes; especially to Mountains
+- Fixed alot of broken tiles
+- Replaced uncuttable trees
+
+
+Version 2.0: (23.09.2021)
+- Increased Mapsize to add a battlefield between the player teams
+- Added Libx-File and moved Desc to that
+- Modified description
+- Added difficulty settings: Difficulty settings change the amount of towers that can be build
+- Sound implementation disabled and all soundfiles removed
+- Disabled Trading for Stone
+- Blocked Quarry in MapEd

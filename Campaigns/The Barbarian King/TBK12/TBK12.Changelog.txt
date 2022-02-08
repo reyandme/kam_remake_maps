@@ -1,0 +1,17 @@
+TBK12
+*****
+
+TBK12: Version 1.0: (16.05.2021)
+- First release
+
+TBK12: Version 1.1: (17.05.2021)
+- Readjusted Defense Position Radius of Player2's Attack Groups (Some Groups were too easily baited while others did ignore it completly)
+- Reinforcement Wave starts with 40 Soldiers instead of 32
++ Player1:
+  - Removed Attack Positions from MapEd
+  - Attack Positions now get added with script after defeating Player2
+  - Removed AI Soldier Limit
+  - AI Ally now attacks repeatedly with 26 Soldiers instead of 21 Soldiers once and 31 Soldiers repeatedly afterwards ("Take all" instead of specific groups)
+
+TBK12: Version 1.1b (28.05.2021)
+- Various visual updates to the map

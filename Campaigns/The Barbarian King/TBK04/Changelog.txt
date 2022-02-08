@@ -48,3 +48,14 @@ Version 2.1b (22.04.2019)
 
 Version 2.2 (30.12.2019)
 - Integrated newest 'difficulty.script' version
+
+Version 2.2b (28.05.2021)
++ Player3 Changes
+  - Disabled "Fast Equip"
+  - Recruit Rate decreased to 500
+  - Decreased Defense Radius of Xbows (From 21 to 16)
+  - Increased Defense Radius of all other groups (From 21 to 24)
+- Increased Defense Radius of Player7's groups (From 16 to 20)
+- Time between enemy reinforcements increased by 20% (Every 18 instead of 15 Minutes)
+- Fixed unit formation error of Player2 (From 10x2 to 10x5)
+- On Easy Difficutly: Does not increase the amount of starting units anymore

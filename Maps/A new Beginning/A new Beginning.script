@@ -1,0 +1,132 @@
+//-- A new Beginning --//
+//By Strangelove
+//v0.8.1
+//23.09.2021
+
+
+//Set Time and Goals
+const
+	COUNTDOWN = 48000; //1h 20min
+	UNITS = 120;
+	SAUSAGES = 100;
+	FISH = 80;
+	LOAVES = 250;
+	WINE = 120;
+
+var 
+	iTicks: Integer;
+	iTotalUnitAmount, iTotalSausageAmount, iTotalLoaveAmount, iTotalWineAmount, iTotalFishAmount: Integer;
+	iUnits, iSausage, iFish, iLoaves, iWine: Integer;
+
+
+function TotalResourceAmount(iPlayer, iType: Byte): Integer; //Check all Storehouses and Inns of iPlayer for iType Resource
+var
+	i, iTotalResourceAmount: Integer;
+	aHouses: array of Integer;
+begin
+	Result := -1;
+	aHouses := States.PlayerGetAllHouses(iPlayer);
+	for i := 0 to Length(aHouses) -1 do
+	begin
+		if (States.HouseType(aHouses[i]) = 11) or (States.HouseType(aHouses[i]) = 27) then //Check for storehouses and Inns (there might be more than 1)
+			iTotalResourceAmount := iTotalResourceAmount +States.HouseResourceAmount(aHouses[i], iType);
+		if (Result = -1) and (i = (Length(aHouses) -1)) then
+			Result := iTotalResourceAmount;
+	end;
+end;
+
+procedure DisplayGoals(iTotalAmount, iNeededAmount: Integer; sStringToDisplay: ANSIString);
+begin
+	if iTotalAmount < iNeededAmount then
+	begin
+		Actions.OverlayTextAppend(-1, '[$FFFFFF]|' + sStringToDisplay + ': ' +inttostr(iTotalAmount) + '/' +inttostr(iNeededAmount));
+	end else Actions.OverlayTextAppend(-1, '[$00FF00]|' + sStringToDisplay + ': ' +inttostr(iTotalAmount) + '/' +inttostr(iNeededAmount));
+end;
+
+
+procedure OnMissionStart();
+var
+	Modifier: Single;
+begin
+	iTicks := COUNTDOWN;
+	iTotalUnitAmount := States.StatCitizenCount(0); //Starting unit amount
+	iTotalSausageAmount := TotalResourceAmount(0, 13); //Sausage
+	iTotalFishAmount := TotalResourceAmount(0, 27); //Fish
+	iTotalLoaveAmount := TotalResourceAmount(0, 10); //Loaves
+	iTotalWineAmount := TotalResourceAmount(0, 8); //Wine
+	//Reveal Stone
+	Actions.FogRevealCircle(0, 26, 50, 6);
+	
+	//Adjust Goal-Values according to Difficulty Settings
+	case States.MissionDifficulty of
+		mdEasy1: Modifier := 0.75;
+		mdHard1: Modifier := 1.2;
+		else
+			Modifier := 1;
+	end;
+	//Apply Modifer
+	iUnits := Utils.RoundTo((UNITS * Modifier), 5);
+	iSausage := Utils.RoundTo((SAUSAGES * Modifier), 5);
+	iFish := Utils.RoundTo((FISH * Modifier), 5);
+	iLoaves := Utils.RoundTo((LOAVES * Modifier), 5);
+	iWine := Utils.RoundTo((WINE * Modifier), 5);
+end;
+
+
+procedure OnTick();
+begin
+	//Check Resource Amounts
+	iTotalSausageAmount := TotalResourceAmount(0, 13); //Sausage
+	iTotalFishAmount := TotalResourceAmount(0, 27); //Fish
+	iTotalLoaveAmount := TotalResourceAmount(0, 10); //Loaves
+	iTotalWineAmount := TotalResourceAmount(0, 8); //Wine
+	
+	//Count down...
+	iTicks := iTicks -1;
+	//Show remaining time and highlight red if almost done
+	if iTicks > 6000 then
+	begin
+		Actions.OverlayTextSet(-1, '[$FFFFFF]<$0>: ' +Utils.TimeToString(iTicks) + '|');
+	end	else
+		Actions.OverlayTextSet(-1, '[$0000FF]<$0>: ' +Utils.TimeToString(iTicks) + '|');
+	
+	//Display Requirements (Color Green when finished)
+	DisplayGoals(iTotalUnitAmount, iUnits, '<$1>');
+	DisplayGoals(iTotalSausageAmount, iSausage, States.WareTypeName(13));
+	DisplayGoals(iTotalFishAmount, iFish, States.WareTypeName(27));
+	DisplayGoals(iTotalLoaveAmount, iLoaves, States.WareTypeName(10));
+	DisplayGoals(iTotalWineAmount, iWine, States.WareTypeName(8));
+	
+	//Display Mission Briefing at GameStart
+	if States.GameTime() = 45 then
+		Actions.ShowMsg(-1, '<$2>');
+	
+	//Display Mission Briefing when time almost ran out
+	if iTicks = 6000 then
+		Actions.ShowMsg(-1, '<$3>');
+	
+	//Countdown finished: Check if Goals are reached
+	if iTicks = 0 then
+	begin
+		if 	((iTotalUnitAmount >= iUnits) and
+			(iTotalSausageAmount >= iSausage) and
+			(iTotalFishAmount >= iFish) and
+			(iTotalLoaveAmount >= iLoaves) and
+			(iTotalWineAmount >= iWine)) then
+		begin
+			Actions.PlayerWin([0], true);
+		end else
+			Actions.PlayerDefeat(0);
+	end;
+end;
+
+
+procedure OnUnitTrained(aUnistID: Integer);
+begin
+	iTotalUnitAmount := States.StatCitizenCount(0);
+end;
+
+procedure OnUnitDied(aUnitID, aKillerIndex: Integer);
+begin
+	iTotalUnitAmount := States.StatCitizenCount(0);
+end;

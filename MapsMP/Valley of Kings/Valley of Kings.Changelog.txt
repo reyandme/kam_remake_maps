@@ -72,9 +72,17 @@ Version 0.7.2e: (23.04.2021)
 - Made changes and fixes to dynamicmap.script
 
 
+Version 0.7.3: (24.06.2021)
+- Changed Colors of AI Enemies
++ Changes to Mission Difficulty
+  - Updated 'difficulty.script' to the newest version (v0.8.5c)
+  - Added 'Easier' and 'Very Easy' Difficulty options
+  - Difficulty modifiers changed for 'Easy', 'Easier' and 'Very Easy'; First attack comes later, after that attacks are alittle more frequent (You have to thank @greeny for that ;))
+
+Version 0.7.4: (08.10.2021)
+- Updated all scripts to the newest version
+
 
 TODO:
 - Add more translations
 - Add obligatory ingame briefing and do script for it
-- Scale amount of defense positions according to difficulty settings (Easier missing)
-- Set AI Colors

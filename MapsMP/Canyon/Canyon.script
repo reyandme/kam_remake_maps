@@ -1,56 +1,35 @@
 //-- Canyon --//
 //By Strangelove
-//v1.1
-//11.02.2018
+//v2.0
+//23.04.2021
 
+{$I towerlimit.script}
 
-procedure PlaySoundWhenUnitAt(X1, Y1, X2, Y2, Radius: Byte; Filename: ANSIString);
-var X, Y: Byte;
+procedure GiveWaresToStorehouse(WareType: Byte; Count: Word);
+var
+	p: Byte;
 begin
-	if Radius < 28 then Radius := 28;
-	for X := X1 to X2 do
-		for Y := Y1 to Y2 do
-			if States.UnitAt(X, Y) > 0 then
-				if States.KaMRandomI(4) = 0 then
-				begin
-					Actions.PlayWAVAtLocation(-1, Filename, 2.0 +States.KaMRandomI(2), Radius, X, Y);
-					exit;
-				end;
+	for p := 0 to States.LocationCount() -1 do
+		if States.PlayerEnabled(p) then
+			Actions.GiveWares(p, WareType, Count);
 end;
 
-function SoundToPlay(): ANSIString;
-begin
-	case States.KaMRandomI(5) of
-		0: Result := 'WoodCreek1';
-		1: Result := 'WoodCreek2';
-		2: Result := 'WoodCreek3';
-		3: Result := 'WoodCreek4';
-		4: Result := 'WoodCreek5';
-	end;
-end;
 
 procedure OnMissionStart();
 begin
-	//Insert sound for waterfall here
-	//Actions.PlayWAVAtLocationLooped(-1, 'Waterfallsound', 3.0, 28, 25, 99);
+	GiveWaresToStorehouse(1, 2500); //Stone
+	GiveWaresToStorehouse(2, 50); //Timber
+	GiveWaresToStorehouse(7, 60); //Gold
+	GiveWaresToStorehouse(8, 60); //Wine
+	GiveWaresToStorehouse(10, 35); //Loaves
+	GiveWaresToStorehouse(13, 15); //Sausages
+	GiveWaresToStorehouse(27, 30); //Fish
 end;
+
 
 procedure OnHouseBuilt(aHouseID: Integer);
 begin
 	//Unlock Watchtower after Sawmill
 	if States.HouseType(aHouseID) = 0 then
 		Actions.HouseUnlock(States.HouseOwner(aHouseID), 17);
-end;
-
-procedure OnTick();
-begin
-	//Play sound on Bridges
-	if States.GameTime() mod 18 = 0 then
-		PlaySoundWhenUnitAt(73, 15, 86, 20, 28, SoundToPlay()); //North
-	if States.GameTime() mod 18 = 6 then
-		PlaySoundWhenUnitAt(70, 57, 91, 62, 28, SoundToPlay()); //Middle
-	if States.GameTime() mod 18 = 12 then
-		PlaySoundWhenUnitAt(70, 67, 91, 72, 28, SoundToPlay()); //Middle
-	if States.GameTime() mod 18 = 18 then
-		PlaySoundWhenUnitAt(73, 107, 86, 112, 28, SoundToPlay()); //South
 end;

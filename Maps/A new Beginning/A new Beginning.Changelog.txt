@@ -1,0 +1,25 @@
+A new Beginning
+**********
+
+Version 0.8: (06.04.2021)
+- First upload to The Barbarian Discord server
+
+Version 0.8a: (07.04.2021)
+- Libx Fixes
+
+Version 0.8b: (14.04.2021)
+- Fixed a bug where it was only possible to win the map when all requirements were met precicely
+- Reaveler for Stone was not set properly
+
+Version 0.8c: (10.05.2021)
+- Added a little story and mission briefings to the game (wip)
+
+Version 0.8d: (20.08.2021)
+- Map name changed from "A new Dawn" to "A new Beginning"
+- Fixed and expanded the Story and ingame briefings
+
+Version 0.8.1: (23.09.2021)
++ Map now supports difficulty settings
+  - On Hard: +20% the Resources needed to win
+  - On Easy: -25% the Resources needed to win
+- Improved readability of the script and additional comments added

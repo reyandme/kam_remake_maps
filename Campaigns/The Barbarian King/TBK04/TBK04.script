@@ -1,7 +1,7 @@
 //-- TBK04 --//
 //By Strangelove
-//v2.0d
-//06.04.2019
+//v2.0e
+//28.05.2021 (Balance only)
 
 {$I dynamicmap.script}
 {$I improvestaticai.script}
@@ -12,7 +12,7 @@
 //{$UNDEF DEBUG}
 
 const
-	SIEGE_TIMER = 9000;
+	SIEGE_TIMER = 10800; //18Minutes (Up from 15 Minutes i.e. 9000 Ticks in v2.0d)
 
 var
 	iAttackGroup: array[0..3] of Integer;
@@ -70,11 +70,9 @@ begin
 	//Difficulty Scaling
 	case States.MissionDifficulty() of
 		mdEasy1:
-		begin
 			GroupColumnCount := 3;
-			IncreaseGroupSize(0, 0);
-		end;
-		mdNormal:	GroupColumnCount := 4;
+		mdNormal:
+			GroupColumnCount := 4;
 		mdHard1:
 		begin
 			GroupColumnCount := 5;

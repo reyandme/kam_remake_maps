@@ -16,7 +16,7 @@
 
 
 {$IFDEF NOSTANDALONE}
-const	//Set Offsets in case mapsize differs from previous one (Add roads manually, since there is no "PlayerGetAllRoads")
+const	//Set Offsets in case mapsize differs from previous one
 	OFFSETX = -10;
 	OFFSETY = 42;
 {$ENDIF}
@@ -133,6 +133,11 @@ begin
 				AddDefencePositionAndGroup(2, 22, 11, 31, 0, 21);
 			end;
 		end;
+		
+	//Give Message at Mission start to indicate another attack is coming soon
+	if States.GameTime() = 300 then
+		Actions.ShowMsg(-1, '<$0>');
+		
 	//Destory CoalMines of AIPlayer3 when exhausted
 	if iCoalBuildIndex < 10 then
 		if States.GameTime mod 601 = 0 then //Check every minute
