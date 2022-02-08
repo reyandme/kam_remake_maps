@@ -488,28 +488,29 @@ begin
 	end;
 end;
 procedure CheckQuests;
-var j, c, w: integer;
+var j, c, d: integer;
+var WaresQuest, UnitsQuest: boolean;
 begin
 	if QUEST_NUMBER = 1 then begin
 		c:= 0;
-		w:= 0;
+		d:= 0;
 		for j:= 7 to 26 do begin
 			if WareTypeToQuestCount(j) > 0 then begin
 				if WARES[j] >= WareTypeToQuestCount(j) then
 					c:= c + 1;
-				if c = 12 then begin
-					w:= w + 1;
+				if c >= 12 then begin
+					WaresQuest := true;
 				end;
 			end;
 		end;
 		for j:= 14 to 22 do begin
 			if States.StatUnitTypeCount(PLAYER, j) >= ArmyTypeToQuestCount(j) then
-				c:= c + 1;
-			if c = 9 then begin
-				w:= w + 1;
+				d:= d + 1;
+			if d >= 9 then begin
+				UnitsQuest := true;
 			end;
 		end;
-		if w = 2 then
+		if WaresQuest and UnitsQuest then
 			Actions.PlayerWin([PLAYER], true);
 	end;
 end;
