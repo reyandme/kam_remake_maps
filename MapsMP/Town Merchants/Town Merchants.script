@@ -1792,6 +1792,7 @@ var
 j, k: integer;
 begin
 	//AIResource;
+	Actions.HouseAllowAllyToSelectAll(-1, false);
 	SetPlayers;
 	SetAI;
 	SetStandardSellPrice;
