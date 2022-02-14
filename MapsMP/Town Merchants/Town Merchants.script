@@ -210,6 +210,38 @@ begin
 	end;
 end;
 
+function HouseTypeToRankHT(aType: TKMHouseType): integer;
+begin
+	case aType of
+		htCoalMine,   //produce
+		htIronMine,   
+		htGoldMine,   
+		htFisherHut,  
+		htFarm,
+		htWoodcutters,
+		htQuary,
+		htWineyard:	  result:= 1;
+		
+		htSawmill,    //change
+		htIronSmithy,
+		htSwine,
+		htMill,
+		htTannery:    result:= 2;
+		
+		htWeaponSmithy, //finish
+		htBakery,
+		htArmorSmithy,
+		htStables,
+		htMetallurgists,
+		htTownHall,
+		htWeaponWorkshop,
+		htButchers:   result:= 3;
+		//htInn: result:= 3;
+		
+		else result:= 0;
+	end;
+end;
+
 function ClassToString(aClass: integer): String;
 begin
 	case aClass of
@@ -760,6 +792,7 @@ procedure SetPlayers;
 var
 aH: array of Integer;
  j, k: integer;
+ HT: TKMHouseType;
 begin
 	for j:= 0 to MAX_PLAYERS-1 do begin
 		if States.PlayerEnabled(j) then begin
@@ -790,10 +823,8 @@ begin
 			PLAYER[j].Merchant.ID:= States.GroupMember(Actions.GiveGroup(j, 24, States.HousePositionX(PLAYER[j].StorehouseID), States.HousePositionY(PLAYER[j].StorehouseID)+1, 4, 1, 1), 0);
 			PLAYER[j].Merchant.aType:= PLAYER_START_MERCHANT_TYPE;
 			PLAYER[j].Merchant.InHouse:= false;
-			for k:= 0 to 29 do begin
-				Actions.HouseUnlock(j, k);
-				Actions.HouseAllow(j, k, false);
-				//Actions.HouseUnlock(j, k);
+			for HT := htArmorSmithy to htWoodcutters do begin
+				Actions.HandHouseLock(j, HT, hlBlocked);
 			end;
 		end;
 		
@@ -883,19 +914,23 @@ begin
 end;
 
 procedure AllowHouseByClass(aPlayer, aClass: integer);
-var j: integer;
+var 
+  HT: TKMHouseType;
 begin
-	for j:= 0 to 28 do begin
-		if HouseTypeToRank(j) = aClass then
-			Actions.HouseAllow(aPlayer, j, true);
-	end;
+  for HT := htArmorSmithy to htWoodcutters do begin
+    if HT = htMarketplace then Continue;
+    
+    if HouseTypeToRankHT(HT) = aClass then
+      Actions.HandHouseLock(aPlayer, HT, hlGranted);
+  end;
 end;
 
 procedure ClearAllowHouse(aPlayer: integer);
-var j: integer;
+var 
+  HT: TKMHouseType;
 begin
-	for j:= 0 to 29 do begin
-		Actions.HouseAllow(aPlayer, j, false);
+  for HT := htArmorSmithy to htWoodcutters do begin
+		Actions.HandHouseLock(aPlayer, HT, hlBlocked);
 	end;
 end;
 
