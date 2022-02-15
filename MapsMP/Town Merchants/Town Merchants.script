@@ -790,9 +790,8 @@ end;
 
 procedure SetPlayers;
 var
-aH: array of Integer;
- j, k: integer;
- HT: TKMHouseType;
+  aH: array of Integer;
+  j, k: integer;
 begin
 	for j:= 0 to MAX_PLAYERS-1 do begin
 		if States.PlayerEnabled(j) then begin
@@ -823,9 +822,7 @@ begin
 			PLAYER[j].Merchant.ID:= States.GroupMember(Actions.GiveGroup(j, 24, States.HousePositionX(PLAYER[j].StorehouseID), States.HousePositionY(PLAYER[j].StorehouseID)+1, 4, 1, 1), 0);
 			PLAYER[j].Merchant.aType:= PLAYER_START_MERCHANT_TYPE;
 			PLAYER[j].Merchant.InHouse:= false;
-			for HT := htArmorSmithy to htWoodcutters do begin
-				Actions.HandHouseLock(j, HT, hlBlocked);
-			end;
+			Actions.HandHouseLock(j, htAny, hlBlocked);
 		end;
 		
 	end;
@@ -926,12 +923,8 @@ begin
 end;
 
 procedure ClearAllowHouse(aPlayer: integer);
-var 
-  HT: TKMHouseType;
 begin
-  for HT := htArmorSmithy to htWoodcutters do begin
-		Actions.HandHouseLock(aPlayer, HT, hlBlocked);
-	end;
+	Actions.HandHouseLock(aPlayer, htAny, hlBlocked);
 end;
 
 procedure BuyHouseOffer(aPlayer: integer);
