@@ -216,11 +216,11 @@ begin
     htCoalMine,   //produce
     htIronMine,   
     htGoldMine,   
-    htFisherHut,  
+    htFishermans,  
     htFarm,
     htWoodcutters,
-    htQuary,
-    htWineyard:   result:= 1;
+    htQuarry,
+    htVineyard:   result:= 1;
     
     htSawmill,    //change
     htIronSmithy,
@@ -915,7 +915,7 @@ var
   HT: TKMHouseType;
 begin
   for HT := htArmorSmithy to htWoodcutters do begin
-    if HT = htMarketplace then Continue;
+    if HT = htMarket then Continue;
     
     if HouseTypeToRankHT(HT) = aClass then
       Actions.HandHouseLock(aPlayer, HT, hlGranted);
