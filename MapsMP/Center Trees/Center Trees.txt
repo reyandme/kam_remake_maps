@@ -1,6 +1,6 @@
 Version
-1.7|(13.12.2021)
+1.9(19.02.2022)
 
 BigDesc
-|Center Trees|The events on this map take place 1000 years later (on map Center Castle). The Central Castle was destroyed. Constant wars and destruction of the terrain have led to irreversible changes in the terrain. Today, you have to rediscover these areas again to defeat the lurking enemy.||Made by PAKER TEAM:|The Viking|Browaar|Luki|Woloszek|PAKER||Edition 2021: PAKER|
+Center Trees||The events on this map take place 1000 years later (on map Center Castle). The Central Castle was destroyed. Constant wars and destruction of the terrain have led to irreversible changes in the terrain. Today, you have to rediscover these areas again to defeat the lurking enemy.||Made by PAKER TEAM:|The Viking|Browaar|Luki|Woloszek|PAKER||Edition 2021/2022: PAKER|
 
