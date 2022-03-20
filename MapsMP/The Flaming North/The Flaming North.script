@@ -170,14 +170,14 @@ end;
 function AttackAmount(P: Integer): Integer;
 begin
   case P of
-    2,7,8,9: Result := 35 + 5 * (Byte(States.MissionDifficulty) - 3);
+    2,7,8,9: Result := 35 + 3 * (Byte(States.MissionDifficulty) - 3);
     3,4: begin
            case States.MissionDifficulty of
              mdEasy1:  Result := 28;
              mdNormal: Result := 32;
              mdHard1:  Result := 36;
              mdHard2:  Result := 42;
-             mdHard3:  Result := 50;
+             mdHard3:  Result := 48;
            end;
          end
     else     Result := 0;
@@ -346,22 +346,22 @@ begin
              end;
 
     mdHard3: begin
-               Actions.AIEquipRate(2, 0, 200);
-               Actions.AIEquipRate(2, 1, 200);
-               Actions.AIEquipRate(3, 0, 260);
-               Actions.AIEquipRate(3, 1, 260);
-               Actions.AIEquipRate(4, 0, 260);
-               Actions.AIEquipRate(4, 1, 260);
-               Actions.AIEquipRate(5, 0, 150);
-               Actions.AIEquipRate(5, 1, 150);
-               Actions.AIEquipRate(6, 0, 150);
-               Actions.AIEquipRate(6, 1, 150);
-               Actions.AIEquipRate(7, 0, 200);
-               Actions.AIEquipRate(7, 1, 200);
-               Actions.AIEquipRate(8, 0, 200);
-               Actions.AIEquipRate(8, 1, 200);
-               Actions.AIEquipRate(9, 0, 200);
-               Actions.AIEquipRate(9, 1, 200);
+               Actions.AIEquipRate(2, 0, 210);
+               Actions.AIEquipRate(2, 1, 210);
+               Actions.AIEquipRate(3, 0, 275);
+               Actions.AIEquipRate(3, 1, 275);
+               Actions.AIEquipRate(4, 0, 275);
+               Actions.AIEquipRate(4, 1, 275);
+               Actions.AIEquipRate(5, 0, 160);
+               Actions.AIEquipRate(5, 1, 160);
+               Actions.AIEquipRate(6, 0, 160);
+               Actions.AIEquipRate(6, 1, 160);
+               Actions.AIEquipRate(7, 0, 210);
+               Actions.AIEquipRate(7, 1, 210);
+               Actions.AIEquipRate(8, 0, 210);
+               Actions.AIEquipRate(8, 1, 210);
+               Actions.AIEquipRate(9, 0, 210);
+               Actions.AIEquipRate(9, 1, 210);
                Actions.AIAttackAdd(8, True, 36000, 55, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
                Actions.AIAttackAdd(9, True, 36000, 55, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
                Actions.AIAttackAdd(2, True, 39300, 55, 0, 0, 0, 0, True, attClosestBuildingFromStartPos, Pos);
@@ -396,8 +396,8 @@ begin
     mdEasy1:  Result := 0.1;
     mdNormal: Result := 0.15;
     mdHard1:  Result := 0.25;
-    mdHard2:  Result := 0.35;
-    mdHard3:  Result := 0.45;
+    mdHard2:  Result := 0.30;
+    mdHard3:  Result := 0.35;
   end;
 end;
 
@@ -425,7 +425,7 @@ end;
 
 function BarbarianRate: Integer;
 begin
-  Result := 350 - 30 * (Byte(States.MissionDifficulty) - 3);
+  Result := 350 - 10 * (Byte(States.MissionDifficulty) - 3);
 end;
 
 
