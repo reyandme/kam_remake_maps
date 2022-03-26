@@ -9,7 +9,7 @@
 {$I superunits.script}
 
 var variant, supportArrived, textShown, liteArrived, allyArrived, liteAlive: boolean;
-var king1, king2, villageChosen, villageArriveTime, group: integer;
+var king1, king2, villageChosen, villageArriveTime, group, victoryTime: integer;
 
 procedure OnMissionStart;
 begin
@@ -1307,7 +1307,10 @@ begin
 	if (((Length(States.PlayerGetAllHouses(1)) + Length(States.PlayerGetAllHouses(2))) < 4) AND (textShown = false) AND (variant = false)) then begin
 		Actions.OverlayTextSet(0, '<$3>');
 		textShown := true;
+		victoryTime := States.GameTime + 300;
 	end;
+	
+	if ((textShown = true) AND (States.GameTime >= victoryTime)) then Actions.PlayerWin([0], false);
 	
 	if ((group > 0) AND (States.GroupDead(group)) AND (liteArrived = false) AND (liteAlive = true) AND (variant = false)) then begin
 		liteArrived := true;
