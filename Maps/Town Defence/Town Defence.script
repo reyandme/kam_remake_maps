@@ -238,7 +238,7 @@ begin
 end;
 
 Procedure OnTick;
-var idStorehouse, attTimeDiv: Integer;
+var attTimeDiv: Integer;
 begin	
 	if(States.GameTime < attTime)
 	then begin
