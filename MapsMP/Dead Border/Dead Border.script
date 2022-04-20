@@ -203,7 +203,7 @@ function DefenceSquadsCount(P, aGT: Integer): Integer;
 var
   I, aX, aY: Integer;
   GT, DT: Byte; 
-  R: Word;
+  R: Integer;
 begin
   Result := 0;
   if States.StatAIDefencePositionsCount(P) > 0 then

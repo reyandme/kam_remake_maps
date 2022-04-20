@@ -1388,7 +1388,7 @@ begin
 end;
 
 
-procedure OnGroupBeforeOrderSplit(G: Integer; var aNewType: Integer; var aNewCnt: Integer; var aMixed: Boolean);
+procedure OnGroupBeforeOrderSplit(G: Integer; var aNewType: TKMUnitType; var aNewCnt: Integer; var aMixed: Boolean);
 begin
   if (not ENABLE_SPLITTING)
   and (States.GroupMemberCount(G) <= Round(MIN_UNITS_COUNT * DifficultyFactor) * 2) then
