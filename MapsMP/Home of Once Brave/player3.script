@@ -239,7 +239,7 @@ end;
 
 
 //Remove House Plans of all players that arent Player3
-procedure Player3OnHousePlanPlaced(aPlayer: Integer; aX, aY: Word; aType: TKMHouseType);
+procedure Player3OnHousePlanPlaced(aPlayer, aX, aY, aType: Integer);
 begin
 	if ((aX >= 197) and (aY >= 230)) then
 		if aPlayer <> 3 then
