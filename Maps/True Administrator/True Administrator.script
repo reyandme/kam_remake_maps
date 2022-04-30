@@ -1,0 +1,833 @@
+
+type UnitData = record
+	unitType: Integer;
+	x: Integer;
+	y: Integer;
+	direction: Integer;
+	hungerLevel: Integer;
+end;
+
+type GroupData = record
+	units: array of UnitData;
+	columns: Integer;
+end;
+
+var
+	groupData: array of GroupData;
+	AiAttPosAmount: array of Integer;
+	k, GT : Integer;
+
+function GetGroupDataAndKill(groupId: Integer): GroupData;
+var
+	i: Integer;
+	unitId: Integer;
+begin
+	Result.columns := States.GroupColumnCount(groupId);
+
+	SetLength(Result.units, States.GroupMemberCount(groupId));
+	
+	for i := 0 to States.GroupMemberCount(groupId) - 1 do begin
+		unitId := States.GroupMember(groupId, i);
+		Result.units[i].unitType := States.UnitType(unitId);
+		Result.units[i].direction := States.UnitDirection(unitId);
+		Result.units[i].hungerLevel := States.UnitHunger(unitId);
+		Result.units[i].x := States.UnitPositionX(unitId);
+		Result.units[i].y := States.UnitPositionY(unitId);
+	end;
+	Actions.GroupKillAll(groupId, true);
+end;
+
+function SpawnGroup(owner: Integer; data: GroupData): Integer;
+var
+	i: Integer;
+	spawnedGroup: Integer;
+	flagGroupId: Integer;
+begin
+	flagGroupId := -1;
+	
+	for i := Low(data.units) to High(data.units) do begin
+		spawnedGroup := Actions.GiveGroup(owner, data.units[i].unitType, data.units[i].x, data.units[i].y, data.units[i].direction, 1, 1);
+		Actions.GroupHungerSet(spawnedGroup, data.units[i].hungerLevel);
+		if (flagGroupId = -1) then begin
+			flagGroupId := spawnedGroup;
+		end else begin
+			Actions.GroupOrderLink(spawnedGroup, flagGroupId);
+		end;
+	end;
+	
+	Actions.GroupSetFormation(flagGroupId, data.columns);
+	Actions.GroupOrderWalk(flagGroupId, data.units[0].x + 1, data.units[0].y, data.units[0].direction);
+	
+	Result := flagGroupId;
+end;
+	
+Procedure OnMissionStart();
+var
+	p, j: Byte;
+	z : Integer;
+	defXPos, defYPos: Integer;
+	defGroupType: Byte;        // Group types: 0 = Melee; 1 = Anti-horse; 2 = Ranged; 3 = Mounted
+	defRadius: Integer;
+	defType: Byte;             // Defence type: 0 = Defenders; 1 = Attackers
+begin
+	k := 0;
+	GT := 999999;
+	SetLength(AiAttPosAmount, 8);
+	for p := 1 to 7 do begin
+		z := 0;
+		for j := 0 to States.StatAIDefencePositionsCount(p) - 1 do begin
+			States.AIDefencePositionGet(p, j, defXPos, defYPos, defGroupType, defRadius, defType);
+			if (defType = 1) then begin
+				z := z + 1;
+			end;
+			AiAttPosAmount[p] := z;
+		end;
+	end;
+end;
+
+
+procedure OnTick;
+
+var
+	i, aGroupID, flagGroupId, p, j, f, aCount, aColumns: Integer;
+	defXPos, defYPos: Integer;
+	defGroupType: Byte;        // Group types: 0 = Melee; 1 = Anti-horse; 2 = Ranged; 3 = Mounted
+	defRadius: Integer;
+	defType: Byte;             // Defence type: 0 = Defenders; 1 = Attackers
+	
+	groups: array of Integer;
+begin
+	if States.GameTime mod 100 = 0 then begin
+		for p := 1 to 7 do begin
+		f := 0;
+		SetLength(groups, AiAttPosAmount[p]);
+			for j := 0 to States.StatAIDefencePositionsCount(p) - 1 do begin
+				States.AIDefencePositionGet(p, j, defXPos, defYPos, defGroupType, defRadius, defType);
+				if defType = 1 then begin
+					aGroupID := States.GroupAt(defXPos, defYPos);
+					States.AIGroupsFormationGet(p, defGroupType, aCount, aColumns);
+					if aGroupID <> - 1 then
+					if (States.GroupMemberCount(aGroupID) = aCount) then begin
+						groups[f] := aGroupID;
+						f := f + 1;
+					end;
+					if f = AiAttPosAmount[p] then begin
+						SetLength(groupData, Length(groups));
+						for i := Low(groups) to High(groups) do begin
+							groupData[i] := GetGroupDataAndKill(groups[i]);
+						end;
+						
+						GT := States.GameTime;
+					end;
+				end;
+ 			end;
+		end;
+	end;
+	
+	if (States.GameTime = GT + 1) then begin
+		for i := Low(groupData) to High(groupData) do begin
+			flagGroupId := SpawnGroup(0, groupData[i]);
+		end;
+		Actions.ShowMsgGoto(States.GroupOwner(flagGroupId), States.UnitPositionX(States.GroupMember(flagGroupId, 0)), States.UnitPositionY(States.GroupMember(flagGroupId, 0)), 'You got some units');
+	end;
+////////////////////////////////////////////////////////////////////
+  if States.GameTime = 3150 then
+    begin
+        Actions.GiveGroup(10, 27, 96, 6, 4, 12, 4);
+        Actions.GiveGroup(10, 27, 129, 4, 4, 12, 4);
+        Actions.GiveGroup(10, 27, 188, 73, 6, 12, 4);
+        Actions.GiveGroup(10, 27, 188, 77, 6, 12, 4);
+        Actions.GiveGroup(10, 27, 187, 130, 1, 12, 4);
+        Actions.GiveGroup(10, 27, 187, 108, 1, 12, 4);
+		Actions.GiveGroup(10, 27, 186, 55, 1, 12, 4);
+        Actions.GiveGroup(10, 27, 6, 100, 2, 12, 4);
+	    Actions.GiveGroup(10, 27, 6, 107, 2, 12, 4);
+	    Actions.GiveGroup(10, 27, 5, 131, 2, 12, 4);
+        Actions.GiveGroup(10, 27, 5, 135, 2, 12, 4);
+    end;
+  if States.GameTime = 3900 then
+    begin
+	    Actions.GiveGroup(10, 21, 182, 126, 4, 12, 4);
+        Actions.GiveGroup(10, 21, 182, 132, 4, 12, 4);
+    end;
+  if States.GameTime = 5400 then
+    begin
+        Actions.GiveGroup(8, 22, 6, 105, 2, 8, 4);
+        Actions.GiveGroup(8, 22, 6, 133, 2, 8, 4);
+        Actions.GiveGroup(8, 22, 150, 170, 0, 8, 4);
+        Actions.GiveGroup(8, 22, 101, 4, 4, 8, 4);
+        Actions.GiveGroup(8, 22, 108, 4, 4, 8, 4);
+        Actions.GiveGroup(8, 22, 189, 130, 0, 8, 4);
+		Actions.GiveGroup(8, 22, 188, 108, 0, 8, 4);
+        Actions.GiveGroup(8, 22, 188, 55, 0, 8, 4);
+    end;
+  if States.GameTime = 6500 then
+    begin
+        Actions.GiveGroup(8, 20, 60, 181, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 65, 181, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 183, 126, 0, 12, 4);
+		Actions.GiveGroup(8, 20, 183, 131, 0, 12, 4);
+        Actions.GiveGroup(10, 18, 62, 185, 0, 6, 3);
+        Actions.GiveGroup(10, 18, 5, 103, 0, 6, 3);
+		Actions.GiveGroup(10, 18, 188, 130, 0, 6, 3);
+		Actions.GiveGroup(10, 18, 131, 2, 0, 6, 3);
+        Actions.GiveGroup(8, 16, 5, 129, 0, 12, 4);
+		Actions.GiveGroup(8, 16, 5, 137, 0, 12, 4);
+        Actions.GiveGroup(8, 16, 100, 4, 0, 12, 4);
+		Actions.GiveGroup(8, 16, 107, 5, 0, 12, 4);
+	end;
+    if States.GameTime = 7200 then
+    begin
+        Actions.GiveGroup(8, 14, 7, 127, 0, 16, 4);
+        Actions.GiveGroup(8, 15, 7, 132, 0, 16, 4);
+        Actions.GiveGroup(8, 14, 7, 99, 0, 16, 4);
+		Actions.GiveGroup(8, 15, 7, 104, 0, 16, 4);
+		Actions.GiveGroup(8, 23, 149, 168, 0, 15, 5);
+        Actions.GiveGroup(8, 23, 153, 168, 0, 15, 5);
+        Actions.GiveGroup(8, 23, 158, 168, 0, 15, 5);
+		Actions.GiveGroup(8, 16, 60, 185, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 60, 181, 0, 16, 4);
+        Actions.GiveGroup(8, 20, 65, 181, 0, 16, 4);
+        Actions.GiveGroup(8, 18, 183, 126, 0, 8, 4);
+		Actions.GiveGroup(8, 18, 65, 185, 0, 8, 4);
+		Actions.GiveGroup(8, 14, 104, 2, 0, 25, 5);
+        Actions.GiveGroup(8, 14, 132, 1, 0, 25, 5);
+		Actions.GiveGroup(8, 14, 182, 50, 0, 25, 5);
+		Actions.GiveGroup(8, 14, 188, 71, 0, 25, 5);
+	end;
+  if States.GameTime = 7850 then
+    begin
+        Actions.GiveGroup(15, 21, 183, 126, 0, 16, 4);
+        Actions.GiveGroup(15, 21, 183, 130, 0, 16, 4);
+        Actions.GiveGroup(15, 21, 183, 134, 0, 16, 4);
+		Actions.GiveGroup(8, 17, 183, 103, 0, 4, 4);
+        Actions.GiveGroup(8, 17, 131, 2, 0, 4, 4);
+        Actions.GiveGroup(8, 17, 7, 99, 0, 4, 4);
+		Actions.GiveGroup(8, 17, 5, 128, 0, 4, 4);
+        Actions.GiveGroup(8, 17, 62, 185, 0, 4, 4);
+		Actions.GiveGroup(10, 15, 179, 50, 0, 12, 4);
+        Actions.GiveGroup(10, 19, 179, 55, 0, 12, 4);
+		Actions.GiveGroup(10, 15, 100, 5, 0, 12, 4);
+		Actions.GiveGroup(10, 19, 105, 5, 0, 12, 4);
+		Actions.GiveGroup(10, 15, 60, 180, 0, 12, 4);
+        Actions.GiveGroup(10, 19, 65, 180, 0, 12, 4);
+		Actions.GiveGroup(10, 15, 9, 103, 0, 12, 4);
+		Actions.GiveGroup(10, 19, 10, 132, 0, 12, 4);
+	end;
+  if States.GameTime = 8380 then
+    begin
+	    Actions.GiveGroup(15, 20, 183, 126, 0, 15, 5);
+        Actions.GiveGroup(15, 20, 183, 130, 0, 15, 5);
+        Actions.GiveGroup(15, 18, 183, 134, 0, 6, 3);
+        Actions.GiveGroup(8, 17, 152, 172, 0, 8, 4);
+        Actions.GiveGroup(8, 17, 157, 172, 0, 8, 4);
+		Actions.GiveGroup(10, 22, 184, 103, 0, 8, 4);
+        Actions.GiveGroup(10, 22, 6, 127, 0, 8, 4);
+		Actions.GiveGroup(10, 21, 5, 133, 0, 8, 4);
+		Actions.GiveGroup(10, 22, 100, 5, 0, 8, 4);
+		Actions.GiveGroup(10, 22, 105, 5, 0, 8, 4);
+		Actions.GiveGroup(10, 16, 152, 167, 0, 12, 4);
+        Actions.GiveGroup(10, 15, 157, 167, 0, 16, 4);
+		Actions.GiveGroup(10, 16, 9, 103, 0, 12, 4);
+		Actions.GiveGroup(10, 15, 10, 132, 0, 16, 4);
+		
+	end;
+  if States.GameTime = 8980 then
+    begin
+        Actions.GiveGroup(8, 17, 4, 135, 2, 8, 4);
+        Actions.GiveGroup(8, 17, 188, 77, 2, 8, 4);
+        Actions.GiveGroup(8, 17, 131, 4, 0, 8, 4);
+        Actions.GiveGroup(10, 15, 9, 133, 2, 12, 4);
+        Actions.GiveGroup(10, 19, 10, 106, 2, 12, 4);
+        Actions.GiveGroup(10, 15, 60, 180, 0, 12, 4);
+		Actions.GiveGroup(10, 19, 65, 180, 0, 12, 4);
+        Actions.GiveGroup(10, 15, 183, 50, 0, 12, 4);
+		Actions.GiveGroup(10, 19, 98, 2, 0, 12, 4);
+        Actions.GiveGroup(10, 15, 105, 2, 0, 12, 4);
+    end;
+  if States.GameTime = 9860 then
+    begin
+        Actions.GiveGroup(10, 14, 57, 181, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 61, 181, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 65, 181, 0, 15, 5);
+		Actions.GiveGroup(10, 14, 184, 103, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 184, 107, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 184, 111, 0, 15, 5);
+	end;
+  if States.GameTime = 10800 then
+    begin
+        Actions.GiveGroup(15, 15, 183, 126, 0, 12, 4);
+        Actions.GiveGroup(15, 15, 183, 129, 0, 12, 4);
+        Actions.GiveGroup(15, 19, 183, 132, 0, 16, 4);
+		Actions.GiveGroup(15, 17, 181, 136, 0, 8, 4);
+		Actions.GiveGroup(8, 23, 101, 2, 0, 15, 5);
+        Actions.GiveGroup(8, 23, 131, 1, 0, 15, 5);
+        Actions.GiveGroup(8, 16, 57, 126, 0, 12, 4);
+		Actions.GiveGroup(8, 16, 62, 181, 0, 12, 4);
+		Actions.GiveGroup(8, 18, 66, 181, 0, 6, 3);
+        Actions.GiveGroup(8, 20, 5, 128, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 5, 132, 0, 12, 4);
+		Actions.GiveGroup(8, 18, 5, 136, 0, 6, 3);
+		Actions.GiveGroup(10, 27, 6, 100, 2, 12, 4);
+	    Actions.GiveGroup(10, 27, 6, 107, 2, 12, 4);
+		Actions.GiveGroup(10, 22, 186, 55, 1, 12, 4);
+	end;
+  if States.GameTime = 11200 then
+    begin
+        Actions.GiveGroup(8, 17, 60, 181, 0, 12, 4);
+        Actions.GiveGroup(8, 17, 65, 181, 0, 12, 4);
+        Actions.GiveGroup(8, 17, 183, 126, 0, 12, 4);
+	end;
+  if States.GameTime = 11550 then
+    begin
+        Actions.GiveGroup(10, 27, 96, 6, 4, 12, 4);
+        Actions.GiveGroup(10, 27, 129, 4, 4, 12, 4);
+        Actions.GiveGroup(10, 27, 188, 73, 6, 12, 4);
+        Actions.GiveGroup(10, 27, 188, 77, 6, 12, 4);
+        Actions.GiveGroup(10, 27, 187, 130, 1, 12, 4);
+        Actions.GiveGroup(10, 27, 187, 108, 1, 12, 4);
+		Actions.GiveGroup(10, 27, 186, 55, 1, 12, 4);
+        Actions.GiveGroup(10, 27, 6, 100, 2, 12, 4);
+	    Actions.GiveGroup(10, 27, 6, 107, 2, 12, 4);
+	    Actions.GiveGroup(10, 27, 5, 131, 2, 12, 4);
+        Actions.GiveGroup(10, 27, 5, 135, 2, 12, 4);
+    end;
+  if States.GameTime = 11950 then
+    begin
+        Actions.GiveGroup(15, 22, 149, 168, 0, 16, 4);
+        Actions.GiveGroup(15, 16, 153, 168, 0, 12, 4);
+		Actions.GiveGroup(15, 16, 157, 168, 0, 12, 4);
+        Actions.GiveGroup(15, 18, 154, 172, 0, 8, 4);
+    end;
+  if States.GameTime = 12700 then
+    begin
+        Actions.GiveGroup(8, 18, 60, 181, 0, 8, 4);
+        Actions.GiveGroup(8, 18, 65, 181, 0, 8, 4);
+        Actions.GiveGroup(8, 18, 183, 126, 0, 8, 4);
+	    Actions.GiveGroup(8, 18, 183, 126, 0, 8, 4);
+		Actions.GiveGroup(10, 16, 98, 3, 0, 15, 5);
+        Actions.GiveGroup(10, 16, 103, 3, 0, 15, 5);
+        Actions.GiveGroup(10, 15, 8, 99, 0, 15, 5);
+	    Actions.GiveGroup(10, 15, 8, 105, 0, 15, 5);
+		Actions.GiveGroup(10, 23, 151, 167, 0, 15, 5);
+        Actions.GiveGroup(10, 23, 157, 167, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 59, 181, 0, 15, 5);
+	    Actions.GiveGroup(10, 14, 65, 181, 0, 15, 5);
+		Actions.GiveGroup(10, 14, 188, 71, 0, 15, 5);
+	    Actions.GiveGroup(10, 14, 188, 75, 0, 15, 5);
+    end;
+  if States.GameTime = 13250 then
+    begin
+	    Actions.ShowMsg(0, '<$5>')
+        Actions.GiveGroup(17, 18, 66, 180, 0, 12, 4);
+        Actions.GiveGroup(17, 18, 66, 184, 0, 12, 4);
+        Actions.GiveGroup(17, 18, 4, 136, 0, 12, 4);
+	    Actions.GiveGroup(17, 18, 8, 136, 0, 12, 4);
+		Actions.GiveGroup(17, 18, 5, 107, 0, 12, 4);
+        Actions.GiveGroup(17, 18, 9, 107, 0, 12, 4);
+        Actions.GiveGroup(17, 16, 62, 176, 0, 12, 4);
+	    Actions.GiveGroup(17, 16, 62, 180, 0, 12, 4);
+		Actions.GiveGroup(17, 16, 62, 184, 0, 12, 4);
+        Actions.GiveGroup(17, 20, 4, 131, 0, 12, 4);
+        Actions.GiveGroup(17, 20, 8, 131, 0, 12, 4);
+		Actions.GiveGroup(17, 20, 5, 101, 0, 12, 4);
+        Actions.GiveGroup(17, 20, 9, 101, 0, 12, 4);
+	    Actions.GiveGroup(17, 22, 54, 182, 0, 9, 4);
+		Actions.GiveGroup(17, 22, 57, 182, 0, 9, 4);
+        Actions.GiveGroup(17, 22, 4, 127, 0, 9, 4);
+        Actions.GiveGroup(17, 22, 7, 127, 0, 9, 4);
+	    Actions.GiveGroup(17, 22, 5, 98, 0, 9, 4);
+		Actions.GiveGroup(17, 22, 8, 98, 0, 9, 4);
+		Actions.GiveGroup(16, 16, 98, 2, 0, 12, 4);
+		Actions.GiveGroup(16, 16, 102, 2, 0, 12, 4);
+		Actions.GiveGroup(16, 16, 107, 2, 0, 12, 4);
+		Actions.GiveGroup(16, 16, 132, 5, 0, 12, 4);
+		Actions.GiveGroup(16, 16, 132, 9, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 182, 125, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 182, 129, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 189, 107, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 188, 130, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 182, 133, 0, 12, 4);
+		Actions.GiveGroup(16, 20, 182, 136, 0, 12, 4);
+		Actions.GiveGroup(16, 18, 127, 1, 0, 12, 4);
+		Actions.GiveGroup(16, 18, 131, 1, 0, 12, 4);
+		Actions.GiveGroup(16, 18, 184, 103, 0, 12, 4);
+		Actions.GiveGroup(16, 18, 184, 107, 0, 12, 4);
+		Actions.GiveGroup(16, 18, 184, 111, 0, 12, 4);
+		Actions.GiveGroup(16, 22, 128, 10, 0, 9, 3);
+		Actions.GiveGroup(16, 22, 135, 10, 0, 9, 3);
+		Actions.GiveGroup(16, 22, 131, 10, 0, 9, 3);
+		Actions.GiveGroup(16, 22, 149, 168, 0, 9, 3);
+		Actions.GiveGroup(16, 22, 153, 168, 0, 9, 3);
+		Actions.GiveGroup(16, 22, 157, 168, 0, 9, 3);		
+    end;
+  if (States.GameTime = 14000)  and not States.HouseDestroyed(States.HouseAt(70, 123)) then
+    begin
+	    Actions.ShowMsg(0, '<$7>')
+		Actions.GiveWares(0, 1, 120)
+		Actions.GiveWares(0, 2, 70)
+		Actions.GiveWares(0, 13, 40)
+		Actions.GiveWares(0, 10, 60)
+		Actions.GiveWares(0, 16, 15)
+		Actions.GiveWares(0, 18, 45)
+		Actions.GiveWares(0, 20, 15)
+		Actions.GiveWares(0, 22, 15)
+		Actions.GiveWares(0, 24, 15)
+	end;
+  if (States.GameTime = 15000)  and not States.HouseDestroyed(States.HouseAt(122, 87)) then
+    begin
+	    Actions.ShowMsg(0, '<$8>')
+		Actions.GiveWares(0, 26, 10)
+		Actions.GiveWares(0, 8, 80)
+	end;
+  if (States.GameTime = 16000)  and not States.HouseDestroyed(States.HouseAt(107, 149)) then
+    begin
+	    Actions.ShowMsg(0, '<$9>')
+		Actions.GiveWares(0, 19, 15)
+		Actions.GiveWares(0, 21, 5)
+		Actions.GiveWares(0, 23, 5)
+		Actions.GiveWares(0, 25, 5)
+		Actions.GiveWares(0, 17, 5)
+		Actions.GiveWares(0, 3, 100)
+		Actions.GiveWares(0, 5, 200)
+	end;
+  if States.GameTime = 19220 then
+    begin
+	    Actions.ShowMsg(0, '<$6>')
+	end;
+  if States.GameTime = 20100 then
+    begin
+	    Actions.GiveGroup(15, 23, 149, 168, 0, 15, 5);
+        Actions.GiveGroup(15, 23, 153, 168, 0, 15, 5);
+        Actions.GiveGroup(15, 23, 157, 168, 0, 15, 5);
+		Actions.GiveGroup(10, 23, 183, 103, 0, 10, 5);
+        Actions.GiveGroup(10, 23, 183, 107, 0, 10, 5);
+		Actions.GiveGroup(10, 23, 59, 181, 0, 10, 5);
+        Actions.GiveGroup(10, 23, 64, 181, 0, 10, 5);
+		Actions.GiveGroup(10, 23, 6, 131, 0, 10, 5);
+        Actions.GiveGroup(10, 23, 6, 106, 0, 10, 5);
+		Actions.GiveGroup(10, 23, 104, 2, 0, 10, 5);
+        Actions.GiveGroup(10, 23, 131, 2, 0, 10, 5);
+	end;
+  if States.GameTime = 20850 then
+    begin
+		Actions.GiveGroup(8, 18, 187, 54, 0, 6, 3);
+        Actions.GiveGroup(8, 18, 136, 1, 0, 6, 3);
+		Actions.GiveGroup(8, 18, 59, 181, 0, 6, 3);
+        Actions.GiveGroup(8, 15, 64, 181, 0, 12, 4);
+		Actions.GiveGroup(8, 15, 6, 131, 0, 12, 4);
+        Actions.GiveGroup(8, 19, 6, 106, 0, 12, 4);
+		Actions.GiveGroup(8, 15, 99, 2, 0, 12, 4);
+        Actions.GiveGroup(8, 19, 105, 2, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 181, 50, 0, 12, 4);
+		Actions.GiveGroup(8, 14, 183, 102, 0, 25, 5);
+		Actions.GiveGroup(8, 14, 57, 181, 0, 25, 5);
+		Actions.GiveGroup(10, 22, 147, 169, 0, 15, 5);
+        Actions.GiveGroup(10, 22, 152, 169, 0, 15, 5);
+		Actions.GiveGroup(10, 22, 157, 169, 0, 15, 5);
+        Actions.GiveGroup(10, 22, 154, 172, 0, 15, 5);
+	end;
+  if States.GameTime = 21250 then
+    begin
+		Actions.GiveGroup(15, 17, 182, 126, 0, 9, 3);
+        Actions.GiveGroup(15, 16, 182, 130, 0, 12, 4);
+		Actions.GiveGroup(15, 20, 182, 134, 0, 12, 4);
+        Actions.GiveGroup(15, 21, 188, 130, 0, 20, 5);
+	end;
+  if States.GameTime = 22060 then
+    begin
+		Actions.GiveGroup(10, 22, 149, 168, 0, 15, 5);
+        Actions.GiveGroup(10, 21, 154, 168, 0, 20, 5);
+		Actions.GiveGroup(10, 21, 158, 168, 0, 20, 5);
+        Actions.GiveGroup(8, 19, 187, 54, 0, 16, 4);
+		Actions.GiveGroup(8, 15, 189, 75, 0, 16, 4);
+		Actions.GiveGroup(8, 19, 8, 132, 0, 16, 4);
+		Actions.GiveGroup(8, 15, 5, 103, 0, 16, 4);
+        Actions.GiveGroup(8, 23, 182, 116, 0, 12, 4);
+		Actions.GiveGroup(10, 14, 181, 50, 0, 25, 5);
+        Actions.GiveGroup(10, 14, 5, 99, 0, 25, 5);
+		Actions.GiveGroup(8, 17, 188, 70, 0, 8, 4);
+		Actions.GiveGroup(8, 17, 4, 128, 0, 8, 4);
+	end;
+  if States.GameTime = 22450 then 
+    begin
+		Actions.GiveGroup(10, 27, 183, 103, 0, 35, 5);
+        Actions.GiveGroup(10, 21, 5, 128, 0, 15, 5);
+		Actions.GiveGroup(10, 21, 6, 100, 0, 15, 5);
+		Actions.GiveGroup(8, 15, 5, 107, 0, 12, 4);
+        Actions.GiveGroup(8, 15, 8, 133, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 4, 132, 0, 12, 4);
+		Actions.GiveGroup(8, 17, 6, 112, 0, 6, 3);
+	end;
+  if States.GameTime = 24600 then 
+    begin
+		Actions.GiveGroup(10, 27, 62, 181, 0, 35, 5);
+        Actions.GiveGroup(10, 21, 136, 1, 0, 15, 5);
+		Actions.GiveGroup(10, 21, 130, 1, 0, 15, 5);
+		Actions.GiveGroup(8, 15, 98, 2, 0, 12, 4);
+        Actions.GiveGroup(8, 19, 103, 2, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 107, 2, 0, 12, 4);
+		Actions.GiveGroup(8, 17, 124, 1, 0, 6, 3);
+	end; 
+  if States.GameTime = 25000 then
+    begin
+		Actions.GiveGroup(15, 22, 186, 126, 0, 16, 4);
+        Actions.GiveGroup(15, 22, 186, 131, 0, 16, 4);
+		Actions.GiveGroup(15, 20, 149, 168, 0, 12, 4);
+        Actions.GiveGroup(15, 20, 152, 168, 0, 12, 4);
+		Actions.GiveGroup(15, 16, 156, 168, 0, 12, 4);
+        Actions.GiveGroup(15, 16, 159, 168, 0, 12, 4);
+		Actions.GiveGroup(15, 18, 154, 172, 0, 12, 4);
+        Actions.GiveGroup(10, 27, 184, 103, 0, 25, 5);
+		Actions.GiveGroup(10, 27, 65, 180, 0, 25, 5);
+		Actions.GiveGroup(10, 27, 101, 1, 0, 25, 5);
+        Actions.GiveGroup(8, 16, 188, 71, 0, 12, 4);
+		Actions.GiveGroup(8, 16, 5, 99, 0, 12, 4);
+        Actions.GiveGroup(8, 16, 188, 81, 0, 12, 4);
+		Actions.GiveGroup(8, 20, 188, 76, 0, 12, 4);
+		Actions.GiveGroup(8, 20, 5, 103, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 5, 107, 0, 12, 4);
+	end;
+  if States.GameTime = 25700 then
+    begin
+		Actions.GiveGroup(14, 22, 151, 172, 0, 9, 3);
+        Actions.GiveGroup(14, 22, 154, 172, 0, 9, 3);
+		Actions.GiveGroup(14, 22, 157, 172, 0, 9, 3);
+        Actions.GiveGroup(14, 22, 154, 166, 0, 9, 3);
+		Actions.GiveGroup(14, 18, 147, 169, 0, 8, 4);
+        Actions.GiveGroup(14, 18, 151, 169, 0, 8, 4);
+		Actions.GiveGroup(14, 18, 155, 169, 0, 8, 4);
+        Actions.GiveGroup(14, 18, 159, 169, 0, 8, 4);
+		Actions.GiveGroup(14, 20, 182, 125, 0, 12, 4);
+		Actions.GiveGroup(14, 20, 182, 131, 0, 12, 4);
+        Actions.GiveGroup(14, 20, 182, 136, 0, 12, 4);
+		Actions.GiveGroup(14, 16, 183, 102, 0, 12, 4);
+        Actions.GiveGroup(14, 16, 183, 106, 0, 12, 4);
+        Actions.GiveGroup(14, 16, 183, 110, 0, 12, 4);
+	end;
+  if States.GameTime = 27200 then
+    begin
+		Actions.GiveGroup(10, 14, 57, 181, 0, 25, 5);
+        Actions.GiveGroup(10, 15, 63, 180, 0, 15, 5);
+		Actions.GiveGroup(10, 19, 62, 185, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 64, 181, 0, 25, 5);
+		Actions.GiveGroup(10, 15, 7, 99, 0, 15, 5);
+        Actions.GiveGroup(10, 19, 7, 107, 0, 15, 5);
+		Actions.GiveGroup(10, 14, 5, 133, 0, 25, 5);
+        Actions.GiveGroup(10, 23, 5, 128, 0, 15, 5);
+	end;
+  if States.GameTime = 27450 then 
+    begin
+		Actions.GiveGroup(10, 14, 183, 103, 0, 25, 5);
+        Actions.GiveGroup(10, 15, 183, 107, 0, 15, 5);
+		Actions.GiveGroup(10, 19, 99, 2, 0, 15, 5);
+        Actions.GiveGroup(10, 14, 107, 2, 0, 25, 5);
+		Actions.GiveGroup(10, 15, 127, 1, 0, 15, 5);
+        Actions.GiveGroup(10, 19, 135, 1, 0, 15, 5);
+		Actions.GiveGroup(10, 14, 180, 50, 0, 25, 5);
+        Actions.GiveGroup(10, 23, 180, 55, 0, 15, 5);
+	end;
+  if States.GameTime = 28200 then 
+    begin
+		Actions.GiveGroup(15, 17, 147, 170, 0, 8, 4);
+        Actions.GiveGroup(15, 17, 158, 173, 0, 8, 4);
+		Actions.GiveGroup(15, 20, 152, 168, 0, 12, 4);
+        Actions.GiveGroup(15, 16, 152, 172, 0, 12, 4);
+		Actions.GiveGroup(15, 19, 157, 167, 0, 15, 5);
+        Actions.GiveGroup(15, 15, 182, 136, 0, 15, 5);
+		Actions.GiveGroup(15, 21, 188, 130, 0, 12, 4);
+
+	end;
+  if States.GameTime = 29000 then 
+    begin
+		Actions.GiveGroup(10, 14, 187, 54, 0, 20, 5);
+        Actions.GiveGroup(8, 18, 188, 83, 0, 9, 3);
+		Actions.GiveGroup(8, 15, 181, 60, 0, 12, 4);
+        Actions.GiveGroup(8, 16, 136, 9, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 108, 5, 0, 12, 4);
+        Actions.GiveGroup(8, 19, 189, 75, 0, 12, 4);
+		Actions.GiveGroup(8, 20, 108, 1, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 189, 70, 0, 12, 4);
+		Actions.GiveGroup(10, 27, 101, 1, 0, 15, 5);
+		Actions.GiveGroup(10, 27, 126, 1, 0, 15, 5);
+	end;
+  if States.GameTime = 29300 then 
+    begin
+		Actions.GiveGroup(10, 14, 9, 132, 0, 20, 5);
+        Actions.GiveGroup(8, 18, 6, 141, 0, 9, 3);
+		Actions.GiveGroup(8, 15, 4, 128, 0, 12, 4);
+        Actions.GiveGroup(8, 16, 4, 132, 0, 12, 4);
+		Actions.GiveGroup(8, 19, 5, 102, 0, 12, 4);
+        Actions.GiveGroup(8, 19, 59, 182, 0, 12, 4);
+		Actions.GiveGroup(8, 20, 5, 107, 0, 12, 4);
+        Actions.GiveGroup(8, 20, 55, 182, 0, 12, 4);
+        Actions.GiveGroup(10, 27, 60, 180, 0, 15, 5);
+		Actions.GiveGroup(10, 27, 7, 98, 0, 15, 5);
+	end;
+  if States.GameTime = 30200 then 
+    begin
+		Actions.GiveGroup(10, 23, 184, 103, 0, 15, 5);
+        Actions.GiveGroup(10, 23, 188, 55, 0, 15, 5);
+		Actions.GiveGroup(10, 23, 7, 98, 0, 15, 5);
+        Actions.GiveGroup(8, 17, 189, 107, 0, 12, 4);
+		Actions.GiveGroup(8, 17, 135, 2, 0, 12, 4);
+        Actions.GiveGroup(8, 17, 56, 183, 0, 12, 4);
+		Actions.GiveGroup(8, 16, 183, 108, 0, 16, 4);
+        Actions.GiveGroup(8, 16, 66, 181, 0, 16, 4);
+		Actions.GiveGroup(8, 16, 96, 3, 0, 16, 4);
+		Actions.GiveGroup(10, 15, 183, 114, 0, 16, 4);
+        Actions.GiveGroup(10, 15, 188, 70, 0, 16, 4);
+		Actions.GiveGroup(10, 15, 6, 140, 0, 16, 4);
+	end;
+  if States.GameTime = 31000 then 
+    begin
+		Actions.GiveGroup(15, 27, 148, 169, 0, 20, 5);
+        Actions.GiveGroup(15, 22, 188, 130, 0, 20, 5);
+		Actions.GiveGroup(15, 21, 157, 169, 0, 20, 5);
+        Actions.GiveGroup(10, 27, 6, 98, 0, 20, 5);
+		Actions.GiveGroup(10, 22, 4, 130, 0, 20, 5);
+        Actions.GiveGroup(10, 21, 62, 184, 0, 20, 5);
+		Actions.GiveGroup(10, 27, 4, 132, 0, 20, 5);
+        Actions.GiveGroup(10, 22, 62, 184, 0, 20, 5);
+		Actions.GiveGroup(10, 21, 6, 98, 0, 20, 5);
+	end;
+  if States.GameTime = 33500 then 
+    begin
+	    Actions.ShowMsg(0, '<$10>')
+		Actions.GiveGroup(15, 22, 149, 169, 0, 15, 5);
+        Actions.GiveGroup(15, 22, 152, 168, 0, 15, 5);
+		Actions.GiveGroup(15, 22, 157, 168, 0, 15, 5);
+        Actions.GiveGroup(15, 22, 182, 126, 0, 15, 5);
+		Actions.GiveGroup(15, 22, 182, 136, 0, 15, 5);
+		Actions.GiveGroup(8, 18, 5, 127, 0, 12, 4);
+		Actions.GiveGroup(8, 18, 7, 110, 0, 12, 4);
+        Actions.GiveGroup(8, 18, 126, 1, 0, 12, 4);
+		Actions.GiveGroup(8, 18, 98, 2, 0, 12, 4);
+        Actions.GiveGroup(8, 18, 188, 54, 0, 12, 4);
+		Actions.GiveGroup(10, 23, 60, 180, 0, 15, 5);
+        Actions.GiveGroup(10, 23, 64, 180, 0, 15, 5);
+		Actions.GiveGroup(10, 23, 4, 132, 0, 15, 5);
+        Actions.GiveGroup(10, 23, 8, 132, 0, 15, 5);
+		Actions.GiveGroup(10, 23, 5, 103, 0, 15, 5);
+        Actions.GiveGroup(10, 23, 10, 103, 0, 15, 5);	
+		Actions.GiveGroup(10, 16, 98, 5, 0, 15, 5);
+        Actions.GiveGroup(10, 20, 108, 5, 0, 15, 5);
+		Actions.GiveGroup(10, 16, 136, 1, 0, 15, 5);
+        Actions.GiveGroup(10, 20, 189, 54, 0, 15, 5);
+		Actions.GiveGroup(10, 16, 189, 78, 0, 15, 5);
+        Actions.GiveGroup(10, 20, 182, 76, 0, 15, 5);
+	end;
+
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+	if ((aHouseID = States.HouseAt(160, 118)) AND (States.HouseOwner(aHouseID) = 1)) then
+	    begin
+		     Actions.ShowMsg(0, '<$1>')
+		     Actions.FogCoverCircle(0, 152, 153, 15);
+			 Actions.FogCoverCircle(0, 167, 136, 20);
+			 Actions.FogCoverCircle(0, 175, 120, 15);
+			 Actions.FogCoverCircle(0, 175, 107, 15);
+			 Actions.FogCoverCircle(0, 147, 140, 15);
+			 Actions.GiveGroup(11, 22, 148, 155, 1, 9, 3);
+             Actions.GiveGroup(11, 22, 152, 155, 1, 9, 3);
+             Actions.GiveGroup(11, 22, 156, 155, 1, 9, 3);
+	         Actions.GiveGroup(11, 22, 180, 126, 1, 9, 3);
+			 Actions.GiveGroup(11, 22, 180, 130, 1, 9, 3);
+             Actions.GiveGroup(11, 22, 180, 134, 1, 9, 3);
+	         Actions.GiveGroup(11, 22, 181, 103, 1, 9, 3);
+			 Actions.GiveGroup(11, 18, 147, 158, 1, 10, 5);
+			 Actions.GiveGroup(11, 18, 153, 158, 1, 10, 5);
+			 Actions.GiveGroup(11, 18, 153, 160, 1, 10, 5);
+			 Actions.GiveGroup(11, 16, 182, 114, 1, 15, 5);
+             Actions.GiveGroup(11, 16, 182, 111, 1, 15, 5);
+             Actions.GiveGroup(11, 20, 182, 108, 1, 15, 5);
+			 Actions.GiveHouse(11, 11, 150, 141);
+			 Actions.GiveHouse(11, 27, 157, 127);
+			 Actions.GiveUnit(11, 0, 152, 147, 1);
+			 Actions.GiveUnit(11, 0, 153, 147, 1);
+			 Actions.GiveUnit(11, 0, 154, 147, 1);
+			 Actions.GiveUnit(11, 0, 155, 147, 1);
+			 Actions.GiveUnit(11, 0, 152, 148, 1);
+			 Actions.GiveUnit(11, 0, 153, 148, 1);
+			 Actions.GiveUnit(11, 0, 154, 148, 1);
+			 Actions.GiveUnit(11, 0, 155, 148, 1);
+			 Actions.GiveUnit(11, 0, 152, 149, 1);
+			 Actions.GiveUnit(11, 0, 153, 149, 1);
+			 Actions.GiveUnit(11, 0, 154, 149, 1);
+			 Actions.GiveUnit(11, 0, 155, 149, 1);
+			 Actions.GiveUnit(11, 0, 152, 150, 1);
+			 Actions.GiveUnit(11, 0, 153, 150, 1);
+			 Actions.GiveUnit(11, 0, 154, 150, 1);
+			 Actions.GiveUnit(11, 0, 155, 150, 1);
+			 Actions.GiveWares(11, 13, 1000);
+			 Actions.GiveWares(11, 27, 1000);
+			 Actions.GiveWares(11, 10, 1000);
+			 Actions.GiveWares(11, 8, 1000);
+	    end;
+	if ((aHouseID = States.HouseAt(69, 123)) AND (States.HouseOwner(aHouseID) = 5)) then
+	    begin
+		     Actions.ShowMsg(0, '<$2>')
+		     Actions.FogCoverCircle(0, 55, 165, 18);
+			 Actions.FogCoverCircle(0, 24, 135, 17);
+			 Actions.FogCoverCircle(0, 25, 107, 17);
+			 Actions.FogCoverCircle(0, 32, 121, 9);
+			 Actions.FogCoverCircle(0, 39, 149, 11);
+			 Actions.GiveGroup(9, 22, 54, 169, 1, 9, 3);
+             Actions.GiveGroup(9, 22, 57, 169, 1, 9, 3);
+             Actions.GiveGroup(9, 22, 60, 169, 1, 9, 3);
+	         Actions.GiveGroup(9, 22, 63, 169, 1, 9, 3);
+             Actions.GiveGroup(9, 18, 57, 172, 1, 10, 5);
+			 Actions.GiveGroup(9, 18, 61, 172, 1, 10, 5);
+             Actions.GiveGroup(9, 18, 19, 98, 1, 10, 5);
+             Actions.GiveGroup(9, 18, 19, 100, 1, 10, 5);
+	         Actions.GiveGroup(9, 18, 19, 102, 1, 10, 5);
+             Actions.GiveGroup(9, 16, 19, 107, 1, 15, 5);
+			 Actions.GiveGroup(9, 16, 19, 127, 1, 15, 5);
+             Actions.GiveGroup(9, 16, 19, 130, 1, 15, 5);
+             Actions.GiveGroup(9, 20, 19, 133, 1, 15, 5);
+	         Actions.GiveGroup(9, 20, 19, 136, 1, 15, 5);
+             Actions.GiveGroup(9, 20, 19, 139, 1, 15, 5);
+			 Actions.GiveHouse(9, 11, 33, 132);
+			 Actions.GiveHouse(9, 27, 36, 137);
+			 Actions.GiveRoad(9, 33, 133);
+			 Actions.GiveRoad(9, 33, 134);
+			 Actions.GiveRoad(9, 33, 135);
+			 Actions.GiveRoad(9, 33, 136);
+			 Actions.GiveRoad(9, 33, 137);
+			 Actions.GiveRoad(9, 33, 138);
+			 Actions.GiveRoad(9, 34, 138);
+			 Actions.GiveRoad(9, 35, 138);
+			 Actions.GiveRoad(9, 36, 138);
+			 Actions.GiveUnit(9, 0, 23, 132, 1);
+			 Actions.GiveUnit(9, 0, 24, 132, 1);
+			 Actions.GiveUnit(9, 0, 25, 132, 1);
+			 Actions.GiveUnit(9, 0, 26, 132, 1);
+			 Actions.GiveUnit(9, 0, 27, 132, 1);
+			 Actions.GiveUnit(9, 0, 28, 132, 1);
+			 Actions.GiveUnit(9, 0, 29, 132, 1);
+			 Actions.GiveUnit(9, 0, 30, 132, 1);
+			 Actions.GiveUnit(9, 0, 23, 133, 1);
+			 Actions.GiveUnit(9, 0, 24, 133, 1);
+			 Actions.GiveUnit(9, 0, 25, 133, 1);
+			 Actions.GiveUnit(9, 0, 26, 133, 1);
+			 Actions.GiveUnit(9, 0, 27, 133, 1);
+			 Actions.GiveUnit(9, 0, 28, 133, 1);
+			 Actions.GiveUnit(9, 0, 29, 133, 1);
+			 Actions.GiveUnit(9, 0, 30, 133, 1);
+			 Actions.GiveWares(9, 13, 1000);
+			 Actions.GiveWares(9, 27, 1000);
+			 Actions.GiveWares(9, 10, 1000);
+			 Actions.GiveWares(9, 8, 1000);
+	    end;
+	if ((aHouseID = States.HouseAt(130, 48)) AND (States.HouseOwner(aHouseID) = 2)) then
+	    begin
+		     Actions.ShowMsg(0, '<$3>')
+		     Actions.FogCoverCircle(0, 102, 18, 21);
+			 Actions.FogCoverCircle(0, 127, 16, 15);
+			 Actions.FogCoverCircle(0, 116, 21, 15);
+			 Actions.GiveGroup(12, 22, 95, 3, 4, 9, 3);
+             Actions.GiveGroup(12, 22, 98, 3, 4, 9, 3);
+			 Actions.GiveGroup(12, 18, 124, 2, 4, 10, 5);
+			 Actions.GiveGroup(12, 18, 129, 2, 4, 10, 5);
+             Actions.GiveGroup(12, 18, 136, 2, 4, 10, 5);
+             Actions.GiveGroup(12, 18, 131, 2, 4, 10, 5);
+			 Actions.GiveGroup(12, 16, 98, 7, 4, 15, 5);
+			 Actions.GiveGroup(12, 16, 104, 7, 4, 15, 5);
+			 Actions.GiveGroup(12, 20, 135, 11, 4, 15, 5);
+			 Actions.GiveGroup(12, 20, 129, 11, 4, 15, 5);
+			 Actions.GiveHouse(12, 11, 113, 28);
+			 Actions.GiveHouse(12, 27, 108, 30);
+			 Actions.GiveRoad(12, 113, 29);
+			 Actions.GiveRoad(12, 113, 30);
+			 Actions.GiveRoad(12, 113, 31);
+			 Actions.GiveRoad(12, 112, 31);
+			 Actions.GiveRoad(12, 111, 31);
+			 Actions.GiveRoad(12, 110, 31);
+			 Actions.GiveRoad(12, 109, 31);
+			 Actions.GiveRoad(12, 108, 31);
+			 Actions.GiveUnit(12, 0, 102, 9, 1);
+			 Actions.GiveUnit(12, 0, 103, 9, 1);
+			 Actions.GiveUnit(12, 0, 104, 9, 1);
+			 Actions.GiveUnit(12, 0, 105, 9, 1);
+			 Actions.GiveUnit(12, 0, 102, 10, 1);
+			 Actions.GiveUnit(12, 0, 103, 10, 1);
+			 Actions.GiveUnit(12, 0, 104, 10, 1);
+			 Actions.GiveUnit(12, 0, 105, 10, 1);
+			 Actions.GiveUnit(12, 0, 102, 11, 1);
+			 Actions.GiveUnit(12, 0, 103, 11, 1);
+			 Actions.GiveUnit(12, 0, 104, 11, 1);
+			 Actions.GiveUnit(12, 0, 105, 11, 1);
+			 Actions.GiveUnit(12, 0, 102, 12, 1);
+			 Actions.GiveUnit(12, 0, 103, 12, 1);
+			 Actions.GiveUnit(12, 0, 104, 12, 1);
+			 Actions.GiveUnit(12, 0, 105, 12, 1);
+			 Actions.GiveWares(12, 13, 1000);
+			 Actions.GiveWares(12, 27, 1000);
+			 Actions.GiveWares(12, 10, 1000);
+			 Actions.GiveWares(12, 8, 1000);
+	    end;
+	if ((aHouseID = States.HouseAt(133, 70)) AND (States.HouseOwner(aHouseID) = 2)) then
+	    begin
+		     Actions.ShowMsg(0, '<$4>')
+		     Actions.FogCoverCircle(0, 174, 66, 20);
+			 Actions.FogCoverCircle(0, 169, 73, 15);
+			 Actions.FogCoverCircle(0, 171, 80, 15);
+			 Actions.GiveGroup(13, 22, 188, 72, 7, 9, 3);
+             Actions.GiveGroup(13, 22, 188, 75, 7, 9, 3);
+			 Actions.GiveGroup(13, 18, 184, 73, 7, 10, 5);
+			 Actions.GiveGroup(13, 18, 184, 78, 7, 10, 5);
+             Actions.GiveGroup(13, 20, 182, 52, 7, 15, 5);
+             Actions.GiveGroup(13, 20, 182, 56, 7, 15, 5);
+			 Actions.GiveGroup(13, 16, 181, 60, 7, 15, 5);
+			 Actions.GiveHouse(13, 11, 162, 77);
+			 Actions.GiveHouse(13, 27, 161, 73);
+			 Actions.GiveRoad(13, 161, 74);
+			 Actions.GiveRoad(13, 160, 74);
+			 Actions.GiveRoad(13, 160, 75);
+			 Actions.GiveRoad(13, 160, 76);
+			 Actions.GiveRoad(13, 160, 77);
+			 Actions.GiveRoad(13, 160, 78);
+			 Actions.GiveRoad(13, 161, 78);
+			 Actions.GiveRoad(13, 162, 78);
+			 Actions.GiveUnit(13, 0, 180, 75, 1);
+			 Actions.GiveUnit(13, 0, 181, 75, 1);
+			 Actions.GiveUnit(13, 0, 182, 75, 1);
+			 Actions.GiveUnit(13, 0, 183, 75, 1);
+			 Actions.GiveUnit(13, 0, 180, 76, 1);
+			 Actions.GiveUnit(13, 0, 181, 76, 1);
+			 Actions.GiveUnit(13, 0, 182, 76, 1);
+			 Actions.GiveUnit(13, 0, 183, 76, 1);
+			 Actions.GiveUnit(13, 0, 180, 77, 1);
+			 Actions.GiveUnit(13, 0, 181, 77, 1);
+			 Actions.GiveUnit(13, 0, 182, 77, 1);
+			 Actions.GiveUnit(13, 0, 183, 77, 1);
+			 Actions.GiveUnit(13, 0, 180, 78, 1);
+			 Actions.GiveUnit(13, 0, 181, 78, 1);
+			 Actions.GiveUnit(13, 0, 182, 78, 1);
+			 Actions.GiveUnit(13, 0, 183, 78, 1);
+			 Actions.GiveWares(13, 13, 1000);
+			 Actions.GiveWares(13, 27, 1000);
+			 Actions.GiveWares(13, 10, 1000);
+			 Actions.GiveWares(13, 8, 1000);
+	    end;
+end;
+
+procedure OnUnitDied(aUnitThatWasKilled: Integer; aPlayerWhoKilledUnit: Integer);
+Var
+    i: Integer;
+    playersWhoWin: Array of Integer;
+    playersWhoLose: Array of Integer;
+    allHaveNoTroops: Boolean;
+begin
+    playersWhoWin := [0];    
+    playersWhoLose := [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+
+    allHaveNoTroops := True;
+    For i := 0 to Length(playersWhoLose) - 1 do
+        If States.StatArmyCount(playersWhoLose[i]) > 0 then allHaveNoTroops := False;
+        
+    If (allHaveNoTroops = True) And (States.GameTime > 33500) Then
+        Actions.PlayerWin(playersWhoWin,True);
+end;
