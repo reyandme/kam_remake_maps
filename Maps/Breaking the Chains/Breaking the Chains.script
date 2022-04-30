@@ -1,0 +1,31 @@
+{$I improvestaticai.script}
+
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var tempX, tempY : Integer;
+begin
+	if ((States.UnitType(aUnitID) = 16) or (States.UnitType(aUnitID) = 15))  and (States.UnitOwner(aUnitID) = 5) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		Actions.GiveGroup(5, 23, tempX, tempY, 4, 1, 1);
+	end;
+end;
+
+procedure OnTick;
+
+begin
+
+	if States.GameTime = 3000 then
+	begin
+		Actions.ShowMsg(0, '<$0>');
+	end;
+	if States.GameTime = 27000 then
+	begin
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if States.GameTime = 60000 then
+	begin
+		Actions.ShowMsg(0, '<$2>');
+	end;
+end;

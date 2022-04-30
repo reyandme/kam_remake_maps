@@ -1,0 +1,13 @@
+Author
+Harry
+
+Version
+1.1
+
+BigDescLIBX
+10
+
+PlayableAsSP
+
+BlockFullMapPreview
+
