@@ -1,0 +1,27 @@
+var
+i: Integer;
+Barb1, Barb2, Bow: Integer;
+
+procedure OnMissionStart;
+begin
+
+	Barb1 := States.GroupAt(84, 73);
+	Barb2 := States.GroupAt(80, 78);
+	Bow := States.GroupAt(78, 72);
+
+end;
+
+procedure OnTick;
+begin
+
+if States.StatArmyCount(2) = 0 then
+begin
+	for i := 2 to 8 do
+	Actions.GroupOrderAttackUnit(Barb1, (States.ClosestUnit(i, 65, 66, -1)));
+	Actions.GroupOrderAttackUnit(Barb2, (States.ClosestUnit(i, 65, 66, -1)));
+	Actions.GroupOrderAttackUnit(Bow, (States.ClosestUnit(i, 65, 66, -1)));
+end;
+
+	
+
+end;

@@ -1,0 +1,182 @@
+var 
+	MessageSent: Boolean;
+	SchoolGold: Integer;
+	StorehouseWine, StorehouseLoaves, StorehouseSausages, StorehouseFish, InnWine, InnLoaves, InnSausages, InnFish: Integer;
+	TotalFood: Integer;
+	HumanArmy1, HumanArmy2, HumanArmy3, HumanArmy4: Integer;
+	RebelsDiscovered, ShowOverlayText: Boolean;
+	ExploringUnit1, ExploringUnit2, ExploringUnit3, ExploringUnit4, ExploringUnit5, ExploringUnit6: Integer;
+
+procedure OnMissionStart;
+begin
+
+	Actions.HouseAllow(0, 9, False);
+	Actions.HouseAllow(0, 14, False);
+	Actions.HouseAllow(0, 27, False);
+
+	MessageSent := False;
+	RebelsDiscovered := False;	
+	ShowOverlayText := False;	
+	Actions.FogCoverCircle(0, 105, 75, 50);
+	Actions.PlayerShareFog(3, 0, False);
+
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseOwner(aHouse) <> 0 then Exit;
+
+	if States.HouseType(aHouse) = 13 then
+		Actions.HouseAllow(0, 27, True);
+	if States.HouseType(aHouse) = 27 then
+		Actions.HouseAllow(0, 14, True);
+	if States.HouseType(aHouse) = 14 then
+		Actions.HouseAllow(0, 9, True);
+
+end;
+
+procedure OnTick;
+begin
+
+	SchoolGold := States.HouseResourceAmount((States.HouseAt(108, 82)), 7);
+
+	StorehouseWine := States.HouseResourceAmount((States.HouseAt(115, 81)), 8);
+	StorehouseLoaves := States.HouseResourceAmount((States.HouseAt(115, 81)), 10);
+	StorehouseSausages := States.HouseResourceAmount((States.HouseAt(115, 81)), 13);
+	StorehouseFish := States.HouseResourceAmount((States.HouseAt(115, 81)), 27);
+	InnWine := States.HouseResourceAmount((States.HouseAt(110, 78)), 8);
+	InnLoaves := States.HouseResourceAmount((States.HouseAt(110, 78)), 10);
+	InnSausages := States.HouseResourceAmount((States.HouseAt(110, 78)), 13);
+	InnFish := States.HouseResourceAmount((States.HouseAt(110, 78)), 27);
+
+	TotalFood := (StorehouseWine + StorehouseLoaves + StorehouseSausages + StorehouseFish + InnWine + InnLoaves + InnSausages + InnFish);
+
+	if ShowOverlayText = True then
+	begin
+		Actions.OverlayTextSetFormatted(0, 'Remaining food: %u', [TotalFood])
+	end;
+	
+	if ShowOverlayText = False then
+	begin
+		Actions.OverlayTextSet(0, '');
+	end;
+
+	if TotalFood = 0 then
+	begin
+		Actions.PlayerDefeat(0);
+		ShowOverlayText := False;
+	end;
+
+	if (States.HouseDestroyed(States.HouseAt(113, 80)) = True) and (States.HouseDestroyed(States.HouseAt(108, 77)) = True) then
+	begin
+		ShowOverlayText := False;
+		Actions.OverlayTextSet(0, '');
+		Actions.PlayerDefeat(0);
+	end;
+
+	if (States.StatUnitTypeCount(3, 0) = 0) and ((SchoolGold = 0) or (States.HouseDestroyed(States.HouseAt(108, 82)) = True)) then
+	begin
+		ShowOverlayText := False;
+		Actions.OverlayTextSet(0, '');
+		Actions.PlayerDefeat(0);
+	end;
+
+if (States.StatUnitCount(2) = 0) and (MessageSent = False) then
+begin
+	Actions.ShowMsg(0, '<$2>');
+	MessageSent := True;
+end;
+
+	ExploringUnit1 := States.UnitAt(87, 70);
+	ExploringUnit2 := States.UnitAt(87, 69);
+	ExploringUnit3 := States.UnitAt(87, 68);
+	ExploringUnit4 := States.UnitAt(87, 67);
+	ExploringUnit5 := States.UnitAt(87, 66);
+	ExploringUnit6 := States.UnitAt(88, 66);
+
+	if (ExploringUnit1 <> -1) and (States.UnitOwner(ExploringUnit1) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 10);
+		Actions.FogRevealCircle(0, 94, 75, 10);
+		Actions.FogRevealCircle(0, 105, 73, 10);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if (ExploringUnit2 <> -1) and (States.UnitOwner(ExploringUnit2) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 15);
+		Actions.FogRevealCircle(0, 94, 75, 15);
+		Actions.FogRevealCircle(0, 105, 73, 15);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if (ExploringUnit3 <> -1) and (States.UnitOwner(ExploringUnit3) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 15);
+		Actions.FogRevealCircle(0, 94, 75, 15);
+		Actions.FogRevealCircle(0, 105, 73, 15);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if (ExploringUnit4 <> -1) and (States.UnitOwner(ExploringUnit4) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 15);
+		Actions.FogRevealCircle(0, 94, 75, 15);
+		Actions.FogRevealCircle(0, 105, 73, 15);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if (ExploringUnit5 <> -1) and (States.UnitOwner(ExploringUnit5) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 15);
+		Actions.FogRevealCircle(0, 94, 75, 15);
+		Actions.FogRevealCircle(0, 105, 73, 15);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+	if (ExploringUnit6 <> -1) and (States.UnitOwner(ExploringUnit6) = 0) and (RebelsDiscovered = False) then
+	begin
+		Actions.PlayerShareFog(0, 3, True);
+		Actions.PlayerShareFog(3, 0, True);
+		Actions.FogRevealCircle(0, 95, 68, 15);
+		Actions.FogRevealCircle(0, 94, 75, 15);
+		Actions.FogRevealCircle(0, 105, 73, 15);
+		Actions.FogRevealCircle(0, 109, 77, 10);
+		Actions.FogRevealCircle(0, 114, 80, 10);
+		Actions.FogRevealCircle(0, 119, 78, 10);
+		RebelsDiscovered := True;
+		ShowOverlayText := True;
+		Actions.ShowMsg(0, '<$1>');
+	end;
+
+end;

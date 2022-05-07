@@ -1,0 +1,21 @@
++ add campaign map
+
+
+Mission 1 - scripts bug 
+*Duplicate identifier 'U'       => action: "U" chance to "L"
+
+
+Mission 10 - scripts bug 
+*Duplicate identifier 'U'       => action: "U" chance to "L"
+*[2:2] <Module:  | Param: STOREHOUSE1> Variable 'STOREHOUSE1' never used     => action: deleted Variable 'STOREHOUSE1'
+
+
+Mission 14 - scripts bug 
+*Duplicate identifier 'U'       => action: "U" chance to "L"
+*[20:1] <Module:  | Param: WOLFBITEDELAY1> Variable 'WOLFBITEDELAY1' never used		=> action: deleted
+*[39:1] <Module:  | Param: STONEMASONCHAT> Variable 'STONEMASONCHAT' never used		=> action: deleted
+*[98:1] <Module:  | Param: WEAPONTIME4> Variable 'WEAPONTIME4' never used		=> action: deleted
+*[98:1] <Module:  | Param: WEAPONTIME6> Variable 'WEAPONTIME6' never used		=> action: deleted
+*[98:1] <Module:  | Param: WEAPONTIME8> Variable 'WEAPONTIME8' never used		=> action: deleted
+*[100:1] <Module:  | Param: WEAPONWALK100_2> Variable 'WEAPONWALK100_2' never used	=> action: deleted
+

@@ -1,0 +1,214 @@
+var 
+	House1, House2, House3, House4, House5, House6, House7, House8, House9, House10, House11, House12, House13, House14: Integer;
+	NewHouse1, NewHouse2, NewHouse3, NewHouse4, NewHouse5, NewHouse6, NewHouse7, NewHouse8, NewHouse9, NewHouse10, NewHouse11, NewHouse12, NewHouse13, NewHouse14: Integer;
+	ClosestUnit1, ClosestUnit1PositionX, ClosestUnit1PositionY: Integer;
+	ClosestUnit2, ClosestUnit2PositionX, ClosestUnit2PositionY: Integer;
+	ClosestUnit3, ClosestUnit3PositionX, ClosestUnit3PositionY: Integer;
+	ClosestUnit4, ClosestUnit4PositionX, ClosestUnit4PositionY: Integer;
+	VillageDiscovered, InitiateAttacks: Boolean;
+	VillageDiscoveredTime: Integer;
+	Attackers1, Attackers2: Integer;
+	Storehouse1, Storehouse2, Storehouse3, Storehouse4, Storehouse5, Storehouse6, Storehouse7, Storehouse8: Integer;
+	
+procedure OnMissionStart;
+begin
+
+	Actions.ShowMsg(0, '<$1>');
+
+	Actions.HouseAllow(0, 9, False);
+	Actions.HouseAllow(0, 14, False);
+	Actions.HouseAllow(0, 27, False);
+	
+	House1 := States.HouseAt(90, 66);
+	House2 := States.HouseAt(86, 76);
+	House3 := States.HouseAt(92, 76);
+	House4 := States.HouseAt(89, 79);
+	House5 := States.HouseAt(88, 84);
+	House6 := States.HouseAt(97, 84);
+	House7 := States.HouseAt(92, 87);
+	House8 := States.HouseAt(94, 93);
+	House9 := States.HouseAt(100, 95);
+	House10 := States.HouseAt(85, 95);
+	House11 := States.HouseAt(80, 94);
+	House12 := States.HouseAt(78, 98);
+	House13 := States.HouseAt(87, 99);
+	House14 := States.HouseAt(82, 103);
+	
+	Attackers1 := States.GroupAt(110, 124);
+	Attackers2 := States.GroupAt(118, 66);
+	
+	Actions.HouseAllow(0, 11, False);
+	
+	Storehouse1 := States.HouseAt(132, 132);
+	Actions.HouseWareBlock(Storehouse1, 3, True);
+	Actions.HouseWareBlock(Storehouse1, 4, True);
+	Actions.HouseWareBlock(Storehouse1, 5, True);
+	Actions.HouseWareBlock(Storehouse1, 6, True);
+	Actions.HouseWareBlock(Storehouse1, 7, True);
+	Storehouse2 := States.HouseAt(124, 146);
+	Actions.HouseWareBlock(Storehouse2, 3, True);
+	Actions.HouseWareBlock(Storehouse2, 4, True);
+	Actions.HouseWareBlock(Storehouse2, 5, True);
+	Actions.HouseWareBlock(Storehouse2, 6, True);
+	Actions.HouseWareBlock(Storehouse2, 7, True);
+	Storehouse3 := States.HouseAt(135, 26);
+	Actions.HouseWareBlock(Storehouse3, 3, True);
+	Actions.HouseWareBlock(Storehouse3, 4, True);
+	Actions.HouseWareBlock(Storehouse3, 5, True);
+	Actions.HouseWareBlock(Storehouse3, 6, True);
+	Actions.HouseWareBlock(Storehouse3, 7, True);
+	Storehouse4 := States.HouseAt(115, 14);
+	Actions.HouseWareBlock(Storehouse4, 3, True);
+	Actions.HouseWareBlock(Storehouse4, 4, True);
+	Actions.HouseWareBlock(Storehouse4, 5, True);
+	Actions.HouseWareBlock(Storehouse4, 6, True);
+	Actions.HouseWareBlock(Storehouse4, 7, True);
+	Storehouse5 := States.HouseAt(52, 30);
+	Actions.HouseWareBlock(Storehouse5, 3, True);
+	Actions.HouseWareBlock(Storehouse5, 4, True);
+	Actions.HouseWareBlock(Storehouse5, 5, True);
+	Actions.HouseWareBlock(Storehouse5, 6, True);
+	Actions.HouseWareBlock(Storehouse5, 7, True);
+	Actions.HouseWareBlock(Storehouse5, 8, True);
+	Actions.HouseWareBlock(Storehouse5, 9, True);
+	Actions.HouseWareBlock(Storehouse5, 10, True);
+	Actions.HouseWareBlock(Storehouse5, 13, True);
+	Storehouse6 := States.HouseAt(71, 38);
+	Actions.HouseWareBlock(Storehouse6, 3, True);
+	Actions.HouseWareBlock(Storehouse6, 4, True);
+	Actions.HouseWareBlock(Storehouse6, 5, True);
+	Actions.HouseWareBlock(Storehouse6, 6, True);
+	Actions.HouseWareBlock(Storehouse6, 7, True);
+	Storehouse7 := States.HouseAt(17, 117);
+	Actions.HouseWareBlock(Storehouse7, 3, True);
+	Actions.HouseWareBlock(Storehouse7, 4, True);
+	Actions.HouseWareBlock(Storehouse7, 5, True);
+	Actions.HouseWareBlock(Storehouse7, 6, True);
+	Actions.HouseWareBlock(Storehouse7, 7, True);
+	Storehouse8 := States.HouseAt(48, 115);
+	Actions.HouseWareBlock(Storehouse8, 3, True);
+	Actions.HouseWareBlock(Storehouse8, 4, True);
+	Actions.HouseWareBlock(Storehouse8, 5, True);
+	Actions.HouseWareBlock(Storehouse8, 6, True);
+	Actions.HouseWareBlock(Storehouse8, 7, True);
+
+end;
+
+procedure OnTick;
+begin
+
+if VillageDiscovered = false then
+begin
+	ClosestUnit1 := States.ClosestUnit(0, 83, 103, -1);
+	ClosestUnit1PositionX := States.UnitPositionX(ClosestUnit1);
+	ClosestUnit1PositionY := States.UnitPositionY(ClosestUnit1);
+	
+	ClosestUnit2 := States.ClosestUnit(0, 95, 93, -1);
+	ClosestUnit2PositionX := States.UnitPositionX(ClosestUnit2);
+	ClosestUnit2PositionY := States.UnitPositionY(ClosestUnit2);
+	
+	ClosestUnit3 := States.ClosestUnit(0, 87, 99, -1);
+	ClosestUnit3PositionX := States.UnitPositionX(ClosestUnit3);
+	ClosestUnit3PositionY := States.UnitPositionY(ClosestUnit3);
+	
+	ClosestUnit4 := States.ClosestUnit(0, 99, 95, -1);
+	ClosestUnit4PositionX := States.UnitPositionX(ClosestUnit4);
+	ClosestUnit4PositionY := States.UnitPositionY(ClosestUnit4);
+	
+	if ((ClosestUnit1PositionX < 87) and (ClosestUnit1PositionY < 107)) or (ClosestUnit2PositionY < 99) or ((ClosestUnit3PositionX < 91) and (ClosestUnit3PositionY < 103)) or ((ClosestUnit4PositionX < 106) and (ClosestUnit4PositionY < 99)) then
+	begin
+		Actions.HouseDestroy(House1, True);
+		Actions.HouseDestroy(House2, True);
+		Actions.HouseDestroy(House3, True);
+		Actions.HouseDestroy(House4, True);
+		Actions.HouseDestroy(House5, True);
+		Actions.HouseDestroy(House6, True);
+		Actions.HouseDestroy(House7, True);
+		Actions.HouseDestroy(House8, True);
+		Actions.HouseDestroy(House9, True);
+		Actions.HouseDestroy(House10, True);
+		Actions.HouseDestroy(House11, True);
+		Actions.HouseDestroy(House12, True);
+		Actions.HouseDestroy(House13, True);
+		Actions.HouseDestroy(House14, True);
+			
+		NewHouse1 := Actions.GiveHouse(0, 9, 91, 66);
+		Actions.HouseAddDamage(NewHouse1, 100);
+		Actions.HouseRepairEnable(NewHouse1, True);
+		NewHouse2 := Actions.GiveHouse(0, 14, 85, 76);
+		Actions.HouseAddDamage(NewHouse2, 200);
+		Actions.HouseRepairEnable(NewHouse2, True);
+		NewHouse3 := Actions.GiveHouse(0, 0, 91, 76);
+		Actions.HouseAddDamage(NewHouse3, 200);
+		Actions.HouseRepairEnable(NewHouse3, True);
+		NewHouse4 := Actions.GiveHouse(0, 19, 89, 79);
+		Actions.HouseAddDamage(NewHouse4, 200);
+		Actions.HouseRepairEnable(NewHouse4, True);
+		NewHouse5 := Actions.GiveHouse(0, 11, 87, 84);
+		Actions.HouseAddDamage(NewHouse5, 450);
+		Actions.HouseRepairEnable(NewHouse5, True);
+		NewHouse6 := Actions.GiveHouse(0, 21, 96, 84);
+		Actions.HouseAddDamage(NewHouse6, 550);
+		Actions.HouseRepairEnable(NewHouse6, True);
+		NewHouse7 := Actions.GiveHouse(0, 13, 91, 87);
+		Actions.HouseAddDamage(NewHouse7, 400);
+		Actions.HouseRepairEnable(NewHouse7, True);
+		NewHouse8 := Actions.GiveHouse(0, 27, 84, 95);
+		Actions.HouseAddDamage(NewHouse8, 150);
+		Actions.HouseRepairEnable(NewHouse8, True);
+		NewHouse9 := Actions.GiveHouse(0, 7, 81, 94);
+		Actions.HouseAddDamage(NewHouse9, 150);
+		Actions.HouseRepairEnable(NewHouse9, True);
+		NewHouse10 := Actions.GiveHouse(0, 8, 77, 98);
+		Actions.HouseAddDamage(NewHouse10, 250);
+		Actions.HouseRepairEnable(NewHouse10, True);
+		NewHouse11 := Actions.GiveHouse(0, 8, 81, 103);
+		Actions.HouseAddDamage(NewHouse11, 300);
+		Actions.HouseRepairEnable(NewHouse11, True);
+		NewHouse12 := Actions.GiveHouse(0, 22, 86, 99);
+		Actions.HouseAddDamage(NewHouse12, 100);
+		Actions.HouseRepairEnable(NewHouse12, True);
+		NewHouse13 := Actions.GiveHouse(0, 8, 99, 95);
+		Actions.HouseAddDamage(NewHouse13, 200);
+		Actions.HouseRepairEnable(NewHouse13, True);
+		NewHouse14 := Actions.GiveHouse(0, 16, 95, 93);
+		Actions.HouseAddDamage(NewHouse14, 250);
+		Actions.HouseRepairEnable(NewHouse14, True);
+			
+		Actions.HouseAddWaresTo(NewHouse5, 1, 2000)
+		Actions.HouseAddWaresTo(NewHouse5, 2, 50)
+		Actions.HouseAddWaresTo(NewHouse5, 7, 50)
+		Actions.HouseAddWaresTo(NewHouse5, 8, 100)
+		Actions.HouseAddWaresTo(NewHouse5, 9, 10)
+		Actions.HouseAddWaresTo(NewHouse5, 10, 65)
+		Actions.HouseAddWaresTo(NewHouse5, 13, 30)
+		Actions.HouseAddWaresTo(NewHouse5, 15, 10)
+		Actions.HouseAddWaresTo(NewHouse5, 27, 20)
+		Actions.HouseAddWaresTo(NewHouse6, 16, 5)
+		Actions.HouseAddWaresTo(NewHouse6, 18, 5)
+		Actions.HouseAddWaresTo(NewHouse6, 20, 5)
+		Actions.HouseAddWaresTo(NewHouse6, 22, 5)
+		
+		VillageDiscovered := True;
+		InitiateAttacks := True;
+		VillageDiscoveredTime := States.GameTime;
+		Actions.ShowMsg(0, '<$2>');
+
+		Actions.HouseAllow(0, 9, True);
+		Actions.HouseAllow(0, 11, True);
+		Actions.HouseAllow(0, 14, True);
+		Actions.HouseAllow(0, 27, True);
+		
+	end;
+end;
+
+if (VillageDiscovered = true) and (States.GameTime = VillageDiscoveredTime + 2000) then
+begin
+	Actions.GroupOrderAttackHouse(Attackers1, States.ClosestHouse(0, 110, 124, -1));
+end;
+if (VillageDiscovered = true) and (States.GameTime = VillageDiscoveredTime + 2200) then
+begin	
+	Actions.GroupOrderAttackHouse(Attackers2, States.ClosestHouse(0, 118, 66, -1));
+end;
+
+end;

@@ -1,0 +1,8 @@
+Title
+TNL12 - The City of Greed
+
+SmallDesc
+Mission 12 of The New Lands
+
+BigDesc
+Mission 12: The City of Greed||We continue our journey east, to where the last stronghold of ye Stadtholder is located. Rumour has it that this city was constructed strategically, on a mountain full of gold veins, surrounded by a wall of hills with only two passages in. It shalt not be easy to breach these defences. But there is more peril, because ye Stadtholder hath hired mercenaries that fight for him. Also, his great wealth allowed him to bribe the highwaymen nigh to the south-east! These rascals are hiding everywhere. Stay on thy guard, capture the city, and kill ye Stadtholder!

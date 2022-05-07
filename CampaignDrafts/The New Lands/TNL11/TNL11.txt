@@ -1,0 +1,8 @@
+Title
+TNL11 - Enemies Everywhere
+
+SmallDesc
+Mission 11 of The New Lands
+
+BigDesc
+Mission 11: Enemies Everywhere||We have given ye Castellan a portion of our gold supplies, for he helped us when our hour of need was nigh. The Castellan hath reported that there doth be gold veins in plenty to thy north-east: the region of ye Stadtholder.|Unfortunately we have taken the wrong path, which hath in troth lead us to a dangerous place: the border that doth divide the lands of ye Stadholder with the lands of the King. Take caution, for the enemy has a large military force in this area.

@@ -1,0 +1,2002 @@
+const
+	DELAY = 50;
+var
+
+Player, Player2: Integer;
+ShowOverlayText: Boolean;
+EasyMissionCompleted, ModerateMissionCompleted, HardMissionCompleted, VeryHardMissionCompleted: Boolean;
+
+//********************
+//BUILDING BONUS SCRIPT
+//********************
+PasswordGuard1, PasswordGuard2: Integer;
+PasswordTile1, PasswordTile2, PasswordTile3, PasswordTile4: Integer;
+PasswordReceived: Boolean;
+PasswordDelay: Integer;
+PlayTroopHalt: Boolean;
+Boaster: Integer;
+VisitedWolfbite: Boolean;
+WolfbiteFight1, WolfbiteFight2, WolfbiteFight3: Boolean;
+WolfbiteDelay2, WolfbiteDelay3: Integer;
+WolfbiteTextDelay1, WolfbiteTextDelay2, WolfbiteTextDelay3: Integer;
+WolfbiteFightStarted: Boolean;
+EnemyGuard1, EnemyGuard2, EnemyGuard3: Integer;
+Passed, StartChase, EnemyGuardWalk, ContinueChase: Boolean;
+EnemyGuardDelay1, EnemyGuardDelay2: Integer;
+Xbow1, Xbow2, Xbow3, Xbow4: Integer;
+CrossbowWalk: Boolean;
+StoneGuard1, StoneGuard2, StoneGuard3, StoneGuard4, StoneGuard5, StoneGuard6, StoneGuard7, StoneGuard8, StoneGuard9, StoneGuard10, StoneGuard11, StoneGuard12, StoneGuard13, StoneGuard14, StoneGuard15, StoneGuard16, StoneGuard17, StoneGuard18, StoneGuard19, StoneGuard20, StoneGuard21, StoneGuard22: Integer;
+StonePatrol: Boolean;
+StoneTime1, StoneTime2, StoneTime3, StoneTime4, StoneTime5, StoneTime6: Integer;
+Walk100, Walk100_2: Boolean;
+Walk50, Walk50_2: Boolean;
+Walk20, Walk20_2: Boolean;
+AttackersCreated: Boolean;
+Xbow5, Xbow6: Integer;
+CreateEvilArmy1, CreateEvilArmy2, CreateEvilArmy3, CreateEvilArmy4: Integer;
+CreateGoodArmy1, CreateGoodArmy2, CreateGoodArmy3, CreateGoodArmy4, CreateGoodArmy5, CreateGoodArmy6, CreateGoodArmy7: Integer;
+U2, U10: Integer;
+BriefingDelay2: Integer;
+WarningSent: Boolean;
+Stonemason: Integer;
+
+//********************
+//FOOD BONUS SCRIPT
+//********************
+PikeHasSpoken: Boolean;
+PikeDelay: Integer;
+
+FoodGuard1, FoodGuard2, FoodGuard3, FoodGuard4, FoodGuard5, FoodGuard6, FoodGuard7, FoodGuard8, FoodGuard9, FoodGuard10, FoodGuard11, FoodGuard12, FoodGuard13, FoodGuard14, FoodGuard15, FoodGuard16, FoodGuard17: Integer;
+FoodPatrol: Boolean;
+FoodTime1, FoodTime2, FoodTime3, FoodTime4, FoodTime5, FoodTime6: Integer;
+FoodWalk100, FoodWalk100_2: Boolean;
+FoodWalk50, FoodWalk50_2: Boolean;
+FoodWalk30, FoodWalk30_2: Boolean;
+Barb1, Barb2, Barb3, Pikes, Xbows: Integer;
+PikeHasSpoken2: Boolean;
+Inn: Integer;
+WolfbiteForce1, WolfbiteForce2, WolfbiteForce3, WolfbiteForce4, WolfbiteForce5, WolfbiteForce6: Integer;
+WolfbiteAttacksHighwaymen: Boolean;
+U3, U4, U5, U6, U7, U8, U9: Integer;
+Wolfbite: Integer;
+BriefingDelay1: Integer;
+
+//********************
+//COMMON ROAD SCRIPT
+//********************
+Baker, BakerMessageDelay, BakerMessageDelay2: Integer;
+TalkedToBaker, TalkedToBaker2, MessageReceived: Boolean;
+Chaser1, Chaser2, Chaser3, Chaser4, Chaser5, Chaser6: Integer;
+Passed2, StartChase2, EnemyGuardWalk2, ContinueChase2: Boolean;
+EnemyGuardDelay3, EnemyGuardDelay4: Integer;
+CommonRoadPatrol: Boolean;
+PasswordGuard1_2, PasswordGuard2_2: Integer;
+PasswordTile1_2, PasswordTile2_2, PasswordTile3_2, PasswordTile4_2: Integer;
+PasswordReceived_2: Boolean;
+PlayTroopHalt_2: Boolean;
+Stormer1, Stormer2, Stormer3, Stormer4, Stormer5, Stormer6, Stormer7, Stormer8, Stormer9, Stormer10: Integer;
+StormInitiated: Boolean;
+StormDelay, StormDelay2: Integer;
+
+//********************
+//MAP BONUS SCRIPT
+//********************
+MapGuard1, MapGuard2, MapGuard3, MapGuard4, MapGuard5, MapGuard6, MapGuard7, MapGuard8, MapGuard9, MapGuard10, MapGuard11, MapGuard12, MapGuard13, MapGuard14, MapGuard15, MapGuard16, MapGuard17, MapGuard18, MapGuard19, MapGuard20, MapGuard21, MapGuard22, MapGuard23, MapGuard24, MapGuard25, MapGuard26, MapGuard27, MapGuard28, MapGuard29, MapGuard30, MapGuard31, MapGuard32, MapGuard33, MapGuard34: Integer;
+MapPatrol: Boolean;
+MapTime1, MapTime2, MapTime3, MapTime4, MapTime5, MapTime6, MapTime7, MapTime8: Integer;
+MapWalk100, MapWalk100_2: Boolean;
+MapWalk50, MapWalk50_2: Boolean;
+MapStorm, MapStorm_2, MapStorm2, MapStorm2_2: Boolean;
+Serf1MessageDelay, Serf2MessageDelay: Integer;
+TalkedToSerf1, TalkedToSerf2: Boolean;
+
+//********************
+//WEAPONS BONUS SCRIPT
+//********************
+WeaponGuard1, WeaponGuard2, WeaponGuard3, WeaponGuard4, WeaponGuard5, WeaponGuard6, WeaponGuard7, WeaponGuard8, WeaponGuard9, WeaponGuard10, WeaponGuard11, WeaponGuard12, WeaponGuard13, WeaponGuard14, WeaponGuard15, WeaponGuard16, WeaponGuard17, WeaponGuard18, WeaponGuard19, WeaponGuard20, WeaponGuard21, WeaponGuard22, WeaponGuard23, WeaponGuard24, WeaponGuard25, WeaponGuard26, WeaponGuard27: Integer;
+WeaponPatrol: Boolean;
+WeaponTime1, WeaponTime2, WeaponTime3, WeaponTime5, WeaponTime7 : Integer;
+WeaponWalk50, WeaponWalk50_2: Boolean;
+WeaponWalk100 : Boolean;
+StartDelay, StartPikeChase: Boolean;
+PikeChaser1, PikeChaser2: Integer;
+PlaySound: Boolean;
+OverlayTextDelay: Integer;
+BriefingDelay3: Integer;
+GetXbow, Idea: Boolean;
+GetXbowDelay, IdeaDelay: Integer;
+HXbow,HXbow2: Integer;
+
+function ClosestUnit(aPlayer, X, Y: Integer): Integer; var Groups: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY, Member0: Integer;
+begin
+   Result := -1;
+   Groups := States.PlayerGetAllGroups(aPlayer);
+   for i := 0 to Length(Groups) -1 do
+   begin
+      Member0 := States.GroupMember(Groups[i], 0);
+      DX := X - States.UnitPositionX(Member0);
+      DY := Y - States.UnitPositionY(Member0);
+      ThisDistanceSqr := (DX*DX) + (DY*DY);
+      if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
+      begin
+         BestDistanceSqr := ThisDistanceSqr;
+         Result := Member0;
+      end;
+   end;
+end;
+
+procedure AutoFeed;
+var I, K: Integer; UnitsToFeed: array of Integer;
+begin
+	Actions.UnitHungerSet(HXbow2, States.UnitMaxHunger);
+	Actions.UnitHungerSet(Stonemason, States.UnitMaxHunger);
+	for I := 1 to 11 do
+	begin
+		UnitsToFeed := States.PlayerGetAllUnits(I);
+		for K := 0 to Length(UnitsToFeed) - 1 do
+		begin
+			Actions.UnitHungerSet(UnitsToFeed[K],States.UnitMaxHunger);
+		end;
+	end;
+end;
+
+procedure OnMissionStart;
+begin
+
+	Actions.PlayerShareFog(1, 0, False);
+	Actions.PlayerShareFog(2, 0, False);
+	Actions.PlayerShareFog(3, 0, False);
+	Actions.PlayerShareFog(4, 0, True);
+	Actions.PlayerShareFog(5, 0, False);
+	Actions.PlayerShareFog(6, 0, False);
+	Actions.PlayerShareFog(9, 0, False);
+	Actions.PlayerShareFog(10, 0, False);
+	Actions.PlayerShareFog(11, 0, False);
+	Actions.PlayerShareFog(12, 0, False);
+	Actions.FogCoverCircle(0, 1, 244, 50);
+	Actions.FogCoverCircle(0, 10, 150, 30);
+	Actions.FogCoverCircle(0, 150, 1, 150);
+	Actions.FogCoverCircle(0, 1, 1, 100);
+	Actions.FogCoverCircle(0, 100, 200, 100);
+	Actions.FogRevealCircle(0, 170, 250, 10);
+	Actions.FogRevealCircle(0, 2, 220, 6);
+	Actions.FogRevealCircle(0, 11, 10, 6);
+	Actions.FogCoverCircle(0, 120, 189, 50);
+	Actions.FogCoverCircle(0, 27, 99, 50);
+	Actions.FogRevealCircle(0, 120, 189, 6);
+	Actions.FogRevealCircle(0, 149, 40, 6);
+	//Actions.FogRevealCircle(0, 160, 189, 250);
+
+	Player := States.UnitAt(170, 250);
+	Player2 := States.GroupAt(170, 250);
+
+	PasswordGuard1 := States.GroupAt(143, 239);
+	PasswordGuard2 := States.GroupAt(143, 242);
+	Boaster := States.UnitAt(162, 212);
+	EnemyGuard1 := States.GroupAt(118, 241);
+	EnemyGuard2 := States.GroupAt(119, 245);
+	EnemyGuard3 := States.GroupAt(118, 243);
+	Xbow1 := States.GroupAt(106, 244);
+	Xbow2 := States.GroupAt(103, 242);
+	Xbow3 := States.GroupAt(97, 242);
+	Xbow4 := States.GroupAt(94, 246);
+	StoneTime1 := 0
+	StoneGuard1 := States.GroupAt(77, 247);
+	StoneGuard2 := States.GroupAt(71, 247);
+	StoneGuard3 := States.GroupAt(88, 230);
+	StoneGuard4 := States.GroupAt(91, 228);
+	StoneGuard5 := States.GroupAt(97, 224);
+	StoneGuard6 := States.GroupAt(101, 222);
+	StoneGuard7 := States.GroupAt(110, 225);
+	StoneGuard8 := States.GroupAt(107, 215);
+	StoneGuard9 := States.GroupAt(106, 215);
+	StoneGuard10 := States.GroupAt(104, 217);
+	StoneGuard11 := States.GroupAt(103, 217);
+	StoneGuard12 := States.GroupAt(99, 216);
+	StoneGuard13 := States.GroupAt(97, 218);
+	StoneGuard14 := States.GroupAt(96, 213);
+	StoneGuard15 := States.GroupAt(95, 214);
+	StoneGuard16 := States.GroupAt(90, 216);
+	StoneGuard17 := States.GroupAt(89, 221);
+	StoneGuard18 := States.GroupAt(88, 221);
+	StoneGuard19 := States.GroupAt(51, 226);
+	StoneGuard20 := States.GroupAt(52, 230);
+	StoneGuard21 := States.GroupAt(50, 234);
+	StoneGuard22 := States.GroupAt(54, 231);
+	Walk20 := true;
+	Walk50 := true;
+	Walk100 := true;
+	Stonemason := States.UnitAt(3, 221);
+
+	FoodGuard1 := States.GroupAt(165, 155);
+	FoodGuard2 := States.GroupAt(167, 151);
+	FoodGuard3 := States.GroupAt(164, 146);
+	FoodGuard4 := States.GroupAt(161, 139);
+	FoodGuard5 := States.GroupAt(162, 138);
+	FoodGuard6 := States.GroupAt(167, 141);
+	FoodGuard7 := States.GroupAt(168, 138);
+	FoodGuard8 := States.GroupAt(169, 138);
+	FoodGuard9 := States.GroupAt(173, 139);
+	FoodGuard10 := States.GroupAt(165, 130);
+	FoodGuard11 := States.GroupAt(162, 127);
+	FoodGuard12 := States.GroupAt(155, 127);
+	FoodGuard13 := States.GroupAt(151, 129);
+	FoodGuard14 := States.GroupAt(145, 132);
+	FoodGuard15 := States.GroupAt(148, 142);
+	FoodGuard16 := States.GroupAt(151, 144);
+	FoodGuard17 := States.GroupAt(143, 145);
+	FoodWalk30 := true;
+	FoodWalk50 := true;
+	FoodWalk100 := true;
+	Barb1 := States.UnitAt(131, 159);
+	Barb2 := States.UnitAt(138, 161);
+	Barb3 := States.UnitAt(136, 154);
+	Pikes := States.GroupAt(123, 169);
+	Xbows := States.GroupAt(128, 170);
+	Inn := States.HouseAt(120, 190);
+	WolfbiteForce1 := States.GroupAt(170, 214);
+	WolfbiteForce2 := States.GroupAt(170, 219);
+	WolfbiteForce3 := States.GroupAt(170, 224);
+	WolfbiteForce4 := States.GroupAt(174, 215);
+	WolfbiteForce5 := States.GroupAt(174, 220);
+	WolfbiteForce6 := States.GroupAt(174, 225);
+	Wolfbite := States.GroupAt(162, 212);
+
+	Baker := States.UnitAt(100, 199);
+	Chaser1 := States.GroupAt(92, 137);
+	Chaser2 := States.GroupAt(102, 135);
+	Chaser3 := States.GroupAt(104, 135);
+	Chaser4 := States.GroupAt(106, 135);
+	Chaser5 := States.GroupAt(113, 140);
+	Chaser6 := States.GroupAt(94, 154);
+	PasswordGuard1_2 := States.GroupAt(100, 160);
+	PasswordGuard2_2 := States.GroupAt(103, 160);
+	Stormer1 := States.GroupAt(103, 125);
+	Stormer2 := States.GroupAt(111, 131);
+	Stormer3 := States.GroupAt(105, 123);
+	Stormer4 := States.GroupAt(113, 129);
+	Stormer5 := States.GroupAt(107, 121);
+	Stormer6 := States.GroupAt(115, 127);
+	Stormer7 := States.GroupAt(109, 119);
+	Stormer8 := States.GroupAt(117, 125);
+	Stormer9 := States.GroupAt(111, 117);
+	Stormer10 := States.GroupAt(119, 123);
+
+	MapGuard1 := States.GroupAt(173, 102);
+	MapGuard2 := States.GroupAt(166, 102);
+	MapGuard3 := States.GroupAt(149, 94);
+	MapGuard4 := States.GroupAt(149, 93);
+	MapGuard5 := States.GroupAt(174, 75);
+	MapGuard6 := States.GroupAt(164, 75);
+	MapGuard7 := States.GroupAt(158, 76);
+	MapGuard8 := States.GroupAt(154, 76);
+	MapGuard9 := States.GroupAt(149, 71);
+	MapGuard10 := States.GroupAt(144, 76);
+	MapGuard11 := States.GroupAt(149, 81);
+	MapGuard12 := States.GroupAt(150, 75);
+	MapGuard13 := States.GroupAt(148, 75);
+	MapGuard14 := States.GroupAt(148, 77);
+	MapGuard15 := States.GroupAt(150, 77);
+	MapGuard16 := States.GroupAt(132, 32);
+	MapGuard17 := States.GroupAt(128, 31);
+	MapGuard18 := States.GroupAt(132, 30);
+	MapGuard19 := States.GroupAt(127, 25);
+	MapGuard20 := States.GroupAt(128, 23);
+	MapGuard21 := States.GroupAt(125, 21);
+	MapGuard22 := States.GroupAt(122, 24);
+	MapGuard23 := States.GroupAt(124, 21);
+	MapGuard24 := States.GroupAt(121, 22);
+	MapGuard25 := States.GroupAt(114, 13);
+	MapGuard26 := States.GroupAt(116, 4);
+	MapGuard27 := States.GroupAt(125, 5);
+	MapGuard28 := States.GroupAt(132, 6);
+	MapGuard29 := States.GroupAt(135, 6);
+	MapGuard30 := States.GroupAt(132, 13);
+	MapGuard31 := States.GroupAt(137, 6);
+	MapGuard32 := States.GroupAt(142, 8);
+	MapGuard33 := States.GroupAt(136, 12);
+	MapGuard34 := States.GroupAt(140, 16);
+	MapStorm := true;
+	MapStorm2 := true;
+	MapWalk50 := true;
+	MapWalk100 := true;
+
+	WeaponGuard1 := States.GroupAt(36, 63);
+	WeaponGuard2 := States.GroupAt(37, 61);
+	WeaponGuard3 := States.GroupAt(38, 59);
+	WeaponGuard4 := States.GroupAt(38, 57);
+	WeaponGuard5 := States.GroupAt(48, 53);
+	WeaponGuard6 := States.GroupAt(50, 53);
+	WeaponGuard7 := States.GroupAt(52, 57);
+	WeaponGuard8 := States.GroupAt(51, 59);
+	WeaponGuard9 := States.GroupAt(60, 59);
+	WeaponGuard10 := States.GroupAt(60, 63);
+	WeaponGuard11 := States.GroupAt(64, 60);
+	WeaponGuard12 := States.GroupAt(64, 63);
+	WeaponGuard13 := States.GroupAt(63, 71);
+	WeaponGuard14 := States.GroupAt(69, 71);
+	WeaponGuard15 := States.GroupAt(62, 73);
+	WeaponGuard16 := States.GroupAt(62, 78);
+	WeaponGuard17 := States.GroupAt(59, 75);
+	WeaponGuard18 := States.GroupAt(59, 76);
+	WeaponGuard19 := States.GroupAt(53, 74);
+	WeaponGuard20 := States.GroupAt(53, 78);
+	WeaponGuard21 := States.GroupAt(49, 72);
+	WeaponGuard22 := States.GroupAt(49, 74);
+	WeaponGuard23 := States.GroupAt(29, 95);
+	WeaponGuard24 := States.GroupAt(9, 74);
+	WeaponGuard25 := States.GroupAt(9, 60);
+	WeaponGuard26 := States.GroupAt(12, 60);
+	WeaponGuard27 := States.GroupAt(108, 108);
+	WeaponWalk50 := true;
+	WeaponWalk100 := true;
+	StartDelay := true;
+	PikeChaser1 := States.GroupAt(25, 61);
+	PikeChaser2 := States.GroupAt(24, 63);
+	HXbow := States.GroupAt(25, 83);
+	HXbow2 := States.UnitAt(25, 83);
+end;
+
+procedure OnTick;
+begin
+	Actions.OverlayTextSetWordWrap(0, true);
+	if States.GameTime mod 6000 = 0 then
+	begin
+		AutoFeed;
+	end;
+
+	if ShowOverlayText = false then
+	begin
+		Actions.OverlayTextSet(0, '');
+	end;
+
+	if States.GameTime = 1 then
+	begin
+		Actions.CinematicStart(0);
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$1>');
+	end;
+	if (States.GameTime > 29) and (States.GameTime < 160) then
+	begin
+		Actions.CinematicPanTo(0, 120, 189, 0);
+		Actions.OverlayTextSet(0, '<$2>');
+	end;
+	if (States.GameTime > 160) and (States.GameTime < 290) then
+	begin
+		Actions.CinematicPanTo(0, 3, 221, 0);
+		Actions.OverlayTextSet(0, '<$3>');
+	end;
+	if (States.GameTime > 290) and (States.GameTime < 420) then
+	begin
+		Actions.CinematicPanTo(0, 149, 40, 0);
+		Actions.OverlayTextSet(0, '<$4>');
+	end;
+	if (States.GameTime > 420) and (States.GameTime < 550) then
+	begin
+		Actions.CinematicPanTo(0, 11, 10, 0);
+		Actions.OverlayTextSet(0, '<$5>');
+	end;
+	if (States.GameTime > 550) and (States.GameTime < 650) then
+	begin
+		Actions.CinematicPanTo(0, 170, 250, 0);
+		Actions.OverlayTextSet(0, '<$6>');
+	end;
+	if (States.GameTime = 650) then
+	begin
+		Actions.CinematicEnd(0);
+		ShowOverlayText := false;
+	end;
+
+	//********************
+	//BUILDING BONUS SCRIPT
+	//********************
+
+	//WOLFBITE SCRIPT
+
+	if (PasswordReceived = false) then
+	begin
+		PasswordTile1 := States.GroupAt(144, 239);
+		PasswordTile2 := States.GroupAt(144, 240);
+		PasswordTile3 := States.GroupAt(144, 241);
+		PasswordTile4 := States.GroupAt(144, 242);
+
+		if (WolfbiteFightStarted = false) and (((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Player) - 1)) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) + 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1)))) and (VisitedWolfbite = false) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$7>');
+			VisitedWolfbite := true;
+			Actions.GroupOrderWalk(Player2, 160, 215, 4);
+			WolfbiteDelay2 := States.GameTime;
+			WolfbiteTextDelay1 := States.GameTime;
+			WolfbiteFight1 := true;
+		end;
+		if  (WolfbiteFightStarted = false) and (States.GameTime > WolfbiteDelay2 + 30) and (((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Player) - 1)) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) + 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1)))) and (VisitedWolfbite = true) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$8>');
+			Actions.PlayerAllianceChange(0, 3, True, False);
+			WolfbiteFightStarted := true;
+			WolfbiteDelay3 := States.GameTime;
+			WolfbiteTextDelay2 := States.GameTime;
+			WolfbiteFight2 := true;
+		end;
+		if (WolfbiteFightStarted = true) and (States.GameTime > WolfbiteDelay3 + 40) and (WolfbiteFight3 = false) then
+		begin
+			ShowOverlayText := true;
+			Actions.PlayerAllianceChange(0, 3, True, True);
+			Actions.OverlayTextSet(0, '<$9>');
+			WolfbiteTextDelay3 := States.GameTime;
+			Actions.PlayerShareFog(0, 3, False);
+			Actions.PlayerAllianceChange(1, 3, True, True);
+			Actions.PlayerAllianceChange(2, 3, True, True);
+			Actions.PlayerAllianceChange(5, 3, True, True);
+			Actions.PlayerAllianceChange(6, 3, True, True);
+			Actions.PlayerAllianceChange(9, 3, True, True);
+			Actions.PlayerAllianceChange(10, 3, True, True);
+			Actions.FogCoverCircle(0, 100, 199, 5);
+			Actions.FogCoverCircle(0, 25, 83, 10);
+			WolfbiteFight3 := true;
+		end;
+
+		if (States.GameTime = (WolfbiteTextDelay1 + 150)) and (WolfbiteFight1 = true) then
+		begin
+			ShowOverlayText := false;
+		end;
+		if (States.GameTime = (WolfbiteTextDelay2 + 40)) and (WolfbiteFight2 = true) then
+		begin
+			ShowOverlayText := false;
+		end;
+		if (States.GameTime > (WolfbiteTextDelay3 + 60)) and (WolfbiteFight3 = true) then
+		begin
+			ShowOverlayText := false;
+			PasswordReceived := true;
+		end;
+
+	//NEED PASSWORD SCRIPT
+
+		if States.GameTime = (PasswordDelay + 30) then
+		begin
+			ShowOverlayText := false;
+		end;
+
+		if (PlayTroopHalt = true) then
+		begin
+			Actions.PlayWAV(0, 'TroopHalt', 1.0);
+			PlayTroopHalt := false;
+		end;
+
+		if (PasswordTile1 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard1, 143, 239, 2);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			Actions.GroupOrderWalk(PasswordTile1, 145, 239, 6);
+			if (States.GameTime mod 10 = 0) then
+			begin
+				PlayTroopHalt := true;
+			end;
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile2 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard1, 143, 240, 2);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			Actions.GroupOrderWalk(PasswordTile2, 145, 240, 6);
+			if (States.GameTime mod 10 = 0) then
+			begin
+				PlayTroopHalt := true;
+			end;
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile3 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard2, 143, 241, 2);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			Actions.GroupOrderWalk(PasswordTile3, 145, 241, 6);
+			if (States.GameTime mod 10 = 0) then
+			begin
+				PlayTroopHalt := true;
+			end;
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile4 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard2, 143, 242, 2);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			Actions.GroupOrderWalk(PasswordTile4, 145, 242, 6);
+			if (States.GameTime mod 10 = 0) then
+			begin
+				PlayTroopHalt := true;
+			end;
+			PasswordDelay := States.GameTime;
+		end;
+	end;
+
+	//ENEMY GUARDS SCRIPT
+
+	if (Passed = false) then
+	begin
+
+		if (StartChase = false) and (States.UnitPositionX(Player) < 123) and (States.UnitPositionY(Player) > 239) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$11>');
+			Actions.PlayerAllianceChange(0, 1, True, False);
+			Actions.PlayerAllianceChange(0, 2, True, False);
+			Actions.PlayerAllianceChange(0, 3, True, False);
+			Actions.PlayerAllianceChange(0, 5, True, False);
+			Actions.PlayerAllianceChange(0, 6, True, False);
+			Actions.PlayerAllianceChange(0, 9, True, False);
+			Actions.PlayerAllianceChange(0, 10, True, False);
+			Actions.PlayerAllianceChange(0, 11, True, False);
+			Actions.GroupOrderWalk(Player2, 124, 243, 2);
+			EnemyGuardDelay1 := States.GameTime;
+			StartChase := true;
+			EnemyGuardWalk := true;
+			Actions.PlayWAV(0, 'TroopHalt2', 1.0);
+		end;
+		if (StartChase = true) and (EnemyGuardWalk = true) and (States.GameTime > EnemyGuardDelay1 + 30) and (States.UnitPositionX(Player) < 123) and (States.UnitPositionY(Player) > 239) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$12>');
+			Actions.GroupOrderWalk(EnemyGuard1, 122, 239, 2)
+			Actions.GroupOrderWalk(EnemyGuard3, 119, 243, 2)
+			Actions.GroupOrderWalk(EnemyGuard2, 124, 245, 2)
+			EnemyGuardDelay2 := States.GameTime;
+			EnemyGuardWalk := false;
+			Actions.PlayWAV(0, 'Attack', 1.0);
+		end;
+
+		if States.GameTime = (EnemyGuardDelay1 + 40) then
+		begin
+			ShowOverlayText := false;
+		end;
+		if States.GameTime = (EnemyGuardDelay2 + 30) then
+		begin
+			ShowOverlayText := false;
+		end;
+
+		if (States.GroupAt(122, 239) = EnemyGuard1) and (States.GroupAt(124, 245) = EnemyGuard2) then
+		begin
+			ContinueChase := true;
+		end;
+
+		if (States.UnitPositionY(Player) > 242) and (ContinueChase = true) then
+		begin
+			Actions.GroupOrderWalk(EnemyGuard1, 133, 234, 2)
+			Actions.GroupOrderAttackUnit(EnemyGuard2, Player);
+			Actions.GroupOrderAttackUnit(EnemyGuard3, Player);
+			if States.GroupAt(133, 234) = EnemyGuard1 then
+			begin
+				Actions.GroupOrderAttackUnit(EnemyGuard1, Player);
+				ContinueChase := false;
+			end;
+		end;
+		if (States.UnitPositionY(Player) < 243) and (ContinueChase = true) then
+		begin
+			Actions.GroupOrderWalk(EnemyGuard2, 131, 246, 2)
+			Actions.GroupOrderAttackUnit(EnemyGuard1, Player);
+			Actions.GroupOrderAttackUnit(EnemyGuard3, Player);
+			if States.GroupAt(131, 246) = EnemyGuard2 then
+			begin
+				Actions.GroupOrderAttackUnit(EnemyGuard2, Player);
+				ContinueChase := false;
+			end;
+		end;
+
+		if (States.UnitPositionX(Player) < 118) and (States.UnitPositionY(Player) > 240) and (States.UnitDead(Player) = false) and (PasswordReceived = true) then
+		begin
+			StonePatrol := true;
+			Actions.GroupOrderWalk(EnemyGuard1, 118, 241, 3)
+			Actions.GroupOrderWalk(EnemyGuard2, 119, 245, 1)
+			Actions.GroupOrderWalk(EnemyGuard3, 118, 243, 2)
+			Passed := true;
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$13>');
+		end;
+
+	end;
+
+	//CROSSBOWMEN SCRIPT
+
+	if (Passed = true) and (CrossbowWalk = false) then
+	begin
+		Actions.GroupOrderWalk(Xbow1, 108, 244, 2);
+		Actions.GroupOrderWalk(Xbow2, 103, 241, 1);
+		Actions.GroupOrderWalk(Xbow3, 99, 241, 0);
+		Actions.GroupOrderWalk(Xbow4, 95, 243, 0);
+		CrossbowWalk := true;
+		EnemyGuardDelay1 := States.GameTime;
+		Actions.PlayWAV(0, 'FireAtWill', 1.0);
+		Actions.FogRevealCircle(0, 111, 241, 5);
+		Actions.FogRevealCircle(0, 108, 237, 5);
+		Actions.FogRevealCircle(0, 102, 235, 5);
+		Actions.FogRevealCircle(0, 98, 237, 4);
+	end;
+
+	if (States.GameTime = (EnemyGuardDelay1 + 30)) and (CrossbowWalk = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//STONE PATROL SCRIPT
+
+	if StonePatrol = True then
+	begin
+		if (StoneTime1 = 0) and (StoneTime3 = 0) then
+		begin
+			StoneTime1 := States.GameTime;
+			StoneTime3 := States.GameTime;
+			StoneTime5 := States.GameTime;
+		end;
+
+		if (States.GameTime = StoneTime1) and (Walk50 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard1, 75, 249, 1);
+			Actions.GroupOrderWalk(StoneGuard2, 73, 245, 5);
+
+			Actions.GroupOrderWalk(StoneGuard3, 88, 234, 0);
+			Actions.GroupOrderWalk(StoneGuard4, 91, 232, 0);
+			Actions.GroupOrderWalk(StoneGuard5, 97, 228, 0);
+			Actions.GroupOrderWalk(StoneGuard6, 101, 226, 0);
+			Actions.GroupOrderWalk(StoneGuard7, 95, 225, 6);
+
+			Actions.GroupOrderWalk(StoneGuard8, 107, 218, 0);
+			Actions.GroupOrderWalk(StoneGuard9, 106, 218, 0);
+			Actions.GroupOrderWalk(StoneGuard10, 104, 214, 4);
+			Actions.GroupOrderWalk(StoneGuard11, 103, 214, 4);
+			Actions.GroupOrderWalk(StoneGuard12, 105, 216, 2);
+			Actions.GroupOrderWalk(StoneGuard13, 97, 214, 4);
+			Actions.GroupOrderWalk(StoneGuard14, 96, 217, 0);
+			Actions.GroupOrderWalk(StoneGuard15, 102, 214, 2);
+			Actions.GroupOrderWalk(StoneGuard16, 90, 220, 0);
+			Actions.GroupOrderWalk(StoneGuard17, 89, 217, 4);
+
+			Actions.GroupOrderWalk(StoneGuard22, 48, 231, 6);
+
+			StoneTime2 := (States.GameTime + 50);
+			Walk50 := false;
+			Walk50_2 := true;
+		end;
+		if (States.GameTime = StoneTime2) and (Walk50_2 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard1, 77, 247, 5);
+			Actions.GroupOrderWalk(StoneGuard2, 71, 247, 1);
+
+			Actions.GroupOrderWalk(StoneGuard3, 88, 230, 4);
+			Actions.GroupOrderWalk(StoneGuard4, 91, 228, 4);
+			Actions.GroupOrderWalk(StoneGuard5, 97, 224, 4);
+			Actions.GroupOrderWalk(StoneGuard6, 101, 222, 4);
+			Actions.GroupOrderWalk(StoneGuard7, 104, 225, 2);
+
+			Actions.GroupOrderWalk(StoneGuard8, 107, 215, 4);
+			Actions.GroupOrderWalk(StoneGuard9, 106, 215, 4);
+			Actions.GroupOrderWalk(StoneGuard10, 104, 217, 0);
+			Actions.GroupOrderWalk(StoneGuard11, 103, 217, 0);
+			Actions.GroupOrderWalk(StoneGuard12, 99, 216, 6);
+			Actions.GroupOrderWalk(StoneGuard13, 97, 218, 0);
+			Actions.GroupOrderWalk(StoneGuard14, 96, 213, 4);
+			Actions.GroupOrderWalk(StoneGuard15, 95, 214, 6);
+			Actions.GroupOrderWalk(StoneGuard16, 90, 216, 4);
+			Actions.GroupOrderWalk(StoneGuard17, 89, 221, 0);
+
+			Actions.GroupOrderWalk(StoneGuard22, 54, 231, 2);
+
+			StoneTime1 := (States.GameTime + 50);
+			Walk50 := true;
+			Walk50_2 := false;
+		end;
+
+		if (States.GameTime = StoneTime3) and (Walk20 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard18, 88, 218, 0);
+			StoneTime4 := (States.GameTime + 20);
+			Walk20 := false;
+			Walk20_2 := true;
+		end;
+		if (States.GameTime = StoneTime4) and (Walk20_2 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard18, 88, 221, 4);
+			StoneTime3 := (States.GameTime + 20);
+			Walk20 := true;
+			Walk20_2 := false;
+		end;
+
+		if (States.GameTime = StoneTime5) and (Walk100 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard20, 52, 223, 0);
+			Actions.GroupOrderWalk(StoneGuard21, 50, 241, 4);
+			StoneTime6 := (States.GameTime + 100);
+			Walk100 := false;
+			Walk100_2 := true;
+		end;
+		if (States.GameTime = StoneTime6) and (Walk100_2 = true) then
+		begin
+			Actions.GroupOrderWalk(StoneGuard20, 52, 230, 0);
+			Actions.GroupOrderWalk(StoneGuard21, 50, 234, 4);
+			StoneTime5 := (States.GameTime + 100);
+			Walk100 := true;
+			Walk100_2 := false;
+		end;
+
+		if (States.UnitPositionX(Player) < 58) then
+		begin
+			Actions.HouseWareBlock(States.HouseAt(16, 227), 1, false);
+		end;
+	end;
+
+	//ATTACK SCRIPT
+
+	if (AttackersCreated = false) and (States.UnitPositionX(Player) < 79) and (States.UnitPositionY(Player) < 216) and (States.UnitPositionY(Player) > 214) then
+	begin
+		Actions.GiveGroup(3, 18, 62, 197, 6, 9, 4); Xbow5 := States.GroupAt(62, 197);
+		Actions.GiveGroup(3, 18, 59, 203, 7, 12, 4); Xbow6 := States.GroupAt(59, 203);
+		Actions.GiveGroup(3, 22, 56, 203, 7, 11, 4); CreateEvilArmy1 := States.GroupAt(56, 203);
+		Actions.GiveGroup(3, 20, 57, 197, 7, 9, 5); CreateEvilArmy2 := States.GroupAt(57, 197);
+		Actions.GiveGroup(3, 22, 47, 205, 0, 7, 4); CreateEvilArmy3 := States.GroupAt(47, 205); Actions.GroupOrderWalk(States.GroupAt(47, 205), 47, 203, 0);
+		Actions.GiveGroup(3, 22, 55, 190, 5, 5, 2); CreateEvilArmy4 := States.GroupAt(55, 190);
+
+		Actions.GiveGroup(4, 17, 51, 196, 3, 11, 4); CreateGoodArmy1 := States.GroupAt(51, 196);
+		Actions.GiveGroup(4, 18, 50, 200, 3, 9, 3); CreateGoodArmy2 := States.GroupAt(50, 200);
+		Actions.GiveGroup(4, 15, 55, 197, 3, 14, 5); CreateGoodArmy3 := States.GroupAt(55, 197);
+		Actions.GiveGroup(4, 16, 51, 202, 3, 8, 4); CreateGoodArmy4 := States.GroupAt(51, 202);
+		Actions.GiveGroup(4, 19, 46, 203, 4, 9, 4); CreateGoodArmy5 := States.GroupAt(46, 203);
+		Actions.GiveGroup(4, 19, 55, 191, 1, 6, 3); CreateGoodArmy6 := States.GroupAt(55, 191);
+		Actions.GiveGroup(4, 20, 28, 190, 2, 12, 5); CreateGoodArmy7 := States.GroupAt(28, 190); Actions.GroupOrderWalk(States.GroupAt(28, 190), 54, 198, 3);
+
+		Actions.PlayerAllianceChange(0, 3, True, False);
+		AttackersCreated := true;
+	end;
+
+	if AttackersCreated = true then
+	begin
+		if ((States.GroupDead(CreateGoodArmy1) = true) and (States.GroupDead(CreateGoodArmy2) = true) and (States.GroupDead(CreateGoodArmy3) = true) and (States.GroupDead(CreateGoodArmy4) = true) and (States.GroupDead(CreateGoodArmy5) = true) and (States.GroupDead(CreateGoodArmy6) = true) and (States.GroupDead(CreateGoodArmy7) = true)) then
+		begin
+			if States.GroupIdle(Xbow5) then
+			begin
+				Actions.GroupOrderAttackUnit(Xbow5, Player);
+			end;
+			if States.GroupIdle(Xbow6) then
+			begin
+				Actions.GroupOrderAttackUnit(Xbow6, Player);
+			end;
+			Actions.GroupOrderAttackUnit(CreateEvilArmy1, Player);
+			Actions.GroupOrderAttackUnit(CreateEvilArmy2, Player);
+			Actions.GroupOrderAttackUnit(CreateEvilArmy3, Player);
+			Actions.GroupOrderAttackUnit(CreateEvilArmy4, Player);
+		end;
+		if ((States.GroupDead(CreateEvilArmy1) = true) and (States.GroupDead(CreateEvilArmy2) = true) and (States.GroupDead(CreateEvilArmy3) = true) and (States.GroupDead(CreateEvilArmy4) = true) and (States.GroupDead(Xbow5) = true) and (States.GroupDead(Xbow6) = true)) then
+		begin
+			U3 := ClosestUnit(10, 51, 173);
+			if States.GroupIdle(CreateGoodArmy1) then
+			begin
+				Actions.GroupOrderAttackUnit(CreateGoodArmy1, U10);
+			end;
+			Actions.GroupOrderAttackUnit(CreateGoodArmy2, U10);
+			Actions.GroupOrderAttackUnit(CreateGoodArmy3, U10);
+			Actions.GroupOrderAttackUnit(CreateGoodArmy4, U10);
+			Actions.GroupOrderAttackUnit(CreateGoodArmy5, U10);
+			Actions.GroupOrderAttackUnit(CreateGoodArmy6, U10);
+			Actions.GroupOrderAttackUnit(CreateGoodArmy7, U10);
+		end;
+
+		if States.GroupIdle(Xbow5) then
+		begin
+			U := ClosestUnit(4, 56, 196);
+			Actions.GroupOrderAttackUnit(Xbow5, U);
+		end;
+		if States.GroupIdle(Xbow6) then
+		begin
+			U2 := ClosestUnit(4, 52, 202);
+			Actions.GroupOrderAttackUnit(Xbow6, U2);
+		end;
+	end;
+
+	//STONEMASON SCRIPT
+	if (States.UnitPositionX(Player) < 5) and (States.UnitPositionX(Player) > 1) and (States.UnitPositionY(Player) < 223) and (States.UnitPositionY(Player) > 219) and (EasyMissionCompleted = false) and (ModerateMissionCompleted = false) and (HardMissionCompleted = false) and (VeryHardMissionCompleted = false) then
+	begin
+		BriefingDelay2 := States.GameTime;
+		Actions.CinematicStart(0);
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$14>');
+		Actions.CinematicPanTo(0, 3, 221, 0);
+		ModerateMissionCompleted := true;
+	end;
+
+	if (States.GameTime = (BriefingDelay2 + 50)) and (ModerateMissionCompleted = true) then
+	begin
+		Actions.FogRevealCircle(0, 1, 186, 6);
+		Actions.CinematicPanTo(0, 1, 186, 0);
+		Actions.OverlayTextSet(0, '<$15>');
+	end;
+	if (States.GameTime = (BriefingDelay2 + 90)) and (ModerateMissionCompleted = true) then
+	begin
+		ShowOverlayText := false;
+		Actions.CinematicPanTo(0, 3, 221, 0);
+		Actions.CinematicEnd(0);
+	end;
+
+	if (States.UnitPositionX(Player) < 3) and (States.UnitPositionY(Player) > 182) and (States.UnitPositionY(Player) < 190) and (ModerateMissionCompleted = true) then
+	begin
+		Actions.PlayerWin([0], False);
+	end;
+
+	if (States.UnitPositionX(Player) < 73) and (States.UnitPositionX(Player) > 50) and (States.UnitPositionY(Player) = 178) and (WarningSent = false) then
+	begin
+		Actions.ShowMsg(0, '<$33>');
+		WarningSent := true;
+	end;
+
+	//********************
+	//FOOD BONUS SCRIPT
+	//********************
+
+	//PIKEMAN SCRIPT
+	if (States.UnitPositionX(Player) < 148) and (States.UnitPositionX(Player) > 146) and (States.UnitPositionY(Player) < 191) and (States.UnitPositionY(Player) > 189) and (PikeHasSpoken = false) then
+	begin
+		ShowOverlayText := true;
+		PikeDelay := States.GameTime;
+		Actions.OverlayTextSet(0, '<$16>');
+		PikeHasSpoken := true;
+	end;
+	if States.GameTime = (PikeDelay + 60) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//FOOD PATROL SCRIPT
+
+	if (States.UnitPositionX(Player) < 157) and (States.UnitPositionX(Player) > 148) and (States.UnitPositionY(Player) < 166) and (States.UnitPositionY(Player) > 164) and (FoodPatrol = false) then
+	begin
+		FoodPatrol := true;
+	end;
+
+	if FoodPatrol = true then
+	begin
+		if FoodTime1 = 0 then
+		begin
+			FoodTime1 := States.GameTime;
+			FoodTime3 := States.GameTime;
+			FoodTime5 := States.GameTime;
+		end;
+	end;
+
+	if (States.GameTime = FoodTime1) and (FoodWalk50 = true) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard1, 168, 152, 1);
+		Actions.GroupOrderWalk(FoodGuard2, 164, 154, 5);
+		Actions.GroupOrderWalk(FoodGuard4, 163, 141, 3);
+		Actions.GroupOrderWalk(FoodGuard5, 164, 140, 3);
+		Actions.GroupOrderWalk(FoodGuard6, 167, 138, 0);
+		//Actions.GroupOrderWalk(FoodGuard7, 168, 141, 4);
+		Actions.GroupOrderWalk(FoodGuard8, 169, 141, 4);
+		Actions.GroupOrderWalk(FoodGuard9, 166, 139, 6);
+		Actions.GroupOrderWalk(FoodGuard12, 155, 123, 0);
+		Actions.GroupOrderWalk(FoodGuard13, 151, 125, 0);
+
+		FoodTime2 := (States.GameTime + 50);
+		FoodWalk50 := false;
+		FoodWalk50_2 := true;
+	end;
+	if (States.GameTime = FoodTime2) and (FoodWalk50_2 = true) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard1, 165, 155, 5);
+		Actions.GroupOrderWalk(FoodGuard2, 167, 151, 1);
+		Actions.GroupOrderWalk(FoodGuard4, 161, 139, 7);
+		Actions.GroupOrderWalk(FoodGuard5, 162, 138, 7);
+		Actions.GroupOrderWalk(FoodGuard6, 167, 141, 4);
+		//Actions.GroupOrderWalk(FoodGuard7, 168, 138, 0);
+		Actions.GroupOrderWalk(FoodGuard8, 169, 138, 0);
+		Actions.GroupOrderWalk(FoodGuard9, 173, 139, 2);
+		Actions.GroupOrderWalk(FoodGuard12, 155, 127, 4);
+		Actions.GroupOrderWalk(FoodGuard13, 151, 129, 4);
+
+		FoodTime1 := (States.GameTime + 50);
+		FoodWalk50 := true;
+		FoodWalk50_2 := false;
+	end;
+
+	if (States.GroupAt(164, 146) = FoodGuard3) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard3, 161, 147, 7);
+	end;
+	if (States.GroupAt(161, 147) = FoodGuard3) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard3, 161, 144, 2);
+	end;
+	if (States.GroupAt(161, 144) = FoodGuard3) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard3, 164, 146, 3);
+	end;
+
+	if (States.GroupAt(165, 130) = FoodGuard10) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard10, 162, 128, 0);
+	end;
+	if (States.GroupAt(162, 128) = FoodGuard10) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard10, 165, 128, 3);
+	end;
+	if (States.GroupAt(165, 128) = FoodGuard10) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard10, 165, 130, 4);
+	end;
+
+	if (States.GroupAt(162, 127) = FoodGuard11) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard11, 165, 129, 0);
+	end;
+	if (States.GroupAt(165, 129) = FoodGuard11) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard11, 162, 129, 7);
+	end;
+	if (States.GroupAt(162, 129) = FoodGuard11) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard11, 162, 127, 4);
+	end;
+
+	if (States.GameTime = FoodTime3) and (FoodWalk100 = true) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard14, 145, 133, 4);
+		FoodTime4 := (States.GameTime + 150);
+		FoodWalk100 := false;
+		FoodWalk100_2 := true;
+	end;
+	if (States.GameTime = FoodTime4) and (FoodWalk100_2 = true) then
+	begin
+		FoodTime3 := (States.GameTime + 90);
+		FoodWalk100 := true;
+		FoodWalk100_2 := false;
+	end;
+	if (States.GroupAt(145, 133) = FoodGuard14) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard14, 138, 136, 7);
+	end;
+	if (States.GroupAt(138, 136) = FoodGuard14) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard14, 139, 130, 2);
+	end;
+	if (States.GroupAt(139, 130) = FoodGuard14) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard14, 145, 132, 4);
+	end;
+
+	if (States.GroupAt(148, 142) = FoodGuard15) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard15, 145, 147, 6);
+	end;
+	if (States.GroupAt(145, 147) = FoodGuard15) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard15, 144, 142, 2);
+	end;
+	if (States.GroupAt(144, 142) = FoodGuard15) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard15, 148, 142, 3);
+	end;
+	if (States.GameTime = FoodTime5) and (FoodWalk30 = true) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard16, 149, 144, 6);
+		FoodTime6 := (States.GameTime + 30);
+		FoodWalk30 := false;
+		FoodWalk30_2 := true;
+	end;
+	if (States.GameTime = FoodTime6) and (FoodWalk30_2 = true) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard16, 151, 144, 2);
+		FoodTime5 := (States.GameTime + 30);
+		FoodWalk30 := true;
+		FoodWalk30_2 := false;
+	end;
+	if (States.GroupAt(143, 145) = FoodGuard17) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard17, 146, 141, 2);
+	end;
+	if (States.GroupAt(146, 141) = FoodGuard17) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard17, 148, 146, 5);
+	end;
+	if (States.GroupAt(148, 146) = FoodGuard17) then
+	begin
+		Actions.GroupOrderWalk(FoodGuard17, 143, 145, 7);
+	end;
+
+	//WHOA SCRIPT
+
+	if (States.UnitPositionX(Player) < 132) and (States.UnitPositionX(Player) > 121) and (States.UnitPositionY(Player) < 163) and (States.UnitPositionY(Player) > 161) and (FoodPatrol = true) and (PikeHasSpoken2 = false) then
+	begin
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$17>');
+		PikeHasSpoken2 := true;
+		PikeDelay := States.GameTime;
+		if States.GroupIdle(Pikes) = true then
+		begin
+			Actions.GroupOrderAttackUnit(Pikes, Barb1);
+		end;
+		if States.GroupIdle(Xbows) = true then
+		begin
+			Actions.GroupOrderAttackUnit(Xbows, Barb1);
+		end;
+	end;
+	if States.UnitDead(Barb1) = true then
+	begin
+		if States.GroupIdle(Pikes) = true then
+		begin
+			Actions.GroupOrderAttackUnit(Pikes, Barb2);
+		end;
+		if States.GroupIdle(Xbows) = true then
+		begin
+			Actions.GroupOrderAttackUnit(Xbows, Barb2);
+		end;
+		if States.UnitDead(Barb2) = true then
+		begin
+			if States.GroupIdle(Pikes) = true then
+			begin
+				Actions.GroupOrderAttackUnit(Pikes, Barb3);
+			end;
+			if States.GroupIdle(Xbows) = true then
+			begin
+				Actions.GroupOrderAttackUnit(Xbows, Barb3);
+			end;
+			if States.UnitDead(Barb3) = true then
+			begin
+				if States.GroupIdle(Pikes) = true then
+				begin
+					Actions.GroupOrderWalk(Pikes, 123, 169, 1);
+				end;
+				if States.GroupIdle(Xbows) = true then
+				begin
+					Actions.GroupOrderWalk(Xbows, 128, 170, 0);
+				end;
+			end;
+		end;
+	end;
+	if (States.GameTime = (PikeDelay + 40)) and (PikeHasSpoken2 = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//FOOD THEFT SCRIPT
+
+	if (States.GroupAt(120, 191) = Player2) and (EasyMissionCompleted = false) and (ModerateMissionCompleted = false) and (HardMissionCompleted = false) and (VeryHardMissionCompleted = false) then
+	begin
+		Actions.MapTileObjectSet(142, 188, 0);
+		Actions.MapTileObjectSet(143, 188, 0);
+		WolfbiteAttacksHighwaymen := true;
+		PikeHasSpoken := true;
+		EasyMissionCompleted := true;
+		BriefingDelay1 := States.GameTime;
+		Actions.CinematicStart(0);
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$18>');
+		Actions.CinematicPanTo(0, 120, 189, 0);
+	end;
+
+	if (States.GameTime = (BriefingDelay1 + 30)) and (EasyMissionCompleted = true) then
+	begin
+		Actions.HouseTakeWaresFrom(Inn, 8, 1);
+		Actions.HouseTakeWaresFrom(Inn, 10, 3);
+		Actions.HouseTakeWaresFrom(Inn, 13, 2);
+	end;
+	if (States.GameTime = (BriefingDelay1 + 50)) and (EasyMissionCompleted = true) then
+	begin
+		Actions.OverlayTextSet(0, '<$19>');
+		Actions.CinematicPanTo(0, 170, 250, 0);
+	end;
+	if (States.GameTime = (BriefingDelay1 + 80)) and (EasyMissionCompleted = true) then
+	begin
+		Actions.CinematicPanTo(0, 120, 189, 0);
+		Actions.CinematicEnd(0);
+		ShowOverlayText := false;
+	end;
+
+	if (States.UnitPositionX(Player) > 169) and (States.UnitPositionY(Player) > 249) and (EasyMissionCompleted = true) then
+	begin
+		Actions.PlayerWin([0], False);
+	end;
+
+	//WOLFBITE ATTACK SCRIPT
+
+	if WolfbiteAttacksHighwaymen = true then
+	begin
+
+		Actions.PlayerAllianceChange(2, 3, True, True);
+
+		if States.GroupIdle(WolfbiteForce1) = true then
+		begin
+			U3 := ClosestUnit(8, 171, 185);
+			Actions.GroupOrderAttackUnit(WolfbiteForce1, U3);
+		end;
+		if States.GroupIdle(WolfbiteForce2) = true then
+		begin
+			U4 := ClosestUnit(8, 172, 185);
+			Actions.GroupOrderAttackUnit(WolfbiteForce2, U4);
+		end;
+		if States.GroupIdle(WolfbiteForce3) = true then
+		begin
+			U5 := ClosestUnit(8, 173, 185);
+			Actions.GroupOrderAttackUnit(WolfbiteForce3, U5);
+		end;
+		if States.GroupIdle(WolfbiteForce4) = true then
+		begin
+			U6 := ClosestUnit(8, 174, 185);
+			Actions.GroupOrderAttackUnit(WolfbiteForce4, U6);
+		end;
+		if States.GroupIdle(WolfbiteForce5) = true then
+		begin
+			U7 := ClosestUnit(8, 171, 186);
+			Actions.GroupOrderAttackUnit(WolfbiteForce5, U7);
+		end;
+		if States.GroupIdle(WolfbiteForce6) = true then
+		begin
+			U8 := ClosestUnit(8, 172, 186);
+			Actions.GroupOrderAttackUnit(WolfbiteForce6, U8);
+		end;
+		if States.GroupIdle(Wolfbite) = true then
+		begin
+			U9 := ClosestUnit(7, 173, 186);
+			Actions.GroupOrderAttackUnit(Wolfbite, U9);
+		end;
+	end;
+
+	//********************
+	//COMMON ROAD SCRIPT
+	//********************
+
+	//BAKER SCRIPT
+
+	if (States.UnitPositionX(Player) < 102) and (States.UnitPositionX(Player) > 98) and (States.UnitPositionY(Player) < 201) and (States.UnitPositionY(Player) > 197) and (TalkedToBaker = false) then
+	begin
+		BakerMessageDelay := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$20>');
+		TalkedToBaker := true;
+	end;
+	if (States.GameTime = (BakerMessageDelay + 50)) and (TalkedToBaker = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	if (States.UnitPositionX(Player) < 64) and (States.UnitPositionX(Player) > 61) and (States.UnitPositionY(Player) = 143) and (TalkedToBaker = true) and (MessageReceived = false) then
+	begin
+		Actions.ShowMsg(0, '<$34>');
+		Actions.MapTileObjectSet(63, 143, 0);
+		MessageReceived := true;
+	end;
+
+	if (States.UnitPositionX(Player) < 102) and (States.UnitPositionX(Player) > 98) and (States.UnitPositionY(Player) < 201) and (States.UnitPositionY(Player) > 197) and (MessageReceived = true) and (TalkedToBaker2 = false) then
+	begin
+		BakerMessageDelay2 := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$21>');
+		TalkedToBaker2 := true;
+		PasswordReceived_2 := true;
+	end;
+	if (States.GameTime = (BakerMessageDelay2 + 70)) and (TalkedToBaker2 = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//COMMON ROAD PASSWORD SCRIPT
+
+	if (PasswordReceived_2 = false) then
+	begin
+		PasswordTile1_2 := States.GroupAt(100, 161);
+		PasswordTile2_2 := States.GroupAt(101, 161);
+		PasswordTile3_2 := States.GroupAt(102, 161);
+		PasswordTile4_2 := States.GroupAt(103, 161);
+
+		if States.GameTime = (PasswordDelay + 30) then
+		begin
+			ShowOverlayText := false;
+		end;
+
+		if (PlayTroopHalt_2 = true) and (States.GameTime mod 10 = 0) then
+		begin
+			Actions.PlayWAV(0, 'TroopHalt3', 1.0);
+			PlayTroopHalt_2 := false;
+		end;
+
+		if (PasswordTile1_2 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard1_2, 100, 160, 4);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			Actions.GroupOrderWalk(PasswordTile1_2, 100, 162, 4);
+			PlayTroopHalt_2 := true;
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile2_2 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard1_2, 101, 160, 4);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			PlayTroopHalt_2 := true;
+			Actions.GroupOrderWalk(PasswordTile2_2, 101, 162, 4);
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile3_2 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard2_2, 102, 160, 4);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			PlayTroopHalt_2 := true;
+			Actions.GroupOrderWalk(PasswordTile3_2, 102, 162, 4);
+			PasswordDelay := States.GameTime;
+		end;
+		if (PasswordTile4_2 <> -1) then
+		begin
+			Actions.GroupOrderWalk(PasswordGuard2_2, 103, 160, 4);
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$10>');
+			PlayTroopHalt_2 := true;
+			Actions.GroupOrderWalk(PasswordTile4_2, 103, 162, 4);
+			PasswordDelay := States.GameTime;
+		end;
+	end;
+
+	//COMMON ROAD CHASE
+
+	if (Passed2 = false) then
+	begin
+
+		if (StartChase2 = false) and (States.UnitPositionY(Player) = 138) and (States.UnitPositionX(Player) > 97) and (States.UnitPositionX(Player) < 110) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$22>');
+			Actions.PlayerAllianceChange(0, 6, True, False);
+			Actions.PlayerAllianceChange(0, 5, True, False);
+			Actions.GroupOrderWalk(Player2, 103, 139, 4);
+			EnemyGuardDelay3 := States.GameTime;
+			StartChase2 := true;
+			EnemyGuardWalk2 := true;
+			Actions.PlayWAV(0, 'TroopHalt2', 1.0);
+			Actions.PlayerAllianceChange(0, 9, True, False);
+			Actions.PlayerAllianceChange(0, 10, True, False);
+			Actions.PlayerAllianceChange(0, 11, True, False);
+			Actions.PlayerAllianceChange(0, 12, True, False);
+		end;
+		if (StartChase2 = true) and (EnemyGuardWalk2 = true) and (States.GameTime > (EnemyGuardDelay3 + 30)) and (States.UnitPositionY(Player) = 138) and (States.UnitPositionX(Player) > 98) and (States.UnitPositionX(Player) < 110) then
+		begin
+			ShowOverlayText := true;
+			Actions.OverlayTextSet(0, '<$23>');
+			Actions.GroupOrderStorm(Chaser1);
+			Actions.GroupOrderWalk(Chaser2, 101, 138, 4);
+			Actions.GroupOrderWalk(Chaser3, 104, 139, 4);
+			Actions.GroupOrderWalk(Chaser4, 107, 138, 4);
+			Actions.GroupOrderStorm(Chaser5);
+			Actions.GroupOrderAttackUnit(Chaser6, Player);
+			EnemyGuardDelay4 := States.GameTime;
+			EnemyGuardWalk2 := false;
+			Actions.PlayWAV(0, 'Attack2', 1.0);
+		end;
+
+		if States.GameTime = (EnemyGuardDelay3 + 40) then
+		begin
+			ShowOverlayText := false;
+		end;
+		if States.GameTime = (EnemyGuardDelay4 + 30) then
+		begin
+			ShowOverlayText := false;
+		end;
+
+		if (States.GroupAt(101, 138) = Chaser2) and (States.GroupAt(104, 139) = Chaser3) and (States.GroupAt(107, 138) = Chaser4) then
+		begin
+			ContinueChase2 := true;
+		end;
+
+		if ContinueChase2 = true then
+		begin
+			if (States.GroupAt(108, 145) = Chaser5) and (States.UnitPositionX(Player) < 98) then
+			begin
+				Actions.GroupOrderAttackUnit(Chaser1, Player);
+				Actions.GroupOrderWalk(Chaser4, 103, 138, 6);
+				Actions.GroupOrderWalk(Chaser5, 103, 149, 6);
+			end;
+			if (States.GroupAt(103, 149) = Chaser5) then
+			begin
+				Actions.GroupOrderAttackUnit(Chaser4, Player);
+				Actions.GroupOrderAttackUnit(Chaser5, Player);
+			end;
+			if (States.GroupAt(108, 145) = Chaser5) and (States.UnitPositionX(Player) > 97) then
+			begin
+				Actions.GroupOrderWalk(Chaser1, 91, 143, 3);
+				Actions.GroupOrderAttackUnit(Chaser4, Player);
+				Actions.GroupOrderAttackUnit(Chaser5, Player);
+			end;
+			if (States.GroupAt(91, 143) = Chaser1) then
+			begin
+				Actions.GroupOrderAttackUnit(Chaser1, Player);
+			end;
+			Actions.GroupOrderAttackUnit(Chaser2, Player);
+			Actions.GroupOrderAttackUnit(Chaser3, Player);
+		end;
+
+		if (States.UnitPositionY(Player) < 136) and (States.UnitDead(Player) = false) and (MessageReceived = true) then
+		begin
+			CommonRoadPatrol := true;
+			Actions.GroupOrderWalk(Chaser1, 92, 137, 3);
+			Actions.GroupOrderWalk(Chaser2, 102, 135, 4);
+			Actions.GroupOrderWalk(Chaser3, 104, 135, 4);
+			Actions.GroupOrderWalk(Chaser4, 106, 135, 4);
+			Actions.GroupOrderWalk(Chaser5, 113, 140, 5);
+			Actions.GroupOrderWalk(Chaser6, 94, 154, 1);
+			Passed2 := true;
+		end;
+
+	end;
+
+	//COMMON ROAD STORM TRAP
+
+	if ((States.UnitAt(106, 125) = Player) or (States.UnitAt(107, 125) = Player) or (States.UnitAt(108, 125) = Player) or (States.UnitAt(108, 126) = Player) or (States.UnitAt(109, 126) = Player) or (States.UnitAt(109, 127) = Player) or (States.UnitAt(110, 127) = Player) or (States.UnitAt(110, 128) = Player) or (States.UnitAt(110, 129) = Player)) and (StormInitiated = false) then
+	begin
+		Actions.GroupOrderStorm(Stormer1);
+		Actions.GroupOrderStorm(Stormer2);
+		Actions.GroupOrderStorm(Stormer3);
+		Actions.GroupOrderStorm(Stormer4);
+		Actions.GroupOrderStorm(Stormer5);
+		Actions.GroupOrderStorm(Stormer6);
+		Actions.GroupOrderStorm(Stormer7);
+		Actions.GroupOrderStorm(Stormer8);
+		Actions.GroupOrderStorm(Stormer9);
+		Actions.GroupOrderStorm(Stormer10);
+		Actions.PlayWAV(0, 'Storm', 1.0);
+		StormInitiated := true;
+		StormDelay := States.GameTime;
+	end;
+	if (States.GameTime = (StormDelay + 80)) and (StormInitiated = true) then
+	begin
+		Actions.GroupOrderWalk(Stormer1, 109, 131, 7);
+		Actions.GroupOrderWalk(Stormer2, 103, 123, 3);
+		Actions.GroupOrderWalk(Stormer3, 112, 130, 7);
+		Actions.GroupOrderWalk(Stormer4, 105, 121, 3);
+		Actions.GroupOrderWalk(Stormer5, 114, 128, 7);
+		Actions.GroupOrderWalk(Stormer6, 108, 120, 3);
+		Actions.GroupOrderWalk(Stormer7, 116, 126, 7);
+		Actions.GroupOrderWalk(Stormer8, 110, 118, 3);
+		Actions.GroupOrderWalk(Stormer9, 118, 124, 7);
+		Actions.GroupOrderWalk(Stormer10, 113, 117, 3);
+		StormDelay2 := States.GameTime;
+	end;
+	if (States.GameTime = (StormDelay2 + 30)) and (StormInitiated = true) then
+	begin
+		Actions.GroupOrderStorm(Stormer1);
+		Actions.GroupOrderStorm(Stormer2);
+		Actions.GroupOrderStorm(Stormer3);
+		Actions.GroupOrderStorm(Stormer4);
+		Actions.GroupOrderStorm(Stormer5);
+		Actions.GroupOrderStorm(Stormer6);
+		Actions.GroupOrderStorm(Stormer7);
+		Actions.GroupOrderStorm(Stormer8);
+		Actions.GroupOrderStorm(Stormer9);
+		Actions.GroupOrderStorm(Stormer10);
+		Actions.PlayWAV(0, 'Storm', 1.0);
+	end;
+
+	if (States.UnitPositionX(Player) < 11) and (States.UnitPositionX(Player) > 7) and (States.UnitPositionY(Player) < 151) and (States.UnitPositionY(Player) > 147) and (TalkedToSerf2 = false) then
+	begin
+		Actions.GroupHungerSet(Player2, 24000);
+		Serf2MessageDelay := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$24>');
+		TalkedToSerf2 := true;
+	end;
+	if (States.GameTime = (Serf2MessageDelay + 50)) and (TalkedToSerf2 = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//********************
+	//MAP BONUS SCRIPT
+	//********************
+
+	if (States.UnitPositionX(Player) > 142) and (States.UnitPositionY(Player) < 116) and (States.UnitPositionY(Player) > 109) and (MapPatrol = false) then
+	begin
+		MapPatrol := true;
+	end;
+
+	if MapPatrol = true then
+	begin
+		if MapTime1 = 0 then
+		begin
+			MapTime1 := States.GameTime;
+			MapTime3 := States.GameTime;
+			MapTime5 := States.GameTime;
+			MapTime7 := States.GameTime;
+		end;
+
+		if (States.GroupAt(132, 32) = MapGuard16) then
+		begin
+			Actions.GroupOrderWalk(MapGuard16, 128, 32, 6);
+		end;
+		if (States.GroupAt(128, 32) = MapGuard16) then
+		begin
+			Actions.GroupOrderWalk(MapGuard16, 132, 32, 2);
+		end;
+		if (States.GroupAt(128, 31) = MapGuard17) then
+		begin
+			Actions.GroupOrderWalk(MapGuard17, 132, 31, 2);
+		end;
+		if (States.GroupAt(132, 31) = MapGuard17) then
+		begin
+			Actions.GroupOrderWalk(MapGuard17, 128, 31, 6);
+		end;
+		if (States.GroupAt(132, 30) = MapGuard18) then
+		begin
+			Actions.GroupOrderWalk(MapGuard18, 128, 30, 6);
+		end;
+		if (States.GroupAt(128, 30) = MapGuard18) then
+		begin
+			Actions.GroupOrderWalk(MapGuard18, 132, 30, 2);
+		end;
+
+		if (States.GroupAt(128, 23) = MapGuard20) then
+		begin
+			Actions.GroupOrderWalk(MapGuard20, 126, 23, 6);
+		end;
+		if (States.GroupAt(126, 23) = MapGuard20) then
+		begin
+			Actions.GroupOrderWalk(MapGuard20, 128, 23, 2);
+		end;
+		if (States.GroupAt(121, 22) = MapGuard24) then
+		begin
+			Actions.GroupOrderWalk(MapGuard24, 121, 20, 0);
+		end;
+		if (States.GroupAt(121, 20) = MapGuard24) then
+		begin
+			Actions.GroupOrderWalk(MapGuard24, 121, 22, 4);
+		end;
+
+		if (States.GroupAt(116, 4) = MapGuard26) then
+		begin
+			Actions.GroupOrderWalk(MapGuard26, 120, 4, 2);
+		end;
+		if (States.GroupAt(120, 4) = MapGuard26) then
+		begin
+			Actions.GroupOrderWalk(MapGuard26, 116, 4, 6);
+		end;
+
+		if (States.GroupAt(125, 5) = MapGuard27) then
+		begin
+			Actions.GroupOrderWalk(MapGuard27, 132, 7, 1);
+		end;
+		if (States.GroupAt(132, 7) = MapGuard27) then
+		begin
+			Actions.GroupOrderWalk(MapGuard27, 129, 3, 7);
+		end;
+		if (States.GroupAt(129, 3) = MapGuard27) then
+		begin
+			Actions.GroupOrderWalk(MapGuard27, 125, 5, 4);
+		end;
+		if (States.GroupAt(132, 6) = MapGuard28) then
+		begin
+			Actions.GroupOrderWalk(MapGuard28, 127, 2, 6);
+		end;
+		if (States.GroupAt(127, 2) = MapGuard28) then
+		begin
+			Actions.GroupOrderWalk(MapGuard28, 127, 8, 3);
+		end;
+		if (States.GroupAt(127, 8) = MapGuard28) then
+		begin
+			Actions.GroupOrderWalk(MapGuard28, 132, 6, 0);
+		end;
+		if (States.GroupAt(135, 6) = MapGuard29) then
+		begin
+			Actions.GroupOrderWalk(MapGuard29, 128, 11, 4);
+		end;
+		if (States.GroupAt(128, 11) = MapGuard29) then
+		begin
+			Actions.GroupOrderWalk(MapGuard29, 136, 11, 1);
+		end;
+		if (States.GroupAt(136, 11) = MapGuard29) then
+		begin
+			Actions.GroupOrderWalk(MapGuard29, 135, 6, 7);
+		end;
+		if (States.GroupAt(132, 13) = MapGuard30) then
+		begin
+			Actions.GroupOrderWalk(MapGuard30, 136, 7, 7);
+		end;
+		if (States.GroupAt(136, 7) = MapGuard30) then
+		begin
+			Actions.GroupOrderWalk(MapGuard30, 132, 8, 5);
+		end;
+		if (States.GroupAt(132, 8) = MapGuard30) then
+		begin
+			Actions.GroupOrderWalk(MapGuard30, 132, 13, 2);
+		end;
+		if (States.GroupAt(137, 6) = MapGuard31) then
+		begin
+			Actions.GroupOrderWalk(MapGuard31, 139, 11, 2);
+		end;
+		if (States.GroupAt(139, 11) = MapGuard31) then
+		begin
+			Actions.GroupOrderWalk(MapGuard31, 141, 4, 7);
+		end;
+		if (States.GroupAt(141, 4) = MapGuard31) then
+		begin
+			Actions.GroupOrderWalk(MapGuard31, 137, 6, 4);
+		end;
+		if (States.GroupAt(142, 8) = MapGuard32) then
+		begin
+			Actions.GroupOrderWalk(MapGuard32, 139, 3, 6);
+		end;
+		if (States.GroupAt(139, 3) = MapGuard32) then
+		begin
+			Actions.GroupOrderWalk(MapGuard32, 138, 11, 3);
+		end;
+		if (States.GroupAt(138, 11) = MapGuard32) then
+		begin
+			Actions.GroupOrderWalk(MapGuard32, 142, 8, 1);
+		end;
+		if (States.GroupAt(136, 12) = MapGuard33) then
+		begin
+			Actions.GroupOrderWalk(MapGuard33, 137, 18, 2);
+		end;
+		if (States.GroupAt(137, 18) = MapGuard33) then
+		begin
+			Actions.GroupOrderWalk(MapGuard33, 141, 12, 7);
+		end;
+		if (States.GroupAt(141, 12) = MapGuard33) then
+		begin
+			Actions.GroupOrderWalk(MapGuard33, 136, 12, 6);
+		end;
+		if (States.GroupAt(140, 16) = MapGuard34) then
+		begin
+			Actions.GroupOrderWalk(MapGuard34, 137, 12, 6);
+		end;
+		if (States.GroupAt(137, 12) = MapGuard34) then
+		begin
+			Actions.GroupOrderWalk(MapGuard34, 133, 15, 4);
+		end;
+		if (States.GroupAt(133, 15) = MapGuard34) then
+		begin
+			Actions.GroupOrderWalk(MapGuard34, 140, 16, 0);
+		end;
+	end;
+
+	if (States.GameTime = MapTime3) and (MapWalk100 = true) then
+	begin
+		Actions.GroupOrderWalk(MapGuard1, 170, 95, 7);
+		Actions.GroupOrderWalk(MapGuard2, 168, 95, 1);
+		MapTime4 := (States.GameTime + 50);
+		MapWalk100 := false;
+		MapWalk100_2 := true;
+	end;
+	if (States.GameTime = MapTime4) and (MapWalk100_2 = true) then
+	begin
+		MapTime3 := (States.GameTime + 90);
+		MapWalk100 := true;
+		MapWalk100_2 := false;
+	end;
+	if (States.GroupAt(170, 95) = MapGuard1) and (States.GroupAt(168, 95) = MapGuard2) then
+	begin
+		Actions.GroupOrderWalk(MapGuard1, 173, 102, 5);
+		Actions.GroupOrderWalk(MapGuard2, 166, 102, 3);
+	end;
+
+	if (States.GroupAt(149, 94) = MapGuard3) then
+	begin
+		Actions.GroupOrderWalk(MapGuard3, 152, 94, 6);
+	end;
+	if (States.GroupAt(152, 94) = MapGuard3) then
+	begin
+		Actions.GroupOrderWalk(MapGuard3, 149, 94, 2);
+	end;
+	if (States.GroupAt(149, 93) = MapGuard4) then
+	begin
+		Actions.GroupOrderWalk(MapGuard4, 152, 93, 6);
+	end;
+	if (States.GroupAt(152, 93) = MapGuard4) then
+	begin
+		Actions.GroupOrderWalk(MapGuard4, 149, 93, 2);
+	end;
+
+	if (States.GameTime = MapTime1) and (MapWalk50 = true) then
+	begin
+		Actions.GroupOrderWalk(MapGuard5, 174, 81, 4);
+		Actions.GroupOrderWalk(MapGuard6, 164, 77, 4);
+		Actions.GroupOrderWalk(MapGuard12, 152, 73, 1);
+		Actions.GroupOrderWalk(MapGuard13, 146, 73, 7);
+		Actions.GroupOrderWalk(MapGuard14, 146, 79, 5);
+		Actions.GroupOrderWalk(MapGuard15, 152, 79, 3);
+		Actions.GroupOrderWalk(MapGuard19, 124, 25, 6);
+		Actions.GroupOrderWalk(MapGuard21, 125, 24, 4);
+		Actions.GroupOrderWalk(MapGuard22, 125, 21, 1);
+		Actions.GroupOrderWalk(MapGuard23, 121, 24, 5);
+		Actions.GroupOrderWalk(MapGuard25, 114, 18, 4);
+		MapTime2 := (States.GameTime + 40);
+		MapWalk50 := false;
+		MapWalk50_2 := true;
+	end;
+	if (States.GameTime = MapTime2) and (MapWalk50_2 = true) then
+	begin
+		Actions.GroupOrderWalk(MapGuard5, 174, 75, 0);
+		Actions.GroupOrderWalk(MapGuard6, 164, 75, 0);
+		Actions.GroupOrderWalk(MapGuard12, 150, 75, 5);
+		Actions.GroupOrderWalk(MapGuard13, 148, 75, 3);
+		Actions.GroupOrderWalk(MapGuard14, 148, 77, 1);
+		Actions.GroupOrderWalk(MapGuard15, 150, 77, 7);
+		Actions.GroupOrderWalk(MapGuard19, 127, 25, 2);
+		Actions.GroupOrderWalk(MapGuard21, 125, 21, 0);
+		Actions.GroupOrderWalk(MapGuard22, 122, 24, 5);
+		Actions.GroupOrderWalk(MapGuard23, 124, 21, 1);
+		Actions.GroupOrderWalk(MapGuard25, 114, 13, 0);
+		MapTime1 := (States.GameTime + 40);
+		MapWalk50 := true;
+		MapWalk50_2 := false;
+	end;
+
+	if (States.GameTime = MapTime5) and (MapStorm = true) then
+	begin
+		Actions.GroupOrderStorm(MapGuard7);
+		MapTime6 := (States.GameTime + 50);
+		MapStorm := false;
+		MapStorm_2 := true;
+	end;
+	if (States.GameTime = MapTime6) and (MapStorm_2 = true) then
+	begin
+		Actions.GroupOrderWalk(MapGuard7, 168, 76, 6);
+		MapTime5 := (States.GameTime + 20);
+		MapStorm := true;
+		MapStorm_2 := false;
+	end;
+
+	if (States.GameTime = MapTime7) and (MapStorm2 = true) then
+	begin
+		Actions.GroupOrderStorm(MapGuard8);
+		Actions.GroupOrderStorm(MapGuard9);
+		Actions.GroupOrderStorm(MapGuard10);
+		Actions.GroupOrderStorm(MapGuard11);
+		MapTime8 := (States.GameTime + 40);
+		MapStorm2 := false;
+		MapStorm2_2 := true;
+	end;
+	if (States.GameTime = MapTime8) and (MapStorm2_2 = true) then
+	begin
+		Actions.GroupOrderWalk(MapGuard8, 150, 76, 2);
+		Actions.GroupOrderWalk(MapGuard9, 149, 75, 0);
+		Actions.GroupOrderWalk(MapGuard10, 148, 76, 6);
+		Actions.GroupOrderWalk(MapGuard11, 149, 77, 4);
+		MapTime7 := (States.GameTime + 5);
+		MapStorm2 := true;
+		MapStorm2_2 := false;
+	end;
+
+	if (States.UnitPositionX(Player) > 120) and (States.UnitPositionY(Player) < 5) then
+	begin
+		Actions.FogRevealCircle(0, 129, 3, 8);
+		Actions.FogRevealCircle(0, 134, 9, 9);
+		Actions.FogRevealCircle(0, 138, 7, 7);
+		Actions.FogRevealCircle(0, 138, 14, 7);
+	end;
+
+	if (States.UnitPositionX(Player) < 132) and (States.UnitPositionX(Player) > 128) and (States.UnitPositionY(Player) < 94) and (States.UnitPositionY(Player) > 90) and (TalkedToSerf1 = false) then
+	begin
+		Actions.GroupHungerSet(Player2, 24000);
+		Serf1MessageDelay := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$24>');
+		TalkedToSerf1 := true;
+	end;
+	if (States.GameTime = (Serf1MessageDelay + 50)) and (TalkedToSerf1 = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	//HARD MISSION ACCOMPLISHED SCRIPT
+
+	if (States.GroupAt(149, 41) = Player2) and (EasyMissionCompleted = false) and (ModerateMissionCompleted = false) and (HardMissionCompleted = false) and (VeryHardMissionCompleted = false) then
+	begin
+		Actions.GroupOrderWalk(Player2, 146, 44, 5);
+		HardMissionCompleted := true;
+		BriefingDelay1 := States.GameTime;
+		Actions.CinematicStart(0);
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$25>');
+		Actions.CinematicPanTo(0, 146, 44, 0);
+	end;
+
+	if (States.GameTime = (BriefingDelay1 + 40)) and (HardMissionCompleted = true) then
+	begin
+		Actions.FogRevealCircle(0, 82, 1, 6);
+		Actions.OverlayTextSet(0, '<$26>');
+		Actions.CinematicPanTo(0, 82, 1, 0);
+	end;
+	if (States.GameTime = (BriefingDelay1 + 120)) and (HardMissionCompleted = true) then
+	begin
+		Actions.CinematicPanTo(0, 146, 4, 0);
+		Actions.CinematicEnd(0);
+		ShowOverlayText := false;
+	end;
+
+	if (States.UnitPositionX(Player) > 77) and (States.UnitPositionX(Player) < 86) and (States.UnitPositionY(Player) = 1) and (HardMissionCompleted = true) then
+	begin
+		Actions.PlayerWin([0], False);
+	end;
+
+	Actions.HouseWareBlock(States.HouseAt(158, 41), 3, false);
+	Actions.HouseWareBlock(States.HouseAt(166, 20), 3, false);
+	Actions.HouseWareBlock(States.HouseAt(158, 41), 4, false);
+	Actions.HouseWareBlock(States.HouseAt(166, 20), 4, false);
+	Actions.HouseWareBlock(States.HouseAt(158, 41), 5, false);
+	Actions.HouseWareBlock(States.HouseAt(166, 20), 5, false);
+
+	//********************
+	//WEAPON BONUS SCRIPT
+	//********************
+
+	if (States.UnitPositionX(Player) = 37) and (States.UnitPositionY(Player) < 31) and (States.UnitPositionY(Player) > 25) and (Idea = false) then
+	begin
+		IdeaDelay := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$27>');
+		Idea := true;
+	end;
+	if (States.GameTime = (IdeaDelay + 50)) and (Idea = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	if (States.UnitPositionX(Player) > 32) and (States.UnitPositionX(Player) < 38) and (States.UnitPositionY(Player) = 7) and (WeaponPatrol = false) then
+	begin
+		WeaponPatrol := true;
+	end;
+
+	if WeaponPatrol = true then
+	begin
+		if WeaponTime1 = 0 then
+		begin
+			WeaponTime1 := States.GameTime;
+			WeaponTime3 := States.GameTime;
+			WeaponTime5 := States.GameTime;
+			WeaponTime7 := States.GameTime;
+			StartDelay := true;
+		end;
+		if GetXbow = false then
+		begin
+			Actions.GroupOrderWalk(HXbow, 25, 83, 4);
+		end;
+	end;
+
+	if StartDelay = true then
+	begin
+		if (States.GameTime = (WeaponTime1 + 5)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard2, 40, 61, 2);
+		end;
+		if (States.GameTime = (WeaponTime2 + 5)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard2, 37, 61, 6);
+		end;
+		if (States.GameTime = (WeaponTime1 + 10)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard3, 41, 59, 2);
+		end;
+		if (States.GameTime = (WeaponTime2 + 10)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard3, 38, 59, 6);
+		end;
+		if (States.GameTime = (WeaponTime1 + 15)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard4, 41, 57, 2);
+		end;
+		if (States.GameTime = (WeaponTime2 + 15)) then
+		begin
+			Actions.GroupOrderWalk(WeaponGuard4, 38, 57, 6);
+		end;
+	end;
+
+	if (States.UnitPositionX(Player) = 19) and (States.UnitPositionY(Player) < 71) and (States.UnitPositionY(Player) > 54) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard25, 13, 59, 2);
+		Actions.GroupOrderWalk(WeaponGuard26, 13, 56, 2);
+	end;
+
+	if (States.UnitPositionX(Player) = 14) and (States.UnitPositionY(Player) < 60) and (States.UnitPositionY(Player) > 55) then
+	begin
+		Actions.FogRevealCircle(0, 24, 63, 11);
+	end;
+
+	if (States.UnitPositionX(Player) > 21) and (States.UnitPositionX(Player) < 28) and (States.UnitPositionY(Player) = 88) and (GetXbow = false) then
+	begin
+		GetXbowDelay := States.GameTime;
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$28>');
+		Actions.FogRevealCircle(0, 25, 83, 6);
+		GetXbow := true;
+	end;
+	if (States.GameTime = (GetXbowDelay + 60)) and (GetXbow = true) then
+	begin
+		ShowOverlayText := false;
+	end;
+
+	if (States.GameTime = WeaponTime1) and (WeaponWalk50 = true) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard1, 39, 63, 2);
+		Actions.GroupOrderWalk(WeaponGuard5, 48, 56, 4);
+		Actions.GroupOrderWalk(WeaponGuard6, 50, 56, 4);
+		Actions.GroupOrderWalk(WeaponGuard7, 46, 57, 6);
+		Actions.GroupOrderWalk(WeaponGuard8, 53, 57, 1);
+		Actions.GroupOrderWalk(WeaponGuard9, 60, 60, 6);
+		Actions.GroupOrderWalk(WeaponGuard10, 60, 62, 6);
+		Actions.GroupOrderWalk(WeaponGuard11, 64, 59, 0);
+		Actions.GroupOrderWalk(WeaponGuard12, 64, 64, 4);
+		Actions.GroupOrderWalk(WeaponGuard17, 59, 73, 0);
+		Actions.GroupOrderWalk(WeaponGuard18, 59, 78, 4);
+		Actions.GroupOrderWalk(WeaponGuard19, 53, 75, 2);
+		Actions.GroupOrderWalk(WeaponGuard20, 53, 77, 2);
+		Actions.GroupOrderWalk(WeaponGuard21, 49, 71, 0);
+		Actions.GroupOrderWalk(WeaponGuard22, 49, 75, 4);
+		WeaponTime2 := (States.GameTime + 40);
+		WeaponWalk50 := false;
+		WeaponWalk50_2 := true;
+	end;
+	if (States.GameTime = WeaponTime2) and (WeaponWalk50_2 = true) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard1, 36, 63, 6);
+		Actions.GroupOrderWalk(WeaponGuard5, 48, 53, 0);
+		Actions.GroupOrderWalk(WeaponGuard6, 50, 53, 0);
+		Actions.GroupOrderWalk(WeaponGuard7, 52, 57, 2);
+		Actions.GroupOrderWalk(WeaponGuard8, 51, 59, 5);
+		Actions.GroupOrderWalk(WeaponGuard9, 60, 59, 0);
+		Actions.GroupOrderWalk(WeaponGuard10, 60, 63, 4);
+		Actions.GroupOrderWalk(WeaponGuard11, 64, 60, 6);
+		Actions.GroupOrderWalk(WeaponGuard12, 64, 63, 6);
+		Actions.GroupOrderWalk(WeaponGuard17, 59, 75, 4);
+		Actions.GroupOrderWalk(WeaponGuard18, 59, 76, 0);
+		Actions.GroupOrderWalk(WeaponGuard19, 53, 74, 0);
+		Actions.GroupOrderWalk(WeaponGuard20, 53, 78, 4);
+		Actions.GroupOrderWalk(WeaponGuard21, 49, 72, 2);
+		Actions.GroupOrderWalk(WeaponGuard22, 49, 74, 2);
+		WeaponTime1 := (States.GameTime + 40);
+		WeaponWalk50 := true;
+		WeaponWalk50_2 := false;
+	end;
+
+	if (States.GroupAt(63, 71) = WeaponGuard13) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard13, 65, 69, 1);
+	end;
+	if (States.GroupAt(65, 69) = WeaponGuard13) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard13, 63, 71, 5);
+	end;
+	if (States.GroupAt(69, 71) = WeaponGuard14) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard14, 67, 69, 7);
+	end;
+	if (States.GroupAt(67, 69) = WeaponGuard14) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard14, 69, 71, 3);
+	end;
+
+	if (States.GroupAt(62, 73) = WeaponGuard15) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard15, 62, 75, 4);
+	end;
+	if (States.GroupAt(62, 75) = WeaponGuard15) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard15, 62, 73, 0);
+	end;
+	if (States.GroupAt(62, 78) = WeaponGuard16) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard16, 62, 76, 0);
+	end;
+	if (States.GroupAt(62, 76) = WeaponGuard16) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard16, 62, 78, 4);
+	end;
+
+	if (States.GroupAt(29, 95) = WeaponGuard23) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard23, 24, 95, 6);
+	end;
+	if (States.GroupAt(24, 95) = WeaponGuard23) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard23, 29, 95, 2);
+	end;
+
+	if (States.GroupAt(9, 74) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 12, 71, 1);
+	end;
+	if (States.GroupAt(12, 71) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 12, 69, 0);
+	end;
+	if (States.GroupAt(12, 69) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 10, 67, 7);
+	end;
+	if (States.GroupAt(10, 67) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 4, 67, 6);
+	end;
+	if (States.GroupAt(4, 67) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 2, 69, 5);
+	end;
+	if (States.GroupAt(2, 69) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 2, 71, 4);
+	end;
+	if (States.GroupAt(2, 71) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 5, 74, 2);
+	end;
+	if (States.GroupAt(5, 74) = WeaponGuard24) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard24, 9, 74, 2);
+	end;
+
+	if (States.UnitPositionX(Player) = 33) and (States.UnitPositionY(Player) < 69) and (States.UnitPositionY(Player) > 62) and (StartPikeChase = false) then
+	begin
+		StartPikeChase := true;
+	end;
+	if StartPikeChase = true then
+	begin
+		Actions.GroupOrderAttackUnit(PikeChaser1, Player);
+		Actions.GroupOrderAttackUnit(PikeChaser2, Player);
+		if PlaySound = false then
+		begin
+			Actions.GroupOrderWalk(Player2, 34, 64, 6);
+			ShowOverlayText := true;
+			Actions.PlayWAV(0, 'Attack3', 1.0);
+			Actions.OverlayTextSet(0, '<$29>');
+			OverlayTextDelay := States.GameTime;
+			PlaySound := true;
+		end;
+		if States.GameTime = (OverlayTextDelay + 10) then
+		begin
+			Actions.PlayWAV(0, 'Shock', 1.2);
+		end;
+		if States.GameTime = (OverlayTextDelay + 40) then
+		begin
+			ShowOverlayText := false;
+		end;
+	end;
+
+	//VERY HARD MISSION ACCOMPLISHED SCRIPT
+
+	if (States.GroupAt(11, 11) = Player2) and (EasyMissionCompleted = false) and (ModerateMissionCompleted = false) and (HardMissionCompleted = false) and (VeryHardMissionCompleted = false) then
+	begin
+		Actions.GroupOrderWalk(WeaponGuard27, 106, 102, 7);
+		StartPikeChase := false;
+		Actions.GroupOrderHalt(PikeChaser1);
+		Actions.GroupOrderHalt(PikeChaser2);
+		Actions.GroupOrderWalk(Player2, 7, 7, 0);
+		VeryHardMissionCompleted := true;
+		BriefingDelay3 := States.GameTime;
+		Actions.CinematicStart(0);
+		ShowOverlayText := true;
+		Actions.OverlayTextSet(0, '<$30>');
+		Actions.CinematicPanTo(0, 7, 7, 0);
+	end;
+
+	if (States.GameTime = (BriefingDelay3 + 40)) and (VeryHardMissionCompleted = true) then
+	begin
+		Actions.FogRevealCircle(0, 82, 1, 6);
+		Actions.OverlayTextSet(0, '<$31>');
+		Actions.CinematicPanTo(0, 82, 1, 0);
+	end;
+	if (States.GameTime = (BriefingDelay3 + 120)) and (VeryHardMissionCompleted = true) then
+	begin
+		StartPikeChase := true;
+		Actions.CinematicPanTo(0, 7, 7, 0);
+		Actions.CinematicEnd(0);
+		ShowOverlayText := false;
+	end;
+
+	if (States.UnitPositionX(Player) > 77) and (States.UnitPositionX(Player) < 86) and (States.UnitPositionY(Player) = 1) and (VeryHardMissionCompleted = true) then
+	begin
+		Actions.PlayerWin([0], False);
+	end;
+
+	if States.UnitDead(Player) = True then
+	begin
+		Actions.PlayerDefeat(0);
+	end;
+
+end;

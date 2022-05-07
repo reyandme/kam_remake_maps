@@ -1,0 +1,140 @@
+var
+	Bow1, Bow2, Bow3, Bow4: Integer;	
+	Sword1, Sword2, Sword3, Crossbow1, Crossbow2, Crossbow3, Crossbow4: Integer;
+	BowAgression: Boolean;
+	StartRespawn1, StartRespawn2, StartRespawn3, StartRespawn4, StartRespawn5: Boolean;
+	RespawnSwords, RespawnPikes, RespawnKnights: Integer;
+	RespawnBarbarians, RespawnRebels: Integer;
+	i: Integer;
+	WallBow1, WallBow2: Integer;
+	
+procedure OnMissionStart;
+begin	
+
+	Actions.FogCoverCircle(0, 52, 81, 50);
+	Actions.FogCoverCircle(0, 12, 41, 30);
+	Actions.PlayerShareFog(1, 0, False);
+	Actions.PlayerShareFog(5, 0, False);
+	Actions.FogRevealCircle(0, 52, 84, 12);
+	Actions.FogRevealCircle(0, 12, 41, 12);
+
+	Bow1 := States.GroupAt(4, 34);
+	Bow2 := States.GroupAt(4, 49);
+	Bow3 := States.GroupAt(8, 40);
+	Bow4 := States.GroupAt(8, 45);
+	
+	Sword1 := States.GroupAt(15, 36);
+	Sword2 := States.GroupAt(15, 42);
+	Sword3 := States.GroupAt(15, 48);
+	Crossbow1 := States.GroupAt(18, 36);
+	Crossbow2 := States.GroupAt(18, 42);
+	Crossbow3 := States.GroupAt(18, 48);
+	
+	BowAgression := true;
+	
+	WallBow1 := States.GroupAt(24, 89);
+	WallBow2 := States.GroupAt(74, 93);
+	
+end;
+	
+procedure OnTick;
+begin
+
+	if States.GameTime = 20 then
+	begin
+		Actions.ShowMsg(0, '<$1>');
+	end;
+
+	if States.GroupDead(WallBow1) = false then
+	begin
+		for i := 0 to 8 do
+		if States.GroupIdle(WallBow1) = true then Actions.GroupOrderAttackUnit(WallBow1, States.ClosestUnit(i, 24, 89, -1));
+	end;
+	if States.GroupDead(WallBow2) = false then
+	begin
+		for i := 0 to 8 do
+		if States.GroupIdle(WallBow2) = true then Actions.GroupOrderAttackUnit(WallBow2, States.ClosestUnit(i, 74, 93, -1));
+	end;
+	
+	if BowAgression = true then
+    begin
+		if (States.StatArmyCount(2) = 0) then
+		BowAgression := false;
+		if BowAgression = true then
+		begin
+			if States.GroupIdle(Bow1) = true then Actions.GroupOrderAttackUnit(Bow1, States.ClosestUnit(2, 4, 34, -1));
+			if States.GroupIdle(Bow2) = true then Actions.GroupOrderAttackUnit(Bow2, States.ClosestUnit(2, 4, 49, -1));
+			if States.GroupIdle(Bow3) = true then Actions.GroupOrderAttackUnit(Bow3, States.ClosestUnit(2, 8, 40, -1));
+			if States.GroupIdle(Bow4) = true then Actions.GroupOrderAttackUnit(Bow4, States.ClosestUnit(2, 8, 45, -1));
+		end;
+    end;
+	
+	if States.GameTime = 450 then
+	begin
+		Actions.GiveGroup(6, 18, 3, 86, 2, 8, 4);
+		Crossbow4 := States.GroupAt(3, 86);
+		if States.GroupIdle(Crossbow4) = true then Actions.GroupOrderAttackUnit(Crossbow4, States.ClosestUnit(5, 3, 86, -1));
+	end;
+	
+	if States.GameTime = 900 then
+	begin
+		Actions.GiveGroup(6, 16, 93, 61, 6, 12, 4);
+		RespawnSwords := States.GroupAt(93, 61);
+		StartRespawn1 := true;
+	end;
+	if (States.GameTime > 900) and ((States.GameTime mod 100) = 0) then
+	begin
+		if ((States.GroupMemberCount(RespawnSwords) < 5) or (States.StatArmyCount(6) < 30)) and (StartRespawn1 = true) then
+		begin
+			Actions.GiveGroup(6, 20, 93, 65, 6, 12, 4);
+			RespawnPikes := States.GroupAt(93, 65);
+			StartRespawn1 := false;
+			StartRespawn2 := true;
+		end;
+		if (((States.GroupDead(RespawnSwords) = true) and (States.GroupMemberCount(RespawnPikes) < 5)) or (States.StatArmyCount(6) < 30)) and (StartRespawn2 = true) then
+		begin
+			Actions.GiveGroup(6, 22, 93, 69, 6, 12, 4);
+			RespawnKnights := States.GroupAt(93, 69);
+			StartRespawn2 := false;
+			StartRespawn3 := true;
+		end;
+		if (((States.GroupDead(RespawnPikes) = true) and (States.GroupMemberCount(RespawnKnights) < 5)) or (States.StatArmyCount(6) < 30)) and (StartRespawn3 = true) then
+		begin
+			Actions.GiveGroup(6, 16, 93, 61, 6, 12, 4);
+			RespawnSwords := States.GroupAt(93, 61);
+			StartRespawn3 := false;
+			StartRespawn1 := true;
+		end;
+	end;
+	
+	if States.GameTime = 1100 then
+	begin
+		Actions.GiveGroup(5, 24, 69, 95, 0, 6, 6);
+		RespawnRebels := States.GroupAt(66, 95);
+		StartRespawn4 := true;
+		for i := 6 to 7 do
+		if States.GroupIdle(RespawnRebels) = true then Actions.GroupOrderAttackUnit(RespawnRebels, States.ClosestUnit(i, 66, 95, -1));
+	end;
+	if (States.GameTime > 1100) and ((States.GameTime mod 100) = 0) then
+	begin
+		if ((States.GroupDead(RespawnRebels) = true) or (States.StatArmyCount(5) < 10)) and (StartRespawn4 = true) then
+		begin
+			Actions.GiveGroup(5, 23, 34, 95, 0, 4, 4);
+			RespawnBarbarians := States.GroupAt(34, 95);
+			StartRespawn4 := false;
+			StartRespawn5 := true;
+			for i := 6 to 7 do
+			if States.GroupIdle(RespawnBarbarians) = true then Actions.GroupOrderAttackUnit(RespawnBarbarians, States.ClosestUnit(i, 34, 95, -1));
+		end;
+		if ((States.GroupDead(RespawnBarbarians) = true) or (States.StatArmyCount(6) < 10)) and (StartRespawn5 = true) then
+		begin
+			Actions.GiveGroup(5, 24, 69, 95, 0, 6, 6);
+			RespawnRebels := States.GroupAt(66, 95);
+			StartRespawn5 := false;
+			StartRespawn4 := true;
+			for i := 6 to 7 do
+			if States.GroupIdle(RespawnRebels) = true then Actions.GroupOrderAttackUnit(RespawnRebels, States.ClosestUnit(i, 66, 95, -1));
+		end;
+	end;
+					
+end;

@@ -1,0 +1,8 @@
+Title
+TNL14 - Knowledge is Power
+
+SmallDesc
+Mission 14 of The New Lands
+
+BigDesc
+Mission 14: Knowledge is Power||Before we lay ruin to the remainder of the King's cities, we shouldst try to gather information about the King's last bastion and so gain an advantage in the final battle. To do this, we have sent a spy to infiltrate one of the four mountain villages in this area.|Each of these villages specializes on a different aspect: food, building materials, raw materials and military equipment. Since we do not have enough time to infiltrate all four villages, you must make a choice.

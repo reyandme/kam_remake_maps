@@ -1,0 +1,8 @@
+Title
+TNL08 - The King's Treason
+
+SmallDesc
+Mission 8 of The New Lands
+
+BigDesc
+We have finally arrived at the fortress of ye Rebels, but the situation doth not look good. The enemy is stronger than expected, and it shalt be hard to achieve victory. However, the situation takes a turn and gives us a new opportunity. The King hath betrayed Castellan Baruch and now attacks his forces from behind. If thou canst make sure that the second army of ye Castellan survives, the remaining soldiers may report to the Castellan that thou art helping him, and so might we gain a new ally.

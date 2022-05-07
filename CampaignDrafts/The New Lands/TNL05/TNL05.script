@@ -1,0 +1,212 @@
+var 
+	Scout1, Scout2, LeaderScout1, LeaderScout2: Integer;
+	Scout1PositionX, Scout1PositionY, Scout2PositionX, Scout2PositionY: Integer;
+	PositionDiscovered: Boolean;
+	Units: array of Integer;
+	DelayAttacks: Integer;
+	InitiateAttack2: Boolean;
+	U1, U2, U3, H1: Integer;
+	Sword1, Cavalry1, Cavalry2, Bow1: Integer;
+	Storehouse1, Storehouse2, Storehouse3, Storehouse4: Integer;
+	
+function ClosestUnit(aPlayer, X, Y: Integer): Integer; var Groups: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY, Member0: Integer;
+begin
+	Result := -1;
+	Groups := States.PlayerGetAllGroups(aPlayer);
+	for i := 0 to Length(Groups) -1 do
+	begin
+		Member0 := States.GroupMember(Groups[i], 0);
+		DX := X - States.UnitPositionX(Member0);
+		DY := Y - States.UnitPositionY(Member0);
+		ThisDistanceSqr := (DX*DX) + (DY*DY);
+		if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
+		begin
+			BestDistanceSqr := ThisDistanceSqr;
+			Result := Member0;
+		end;
+	end;
+end;
+
+function ClosestHouse(aPlayer, X, Y: Integer): Integer; var Houses: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
+begin
+	Result := -1;
+	Houses := States.PlayerGetAllHouses(aPlayer);
+	for i := 0 to Length(Houses) -1 do
+	begin
+		DX := X - States.HousePositionX(Houses[i]);
+		DY := Y - States.HousePositionY(Houses[i]);
+		ThisDistanceSqr := (DX*DX) + (DY*DY);
+		if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
+		begin
+			BestDistanceSqr := ThisDistanceSqr;
+			Result := Houses[i];
+		end;
+	end;
+end;
+	
+procedure OnMissionStart;
+begin
+
+	Actions.HouseAllow(0, 9, False);
+	Actions.HouseAllow(0, 14, False);
+	Actions.HouseAllow(0, 27, False);
+	
+	Scout1 := States.GroupAt(70, 116);
+	LeaderScout1 := States.GroupMember(Scout1, 0);
+	Actions.GroupOrderWalk(Scout1, 52, 112, 7);
+	Scout2 := States.GroupAt(84, 104);
+	LeaderScout2 := States.GroupMember(Scout2, 0);
+	
+	Sword1 := States.GroupAt(105, 123);
+	Cavalry1 := States.GroupAt(11, 141);
+	Cavalry2 := States.GroupAt(14, 137);
+	Bow1 := States.GroupAt(9, 135);
+	
+	Storehouse1 := States.HouseAt(111, 11);
+	Actions.HouseWareBlock(Storehouse1, 4, True);
+	Actions.HouseWareBlock(Storehouse1, 5, True);
+	Actions.HouseWareBlock(Storehouse1, 7, True);
+	Storehouse2 := States.HouseAt(131, 13);
+	Actions.HouseWareBlock(Storehouse2, 4, True);
+	Actions.HouseWareBlock(Storehouse2, 5, True);
+	Actions.HouseWareBlock(Storehouse2, 7, True);
+	Storehouse3 := States.HouseAt(113, 26);
+	Actions.HouseWareBlock(Storehouse3, 4, True);
+	Actions.HouseWareBlock(Storehouse3, 5, True);
+	Actions.HouseWareBlock(Storehouse3, 7, True);
+	Storehouse4 := States.HouseAt(142, 39);
+	Actions.HouseWareBlock(Storehouse4, 4, True);
+	Actions.HouseWareBlock(Storehouse4, 5, True);
+	Actions.HouseWareBlock(Storehouse4, 7, True);
+	
+	DelayAttacks := 10000;
+
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseOwner(aHouse) <> 0 then Exit;
+
+	if States.HouseType(aHouse) = 13 then
+		Actions.HouseAllow(0, 27, True);
+	if States.HouseType(aHouse) = 27 then
+		Actions.HouseAllow(0, 14, True);
+	if States.HouseType(aHouse) = 14 then
+		Actions.HouseAllow(0, 9, True);
+
+end;
+
+procedure OnTick; var i: Integer;
+begin
+
+	if PositionDiscovered = false then
+	begin
+		Scout1PositionX := States.UnitPositionX(LeaderScout1);
+		Scout1PositionY := States.UnitPositionY(LeaderScout1);
+		Scout2PositionX := States.UnitPositionX(LeaderScout2);
+		Scout2PositionY := States.UnitPositionY(LeaderScout2);
+		Units := States.PlayerGetAllUnits(0);
+		for i := 0 to Length(Units) -1 do
+		begin
+			if (((States.UnitPositionX(Units[i]) > (Scout1PositionX - 9)) and (States.UnitPositionX(Units[i]) < (Scout1PositionX + 9))) and ((States.UnitPositionY(Units[i]) > (Scout1PositionY - 9)) and (States.UnitPositionY(Units[i]) < (Scout1PositionY + 9)))) or  (((States.UnitPositionX(Units[i]) > (Scout2PositionX - 9)) and (States.UnitPositionX(Units[i]) < (Scout2PositionX + 9))) and ((States.UnitPositionY(Units[i]) > (Scout2PositionY - 9)) and (States.UnitPositionY(Units[i]) < (Scout2PositionY + 9)))) then
+			begin
+				Actions.ShowMsg(0, '<$1>');
+				PositionDiscovered := True;
+				DelayAttacks := States.GameTime;
+			end;
+		end;
+	end;
+
+	if (States.GameTime = 500) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 37, 121, 5);
+	if (States.GameTime = 1000) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 41, 129, 4);
+	if (States.GameTime = 1500) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 33, 103, 0);
+	if (States.GameTime = 2000) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 45, 98, 3);
+	if (States.GameTime = 2500) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 50, 115, 4);
+	if (States.GameTime = 3000) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 67, 121, 3);
+	if (States.GameTime = 3500) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 65, 110, 0);
+	if (States.GameTime = 4000) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 44, 121, 5);
+	if (States.GameTime = 4500) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 48, 139, 4);
+	if (States.GameTime = 5000) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout1, 62, 133, 2);
+	
+	if (States.GameTime = 400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 75, 115, 4);
+	if (States.GameTime = 900) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 83, 122, 2);
+	if (States.GameTime = 1400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 88, 137, 4);
+	if (States.GameTime = 1900) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 97, 138, 5);
+	if (States.GameTime = 2400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 99, 117, 0);
+	if (States.GameTime = 2900) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 85, 107, 7);
+	if (States.GameTime = 3400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 93, 109, 2);
+	if (States.GameTime = 3900) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 66, 110, 6);
+	if (States.GameTime = 4400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 81, 121, 3);
+	if (States.GameTime = 4900) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 67, 116, 6);
+	if (States.GameTime = 5400) and (PositionDiscovered = false) then
+	Actions.GroupOrderWalk(Scout2, 78, 128, 4);
+	
+	if PositionDiscovered = true and (States.StatArmyCount(5) > 0) then
+	begin
+		U1 := ClosestUnit(0, States.UnitPositionX(LeaderScout1), States.UnitPositionY(LeaderScout1));
+		U2 := ClosestUnit(0, States.UnitPositionX(LeaderScout2), States.UnitPositionY(LeaderScout2));
+		if U1 <> -1 then
+		begin
+			Actions.GroupOrderAttackUnit(Scout1, U1);
+		end;
+		if U2 <> -1 then
+		begin
+			Actions.GroupOrderAttackUnit(Scout2, U2);
+		end;
+	end;
+	
+	if (States.GameTime = DelayAttacks + 1000) then
+	begin
+		Actions.GroupOrderAttackHouse(Sword1, States.HouseAt(70, 134));
+	end;
+	
+	if (States.GameTime = DelayAttacks + 2000) then
+	begin
+		InitiateAttack2 := True;
+	end;
+	
+	if InitiateAttack2 = true and (States.StatArmyCount(3) > 0) then
+	begin
+		if States.StatArmyCount(0) > 0 then
+		begin
+			U3 := ClosestUnit(0, 10, 136);
+			if U3 <> -1 then
+			begin
+				Actions.GroupOrderAttackUnit(Cavalry1, U3);
+				Actions.GroupOrderAttackUnit(Cavalry2, U3);
+				Actions.GroupOrderAttackUnit(Bow1, U3);
+			end;
+		end;
+		if States.StatArmyCount(0) = 0 then
+		begin
+			H1 := ClosestHouse(0, 10, 136);
+			if H1 <> -1 then
+			begin
+				Actions.GroupOrderAttackHouse(Cavalry1, H1);
+				Actions.GroupOrderAttackHouse(Cavalry2, H1);
+				Actions.GroupOrderAttackHouse(Bow1, H1);
+			end;
+		end;	
+	end;
+	
+end;
