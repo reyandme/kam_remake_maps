@@ -4,7 +4,7 @@ var
   TimeUntilAttack, Minutes, Seconds: Integer;
   Top1, Top2, Top3, Top4, Top5, Top6, Top7, Top8, Right1, Right2, Right3, Right4, Right5, Right6: Integer;
   StartAttack, XbowPositions: Boolean;
-  k, H1, H2, L: Integer;
+  k, H1, H2, U1: Integer;
   MessageSent, Message2Sent: Boolean;
 
 function ClosestUnit(aPlayer, X, Y: Integer): Integer; var Groups: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY, Member0: Integer;
@@ -258,16 +258,16 @@ begin
           Actions.GroupOrderAttackHouse(Right5, H2);
         end;
       end;
-      U := ClosestUnit(k, 73, 118);
-      if L <> -1 then
+      U1 := ClosestUnit(k, 73, 118);
+      if U1 <> -1 then
       begin
         if States.GroupIdle(Right6) = true then
         begin
-          Actions.GroupOrderAttackUnit(Right6, U);
+          Actions.GroupOrderAttackUnit(Right6, U1);
         end;
         if States.GroupIdle(Right4) = true then
         begin
-          Actions.GroupOrderAttackUnit(Right4, U);
+          Actions.GroupOrderAttackUnit(Right4, U1);
         end;
       end;
     end;
