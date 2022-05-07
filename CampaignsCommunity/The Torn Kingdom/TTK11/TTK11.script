@@ -1,0 +1,66 @@
+
+
+procedure OnWarriorEquipped(UnitID,aGroupID: Integer);
+var aBarracks, newUnit : Integer;
+	aX, aY, aDir, aType, aOwner : integer;
+begin
+	aX := States.UnitPositionX(UnitID);
+	aY := States.UnitPositionY(UnitID);
+	aDir := States.UnitDirection(UnitID);
+	aType := States.UnitType(UnitID);
+	aOwner := States.UnitOwner(UnitID);
+	aBarracks := States.HouseAt(aX,aY-1);	
+	if States.HouseRepair(aBarracks) then 
+	begin
+		If aType = 14 then
+			If States.HouseResourceAmount(aBarracks,20) >= 5 then
+			begin
+				Actions.HouseTakeWaresFrom(aBarracks,20,5)
+				Actions.UnitKill(UnitID, true);
+				Actions.GroupOrderLink(A.GiveGroup(aOwner,23,aX,aY,aDir,1,1),aGroupID);
+				Actions.GroupOrderWalk(aGroupID,S.HouseBarracksRallyPointX(aBarracks),S.HouseBarracksRallyPointY(aBarracks),aDir);
+			end;
+		If aType = 16 then
+			If States.HouseResourceAmount(aBarracks,21) >= 2 then
+			begin
+				Actions.HouseTakeWaresFrom(aBarracks,21,2)
+				A.HouseAddWaresTo(aBarracks,17,1)
+				Actions.UnitKill(UnitID, true);
+				Actions.GroupOrderLink(A.GiveGroup(aOwner,26,aX,aY,aDir,1,1),aGroupID);
+				Actions.GroupOrderWalk(aGroupID,S.HouseBarracksRallyPointX(aBarracks),S.HouseBarracksRallyPointY(aBarracks),aDir);
+			end;
+		If aType = 19 then
+			begin
+				Actions.HouseAddWaresTo(aBarracks,18,1)
+				Actions.UnitKill(UnitID, true);
+				Actions.GroupOrderLink(A.GiveGroup(aOwner,24,aX,aY,aDir,1,1),aGroupID);
+				Actions.GroupOrderWalk(aGroupID,S.HouseBarracksRallyPointX(aBarracks),S.HouseBarracksRallyPointY(aBarracks),aDir);
+			end;
+		If aType = 21 then
+			begin
+				Actions.HouseAddWaresTo(aBarracks,18,1)
+				Actions.HouseAddWaresTo(aBarracks,16,1)
+				Actions.UnitKill(UnitID, true);
+				Actions.GroupOrderLink(A.GiveGroup(aOwner,27,aX,aY,aDir,1,1),aGroupID);
+				Actions.GroupOrderWalk(aGroupID,S.HouseBarracksRallyPointX(aBarracks),S.HouseBarracksRallyPointY(aBarracks),aDir);
+			end;
+		If aType = 17 then
+			begin
+				Actions.HouseAddWaresTo(aBarracks,18,1)
+				Actions.UnitKill(UnitID, true);
+				Actions.GroupOrderLink(A.GiveGroup(aOwner,25,aX,aY,aDir,1,1),aGroupID);
+				Actions.GroupOrderWalk(aGroupID,S.HouseBarracksRallyPointX(aBarracks),S.HouseBarracksRallyPointY(aBarracks),aDir);
+			end;
+	end;	
+end;
+Procedure OnTick;
+begin
+  if States.GameTime = 10 then
+	Actions.ShowMsg(0, '<$1>');
+//Message After 2 Minutes
+  if States.GameTime = 60 then
+	Actions.ShowMsg(0, '<$2>');
+//Message After 5 Minutes
+  if States.GameTime = 6000 then
+	Actions.ShowMsg(0, '<$3>');
+end;

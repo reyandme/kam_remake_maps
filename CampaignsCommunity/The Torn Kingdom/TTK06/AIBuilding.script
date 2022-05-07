@@ -1,0 +1,210 @@
+{
+
+Procedure ChangeHouseOwner(aX,aY, toPlayer:Integer);
+var aHouseWares : array[0..27] of integer;
+	aHouseID, newHouseID, aHType, aDamage : Integer;
+	HousePos : TKMPoint;
+	I : Integer;
+begin
+	If States.HouseAt(aX,aY) > 0 then 
+	begin
+		aHouseID := States.HouseAt(aX,aY);
+		HousePos := States.HousePosition(aHouseID);
+		aHType := States.HouseType(aHouseID);
+		aDamage := States.HouseDamage(aHouseID);
+		for I := 0 to 27 do 
+			aHouseWares[I] := States.HouseResourceAmount(aHouseID,I);
+		
+		Actions.HouseDestroy(aHouseID, true);
+		newHouseID := Actions.GiveHouse(toPlayer,aHType,HousePos.X,HousePos.Y);
+		for I := 0 to 27 do
+			If aHouseWares[I]>0 then Actions.HouseAddWaresTo(newHouseID,I,aHouseWares[I]);
+			
+		Actions.HouseAddDamage(newHouseID,aDamage);
+	end;
+
+end;
+}
+{$EVENT evtMissionStart:AIBOnMissionStart}
+{$EVENT evtTick:AIBOnTick}
+{$EVENT evtHouseBuilt:AIBOnHouseBuilt}
+const 
+	MIN_PLAYERS = 5;
+	MAX_PLAYERS = 5;
+	MAX_HOUSE_PLANS = 5;
+	
+var aHousesData :array[MIN_PLAYERS..MAX_PLAYERS] of array of array[0..2] of Integer;
+	//aRoadData :array[MIN_PLAYERS..MAX_PLAYERS] of array[0..2] of array of Integer;
+	KeepBuildings, SetAutoRoads, AutoFields : array[MIN_PLAYERS..MAX_PLAYERS] of Boolean;
+	PlanIndex, LastBuilded, LastPlanSetTime, HousesToBuild : array[MIN_PLAYERS..MAX_PLAYERS] of Integer;
+	AutoRoads : Boolean;
+	
+Procedure SetHousesData;
+var I, LEA, aType, arrayLength, RoadLength, { WineLength, CornLength, } {aX, aY,}PosX,PosY :Integer;
+	aHouses : array of Integer;
+begin
+	for I := MIN_PLAYERS to MAX_PLAYERS do
+	If (States.PlayerIsAI(I) = true) and (KeepBuildings[I] = false) then
+	begin		
+		arrayLength := 0;
+		RoadLength := 0;
+		aHouses := States.PlayerGetAllHouses(I);
+		for LEA := 11 to length(aHouses)-1 do
+		begin
+			
+			aType := States.HouseType(aHouses[LEA])
+			arrayLength:=length(aHousesData[I])
+			SetLength(aHousesData[I], arrayLength+1)
+			PosX:= States.HousePositionX(aHouses[LEA]);
+			PosY:= States.HousePositionY(aHouses[LEA]);
+			aHousesData[I][arrayLength][0] := PosX;
+			aHousesData[I][arrayLength][1] := PosY;
+			aHousesData[I][arrayLength][2] := aType;
+			
+			{for aX := 0 to 8 do
+				for aY := 0 to 8 do
+				begin
+					If (States.IsRoadAt(I,PosX - 4 + aX,PosY - 4 + aY)) and (States.HouseAt(PosX - 4 + aX,PosY - 4 + aY) <=0) then
+					If States.UnitAt(PosX - 4 + aX,PosY - 4 + aY)<=0 then 
+					begin				
+						SetLength(aRoadData[I][0], RoadLength+1);
+						SetLength(aRoadData[I][1], RoadLength+1);
+						SetLength(aRoadData[I][2], RoadLength+1);
+						aRoadData[I][0][RoadLength]:= PosX - 4 + aX;
+						aRoadData[I][1][RoadLength]:= PosY - 4 + aY;
+						RoadLength := RoadLength + 1
+						Actions.RemoveRoad(PosX - 4 + aX,PosY - 4 + aY);
+					end;					
+				end;}
+			Actions.HouseDestroy(aHouses[LEA],true);
+						
+		end;
+	end;	
+end;
+
+Procedure AIBOnHouseBuilt(aHouse : Integer);
+var aOwner : Integer;
+begin
+	aOwner := States.HouseOwner(aHouse);
+	If aOwner <> 0 then
+	begin
+		If States.HouseType(aHouse) = 13 then 
+			If States.StatHouseTypeCount(aOwner,13) = 1 then 
+				PlanIndex[aOwner] := PlanIndex[aOwner]+1;
+			
+		LastBuilded[aOwner] := LastBuilded[aOwner] + 1
+	end;
+end;
+	
+Procedure SetHousesPlans(I:Integer);
+var aX, aY {,RLE} :Integer;
+	aSecPos : TKMPoint;
+begin
+	If length(aHousesData[I]) > 0 then 
+	begin
+		for aX := 0 to 6 do 
+			for aY := 0 to 6 do 
+				If U.InRangeI(States.MapTileObject(aHousesData[I][PlanIndex[I]][0]-3+aX,aHousesData[I][PlanIndex[I]][1]-3+aY), 88, 253) then
+					Actions.MapTileObjectSet(aHousesData[I][PlanIndex[I]][0]-3+aX,aHousesData[I][PlanIndex[I]][1]-3+aY,255);
+		
+		aSecPos := States.AIStartPosition(I);
+		Actions.PlanAddHouse(I,aHousesData[I][PlanIndex[I]][2],aHousesData[I][PlanIndex[I]][0],aHousesData[I][PlanIndex[I]][1]);
+		{
+		If length(aRoadData[I][0]) > 0 then 
+			for RLE := 0 to length(aRoadData[I][0])-1 do 
+				If aRoadData[I][2][RLE] = 0 then
+					If U.InAreaI(aRoadData[I][0][RLE],aRoadData[I][1][RLE],aHousesData[I][PlanIndex[I]][0]-5,aHousesData[I][PlanIndex[I]][1]-5,aHousesData[I][PlanIndex[I]][0]+5,aHousesData[I][PlanIndex[I]][1]+5) then 
+					begin
+						Actions.PlanAddRoad(I,aRoadData[I][0][RLE],aRoadData[I][1][RLE]);
+						aRoadData[I][2][RLE] := 1;
+					end;
+		}
+		If { AutoRoads or  }(PlanIndex[I] <= 1) then A.PlanConnectRoad(I,aHousesData[I][PlanIndex[I]][0],aHousesData[I][PlanIndex[I]][1]+1,aSecPos.X,aSecPos.Y, false);
+
+					
+		If PlanIndex[I] = length(aHousesData[I])-1 then	
+			LastPlanSetTime[I] := U.FloorTo(States.GameTime,100) + 600;
+		If States.StatHouseTypeCount(I,13) >=1 then 
+			PlanIndex[I]:= PlanIndex[I] + 1;
+	end;	
+end;
+
+Procedure CheckRoadPlans(I:Integer);
+var LEA :Integer;
+	aSecPos : TKMPoint;
+begin
+	aSecPos := States.AIStartPosition(I);
+	If length(aHousesData[I]) > 0 then 
+	begin
+		for LEA := 1 to length(aHousesData[I])-1 do
+		A.PlanConnectRoad(I,aHousesData[I][LEA][0],aHousesData[I][LEA][1]+1,aSecPos.X,aSecPos.Y, false);
+	end;	
+end;
+Procedure CheckRoadPlansToLastPlan(I:Integer);
+var LEA,aX,aY,MIN :Integer;
+	aSecPos : TKMPoint;
+begin
+	aSecPos := States.AIStartPosition(I);
+	MIN := PlanIndex[I]-5;
+	if MIN < 0 then MIN := 0;
+	If length(aHousesData[I]) > 0 then 
+	begin
+		for LEA := MIN to PlanIndex[I]-1 do
+		begin
+			A.PlanConnectRoad(I,aHousesData[I][LEA][0],aHousesData[I][LEA][1]+1,aSecPos.X,aSecPos.Y, false);
+			
+			If AutoFields[I] and (LEA > 1) then 
+			begin
+				If aHousesData[I][LEA-1][2] = 8 then 
+				for aX := 0 to 5 do 
+					for aY := 0 to 5 do 
+						Actions.PlanAddField(I,aHousesData[I][LEA-1][0]-2+aX,aHousesData[I][LEA-1][1]-3+aY);
+				If aHousesData[I][LEA-1][2] = 28 then 
+				for aX := 0 to 4 do 
+					for aY := 0 to 3 do 
+						Actions.PlanAddWineField(I,aHousesData[I][LEA-1][0]-3+aX,aHousesData[I][LEA-1][1]-2+aY);
+			end; 
+		end;	
+	end;	
+end;
+
+procedure AIBOnTick;
+var K : Integer;
+begin		
+	If States.GameTime mod 100 = 0 then 		
+		for K := MIN_PLAYERS to MAX_PLAYERS do
+		begin
+			If States.PlayerIsAI(K) and not KeepBuildings[K] then 
+			begin
+				If ((SetAutoRoads[K]) and (PlanIndex[K] >= LastBuilded[K] + MAX_HOUSE_PLANS)) or (States.GameTime mod 600 = 0) then 
+					begin
+					SetAutoRoads[K] := false;
+					//If length(aRoadData[K][0]) = 0 then
+					CheckRoadPlansToLastPlan(K);
+				end;
+				If (LastPlanSetTime[K] = 0) and (PlanIndex[K] < LastBuilded[K] + MAX_HOUSE_PLANS) and (PlanIndex[K] < length(aHousesData[K]))and (PlanIndex[K] < HousesToBuild[K]) then 
+				begin{ 
+					If States.GameTime = 50 then 
+						SetHousesPlans(K);
+					If States.GameTime = 100 then 
+						SetHousesPlans(K); }
+					If States.GameTime mod 100 = 0 then 
+						SetHousesPlans(K);
+						
+					SetAutoRoads[K] := true;
+				end;
+			end;
+			If States.GameTime = LastPlanSetTime[K] then CheckRoadPlans(K);
+		end;
+	If States.GameTime = 1 then
+	begin
+	end;
+end;
+Procedure AIBOnMissionStart;
+begin
+	KeepBuildings[5] := false;
+	HousesToBuild[5] := 999;
+	SetHousesData;
+	AutoRoads := false;
+	AutoFields[5] := true;
+end;

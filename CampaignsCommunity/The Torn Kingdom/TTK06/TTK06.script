@@ -1,0 +1,13 @@
+{$I AIBuilding.script}
+{$I AIAttacks.script}
+procedure OnTick;
+begin
+  if States.GameTime = 10 then
+	Actions.ShowMsg(0, '<$1>');
+//Message After 1,5 Minutes
+  if States.GameTime = 900 then
+	Actions.ShowMsg(0, '<$2>');
+//Message After 90 Minutes
+  if States.GameTime = 54000 then
+	Actions.ShowMsg(0, '<$3>');
+end;

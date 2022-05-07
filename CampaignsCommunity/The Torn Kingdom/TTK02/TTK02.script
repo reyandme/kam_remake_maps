@@ -1,0 +1,8 @@
+procedure OnTick;
+begin
+  if States.GameTime = 10 then
+	Actions.ShowMsg(0, '<$1>');
+//Message After 4 Minutes
+  if States.GameTime = 2400 then
+	Actions.ShowMsg(0, '<$2>');
+end;

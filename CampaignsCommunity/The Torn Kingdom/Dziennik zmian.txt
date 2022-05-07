@@ -1,0 +1,5 @@
+﻿Wydanie 2:
+Wydanie 3:
+Wprowadzony język niemiecki, czeski, rosyjski, włoski, hiszpański, francuski, szwedzki, norweski, chiński, poprawa jakości map, poprawa misji, dzięki czemu możliwe jest teraz przejście kampanii, urozmaicenie misji, swobodna budowa niektórych botów, skrypt w misji 9 podmieniający jednostki, nowe teksty w misjach, poprawione teksty przed misjami, nowe "smaczki" w misjach.
+Wydanie 4: Dużo poprawek w misji 4 i nowa misja 13.
+Wydanie 5: Nagrania do tekstów przed misjami, lekka poprawa jakości map.
