@@ -1,0 +1,5 @@
+procedure OnTick;
+begin
+  if States.GameTime = 300 then
+    Actions.ShowMsg(10, '<$1>');
+end;
