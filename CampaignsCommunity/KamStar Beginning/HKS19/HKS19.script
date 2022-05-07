@@ -1,0 +1,58 @@
+Const PLAYER = 1;
+
+{$DEFINE TYRIO}
+{$I HKS_Functions.script}
+
+
+
+procedure OnTick;
+begin
+	OnTickHero;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([0,1,2], true, true);
+end;
+
+
+procedure AddGroupsFromPrevious;
+var I, Top, Left : Integer;
+begin
+	Top := 29;
+	Left := 6;
+	with CampaignData.HKS18 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+		If aWarriorsCount[I] > 1 then 
+		begin
+			A.GiveGroup(PLAYER, I, Top, Left, 2, aWarriorsCount[I], 4);
+			
+			If Left = 6 then 
+				Left := 15
+			else
+			begin
+				Left := 6;
+				Top := Top - 5;
+			end;
+				
+		end;
+	
+	end;
+
+end;
+
+procedure OnMissionStart;
+begin
+	SetDMod;
+	AddAutoHeros;
+	
+	SetHeroIDStats(aHeros[0], 23, 18, 135, 4, 8, 3, hcTyrio);//tyrio
+	SetHeroIDStats(aHeros[1], 42, 30, 185, 5, 15, 6, hcTamaio);
+	
+	AddGroupsFromPrevious;
+	
+	AddOvMessage(1, 10);
+	
+	FillPlayerHouses([3,4,5,6], true);
+	SetDifficulty_EquipDelay([2,3,4,5], [0,1,1,0], [300,300, 300, 300], [1.25, 1,0.5]);
+	SetDifficulty_RaisArmy([2,3,4,5], [-6, -3, 5 ]);
+end;

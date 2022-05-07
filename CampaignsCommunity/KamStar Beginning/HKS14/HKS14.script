@@ -1,0 +1,110 @@
+Const PLAYER = 0;
+
+{$DEFINE TYRIO}
+
+
+
+{$I HKS_Functions.script}
+{.$I HKS_Ship.script}
+procedure OnTick;
+begin
+	OnTickHero;
+	
+	
+	if States.GameTime = 72000 then
+		Actions.GiveGroup (4, 26, 243, 116, 6, 50, 10 );
+
+end;
+
+procedure AddGroupsFromPrevious;
+var I, Top, Left : Integer;
+begin
+	Top := 120;
+	Left := 8;
+	with CampaignData.HKS12 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+		If aWarriorsCount[I] > 0 then 
+		begin
+			A.GiveGroup(PLAYER, I, Left, Top, 4, aWarriorsCount[I], aWarriorsCount[I] div 4)
+			If Left = 8 then 
+				Left := 18
+			else
+			begin
+				Left := 8;
+				Top := Top - 5;
+			end;
+				
+		end;
+	
+	end;
+	with CampaignData.HKS13 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+		If aWarriorsCount[I] > 0 then 
+		begin
+			A.GiveGroup(PLAYER, I, Left, Top, 4, aWarriorsCount[I], aWarriorsCount[I] div 4)
+			If Left = 8 then 
+				Left := 18
+			else
+			begin
+				Left := 8;
+				Top := Top - 5;
+			end;
+				
+		end;
+	
+	end;
+
+end;
+
+Procedure OnMarketTrade(aMarket: Integer; aFrom: Integer;  aTo: Integer);
+begin
+	if (States.HouseOwner(aMarket) = 0) and (aFrom = 27) and not (aTo = 1) then
+		Actions.GiveWares(0,aFrom,1);
+end;
+
+procedure OnMissionStart;
+var I, Top, Left : Integer;
+	Count :array of Integer;
+	dMod : Byte;
+begin
+	Count:= [600,600,300,300,300,1,1];
+	dMod:= byte(States.MissionDifficulty)-1
+	A.AIEquipRate(2,0,Count[dMod]);
+	A.AIEquipRate(3,1,Count[dMod]);
+	
+	AddGroupsFromPrevious;	
+	
+	AddOvMessage(0, 20);
+	AddOvMessage(1, 150);
+	AddOvMessage(2, 270);
+	
+	
+	AddOvMessage(3, 36000);
+	
+	FillPlayerHouses([2,3], true);
+	AddUnitsToPlayer([2,3],true);
+	
+	AddAutoHeros;
+	
+	//AddHero(S.GroupAt(4,127));
+	//AddHero(S.GroupAt(10,124));
+	
+	SetHeroIDStats(aHeros[0], 21, 15, 99, 5, 8, 3, hcTyrio);//tyrio
+	SetHeroIDStats(aHeros[1], 40, 30, 153, 5, 15, 6, hcTamaio);
+	
+	Actions.HouseAddWaresTo(States.HouseAt(38,144),4,5);
+end;
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS14 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+		dec(aWarriorsCount[21]);
+		dec(aWarriorsCount[22]);
+	end;
+end;

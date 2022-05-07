@@ -1,0 +1,108 @@
+
+
+function GetHouseWares(aHouse : Integer) : array of Integer;
+var aType : Integer;
+begin
+	aType := S.HouseType(aHouse);
+	Result := [];
+	case aType of 
+		0: Result := [2];
+		1: Result := [3,5,6];
+		2: Result := [5,6,23,21,25];
+		3: Result := [5];
+		4: Result := [3];
+		5: Result := [4];
+		6: Result := [27];
+		7: Result := [10,11];
+		8: Result := [9];
+		9: Result := [0];
+		10: Result := [5,6,17,19];
+		11: Result := [];
+		12: Result := [9,26];
+		13: Result := [7];
+		14: Result := [1];
+		15: Result := [5,3,7];
+		16: Result := [9,14,15];
+		17: Result := [1];
+		18: Result := [7];
+		19: Result := [2,20,22,24];
+		20: Result := [2,12,16,18];
+		21: Result := [];
+		22: Result := [9,11];
+		23: Result := [];
+		24: Result := [13,14];
+		25: Result := [15,12];
+		26: Result := [];
+		27: Result := [8,10,13,27];
+		28: Result := [8];
+		29: Result := [];
+	end;
+end;
+
+Procedure FillHouse(aHouse :Integer;  isRandom : Boolean);
+var K : Integer;
+	WaresToAdd : array of Integer;
+begin
+	WaresToAdd := GetHouseWares(aHouse);
+	If length(WaresToAdd) > 0 then 
+		for K := 0 to high(WaresToAdd) do 
+			If isRandom then 
+				A.HouseAddWaresTo(aHouse, WaresToAdd[K], S.KamRandomI(5) + 1)
+			else
+				A.HouseAddWaresTo(aHouse, WaresToAdd[K], 5);
+end;
+
+
+Procedure AddUnitToHouse(aHouse :Integer;  withServant : Boolean);
+var 
+  owner : Integer;
+	pos : TKMPoint;
+  uType: TKMUnitType;
+  hType: TKMHouseType;
+begin
+	hType := S.HouseTypeEx(aHouse);
+	uType := S.HouseTypeToWorkerType(hType);
+	pos := S.HousePosition(aHouse);
+	owner := S.HouseOwner(aHouse);
+	A.GiveUnitEx(owner, uType, pos.X, pos.Y + 1, dirS);
+	
+	If withServant then 
+		A.GiveUnitEx(owner, utSerf, pos.X, pos.Y + 1, dirS);
+	
+end;
+
+Procedure FillPlayerHouses(aPlayers : array of Integer;  isRandom : Boolean);
+var I, J : Integer;
+	anArray : array of Integer;
+begin
+	If Length(aPlayers) = 0 then 
+		Exit;
+
+
+	for I := 0 to high(aPlayers) do
+	begin
+		anArray := States.PlayerGetAllHouses(aPlayers[I]);
+		If length(anArray) > 0 then 
+			for J := 0 to high(anArray) do
+				FillHouse(anArray[J], isRandom);
+	
+	end;
+end;
+
+Procedure AddUnitsToPlayer(aPlayers : array of Integer;  withServant : Boolean);
+var I, J : Integer;
+	anArray : array of Integer;
+begin
+	If Length(aPlayers) = 0 then 
+		Exit;
+
+
+	for I := 0 to high(aPlayers) do
+	begin
+		anArray := States.PlayerGetAllHouses(aPlayers[I]);
+		If length(anArray) > 0 then 
+			for J := 0 to high(anArray) do
+				AddUnitToHouse(anArray[J], withServant);
+	
+	end;
+end;

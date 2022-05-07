@@ -1,0 +1,59 @@
+const PLAYER = 0;
+
+{$I HKS_Functions.script}
+
+
+procedure OnTick;
+begin	
+	OnTickHero;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([0,1,2,3,4,5], true, true);
+end;
+
+
+procedure OnMissionStart;
+var aRCNT : Integer;
+begin
+
+	Case States.MissionDifficulty() of
+		0: aRCNT := 0;
+		1..2: aRCNT := -4;
+		3..5: aRCNT := 0;
+		5..7: aRCNT := 7;
+	end;
+	
+	AddOvMessage(0, 10);
+	AddOvMessage(1, 100);
+	
+	AddNewPatrol(A.GiveGroup(5, 20, 10, 65,2, 12, 4), U.KMPoint(10, 65),  U.KMPoint(41, 60));
+	AddNewPatrol(A.GiveGroup(5, 20, 55, 59,2, 12, 4), U.KMPoint(55, 59),  U.KMPoint(63, 35));
+	AddNewPatrol(A.GiveGroup(5, 20, 45, 27,2, 12, 4), U.KMPoint(45, 27),  U.KMPoint(63, 6));
+	AddNewPatrol(A.GiveGroup(5, 20, 48, 14,2, 12, 4), U.KMPoint(48, 14),  U.KMPoint(18, 9));
+	AddNewPatrol(A.GiveGroup(5, 20, 6, 17,2, 12, 4), U.KMPoint(6, 17),  U.KMPoint(31, 22));
+	
+	RaisPlayerArmy(5, aRCNT);
+	
+	
+	with CampaignData.HKS04 do 
+	begin
+		if aWarriorsCount[14]>0 then 
+			Actions.GiveGroup(0,14,24,78,7,aWarriorsCount[14],aWarriorsCount[14]/3) 
+		else
+			Actions.GiveGroup(0,14,24,78,7,12,4);
+			
+		if aWarriorsCount[15]>0 then 
+			Actions.GiveGroup(0,15,16,82,7,aWarriorsCount[15],aWarriorsCount[15]/3) 
+		else 
+			Actions.GiveGroup(0,15,16,82,7,12,4);
+			
+		if aWarriorsCount[19]>0 then 
+			Actions.GiveGroup(0,19,34,86,7,aWarriorsCount[19],aWarriorsCount[19]/5) 
+		else 
+			Actions.GiveGroup(0,19,34,86,7,12,4);
+	end;
+	
+	
+	AddAutoHeros;
+	SetHeroStats(11, 5, 26, 3, 0, 0, hcMalcolm);
+end;

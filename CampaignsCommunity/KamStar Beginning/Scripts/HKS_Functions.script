@@ -1,0 +1,296 @@
+
+{$EVENT evtMissionStart:OnMissionStartFunctions}
+{$EVENT evtHouseBuilt:OnHouseBuiltFunctions}
+
+
+type
+	TKMDirPoint = record 
+		X,Y,Dir : integer;
+	end;
+	
+	KD_UnitStats = record
+		aID : integer;
+		aPos : TKMPoint;
+		aDir, aType : integer;
+		Killed : Boolean;
+	end;
+	KD_GroupStats = record
+		aLeader : KD_UnitStats;
+		aID, UID : integer;
+		aColumns,aMembers, aType : integer;
+		Killed : Boolean;
+	end;	
+	KD_HouseArray = record
+		IDs : array of Integer;
+		
+	end;
+	KD_PlayerStats = record
+		Houses : array[0..29] of KD_HouseArray;
+		UpdateHouseList, doUnlimitedDeposits : Boolean;
+	end;
+	KD_Direction = (kdBackward, kdForward);
+
+	
+var HKS_Players : array of KD_PlayerStats;
+	aTimeToReset : Integer;//used for Overlay messages
+	dMod : Integer;
+function PointDir(X,Y,Dir : Integer) : TKMDirPoint;
+begin
+	Result.X := X;
+	Result.Y := Y;
+	Result.Dir := Dir;
+end;
+
+function GroupLeader(aGroup : Integer) : Integer;
+begin
+	Result := S.GroupMember(aGroup, 0);
+end;
+
+
+function SetUnit(aUnit : Integer) : KD_UnitStats;
+begin
+	with Result do 
+	begin
+		aID := aUnit;
+		aPos := S.UnitPosition(aID);
+		aDir := S.UnitDirection(aID);
+		aType := S.UnitType(aID);	
+	end;
+
+end;
+
+function SetGroup( aGroup : Integer) : KD_GroupStats; 
+var akGroup : KD_GroupStats;
+begin
+	with akGroup do 
+	begin
+		aId := aGroup;
+		aColumns := S.GroupColumnCount(aGroup);
+		aMembers := S.GroupMemberCount(aGroup);
+		aType := S.GroupType(aGroup);
+		aLeader := SetUnit( GroupLeader(aGroup) );
+		UID := aLeader.aID;
+	end;
+	Result := akGroup;
+end;
+
+function GetGroupPos( var aGroup : KD_GroupStats) : TKMPoint; 
+begin
+	aGroup.aLeader.aPos := S.UnitPosition(aGroup.aLeader.aID);
+	Result := aGroup.aLeader.aPos;
+end;
+
+function IncLArrayI( var aArray :array of Integer) : Integer;
+var J : Integer;
+begin
+	J := Length(aArray);
+	SetLength(aArray, J + 1);
+	Result := J;
+end;
+
+procedure AddHouseToPlayer(aPlayer, aHouse : Integer);
+var I, aType : Integer;
+begin
+	aType := S.HouseType(aHouse);
+	with HKS_Players[aPlayer].Houses[aType] do 
+	begin
+		I := IncLArrayI(IDs);
+		IDs[I] := aHouse;
+	end;
+end;
+
+procedure AddStoneToTowers(aPlayer : Integer);
+var I : Integer;
+begin
+	with HKS_Players[aPlayer].Houses[17] do 
+		If length(IDs) > 0 then 
+			for I := 0 to high(IDs) do 
+				If not S.HouseDestroyed(IDs[I]) then 
+					If S.HouseResourceAmount(IDs[I], 1) < 5 then 
+						A.HouseAddWaresTo(IDs[I], 1, 1);
+end;
+
+procedure MultiAddStoneToTowers(aPlayers :array of integer);
+var I : Integer;
+begin
+	if Length(aPlayers) = 0 then 
+		Exit;
+		
+	for I := 0 to high(aPlayers) do 
+		AddStoneToTowers(aPlayers[I]);
+	
+end;
+
+procedure UnlimitedDeposits(aPlayer : integer);
+var I, aType, TileID : Integer;
+	aPos : TKMPoint;
+begin
+	If length(HKS_Players) = 0 then 
+		Exit;
+	for aType := 3 to 5 do 
+		with HKS_Players[aPlayer].Houses[aType] do 
+		begin
+			If length(IDs) = 0 then 
+				Continue;
+			case aType of 
+				3 : TileID := 155;
+				4 : TileID := 260;
+				5 : TileID := 307;
+			end;
+			
+			for I := 0 to high(IDs) do	
+				If not S.HouseDestroyed(IDs[I]) then 			
+				begin
+					aPos := S.HousePosition(IDs[I]);
+					A.MapTileSet(aPos.X,aPos.Y-1, TileID, 0);
+				
+				
+				end;
+		end;
+	
+end;
+
+
+procedure MultiUnlimitedDeposits(aPlayers :array of integer);
+var I : Integer;
+begin
+	if Length(aPlayers) = 0 then 
+		Exit;
+		
+	for I := 0 to high(aPlayers) do 
+		UnlimitedDeposits(aPlayers[I]);
+	
+end;
+
+function Power(aNumber, aCount : Integer) : integer;
+var I, newRes : Integer;
+begin
+	newRes := aNumber;
+	for I := 0 to aCount - 1 do 
+		newRes := newRes * aNumber;
+		
+	Result := newRes;
+	
+end;
+
+function SingleToInteger(aSingle : Single; aNrCount : Integer) : String;
+var I, res : integer;	
+begin
+	res := U.FloorTo(aSingle, 1);
+	If aNrCount > 7 then 
+		aNrCount := 7;
+		
+	I := U.FloorTo( (aSingle - res) * Power( 10, aNrCount) , 1 );
+	Result := IntToStr(res) + '.' + IntToStr(I);
+end;
+
+procedure ListPlayerHouses(aPlayer : integer);
+var I : integer;
+	anArray :array of Integer;
+begin
+	anArray := S.PlayerGetAllHouses(aPlayer);
+	If Length(anArray) = 0 then 
+		Exit;
+	for I := 0 to high(anArray) do 
+		AddHouseToPlayer(aPlayer, anArray[I]);
+
+end;
+
+
+procedure OnHouseBuiltFunctions(aHouse : Integer);
+begin
+	If HKS_Players[S.HouseOwner(aHouse)].UpdateHouseList then 
+		AddHouseToPlayer(S.HouseOwner(aHouse), aHouse);
+end;
+procedure SetDMod;
+begin
+	Case S.MissionDifficulty of 
+		0..2 : dMod := 0;
+		3 : dMod := 1;
+		5..8 : dMod := 2;
+		else dMod := 1;
+	end;
+end;
+
+procedure OnMissionStartFunctions;
+var I : Integer;
+begin
+	SetDMod;
+	SetLength(HKS_Players, S.LocationCount);
+	for I := 0 to high(HKS_Players) do
+		ListPlayerHouses(I);
+		
+	
+end;
+
+function Maximum(A,B : Integer) : Integer;
+begin
+	Result := A
+	If A > B then 
+		Result := B;
+
+end;
+
+
+function Minimum(A,B : Integer) : Integer;
+begin
+	Result := A
+	If A < B then 
+		Result := B;
+
+end;
+
+
+function InRange(A, B, C : Integer) : Integer;
+begin
+	Result := A
+	If A < B then 
+		Result := B;
+		
+	If A > C then 
+		Result := C;
+
+end;
+
+function KillInvulnerableUnit(aUnit : Integer; Silent : Boolean) : Boolean;
+begin
+	Result := true;;
+	If aUnit = -1 then 
+	begin
+		Result := false;
+		Exit;
+	end;
+	Actions.UnitHpSetInvulnerable(aUnit,false);
+	A.UnitKill(aUnit,Silent);
+end;
+
+function GT : Integer;
+begin
+	Result := S.GameTime;
+
+end;
+
+
+function WareTypeToInt(aWare: TKMWareType): Integer;
+begin
+  Result := Ord(aWare) - 1; // -1 for wtNone
+end;
+
+{$I HKS_Hero.script}
+{$I HKS_Messages.script}
+{$I HKS_Feed.script}
+{$I HKS_ResHouses.script}
+{$I HKS_Patrol.script}
+{$I HKS_RaisArmy.script}
+{$I HKS_Difficulty.script}
+
+{$IFDEF TYRIO}
+	{$I HKS_Ship.script}
+	{$I HKS_TyrioMarket.script}
+{$ENDIF}
+
+{$IFDEF MALCOLM}
+	{$I HKS_Malcolm.script}
+{$ENDIF}
+{$I HKS_UnitAnimation.script}
+{$I HKS_Commands.script}

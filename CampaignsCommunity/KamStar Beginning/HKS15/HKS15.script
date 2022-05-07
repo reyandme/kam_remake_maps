@@ -1,0 +1,66 @@
+Const PLAYER = 0;
+
+{$I HKS_Functions.script}
+
+var AreAttacked : Boolean;
+	AttackedTime : Integer;
+	
+procedure GroupsOrderWalk;
+var I, J : Integer;
+	aGroups : array of Integer;
+begin
+	for I := 1 to 4 do 
+	begin
+		aGroups := S.PlayerGetAllGroups(I);
+		for J := 0 to high(aGroups) do 
+			A.GroupOrderWalk(aGroups[J], 15, 96, 5);
+	end;
+end;
+procedure OnUnitWounded(aUnit,aAttacker : integer);
+begin
+	If AreAttacked then 
+		Exit;
+		
+	AreAttacked := true
+	AttackedTime := S.GameTime + 800;
+	AddOvMessage(1, AttackedTime-300);
+	GroupsOrderWalk;
+end;
+
+procedure OnTick;
+begin
+	OnTickHero;
+	
+		
+	If AreAttacked then 
+	begin
+		If S.GameTime = AttackedTime then 
+			A.PlayerWin([0], true);		
+		Exit;
+	end else
+	begin
+		If S.GameTime mod 10 = 0 then 
+			A.OverlayTextAppend(PLAYER, '||<$3>' + U.TimeToString(900 - S.GameTime));
+		if S.GameTime = 700 then 
+			AddOvMessage(2, 800);
+			
+		if S.GameTime = 930 then 
+			A.PlayerDefeat(0);
+	end;
+	
+end;
+
+
+
+procedure OnMissionStart;
+begin
+
+	
+	AddOvMessage(0, 20);
+	
+	AddAutoHeros;
+	//AddHero(S.GroupAt(4,127));
+	//AddHero(S.GroupAt(10,124));
+	
+	SetHeroStats(16, 10, 43, 3, 2, 0, hcMalcolm);
+end;

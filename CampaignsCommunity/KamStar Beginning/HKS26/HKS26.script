@@ -1,0 +1,66 @@
+
+const
+	PLAYER = 7;
+	
+{$I HKS_Functions.script}
+
+var  Dyron:Integer;
+procedure OnTick;
+begin
+	if States.GameTime = 65 then
+	begin
+		Actions.GiveUnit(2,0,149,116,5)
+		Actions.UnitOrderWalk(States.UnitAt(149,116),148,118);
+	end;
+	
+	if States.GameTime = 110 then 
+		Actions.UnitDirectionSet(States.UnitAt(148,118),5);
+	
+	If (States.GameTime >55) and (States.GameTime <68) then 
+	begin
+		Actions.MapTileSet(149,116,46,States.KamRandomI(3));
+		Actions.MapTileSet(149,117,45,States.KamRandomI(3));
+		Actions.MapTileSet(149,115,45,States.KamRandomI(3));
+		
+		Actions.MapTileSet(150,116,45,States.KamRandomI(3));
+		Actions.MapTileSet(150,117,45,States.KamRandomI(3));
+		Actions.MapTileSet(150,115,45,States.KamRandomI(3));
+		
+		Actions.MapTileSet(148,116,45,States.KamRandomI(3));
+		Actions.MapTileSet(148,117,45,States.KamRandomI(3));
+		Actions.MapTileSet(148,115,45,States.KamRandomI(3));
+	end;
+	if States.GameTime = 340 then 
+		Actions.PlayerWin([7], true);
+	
+	If (States.GameTime= 10) then 
+		Actions.GroupOrderWalk((Dyron),140,120,5);
+		
+	If (States.GameTime= 50) then 
+		Actions.GroupOrderWalk((Dyron),146,123,5);
+		
+	If (States.GameTime= 75) then 	
+		Actions.GroupOrderWalk((Dyron),145,120,1);
+end;
+procedure OnMissionStart;
+begin
+	AddOvMessage(0, 1);
+	AddOvMessage(1, 70);
+	AddOvMessage(2, 94);
+	AddOvMessage(3, 118);
+	AddOvMessage(4, 160);
+	AddOvMessage(5, 174);
+	AddOvMessage(6, 190);
+	AddOvMessage(7, 200);
+	AddOvMessage(8, 212);
+	AddOvMessage(9, 230);
+	AddOvMessage(10, 261);
+	AddOvMessage(11, 280);
+	AddMessage(12, 300);
+	Dyron:= States.GroupAt(145,120);
+	Actions.CinematicStart(7);
+	Actions.CinematicPanTo(7,145,120,1);
+	
+	Actions.PlayOggFadeMusic(-1,'Final',1);
+	aMessage.DoStop := true;
+end;

@@ -1,0 +1,64 @@
+Procedure FeedPlayers(aPlayers : array of Integer;  FeedUnits, FeedGroups : Boolean);
+var I, J : Integer;
+	anArray : array of Integer;
+begin
+	If Length(aPlayers) = 0 then 
+		Exit;
+
+
+	for I := 0 to high(aPlayers) do
+	begin
+		If FeedUnits then 
+		begin
+			anArray := States.PlayerGetAllUnits(aPlayers[I]);
+			If length(anArray) > 0 then 
+				for J := 0 to high(anArray) do
+					If S.UnitType(anArray[J]) < 14 then 
+						A.UnitHungerSet(anArray[J], 27000);
+				
+		end;
+		If FeedGroups then 
+		begin
+			anArray := States.PlayerGetAllGroups(aPlayers[I]);
+			If length(anArray) > 0 then 
+				for J := 0 to high(anArray) do
+					If S.UnitType(anArray[J]) < 14 then 
+						A.GroupHungerSet(anArray[J], 27000);
+				
+		end;
+	
+	end;
+end;
+
+
+Procedure FeedRandomPlayers(aPlayers : array of Integer;  FeedUnits, FeedGroups : Boolean);
+var I, J : Integer;
+	anArray : array of Integer;
+begin
+	If Length(aPlayers) = 0 then 
+		Exit;
+
+
+	for I := 0 to high(aPlayers) do
+	begin
+		If FeedUnits then 
+		begin
+			anArray := States.PlayerGetAllUnits(aPlayers[I]);
+			If length(anArray) > 0 then 
+				for J := 0 to high(anArray) do
+					If S.UnitType(anArray[J]) < 14 then 
+						A.UnitHungerSet(anArray[J], S.KamRandomI(20000) + 7000);
+				
+		end;
+		If FeedGroups then 
+		begin
+			anArray := States.PlayerGetAllGroups(aPlayers[I]);
+			If length(anArray) > 0 then 
+				for J := 0 to high(anArray) do
+					If S.UnitType(anArray[J]) < 14 then 
+						A.GroupHungerSet(anArray[J], S.KamRandomI(5000) + 20000);
+				
+		end;
+	
+	end;
+end;

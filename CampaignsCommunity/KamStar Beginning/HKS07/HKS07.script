@@ -1,0 +1,82 @@
+
+
+
+const PLAYER = 4;
+
+{$I HKS_Functions.script}
+
+
+procedure OnTick;
+begin
+	if States.GameTime = 300 then
+		Actions.AIAutoAttackRange(1,20);
+	if States.GameTime = 3000 then 
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 8)
+	end;
+	if States.GameTime = 3300 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime = 3600 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime = 3900 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime = 4200 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime = 4500 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	
+	if States.GameTime = 4700 then	
+		begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime = 4900 then	
+	begin
+		//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+		Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+	end;
+	if States.GameTime >= 5000 then	
+		If S.GameTime mod 200 = 0 then 
+		begin
+		
+			//Actions.GiveGroup (3, 20, 115, 69, 6, 32, 18)
+			Actions.GiveGroup (3, 20, 123, 68, 6, 32, 18)
+		end;
+end;
+
+
+Procedure OnMissionStart;
+var aRCNT : Integer;
+begin
+	Case States.MissionDifficulty() of
+		0: aRCNT := -2;
+		1..2: aRCNT := 10;
+		3..5: aRCNT := 0;
+		5..7: aRCNT := -7;
+	end;
+	AddOvMessage(0, 20);
+	AddOvMessage(1, 70);
+	AddOvMessage(2, 200);
+	AddOvMessage(3, 3600);
+	
+	
+	
+	RaisPlayerArmy(3, aRCNT);
+	RaisPlayerArmy(2, aRCNT);
+end;

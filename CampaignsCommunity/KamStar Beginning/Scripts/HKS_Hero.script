@@ -1,0 +1,526 @@
+//{$EVENT evtTick:OnTickHero}
+//const PLAYER = 0;
+
+{$EVENT evtUnitWounded:OnUnitWoundedHero}
+{$EVENT evtUnitAttacked:OnUnitAttackedHero}
+{$EVENT evtMissionStart:OnMissionStartHero}
+{$EVENT evtHouseDamaged:OnHouseDamagedHero}
+{$EVENT evtBeacon:OnBeaconHero}
+
+type 	
+	YG_HeroClass = (hcNone, hcMalcolm, hcTyrio, hcTamaio, hcLivius, hcRatling, hcDyron1, hcDyron2, hcKarion);
+	
+	YG_Hero = record
+		ID,aGroupID, SelectionID,
+		Attack,
+		Defense, 
+		Health,
+		HPmax,
+		Haste, 
+		MountedBonus,
+		HouseBonus,
+		AttackedTime, 
+		AttackTime, RegPoints, aType, Reveal, Owner : Integer;
+		Attacked, IsDead, UseSkills, canTurnOff, FeedHero: Boolean;
+		Pos : TKMPoint;
+		Name : String;
+		aClass : YG_HeroClass;
+		UseSkill : array[0..3] of Boolean;
+		ShowSkills, ShowSkillsTime, LVL: Integer;
+	end;
+	
+//const PLAYER = 4;
+	
+var aHeros : array of YG_Hero;
+	HeroAdded : Boolean;
+	UnitDefAtt : array[0..2] of array of Integer; // special information about unit data	
+	aHeroSelected : Integer;
+	showOwnerOnly : Boolean;
+	CanSelectHero : Boolean;
+	MoreHeros : Boolean;
+
+
+function GetHeroIndex(aUnit : Integer) : integer;
+var I : Integer;
+
+begin
+	Result := -1;
+	
+	If (aHeros[0].ID = aUnit) or (aHeros[0].aGroupID = aUnit)   then 
+		Result := 0;
+	
+	If MoreHeros then 
+	for I := 1 to high(aHeros) do 
+		If (aHeros[I].ID = aUnit) or (aHeros[I].aGroupID = aUnit)  then 
+			Result := I;
+end;
+	
+function UnitIsHero(aUnit : Integer) : Boolean;
+begin
+	Result := false;
+	
+	If GetHeroIndex(aUnit) <> -1 then 
+		Result := true;
+end;	
+
+function GetHeroIndexFromPos(aPos : TKMPoint) : integer;
+var I : Integer;
+
+begin
+	Result := -1;
+	If aHeros[0].Pos = aPos then 
+		Result := 0;
+	
+	If MoreHeros then 
+		for I := 1 to high(aHeros) do 
+			If (aHeros[I].Pos = aPos) then 
+				Result := I;
+end;
+
+function GetHeroName(aHero : YG_Hero) : String;
+begin
+	case aHero.aClass of 
+		hcMalcolm : Result := 'Malcolm';
+		hcTyrio : Result := '[$FA7C6B]Tyrio';
+		hcTamaio : Result := '[$FA7C6B]General Tamaio';
+		hcLivius : Result := '[$09B0F6]Prince Livius';
+		hcRatling : Result := '[$EACD87]Baron Ratling';
+		hcDyron1, hcDyron2 : Result := '[$FA7C6B]Dyron';
+		hcKarion : Result := '[$09F641]Karion';
+	end;
+end;
+
+procedure MoveCamera(aPos : TKMPoint);
+begin
+
+	A.CinematicStart(PLAYER);
+	A.CinematicPanTo(PLAYER, aPos.X, aPos.Y, 0);
+	A.CinematicEnd(PLAYER);	
+	
+end;
+
+procedure TeleportHero(var aHero : YG_Hero; aPos : TKMPoint);
+begin
+
+	
+	A.UnitKill(aHero.ID, true);
+	with aHero do 
+	begin
+		aGroupID := A.GiveGroup(Owner, aType, aPos.X,aPos.Y, 0, 1, 1);
+		ID := GroupLeader(aGroupID);
+
+	end;	
+end;
+
+procedure SendSkillList(aHero : YG_Hero);
+begin
+	case aHero.aClass of
+		hcMalcolm : begin
+						A.ShowMSG(aHero.Owner, '<$206>|<$207>');
+						If aHero.LVL > 0 then 
+							A.ShowMSG(aHero.Owner, '<$208>|<$209>');
+					end;
+		hcDyron2 : begin
+						A.ShowMSG(aHero.Owner, '<$205>|<$210>');
+					end;
+		hcTyrio : begin
+						A.ShowMSG(aHero.Owner, '<$201>|<$202>');
+						A.ShowMSG(aHero.Owner, '<$203>');
+					end;
+		hcTamaio : begin
+						A.ShowMSG(aHero.Owner, '<$204>');
+					end;
+	end;	
+
+
+end;
+procedure SelectNextHero;
+begin
+	If not CanSelectHero then 
+		Exit;
+	If length(aHeros) = 0 then 
+		Exit;
+	If length(aHeros) = 1 then 
+		aHeroSelected := 0
+	else
+	begin
+	
+		aHeroSelected := aHeroSelected + 1;
+		If aHeroSelected > high(aHeros) then 
+			aHeroSelected := 0;
+	end;
+	If aHeros[aHeroSelected].Owner <> PLAYER then 
+	begin
+		SelectNextHero;
+		Exit;
+	end;
+	
+	MoveCamera(aHeros[aHeroSelected].Pos);
+	
+end;
+
+
+Procedure SetMainStats(var aHero : YG_Hero; A,D,H,HS,MO,R : Integer);
+begin
+	aHero.Attack := A;
+	aHero.Defense := D;
+	aHero.Health := H;
+	aHero.HPmax := H;
+	
+	aHero.Haste := HS;
+	aHero.MountedBonus := MO;
+	aHero.Reveal := R;
+end;
+
+
+
+Procedure SetHeroIDStats(var aHero : YG_Hero; A,D,H,HS,MO,R : Integer; aClass : YG_HeroClass);
+begin
+	If length(aHeros) = 0 then 	
+		Exit;
+		
+	SetMainStats(aHero, A,D,H,HS,MO,R);
+	
+	aHero.aClass := aClass;
+	aHero.Name := GetHeroName(aHero);
+end;
+
+Procedure SetHeroStats(A,D,H,HS,MO,R : Integer; aClass : YG_HeroClass);
+begin
+	If length(aHeros) = 0 then 	
+		Exit;
+	SetHeroIDStats(aHeros[0], A,D,H,HS,MO,R, aClass)
+
+end;
+
+procedure AddHero(aGroup : Integer);
+var J, I : Integer;
+	aHero : YG_Hero;
+begin
+	J := Length(aHeros);
+	SetLength(aHeros, J + 1);
+	
+	aHero.aGroupID := aGroup;
+	aHero.ID := S.GroupMember(aGroup, 0);
+	aHero.aType:= S.UnitType(aHero.ID);
+	aHero.Owner:= S.UnitOwner(aHero.ID);
+	A.UnitHPSetInvulnerable(aHero.ID, true);
+	//A.ShowMSG(-1, 'hero added')
+	HeroAdded := true;
+	aHeros[J] := aHero;
+	aHeros[J].SelectionID := J;
+	for I := 0 to high(aHeros[J].UseSkill) do 	
+		aHeros[J].UseSkill[I] := true;
+		
+end;
+
+procedure AddAutoHeros;
+var aGroups :array of  Integer;
+	I : Integer;
+begin
+	aGroups := S.PlayerGetAllGroups(PLAYER);
+	If length(aGroups) = 0  then 
+		Exit;
+	for I := 0 to high(aGroups) do
+		If S.GroupMemberCount(aGroups[I]) = 1 then 
+		begin
+			AddHero(aGroups[I]);
+		end;
+end;
+
+procedure RemoveEmptyFromHeros;
+var aNewHeros : array of YG_Hero;
+	I, J : Integer;
+begin
+	for I := 0 to high(aHeros) do
+		If aHeros[I].Attack > 0 then 
+		begin
+			J := length(aNewHeros);
+			SetLength(aNewHeros, J + 1)
+			aNewHeros[J] := aHeros[I];
+	
+		end;
+	aHeros := aNewHeros;
+end;
+
+procedure ChangeHeroHP(var aHero : YG_Hero; aHPc : Integer);
+begin
+	with aHero do 
+	begin
+		if aHPc > 0 then 			
+			Health := Health + aHPc + RegPoints
+		else
+			Health := Health + aHPc;
+			
+		If Health = HPmax then 
+			Exit
+		else	
+		If Health < 0 then 
+		begin
+			Health := 0;
+			IsDead:= true;
+			UseSkills := false;
+			Actions.UnitHpSetInvulnerable(ID,false);
+			A.UnitKill(ID,false);	
+		end	else
+		If Health > HPmax then 
+			Health := HPmax;
+		
+	end;
+end;
+
+Procedure ShowHeroOverlay(aHero : YG_Hero);
+var addArrow : String;
+	aPlayerTo : Integer;
+begin
+	aPlayerTo := 0;
+	If aHero.SelectionID = aHeroSelected then 
+		addArrow := '[$0000FF] <--[$ffffff]'
+	else
+		addArrow := '';
+	If showOwnerOnly then 
+		aPlayerTo := aHero.Owner
+	else
+		aPlayerTo := -1;
+		
+	If showOwnerOnly then 
+		A.OverlayTextSet(aPlayerTo, '');
+		
+	
+		
+	A.OverlayTextAppend(aPlayerTo, '|' + aHero.Name + ' [$ffffff];'+addArrow+'|');
+	A.OverlayTextAppend(aPlayerTo, '[$00FF00]Health[$ffffff] : ' + IntToStr(aHero.Health) +' / ' + IntToStr(aHero.HPmax) + ' ;|');
+	A.OverlayTextAppend(aPlayerTo, '[$00FF00]Att[$ffffff] : ' + IntToStr(aHero.Attack) + ' ;|');
+	A.OverlayTextAppend(aPlayerTo, '[$00FF00]Def[$ffffff] : ' + IntToStr(aHero.Defense) + ' ;|');
+	A.OverlayTextAppend(aPlayerTo, '[$00FF00]Haste[$ffffff] : ' + IntToStr(aHero.Haste) + ' ;|');
+end;
+
+
+procedure HeroWounded(var aHero : YG_Hero; aKiller : integer);
+var Random, aKType, I  : Integer;
+begin
+	aKType := S.UnitType(aKiller);
+	
+	if aKType > 13 then 
+		Random := UnitDefAtt[1][aKType]
+	else
+		Random := 130;
+	with aHero do 
+		If States.KaMRandomI(Random) > Defense then 
+		begin
+			Attacked := true;
+			AttackedTime := States.GameTime + 300;
+			Actions.UnitHpSetInvulnerable(ID,true); //it's gonna make sure that hero won't die for some reason
+			If aKType = 13 then 
+				ChangeHeroHP(aHero, -20 - S.KaMRandomI(20))
+			else
+				ChangeHeroHP(aHero, - UnitDefAtt[2][aKType]);
+			//A.ShowMSG(0, '')
+		end;
+
+
+end;
+
+
+Procedure OnUnitWoundedHero(aUnit,aKiller:Integer);
+var Random, aPlayer  : Integer;
+begin
+	If not HeroAdded then 
+		Exit;
+	If not UnitIsHero(aUnit) then 
+		Exit;
+		
+	HeroWounded(aHeros[GetHeroIndex(aUnit)], aKiller)	
+end;
+
+procedure HeroAttacked(var aHero : YG_Hero; aUnit : integer);
+var Random, aType, I  : Integer;
+begin
+	with aHero do 
+		If States.GameTime < AttackTime then 
+			Exit
+		else
+		begin
+			If Haste > 1 then 
+				AttackTime := GT + Haste;
+				
+			aType := S.UnitType(aUnit);
+			
+			if aType > 0 then 
+				Random := UnitDefAtt[0][aType];
+				
+			If States.UnitType(aUnit) in [21,22,27] then 
+			begin
+				If S.KaMRandomI(Random) >= Random - Attack - MountedBonus then 
+					KillInvulnerableUnit(aUnit, false);
+			end else
+			If S.KaMRandomI(Random) >= Random - Attack then 
+				KillInvulnerableUnit(aUnit, false);
+		end;
+
+
+end;
+
+
+Procedure OnUnitAttackedHero(aUnit,aKiller:Integer);
+var Random, aPlayer, aType, I  : Integer;
+	aHero : YG_Hero;
+begin
+	If not HeroAdded then 
+		Exit;
+	If not UnitIsHero(aKiller) then 
+		Exit;
+
+	HeroAttacked(aHeros[GetHeroIndex(aKiller)], aUnit)	
+	
+end;
+
+
+Procedure OnHouseDamagedHero(aHouse,aKiller:Integer);
+var aPlayer, aOwner, I  : Integer;
+	aHero : YG_Hero;
+begin
+	If not HeroAdded then 
+		Exit;
+		
+	If not UnitIsHero(aKiller) then 
+		Exit;
+	
+	for I := 0 to high(aHeros) do 
+	begin
+		aHero := aHeros[I];
+		If aHero.ID = aKiller then
+		begin
+			Actions.HouseAddDamage(aHouse, (aHero.Attack div 3) + aHero.HouseBonus);
+			break;
+		end else
+			Continue;
+	end;
+	
+end;
+
+procedure BeaconAtHero( var aHero : YG_Hero);
+begin
+	with aHero do 	
+		If ShowSkills = 2 then 
+		begin
+			ShowSkills := 0;
+			ShowSkillsTime := 0;
+			SendSkillList(aHero);
+		end else		
+		begin
+			inc(ShowSkills);
+			ShowSkillsTime := S.GameTime + 300;
+			
+			If canTurnOff then 
+			begin
+
+				UseSkills := not UseSkills;
+				CampaignData.UseMSkills := UseSkills;
+				If UseSkills then  
+					A.ShowMSG(Owner, 'Hero skills enabled')
+				else
+					A.ShowMSG(Owner, 'Hero skills disabled');
+			end;
+		end;
+	
+
+end;
+
+
+Procedure OnBeaconHero(aPlayer,X,Y : Integer);
+var  aIndex  : Integer;
+begin
+  if Length(aHeros) = 0 then Exit;
+  
+	If aPlayer = PLAYER then 
+	begin		
+		aIndex := GetHeroIndexFromPos( U.KMPoint(X,Y) );
+    A.Log(IntTOStr(aIndex));
+		If (aIndex = -1) then
+		begin
+			If S.UnitAt(X,Y) < 0 then 
+				SelectNextHero;
+		end else 
+			BeaconAtHero(aHeros[aIndex]);
+	end;
+end;
+
+
+procedure RefreshHero(var aHero : YG_Hero);
+begin
+	with aHero do 
+	begin
+			
+		Pos := S.UnitPosition(ID);
+		If IsDead then
+			A.PlayerDefeat(PLAYER);
+			
+		If S.GameTime >= ShowSkillsTime then
+		begin
+			ShowSkillsTime := 0;
+			ShowSkills := 0;
+		end;
+		If Attacked then 
+			If States.GameTime >= AttackedTime then 
+				Attacked := not Attacked;
+		
+		//If States.GameTime mod 20 = 0 then
+			
+		If States.GameTime mod 20 = 0 then 	
+			If Reveal > 0 then  
+				If not States.UnitDead(ID) then
+					If not States.UnitIdle(ID) then
+						If States.GameTime mod 20 = 0 then 
+							A.FogRevealCircle(0, Pos.X, Pos.Y, 9 + Reveal);
+							
+		If FeedHero then 
+			A.UnitHungerSet(ID, 27000);
+			
+	end;
+	If States.GameTime >= aHero.AttackedTime + 300 then
+		If S.UnitIdle(aHero.ID) then
+			ChangeHeroHP(aHero, 1);
+	If GT > aTimeToReset then
+		ShowHeroOverlay(aHero);
+	
+end;
+Procedure OnTickHero;
+var I :integer;
+begin
+	
+	If not HeroAdded then 
+		Exit;
+	
+	If States.GameTime mod 10 = 0 then 
+	begin
+		If GT > aTimeToReset then 
+			A.OverlayTextSet(-1, '');
+			
+		RefreshHero(aHeros[0]);
+		
+		If MoreHeros then 
+			for I := 1 to high(aHeros) do 
+				RefreshHero(aHeros[I]);
+	end;
+	
+end;
+
+Procedure OnMissionStartHero;
+//var aGroups :array of  Integer;
+//	I : Integer;
+begin
+	CanSelectHero := true;
+	UnitDefAtt[0] := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 130,
+						45,75,85,65,80,80,90,78,100,100,40,30,110,50];
+						
+	UnitDefAtt[1] := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 130,
+						45,75,85,70,75,75,80,78,85,90,40,30,100,50];
+						
+	UnitDefAtt[2] := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 30,
+						1,2,3,2,3,2,3,2,3,4,1,1,4,1];
+	RemoveEmptyFromHeros;	
+	showOwnerOnly := true;
+	If length(aHeros) > 1 then 
+		MoreHeros := true;	
+end;

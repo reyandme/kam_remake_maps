@@ -1,0 +1,98 @@
+const PLAYER = 0;
+
+{$DEFINE MALCOLM}
+
+{$I HKS_Functions.script}
+
+Procedure OnHousePlanPlaced(aPlayer: Integer; X: Integer; Y: Integer; aType: Integer);
+begin
+	If not aHeros[0].UseSkills then 
+		Exit;
+	if (aPlayer = PLAYER)then 
+		Actions.PlanConnectRoad(0,X,Y+1,States.HousePositionX(States.ClosestHouse(0,X,Y,11)),States.HousePositionY(States.ClosestHouse(0,X,Y,11))+1,false);
+end;
+
+
+procedure OnTick;
+var HType, aHouse:Integer;
+begin
+	OnTickHero;
+	If S.GameTime mod 9000 = 0 then 
+		FeedPlayers([2], true, true);
+		
+		
+	If States.GameTime mod 10 = 0 then 
+	begin
+		If not aHeros[0].UseSkills then 
+			Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := S.HouseAt(aHeros[0].Pos.X, aHeros[0].Pos.Y - 1 );	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+			Actions.HouseAddBuildingProgress(aHouse);		
+			
+			If States.HouseIsComplete(aHouse)
+			and (States.HouseDamage(aHouse) < States.HouseTypeMaxHealth(HType)-5) then 
+				Actions.HouseAddRepair(aHouse , 5);
+	end;
+	
+end;
+
+
+Procedure OnMissionStart;
+var Houses:array of integer;
+	LL:integer;
+var aRCNT : Integer;
+begin
+	SetDMod;
+	Case States.MissionDifficulty() of
+		0: aRCNT := 0;
+		1..2: aRCNT := -3;
+		3..5: aRCNT := 0;
+		5..7: aRCNT := 3;
+	end;
+	SetDifficulty_EquipDelay([1], [0], [300], [1.25, 1,0.1]);
+	SetDifficulty_RecruitDelay([1], [18000], [2, 1,0.1]);
+	//A.ShowMSG(-1, IntToStr(S.AIRecruitDelay(1)));
+	AddOvMessage(0, 10);
+	AddOvMessage(1, 70);
+	AddMessage(3, 600);
+	AddMessage(6, 900);
+	AddMessage(7, 940);
+	AddMessage(8, 6000);
+	AddMessage(9, 6050);
+	AddOvMessage(5, 12100);
+	AddOvMessage(2, 12300);
+	AddOvMessage(4, 12400);
+	
+	RaisGroup(S.GroupAt(31, 16), aRCNT);
+	RaisGroup(S.GroupAt(75, 50), aRCNT);
+	
+	
+	AddAutoHeros;
+	SetHeroStats(10, 5, 24, 3, 0, 0, hcMalcolm);
+	
+	
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+end;
+
+
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS04 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+	end;
+end;

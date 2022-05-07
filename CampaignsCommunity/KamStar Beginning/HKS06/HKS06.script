@@ -1,0 +1,32 @@
+
+ {$I Chodzenie.script}
+
+const PLAYER = 0;
+
+{$I HKS_Functions.script}
+
+
+procedure OnTick;
+begin
+	OnTickHero;
+end;
+
+Procedure OnMissionStart;
+var aRCNT : Integer;
+begin
+	Case States.MissionDifficulty() of
+		0: aRCNT := -2;
+		1..2: aRCNT := -4;
+		3..5: aRCNT := -2;
+		5..7: aRCNT := 4;
+	end;
+	
+	AddOvMessage(0, 20);
+	
+	AddAutoHeros;
+	SetHeroStats(15, 11, 37, 7, 1, 1, hcTyrio);
+	SetHeroIDStats(aHeros[1], 33, 25, 110, 6, 15, 6, hcTamaio);
+	
+	
+	RaisPlayerArmy(1, aRCNT);
+end;

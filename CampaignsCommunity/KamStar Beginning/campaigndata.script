@@ -1,0 +1,41 @@
+record
+	ShowOverlay : Boolean;
+	UseMSkills : Boolean;
+	
+	UseSkill :array[0..3] of Boolean;
+	
+	HKS04: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS11: record
+		HorseCount: Integer;
+	end;
+	HKS12: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS13: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS14: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS16: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS18: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS20: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS21: record
+		aWarriorsCount: array[14..27] of Integer;
+	end;
+	HKS23: record
+		SearchingTime: Integer;
+	end;
+	HKS24: record
+		SearchingTime: Integer;
+	end;
+end;
+

@@ -1,0 +1,54 @@
+{.$I Language.script}
+
+const
+	PLAYER = 4;
+
+{$I HKS_Functions.script}
+	
+procedure OnTick;
+var aGroups : array of Integer;
+	I : Integer;
+begin
+	OnTickHero;
+	If States.GameTime = 1300 then 
+	begin
+		aGroups := States.PlayerGetAllGroups(PLAYER);
+		for I := 0 to high(aGroups) do
+			If I mod 2 = 0 then 
+				A.GroupOrderWalk(aGroups[I], 127 + (2 * I), 76, 1 );
+		
+	end;
+end;
+
+procedure OnMissionStart;
+begin
+	SetDMod;
+	Case S.MissionDifficulty() of
+		0: A.GiveGroup(0,23,17,28,5,9,3);
+		1..2: A.GiveGroup(0,23,17,28,5,9,3);
+		3..5: begin
+				A.GiveGroup(0,23,17,28,5,9,3);
+				A.GiveGroup(0,23,112,18,5,9,3);
+				A.GiveGroup(0,23,139,36,5,9,3);
+			end;
+		5..8: begin
+				A.GiveGroup(0,23,17,28,5,18,3);
+				A.GiveGroup(0,23,112,18,5,18,3);
+				A.GiveGroup(0,23,139,36,5,18,3);
+			end;
+	end;
+	AddAutoHeros;
+	SetHeroStats(45, 58, 169, 1, 100, 4, hcKarion);
+	aHeros[0].RegPoints := 3;
+	aMessage.aPlayer := 4;
+	AddOvMessage(0, 1);
+	AddOvMessage(1, 150);
+	AddOvMessage(2, 600);
+	AddOvMessage(3, 1250);
+	AddOvMessage(4, 1330);
+	AddOvMessage(5, 1630);
+	AddOvMessage(6, 2030);
+	AddOvMessage(7, 2090);
+	AddOvMessage(8, 4400);
+
+end;

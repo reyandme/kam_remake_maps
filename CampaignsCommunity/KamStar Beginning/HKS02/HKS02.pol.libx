@@ -1,0 +1,38 @@
+MAXID:5
+
+0:[$FFB1B9]Dyron[$ffffff]: Barbarzyñcy nie dadz¹ chwili wytchnienia. A my musimy uzbieraæ zapasy.
+1:Wyhandluj z kupcami z nad przystani potrzebne surowce wyœwietlone w lewym górnym rogu.
+2:[$FFB1B9]Dyron[$ffffff]: Przyby³ mój zwiadowca z Darin. Mia³ spotkaæ siê z wró¿bitk¹, przewiduje przysz³oœæ.|Ju¿ nie raz wspomaga³a mnie swoimi wizjami.
+3:[$FFB1B9]Dyron[$ffffff]: Potajemnie korzystam z us³ug wró¿bitki. Karion nie toleruje nikogo z nadprzyrodzonymi mocami.|Podobno zabi³ raz istotê, ¿yj¹c¹ ju¿ kilkaset lat.
+4:[$FFB1B9]Dyron[$ffffff]: Wiadomoœæ od wró¿bitki: "Nie szukajcie wroga z zewn¹trz, prawdziwy wróg jest wewn¹trz Artidram".
+5:[$FFB1B9]Dyron[$ffffff]: Wiadomoœæ ta daje do myœlenia, przecie¿ w Artidram panuje pokój.
+6:Od tej pory s¹ dostêpne umiejêtnoœci Tyrio: "Handel", "£up",
+7:[$00FF7F]Wyhandluj surowce:[]
+8:[$D2FAFA]%s[] - %d/%d
+9:[$2FFFAD]%s[]
+10:[$D98C9E]Milo[$ffffff] - Zwiadowca : Panie! Z wie¿ dostrzeg³em statki Destylionów przyp³ywaj¹cych od po³udniowej czêœci wyspy!
+11:[$D98C9E]Milo[$ffffff] - Zwiadowca : Mój Panie! Widaæ okrêty rodu Destyliona cumuj¹ce na pó³nocnym brzegu!
+12:[$D98C9E]Milo[$ffffff] - Zwiadowca : Panie mój! Destylioni przyp³ywaj¹ od zachodu!
+13:[$D98C9E]Milo[$ffffff] - Zwiadowca : Panie! Ród Destyliona na horyzoncie od wschodu wyspy!
+
+14:[$FFB1B9]Dyron[$ffffff]: Szybko wszyscy do broni i na pozycje! Musimy byæ gotowi na walkê!
+15:[$FA6B8D]Tyrio[$ffffff]: Zrozumia³em ojcze.
+
+16:[$FA6B8D]Tyrio[$ffffff]: Karion i zjednoczone królestwa wyplenili ród Destyliona z ziem Artidram.|W¹tpiê, ¿e zaatakuj¹ po takiej pora¿ce.
+17:[$FFB1B9]Dyron[$ffffff]: Byæ mo¿e masz racjê, ale zawsze warto byæ przygotowanym na najgorsze.|Tymczasem synu, zadbaj o handel.
+18: GAME : Jest mo¿liwoœæ w³¹czenia, aby wiadomoœci ( dialogi ) by³y wyœwietlane w lewym górnym rogu. Je¿eli chcesz to zrobiæ wpisz komendê /en_overlay true; ( /en_overlay false; aby wy³¹czyæ );
+19: GAME : Aby sprawdziæ umiejêtnoœci bohatera, postaw sygna³ na nim trzy razy, a otrzymasz wiadomoœci z jego specjalnoœciami.
+201:"Handel" - podczas wymiany ryby na inny towar, jedna ryba wraca do najbli¿szego spichrza, 
+202:"£up" - za ka¿dy zniszczony budynek nieprzyjaciela, otrzymujesz 1 deskê oraz 1 kamieñ do spichrza g³ównego,
+203:"Statek" - Mo¿esz wysy³aæ oddzia³y statkiem. Ustaw beacon/sygna³("B") na oddzia³, który chcesz wys³aæ(musi byæ blisko wody) i jeszcze raz sygna³ ("B") w inne miejsce przy brzegu jakiejkolwiek wyspy. Czas rejsu zale¿y od odleg³oœci i iloœci jednostek w oddziale. Maksymalna iloœæ jednostek mieszcz¹ca siê w statku to 16.
+	
+204:"Doœwiadczenie" - Zwiêkszone statystyki od pocz¹tku kampanii.
+
+205:"Uderzenie Kinetyczne" - natychmiastowo g³adzi jednostki wroga dooko³a postaci oraz posiada zwiêkszone obra¿enia przeciwko budynkom. Potrafi zniszczyæ mury, je¿eli Dyron jest pod nimi (dzia³a tylko od pó³nocy)
+
+206:"Schemat BudowaniaI" - po postawieniu budowli, automatycznie ³¹czy je drog¹ z najbli¿szym spichrzem. Mo¿na wy³¹czyæ.
+207:"Budowniczy" - bêd¹c obok budynku w budowie, zaczyna go budowaæ ( o ile s¹ surowcwe ) oraz naprawiaæ je¿eli jest uszkodzony. 
+208:"Pola XL" - postawia znaczniki pól i winnic w wielkoœci 2x2. Mo¿na wy³¹czyæ.
+209:"Jezdnia" - postawia znaczniki drogi 2x2. Mo¿na wy³¹czyæ.
+
+210:"Zbroja Truth'a" - zwiêkszona obrona bohatera

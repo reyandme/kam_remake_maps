@@ -1,0 +1,94 @@
+﻿{$EVENT evtTick:OnTickMess}
+{$EVENT evtMissionStart:OnMissionStartMess}
+type 
+
+	KD_MSGtype = record
+		aID, aTime : Integer;	
+		isOverlay : Boolean;
+	end;
+
+	KD_MSGCollection = record
+		MSG : array of KD_MSGtype;
+		SoundID, aID, lastID,
+		aPlayer: Integer;
+		DoOverlay, doStop : Boolean;
+	end;
+	
+var aMessage : KD_MSGCollection; 
+
+procedure SendMessage;
+var fOverlay : Boolean;
+begin
+	with aMessage do 
+	begin	
+		fOverlay := DoOverlay;
+		with MSG[aID] do 
+		begin
+			If not doStop then 
+				A.StopSound(SoundID);
+			If isOverlay and fOverlay then 
+			begin
+				A.OverlayTextSet(aPlayer, '');
+				A.OverlayTextAppend(aPlayer, '<$'+IntToStr( aID )+ '>');
+				SoundID := A.PlayOgg(aPlayer, IntToStr(aID), 1 );
+				
+				aTimeToReset := S.GameTime + 200;
+			end else
+			begin
+				A.ShowMsg( aPlayer, '<$'+IntToStr( aID )+ '>');
+				SoundID := A.PlayOgg(aPlayer, IntToStr(aID), 1 );
+			end;
+		end;
+		
+		inc(aID);
+		
+	end;
+end;
+
+procedure AddMessage(aID,aTime : Integer);
+var J : Integer;
+begin
+	J := length(aMessage.MSG);
+	SetLength(aMessage.MSG, J + 1);
+	aMessage.MSG[J].aID := aID;
+	aMessage.MSG[J].aTime := aTime;
+	inc(aMessage.lastID);
+
+end;
+procedure AddOvMessage(aID,aTime : Integer);
+var J : Integer;
+begin
+	J := length(aMessage.MSG);
+	SetLength(aMessage.MSG, J + 1);
+	aMessage.MSG[J].aID := aID;
+	aMessage.MSG[J].aTime := aTime;
+	aMessage.MSG[J].isOverlay := true;
+	inc(aMessage.lastID);
+
+end;
+ 
+procedure OnTickMess;
+begin
+	with aMessage do 
+	begin
+		If length(MSG) = 0 then 
+			Exit;
+			
+		If aID = lastID then 
+			Exit;
+		
+		If States.GameTime = MSG[aID].aTime then 
+			SendMessage;
+		If States.GameTime = aTimeToReset then 
+			A.OverlayTextSet(aPlayer, '');
+	
+	end;
+end;
+
+Procedure OnMissionStartMess;
+begin	
+	aMessage.aID := 0;
+	aMessage.aPlayer := PLAYER;
+	aMessage.DoOverlay := CampaignData.ShowOverlay;
+	
+end;

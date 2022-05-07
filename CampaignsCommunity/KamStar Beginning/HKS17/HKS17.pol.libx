@@ -1,0 +1,21 @@
+MAXID:1
+
+0:Malcolm: Uwaga, nadci¹gaj¹ wrogie jednostki. Przygotujmy siê do walki.
+1:Malcolm: £atwizna, postawmy teraz jak najszybciej miasto i wejdŸmy do twierdzy z hukiem.
+2:Od tej pory s¹ dostêpne umiejêtnoœci Malcolma: "Schemat Budowania", "Budowniczy", "Pola XL"; Mog¹ byæ wy³¹czone.
+3:Malcolm: Widzê, ¿e Glorin ma w okó³ wybudowane osady zaopatrzeniowe.|Pozb¹dŸmy siê tych, które bêd¹ nam najbardziej przeszkadza³y.|Na przyk³ad te od z³o¿a z³ota, które s¹ na po³udnie od nas.
+
+201:"Handel" - podczas wymiany ryby na inny towar, jedna ryba wraca do najbli¿szego spichrza, 
+202:"£up" - za ka¿dy zniszczony budynek nieprzyjaciela, otrzymujesz 1 deskê oraz 1 kamieñ do spichrza g³ównego,
+203:"Statek" - Mo¿esz wysy³aæ oddzia³y statkiem. Ustaw beacon/sygna³("B") na oddzia³, który chcesz wys³aæ(musi byæ blisko wody) i jeszcze raz sygna³ ("B") w inne miejsce przy brzegu jakiejkolwiek wyspy. Czas rejsu zale¿y od odleg³oœci i iloœci jednostek w oddziale. Maksymalna iloœæ jednostek mieszcz¹ca siê w statku to 16.
+	
+204:"Doœwiadczenie" - Zwiêkszone statystyki od pocz¹tku kampanii.
+
+205:"Uderzenie Kinetyczne" - natychmiastowo g³adzi jednostki wroga dooko³a postaci oraz posiada zwiêkszone obra¿enia przeciwko budynkom. Potrafi zniszczyæ mury, je¿eli Dyron jest pod nimi (dzia³a tylko od pó³nocy)
+
+206:"Schemat BudowaniaI" - po postawieniu budowli, automatycznie ³¹czy je drog¹ z najbli¿szym spichrzem. Mo¿na wy³¹czyæ.
+207:"Budowniczy" - bêd¹c obok budynku w budowie, zaczyna go budowaæ ( o ile s¹ surowcwe ) oraz naprawiaæ je¿eli jest uszkodzony. 
+208:"Pola XL" - postawia znaczniki pól i winnic w wielkoœci 2x2. Mo¿na wy³¹czyæ.
+209:"Jezdnia" - postawia znaczniki drogi 2x2. Mo¿na wy³¹czyæ.
+
+210:"Zbroja Truth'a" - zwiêkszona obrona bohatera

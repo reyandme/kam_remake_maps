@@ -1,0 +1,38 @@
+MAXID:14
+
+0:Malcolm: Nie przebijemy siê przez mury. Bramê te¿ nie zniszczymy, prêdzej oni zniszcz¹ nas.
+1:Malcolm: Zbierzmy armiê, przynajmniej spowolnimy kregora w realizacji planu
+2:Malcolm: Nadchodz¹ wojska Valtarii, wszyscy w obronê.
+3:[$FFB1B9]Tyrio[$ffffff]: Brama otwiera siê co jakiœ czas. Mo¿e uda nam siê przez ni¹ przejœæ.
+4:Malcolm: To nie mo¿liwe, uda³o mu siê wróciæ i ma na sobie zbrojê Truth'a.
+5:Malcolm: Trwamy ju¿ tu chwilê walcz¹c z nimi. Nie wejdziemy do œrodka.
+6:[$FFB1B9]Dyron[$ffffff]: Ja tam wejdê
+7:Malcolm: Niby jak?
+8:[$FFB1B9]Dyron[$ffffff]: Zapukam
+9:[$FFB1B9]Dyron[$ffffff]: Puk, puk, to ja!
+10:[$EACD87]Baron Ratling[$ffffff]: Niesamowite, ten topór naprawdê istnieje i jest w stanie zniszczyæ nawet Valtaryjsk¹ bramê.
+11:[$09B0F6]Liwiusz[$ffffff]: Myœlalem, ¿e to tylko legenda... Umo¿liwi³ nam przejœcie, do ataku!
+12:[$F609E8]Król Drein[$ffffff]: Jeœli jest to cokolwiek warte, pomogê wam
+13:Malcolm: Drein dosta³ siê przed zamek tajnym przejœciem. To ma sens, tylko on sta³ najbli¿ej Kariona i zna³ jego wszystkie sekrety.
+14:[$FFB1B9]Dyron[$ffffff]: Dobra, sam to zakoñczê
+15:Od tej pory s¹ dostêpne umiejêtnoœci Malcolma: "Schemat Budowania", "Budowniczy", "Pola XL", "Jezdnia"
+16:Od tej pory jest dostêpna umiejêtnoœæ Dyrona: "Uderzenie Kinetyczne"| Umo¿liwia atakowanie wielu jednostek na raz oraz zniszczyæ mur jeœli Dyron bêdzie pod nim ( dzia³a tylko od pó³nocy ) . 
+17:[$FFB1B9]Dyron[$ffffff]: Zostawiamy cywili! Zajmujemy siê tylko armi¹! Jak jakaœ wie¿a obronna bêdzie wam przeszkadzaæ, zniszcie j¹!!!
+18:[$FFB1B9]Dyron[$ffffff]: Kregora zostawcie mnie.
+19:Aby wygraæ misjê wejdŸ Dyronem do œrodka stolicy, na g³ówny dziedziniec, pod Warowniê (warownia ta nie mo¿e byæ zniszczona).
+20:Malcolm: Ich armia nie wychodzi przez bramê. Musz¹ to robiæ przez tajne tunele, które zna kilka osób. Musimy mieæ oczy otwarte.
+
+201:"Handel" - podczas wymiany ryby na inny towar, jedna ryba wraca do najbli¿szego spichrza, 
+202:"£up" - za ka¿dy zniszczony budynek nieprzyjaciela, otrzymujesz 1 deskê oraz 1 kamieñ do spichrza g³ównego,
+203:"Statek" - Mo¿esz wysy³aæ oddzia³y statkiem. Ustaw beacon/sygna³("B") na oddzia³, który chcesz wys³aæ(musi byæ blisko wody) i jeszcze raz sygna³ ("B") w inne miejsce przy brzegu jakiejkolwiek wyspy. Czas rejsu zale¿y od odleg³oœci i iloœci jednostek w oddziale. Maksymalna iloœæ jednostek mieszcz¹ca siê w statku to 16.
+	
+204:"Doœwiadczenie" - Zwiêkszone statystyki od pocz¹tku kampanii.
+
+205:"Uderzenie Kinetyczne" - natychmiastowo g³adzi jednostki wroga dooko³a postaci oraz posiada zwiêkszone obra¿enia przeciwko budynkom.
+
+206:"Schemat BudowaniaI" - po postawieniu budowli, automatycznie ³¹czy je drog¹ z najbli¿szym spichrzem. Mo¿na wy³¹czyæ.
+207:"Budowniczy" - bêd¹c obok budynku w budowie, zaczyna go budowaæ ( o ile s¹ surowcwe ) oraz naprawiaæ je¿eli jest uszkodzony. 
+208:"Pola XL" - postawia znaczniki pól i winnic w wielkoœci 2x2. Mo¿na wy³¹czyæ.
+209:"Jezdnia" - postawia znaczniki drogi 2x2. Mo¿na wy³¹czyæ.
+
+210:"Zbroja Truth'a" - zwiêkszona obrona bohatera

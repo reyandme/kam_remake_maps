@@ -1,0 +1,170 @@
+
+//const PLAYER = 0;
+{$EVENT evtTick:OnTickS}
+{$EVENT evtBeacon:OnBeaconS}
+
+
+type
+	KD_SentGroup = record
+		aID : integer;
+		aPosTo, aPosFrom : TKMPoint;
+		aColumns,aMembers, aDir, aType : integer;
+		aTimeToArrive : Integer;
+		aTime : Integer;
+		ReadyToSend, Sended, Arrived : Boolean;
+	end;	
+
+var SendedGroups : array of KD_SentGroup;
+	GroupSelected : integer;
+	
+	
+procedure AddGroupToSend(aGroup : Integer);
+var J, aLeader : Integer;
+begin
+	aLeader := S.GroupMember(aGroup, 0);	
+	
+	J := length(SendedGroups);
+	SetLength(SendedGroups, J + 1);
+	
+	with SendedGroups[J] do 
+	begin
+		aID := aGroup;
+		aMembers := S.GroupMemberCount(aGroup);
+		aColumns := S.GroupColumnCount(aGroup);
+		
+		aPosFrom := S.UnitPosition(aLeader);
+		aDir := S.UnitDirection(aLeader);
+		aType := S.UnitType(aLeader);
+	end;
+end;	 
+procedure ClearArrivedGroups;
+var J, I : Integer;
+	newArray : array of KD_SentGroup;
+begin
+	for I := 0 to high(SendedGroups) do 
+		If not SendedGroups[I].Arrived then 
+		begin
+			J := length(newArray);
+			SetLength(newArray, J + 1);
+			newArray[J] := SendedGroups[I];
+		end;
+	if length(newArray) > 0 then 
+		SendedGroups := newArray;
+end;
+
+
+procedure SetSecPos(aPos2 : TKMPoint);
+var J, aDistance, aTimeC : Integer;
+begin
+
+	J := high(SendedGroups);
+
+	with SendedGroups[J] do 
+	begin
+		aPosTo := aPos2;
+		aDistance := U.CeilTo(
+			sqrt(   ( U.Power(  (aPosTo.X-aPosFrom.X), 2)   +   U.Power(  (aPosTo.Y-aPosFrom.Y), 2) )    
+			),1);
+		aTimeC := aDistance div 12;
+		aTimeC := aTimeC * (aMembers);
+		If aTimeC <= 0 then 
+			aTimeC := 1;
+		aTimeC := aTimeC * 10;
+		aTimeC := U.FloorTo(aTimeC, 100);
+		aTimeToArrive := aTimeC ; 
+		
+		aTime := U.FloorTo(S.GameTime, 100) + aTimeC;
+		
+		ReadyToSend := true;
+	end;
+end;
+function CheckTileAround(X,Y : Integer) : Boolean;
+begin
+	result := (States.MapTileType(X,Y-8)= 192)
+	or(States.MapTileType(X,Y-8)= 196)
+	or(States.MapTileType(X,Y+8)= 192)
+	or(States.MapTileType(X,Y+8)= 196)
+	or(States.MapTileType(X+8,Y)= 192)
+	or(States.MapTileType(X+8,Y)= 196)
+	or(States.MapTileType(X-8,Y)= 192)
+	or(States.MapTileType(X-8,Y)= 196);
+end;
+
+
+Procedure OnBeaconS(Player,X,Y:Integer);
+begin
+	If (GroupSelected=0) then
+	begin	
+		if (States.GroupAt(X,Y) <>-1)and (States.GroupOwner(States.GroupAt(X,Y)) = PLAYER) then 
+		begin
+			If CheckTileAround(X,Y) then 
+			begin
+				GroupSelected := States.GroupAt(X,Y);
+				
+				If UnitIsHero(GroupSelected) then 
+				begin
+					Actions.ShowMSg(-1, '<$105>');
+					GroupSelected := 0;
+					Exit;
+				end;
+				
+				If S.GroupMemberCount(GroupSelected) > 16 then 
+				begin
+					Actions.ShowMSg(-1, '<$106>');
+					GroupSelected := 0;
+					Exit;
+				end;
+				
+				AddGroupToSend(GroupSelected);
+				
+				Actions.ShowMSg(-1, '<$101>');
+				CanSelectHero := false;
+			end;
+		end;
+	end else 
+	If (States.MapTilePassability(X,Y,1)) and (States.GroupAt(X,Y) =-1) then 
+		If CheckTileAround(X,Y) then 	
+		begin
+			SetSecPos(U.KMPoint(X,Y));
+			
+			Actions.ShowMSgFormatted(-1, '<$103>', [U.TimeToString(   SendedGroups[High(SendedGroups)].aTimeToArrive   )]);
+			GroupSelected := 0;
+			CanSelectHero := true;
+		end;
+end;
+
+
+Procedure SpawnGroups;
+var I, J:Integer;
+begin
+	J := Length(SendedGroups);
+	for I := 0 to high(SendedGroups) do 
+		With SendedGroups[I] do 
+		If Arrived then 
+			Continue
+		else
+		If Sended then 
+		begin
+			If S.GameTime >= aTime then 
+			begin
+				A.GiveGroup(PLAYER, aType, aPosTo.X, aPosTo.Y, aDir, aMembers, aColumns);
+				Arrived := true;
+				A.ShowMsgGoto(PLAYER, aPosTo.X, aPosTo.Y, '<$102>');
+			end;
+		end else
+		If ReadyToSend then
+		begin
+			Sended := true;
+			A.GroupKillAll(aID, true);
+		end;
+end;
+
+
+procedure OnTickS;
+begin
+	if States.GameTime MOD 3000 = 0 then
+		ClearArrivedGroups;
+		
+	if States.GameTime MOD 100 = 0 then
+		SpawnGroups;
+end;

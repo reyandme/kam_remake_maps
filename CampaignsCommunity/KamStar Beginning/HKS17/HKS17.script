@@ -1,0 +1,149 @@
+Const PLAYER = 0;
+{$DEFINE MALCOLM}
+
+
+{$I HKS_Functions.script}
+
+procedure TownHallEquip(aHouse, aType, aCount : Integer);
+var I : Integer;
+	aGCount, aCost : integer;
+	aPos : TKMPoint;
+	
+begin
+	aPos := S.HousePosition(aHouse);
+	case aType of 
+		14 : aCost := 2; 
+		24 : aCost := 1;
+		27  :aCost := 3;
+	end;	
+	for I := 0 to aCount - 1 do 
+	begin
+		aGCount := S.HouseResourceAmount(aHouse,7);
+		If aGCount < aCost then 
+			Exit;
+			
+		//A.HouseTakeWaresFrom(aHouse, 7, aCost);//not working
+		
+		A.GiveGroup(S.HouseOwner(aHouse), aType, aPos.X, aPos.Y + 1, 4, 1, 1);
+	
+	end;
+
+end;
+
+
+procedure EquipFromTH(aHouse : Integer);
+var aChance : Single;
+begin
+
+	If S.HouseType(aHouse) <> 18 then
+		Exit;
+		
+	If aHouse = -1 then
+		Exit;
+		
+	If S.StatArmyCount(S.HouseOwner(aHouse)) >= S.AISoldiersLimit(S.HouseOwner(aHouse)) then 
+		Exit;
+	aChance := S.KamRandom;
+	If aChance < 0.5 then 
+		TownHallEquip(aHouse, 14, 3)
+	else
+		TownHallEquip(aHouse, 24, 3);
+end;
+
+
+procedure OnTick;
+var HType, aHouse:Integer;
+begin		
+	OnTickHero;
+	
+	If S.GameTime mod 600 = 0 then 
+	begin
+		MultiAddStoneToTowers([3,4,5])
+		MultiUnlimitedDeposits([4,6]);
+		EquipFromTH(S.HouseAt(132, 4) );
+	end;
+	
+	
+	
+	If States.GameTime mod 10 = 0 then 
+	begin
+		//If not aHeros[0].UseSkills then 
+		//	Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := S.HouseAt(aHeros[0].Pos.X, aHeros[0].Pos.Y - 1 );	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+			Actions.HouseAddBuildingProgress(aHouse);		
+			
+			If States.HouseIsComplete(aHouse)
+			and (States.HouseDamage(aHouse) < States.HouseTypeMaxHealth(HType)-5) then 
+				Actions.HouseAddRepair(aHouse , 5);
+	end;
+end;
+
+
+procedure AddGroupsFromPrevious;
+var I, Top, Left : Integer;
+begin
+	Left := 23;
+	Top := 31;
+	with CampaignData.HKS16 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+		If aWarriorsCount[I] > 0 then 
+		begin
+			A.GiveGroup(PLAYER, I, Left, Top, 2, aWarriorsCount[I] div 2, 5);
+			
+			If Top <= 8 then 
+			begin
+				Top := 31;
+				Left := Left - 5;
+			end else
+			begin
+				Top := Top - 6;
+			end;
+				
+		end;
+	
+	end;
+
+end;
+
+procedure OnMissionStart;
+var
+	Count :array of Integer;
+	dMod : Byte;
+	I : Integer;
+begin
+	SetDMod;
+	Count:= [300,300,150,150,150,1,1];	
+	dMod:= byte(States.MissionDifficulty)-1
+	for I := 2 to 6 do 
+	begin
+		A.AIEquipRate(I,0,Count[dMod]);
+		A.AIEquipRate(I,1,Count[dMod]);
+	end;
+	
+	AddGroupsFromPrevious;
+	
+	AddOvMessage(0, 20);
+	AddOvMessage(1, 1200);
+	AddMessage(2, 1700);
+	AddOvMessage(3, 2400);
+	
+	FillPlayerHouses([1], true);
+	
+	AddAutoHeros;
+	SetHeroStats(17, 11, 55, 4, 2, 0, hcMalcolm);
+	
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+end;

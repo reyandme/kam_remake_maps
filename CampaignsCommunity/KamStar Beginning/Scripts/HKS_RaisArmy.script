@@ -1,0 +1,78 @@
+
+function GetOffset(aDir, aGroup : Integer) : TKMPoint;
+var aRaws : Integer;
+begin
+	aRaws := S.GroupMemberCount(aGroup) div S.GroupColumnCount(aGroup);
+	
+	case aDir of 
+		0 : Result := U.KMPoint(0, +aRaws);
+		1 : Result := U.KMPoint(-aRaws, +aRaws);
+		2 : Result := U.KMPoint(-aRaws, 0);
+		3 : Result := U.KMPoint(-aRaws, -aRaws);
+		4 : Result := U.KMPoint(0, -aRaws);
+		5 : Result := U.KMPoint(aRaws, -aRaws);
+		6 : Result := U.KMPoint(aRaws, 0);
+		7 : Result := U.KMPoint(aRaws, aRaws);
+	end;
+
+end;
+
+Procedure DecGroup(aGroup, aCNT : Integer);
+var aGCount, I: integer;
+begin		
+		
+	aGCount := S.GroupMemberCount(aGroup)-1;
+	
+	for I := aGCount downto aGCount + aCNT + 1 do	
+		A.UnitKill(S.GroupMember(aGroup, I), true);
+		
+end;
+
+Procedure RaisGroup(aGroup, aCNT : Integer);
+var aDir, aType, aLeader, aOwner : integer;
+	anOffset, aPos : TKMPoint;
+begin
+		
+	If aGroup <= 0 then 
+		Exit;
+		
+	If aCNT < 0 then 
+	begin
+		DecGroup(aGroup, aCNT);
+	end else
+	begin
+		aLeader := S.GroupMember(aGroup, 0);
+		aDir := S.UnitDirection(aLeader);
+		aPos := S.UnitPosition(aLeader);
+		aType := S.UnitType(aLeader);
+		anOffset := GetOffset(aDir, aGroup);
+		aOwner := S.UnitOwner(aLeader);
+		A.GroupOrderLink( A.GiveGroup(aOwner, aType, aPos.X + anOffset.X, aPos.Y + anOffset.Y, aDir, aCNT, S.GroupColumnCount(aGroup)  ), aGroup ) ;
+	end;
+end;
+
+
+Procedure RaisPlayerArmy(aPlayer, aCNT : Integer);
+var I : integer;
+	anArmy : array of Integer;
+begin
+	If aCNT = 0 then 
+		Exit;
+		
+	anArmy := S.PlayerGetAllGroups(aPlayer);
+	for I := 0 to high(anArmy) do 
+		If S.GroupMemberCount(anArmy[I]) > 1 then 
+			RaisGroup(anArmy[I], aCNT);
+end;
+
+
+Procedure RaisMultiplePlayerArmy(aPlayers : array of Integer; aCNT : Integer);
+var I : integer;
+begin		
+	If Length(aPlayers) = 0 then 
+		Exit;
+		
+		
+	for I := 0 to high(aPlayers) do 
+		RaisPlayerArmy(aPlayers[I], aCNT);
+end;

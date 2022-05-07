@@ -1,0 +1,115 @@
+const PLAYER = 0;
+
+{$DEFINE TYRIO}
+
+{$I HKS_Functions.script}
+
+Procedure OnMarketTrade(aMarket: Integer; aFrom: Integer;  aTo: Integer);
+begin
+	if (States.HouseOwner(aMarket) = 0) and (aFrom = 27) and not (aTo = 1) then
+		Actions.GiveWares(0,aFrom,1);
+end;
+
+Procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+	if (aDestroyerIndex = 0) and (States.HouseOwner(aHouse) > 0) then
+	begin
+		Actions.GiveWares(aDestroyerIndex,1,1);
+		Actions.GiveWares(aDestroyerIndex,2,1);
+	end;
+end;
+
+Procedure OnUnitAttacked(aUnit,aAttacker : Integer);
+begin
+	If S.UnitOwner(aUnit) = 4 then 
+		A.PlayerDefeat(PLAYER);
+end;
+
+procedure OnUnitAfterDied(aType,aOwner,X,Y : Integer);
+var aPos : TKMPoint;
+begin
+	If not (aOwner in [0, 4]) then 
+	begin
+		If aType < 14 then 
+		begin
+			A.PlayerDefeat(0);
+			Exit;
+		end;
+		If S.KamRandom < 0.5 then 
+			Exit;
+		aPos := S.AIStartPosition(aOwner);
+		A.GiveUnit(aOwner, 0, aPos.X, aPos.Y, 4);
+	end;
+end;
+
+
+procedure OnTick;
+begin
+	OnTickHero
+	if States.GameTime MOD 1200 = 0 then 
+		Actions.GiveAnimal(31,149,47);
+		
+end;
+
+procedure OnMissionStart();
+var dHMod:byte;
+	Count:Array of Integer;
+	aWarCount : Integer;
+begin
+	Count:= [1,1,2,2,2,3,3]
+	dHMod:= byte(States.MissionDifficulty)-1;
+	
+	with CampaignData.HKS11 do 
+	begin
+		aWarCount := HorseCount div 2;
+		if (aWarCount>5) then 
+		begin 
+			Actions.GiveGroup(0,22,38,28,2,aWarCount/Count[dHMod],6); 
+			Actions.GiveGroup(0,22,36,47,2,aWarCount/Count[dHMod],6); 
+		end else
+		begin 
+			Actions.GiveGroup(0,22,38,28,2,16,8); 
+			Actions.GiveGroup(0,22,36,47,2,16,8); 
+		end;
+	
+	end;
+	
+	
+	
+	AddOvMessage(0, 20);
+	AddOvMessage(1, 80);
+	AddOvMessage(6, 3000);
+	
+	AddAutoHeros;
+	SetHeroStats(18, 15, 67, 6, 8, 3, hcTyrio);
+	case dHMod of 
+	0 : begin
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(107, 6), U.KMPoint(129, 10) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(171, 12), U.KMPoint(205, 33) );
+		end;
+	3 : begin
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(107, 6), U.KMPoint(129, 10) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(171, 12), U.KMPoint(205, 33) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(79, 6), U.KMPoint(123, 65) );
+		end;
+	6 : begin
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(107, 6), U.KMPoint(129, 10) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(171, 12), U.KMPoint(205, 33) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(79, 6), U.KMPoint(123, 65) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(212, 67), U.KMPoint(43, 74) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(194, 10), U.KMPoint(54, 24) );
+			CreateNewPatrol(4,20,12, 4, U.KMPoint(206, 9), U.KMPoint(3, 4) );
+		end;
+	end;
+end;
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS12 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+		dec(aWarriorsCount[22]);
+	end;
+end;

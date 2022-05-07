@@ -1,0 +1,175 @@
+const PLAYER = 0;
+
+{$DEFINE MALCOLM}
+
+{$I HKS_Functions.script}
+ 
+ 
+var HuesesBuilt : array[0..29] of Integer;
+	AttackTime : Integer;
+	AttackDelay : Integer;
+function GetRandomPositionsInRadius(NumberOfPositions, Radius : Integer; Pos : TKMPoint) : array of TKMPoint;
+var I, J : integer;
+	aX,aY : Integer;
+begin
+	
+	for I := 0 to NumberOfPositions - 1 do
+	begin
+	
+		aX := S.KaMRandomI( (Radius * 2) + 1 ) - Radius + Pos.X; 
+		aY := S.KaMRandomI( (Radius * 2) + 1 ) - Radius + Pos.Y; 
+		J := Length(Result);
+		SetLength(Result, J + 1);
+		Result[J].X := aX;
+		Result[J].Y := aY;
+	end;
+
+end;
+
+
+function GetHousesToBuild(aType : Integer) : Integer;
+begin
+	Result := 0;
+	case aType of 
+	0 : Result := 2;
+	1 : Result := 3;
+	2 : Result := 2;
+	3 : Result := 7;
+	4 : Result := 3;
+	5 : Result := 3;
+	9 : Result := 3;
+	10 : Result := 2;
+	14 : Result := 2;
+	15 : Result := 2;
+	19 : Result := 1;
+	20 : Result := 1;
+	21 : Result := 1;
+	25 : Result := 1;
+	28 : Result := 3;
+
+	end; 
+end; 
+ 
+procedure ShoMissionObjectives(aPlayer : Integer);
+var I : Integer;
+	canWin : Boolean;
+begin
+	canWin := true;
+	A.OverlayTextAppend(aPlayer, '|<$3>|');
+	for I := 0 to 29 do 
+		If GetHousesToBuild(I) > 0 then 
+			If HuesesBuilt[I] >= GetHousesToBuild(I) then 
+				A.OverlayTextAppend(aPlayer, '[$2FFFAD]' + S.HouseTypeName(I) + '[$ffffff]|' )
+			else			
+			begin
+				A.OverlayTextAppend(aPlayer, '[$D2FAFA]' + S.HouseTypeName(I) + '[$ffffff] : ' + IntToStr( HuesesBuilt[I] ) + '/' + IntToStr(GetHousesToBuild(I) ) + '|' );
+				canWin := false;
+			end;
+	If canWin then 
+		A.PlayerWin([PLAYER], true);
+end;
+
+Procedure OnHousePlanPlaced(aPlayer: Integer; X: Integer; Y: Integer; aType: Integer);
+begin
+	If not aHeros[0].UseSkills then 
+		Exit;
+	if (aPlayer = PLAYER)then 
+		Actions.PlanConnectRoad(0,X,Y+1,States.HousePositionX(States.ClosestHouse(0,X,Y,11)),States.HousePositionY(States.ClosestHouse(0,X,Y,11))+1,false);
+end;
+
+Procedure OnHouseBuilt(aHouse : Integer);
+var aType : Integer;
+begin
+	aType := S.HouseType(aHouse);
+	inc(HuesesBuilt[aType]);
+end;
+
+procedure DoMainAttack(aPos : TKMPoint; aDir, aCount : Integer);
+var I : Integer;
+	aPoses : array of TKMPoint;
+	aRandomS : Single;
+	
+begin
+	aPoses := GetRandomPositionsInRadius(aCount, 10, aPos);
+	if Length(aPoses) = 0 then 
+		Exit;
+	
+	for I := 0 to high(aPoses) do
+	begin
+		aRandomS := S.KaMRandom;
+		
+		If aRandomS < 0.2 then 
+			A.GiveGroup(1, 25, aPoses[I].X, aPoses[I].Y, aDir, 8 + S.KaMRandomI(5), 4)
+		else
+		If aRandomS < 0.5 then 
+			A.GiveGroup(1, 27, aPoses[I].X, aPoses[I].Y, aDir, 8 + S.KaMRandomI(5), 4)
+		else
+			A.GiveGroup(1, 24, aPoses[I].X, aPoses[I].Y, aDir, 8 + S.KaMRandomI(5), 4);
+	
+	end;
+end;
+
+ 
+procedure OnTick;
+var HType, aHouse:Integer;
+begin
+	OnTickHero;	
+	
+	If S.GameTime = AttackTime then 
+	begin
+		AttackTime := S.GameTime + S.KamRandomI(6000);
+		Actions.GiveGroup (1, 24, 32, 6, 6, States.KamRandomI(5) + 1, 2 );
+		Actions.GiveGroup (1, 24, 10, 92, 6, States.KamRandomI(5) + 1, 2 );
+		Actions.GiveGroup (1, 24, 140, 56, 6, States.KamRandomI(5) + 1, 2);
+	end;
+	If S.GameTime = 22300 + AttackDelay then 
+		DoMainAttack(U.KMPoint(134,59),6,12);
+	
+	
+	
+	If States.GameTime mod 10 = 0 then 
+	begin
+		ShoMissionObjectives(PLAYER);
+		If not aHeros[0].UseSkills then 
+			Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := S.HouseAt(aHeros[0].Pos.X, aHeros[0].Pos.Y - 1 );	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+			Actions.HouseAddBuildingProgress(aHouse);		
+			
+		If States.HouseIsComplete(aHouse)
+		and (States.HouseDamage(aHouse) < States.HouseTypeMaxHealth(HType)-5) then 
+			Actions.HouseAddRepair(aHouse , 5);
+	end;
+end;
+
+Procedure OnMissionStart;
+begin
+	AddOvMessage(0, 10);
+	AddOvMessage(1, 5800);
+	AddOvMessage(4, 22000);
+	
+	AttackTime := 6000;
+	
+	AddAutoHeros;
+	SetHeroStats(12, 7, 33, 3, 0, 0, hcMalcolm);
+	
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+	AttackDelay := 10;
+	Case States.MissionDifficulty() of
+		0: AttackDelay := 10;
+		1..2: AttackDelay := 12000;
+		3..5: AttackDelay := 3600;
+		5..7: AttackDelay := -3600;
+	end;
+end;

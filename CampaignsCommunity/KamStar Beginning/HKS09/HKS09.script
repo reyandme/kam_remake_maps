@@ -1,0 +1,11 @@
+
+const PLAYER = 0;
+
+{$I HKS_Functions.script}
+
+procedure OnMissionStart();
+begin
+	AddOvMessage(1, 10);
+	//AddMessage(1, 100);
+	AddOvMessage(2, 1800);
+end;

@@ -1,0 +1,59 @@
+const PLAYER = 0;
+
+{$DEFINE MALCOLM}
+
+{$I HKS_Functions.script}
+ 	   
+procedure OnTick;
+begin	
+	OnTickHero;
+	
+	If S.GameTime = 22500 then 
+	begin
+		A.GiveGroup(2, 15, 32, 139, 0, 12, 4);
+		A.GiveGroup(2, 15, 25, 136, 2, 12, 4);
+		A.GiveGroup(2, 17, 25, 139, 1, 12, 4);
+		
+		A.GiveGroup(2, 14, 38, 133, 7, 12, 4);
+		A.GiveGroup(2, 14, 34, 129, 4, 12, 4);
+	
+	end;
+	If S.GameTime = 26500 then 
+	begin
+		A.GiveGroup(2, 15, 32, 139, 0, 12, 4);
+		A.GiveGroup(2, 15, 25, 136, 2, 12, 4);
+		A.GiveGroup(2, 17, 25, 139, 1, 12, 4);
+		
+		A.GiveGroup(2, 14, 38, 133, 7, 12, 4);
+		A.GiveGroup(2, 14, 34, 129, 4, 12, 4);
+	
+	end;
+
+end;
+
+
+procedure OnMissionStart;
+var aRCNT : Integer;
+begin
+	Case States.MissionDifficulty() of
+		0: aRCNT := 0;
+		1..2: aRCNT := -4;
+		3..5: aRCNT := 0;
+		5..7: aRCNT := 6;
+	end;
+	
+	AddOvMessage(0, 10);
+	AddOvMessage(3, 150);
+	AddOvMessage(1, 19800);
+	AddOvMessage(2, 19850);
+	
+	
+	AddAutoHeros;
+	SetHeroStats(13, 8, 40, 3, 1, 0, hcMalcolm);
+	
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+	RaisPlayerArmy(1, aRCNT);
+	
+	FeedRandomPlayers([1], true,true);
+end;

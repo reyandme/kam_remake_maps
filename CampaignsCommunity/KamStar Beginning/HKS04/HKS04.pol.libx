@@ -1,0 +1,28 @@
+MAXID:3
+
+0:Malcolm: Natknêliœmy siê na wioskê barona Ratlinga. Nie jest chêtny by do³¹czyæ do rebelii,|jednak te¿ odmówi³ Kregorowi. Postarajmy siê pokonaæ jego oddzia³y i porozmawiaæ z nim w cztery oczy.
+1:Malcolm: Baron siê nie patyczkuje, idzie na w³asn¹ rêkê.|Jego dwa oddzia³y kieruj¹ siê na nasze wie¿e, musimy je zatrzymaæ.
+2:Malcolm: Wiadomoœæ od Dyrona: |"Wyruszam po legendarn¹ zbrojê Truth'a.|Mo¿e to i tylko legenda, jednak ja wierzê, ¿e chocia¿ odrobinê jest prawdziwa."
+3:Od tej pory s¹ dostêpne umiejêtnoœci Malcolma: "Schemat Budowania", "Budowniczy".|| Mo¿na w³¹czyæ/wy³¹czyæ jego umiejêtnoœci stawiaj¹c na bohaterze sygna³(beacon "B").   
+4:Malcolm: A ten jak zawsze... Wierzy w bajki, które opowiada³ mu jego ojciec.|No dobrze, nie ma go... Najwa¿niejsze, ¿e chocia¿ Tyrio nam pomaga.
+5:[$BF4F40]Stra¿nik[$ffffff]: Malcolmie, król Dyron przysy³a wiadomoœæ.
+
+6:GAME : W prawie ka¿dej misji otrzymujesz bohatera. Jest to specjalna jednostka, która ma swoje w³asne statystyki oraz nazwê. Bêd¹ one wyœwietlane w lewym górnym rogu.| Ka¿dy bohater posiada specjalne umiejêtnoœci, o których mo¿esz przeczytaæ w g³ównym folderze kampanii 'KamStar the Beginning'. -->
+7:GAME : Niektóre z nich mo¿na wy³¹czyæ je¿eli bêd¹ przeskadzaæ. Wy³¹cza/w³¹cza siê je stawiaj¹c sygna³(B) na bohatera. Je¿eli nie mo¿esz znaleŸæ bohatera postaw na mapie sygna³, a gra ciê automatycznie do niego przekieruje.
+
+8:GAME : Mo¿na wy³¹czyæ umiejêtnoœci osobno poprzez komendy w czacie. Komenda /en_skill <ID umiejêtnoœci> <true/false> mo¿e w³¹czyæ i wy³¹czyæ dan¹ umiejêtnoœæ. Np. /en_skill 1 false, wy³¹czy stawianie planów dróg po postawieniu planu budynku. 
+9:GAME : Je¿eli potrzebujesz pomocy z komendami, wpisz w czacie /help, a otrzymasz wiadomoœci ze wszystkimi mo¿liwymi komendami.
+201:"Handel" - podczas wymiany ryby na inny towar, jedna ryba wraca do najbli¿szego spichrza, 
+202:"£up" - za ka¿dy zniszczony budynek nieprzyjaciela, otrzymujesz 1 deskê oraz 1 kamieñ do spichrza g³ównego,
+203:"Statek" - Mo¿esz wysy³aæ oddzia³y statkiem. Ustaw beacon/sygna³("B") na oddzia³, który chcesz wys³aæ(musi byæ blisko wody) i jeszcze raz sygna³ ("B") w inne miejsce przy brzegu jakiejkolwiek wyspy. Czas rejsu zale¿y od odleg³oœci i iloœci jednostek w oddziale. Maksymalna iloœæ jednostek mieszcz¹ca siê w statku to 16.
+	
+204:"Doœwiadczenie" - Zwiêkszone statystyki od pocz¹tku kampanii.
+
+205:"Uderzenie Kinetyczne" - natychmiastowo g³adzi jednostki wroga dooko³a postaci oraz posiada zwiêkszone obra¿enia przeciwko budynkom. Potrafi zniszczyæ mury, je¿eli Dyron jest pod nimi (dzia³a tylko od pó³nocy)
+
+206:"Schemat BudowaniaI" - po postawieniu budowli, automatycznie ³¹czy je drog¹ z najbli¿szym spichrzem. Mo¿na wy³¹czyæ.
+207:"Budowniczy" - bêd¹c obok budynku w budowie, zaczyna go budowaæ ( o ile s¹ surowcwe ) oraz naprawiaæ je¿eli jest uszkodzony. 
+208:"Pola XL" - postawia znaczniki pól i winnic w wielkoœci 2x2. Mo¿na wy³¹czyæ.
+209:"Jezdnia" - postawia znaczniki drogi 2x2. Mo¿na wy³¹czyæ.
+
+210:"Zbroja Truth'a" - zwiêkszona obrona bohatera

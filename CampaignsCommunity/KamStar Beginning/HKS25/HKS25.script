@@ -1,0 +1,612 @@
+Const PLAYER = 0;
+
+type 
+	KD_GatesMode = (gmOpening,gmClosing, gmClosed, gmDestroyed);
+	
+	KD_Gate = record
+		aMode : KD_GatesMode;
+		OpenTime, GatePhase, aDelay, aDef : Integer;		
+	end;
+	
+	
+{$DEFINE MALCOLM}
+
+{$I HKS_Functions.script}
+
+
+var	gGate : KD_Gate;
+	aDyron : KD_GroupStats;
+	BigAttackSent : Boolean;
+//constant varables
+	DyronArrival, TunnelAttacks, TunnelDivCount, TunnelMade : Integer;
+
+procedure Bomb(Mode, X, Y: Integer); //makes "bombs" (rogues/barbs) explode - when they are hit by someone, they kill themselves and everyone in specified range
+var ki, pi: Integer;
+begin
+  case Mode of
+  0: begin
+    for ki := 0 to 2 do //rogue bomb - bombs only enemy targets in small range
+      for pi := 0 to 2 do
+	if (States.GroupAt(X-1+ki, Y-1+pi) <> -1) and (States.GroupOwner(States.GroupAt(X-1+ki, Y-1+pi) ) > 3) then 
+	begin
+	  Actions.UnitKill(States.UnitAt(X-1+ki, Y-1+pi), False);
+	end;
+  end;
+  1: 
+	begin
+		for ki := 0 to 8 do
+			for pi := 0 to 8 do
+			if (States.UnitAt(X-4+ki, Y-4+pi) <> -1) and (States.UnitOwner(States.UnitAt(X-4+ki, Y-4+pi) ) > 3)then begin
+			  Actions.UnitKill(States.UnitAt(X-4+ki, Y-4+pi), False);
+			end;
+		end;
+	end;
+end;
+
+procedure Brama;
+var i,l : Integer;
+begin
+	for i := 111 to 116 do
+		for l := 177 to 180 do
+			begin			
+				Actions.MapTileSet(i,l,35,2);
+				Actions.MapTileObjectSet(i,l,255);
+			end;
+	Actions.MapTileSet(111,177,187,1);
+	Actions.MapTileSet(115,177,187,2);
+	Actions.MapTileSet(109,171,184,3);//
+	Actions.MapTileSet(114,173,187,0);
+	Actions.MapTileSet(116,178,187,1);
+	Actions.MapTileSet(116,178,187,2);
+	Actions.MapTileSet(110,174,187,3);
+	Actions.MapTileSet(113,179,187,0);
+	Actions.MapTileSet(110,177,191,1);
+	Actions.MapTileSet(114,177,191,2);
+	Actions.MapTileSet(111,171,188,2);//
+	Actions.MapTileSet(116,172,191,2);
+	Actions.MapTileSet(116,177,191,2);
+	Actions.MapTileSet(112,176,167,0);
+	Actions.MapTileSet(118,175,167,0);
+	Actions.MapTileSet(113,177,167,1);
+	Actions.MapTileSet(109,175,167,1);
+	Actions.MapTileSet(111,176,167,2);
+	Actions.MapTileSet(112,175,167,2);
+	Actions.MapTileSet(115,176,167,2);
+end;
+
+procedure BramaEnemy(Mode:Integer);
+var i,l : Integer;
+begin
+	Case Mode of
+		0: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,S.KamRandomI(4))
+			end;
+			for l := 0 to 9 do begin
+				Actions.MapTileSet(109+l,179,206,0)
+				Actions.MapTileSet(109+l,178,206,2)
+			end;
+		end;
+		1: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,0)
+			end;
+			for l := 0 to 1 do begin
+				Actions.MapTileSet(109+l,179,206,0)
+				Actions.MapTileSet(117+l,179,206,0)
+				Actions.MapTileSet(111+l,177,206,2)
+				Actions.MapTileSet(115+l,177,206,2)
+				Actions.MapTileSet(109,178,206,2)
+				Actions.MapTileSet(118,178,206,2)
+				Actions.MapTileSet(112,178,206,0)
+				Actions.MapTileSet(115,178,206,0)
+				Actions.MapTileSet(116,179,202,0)
+				Actions.MapTileSet(117,178,202,0)
+				Actions.MapTileSet(116,178,202,2)
+				Actions.MapTileSet(117,177,202,2)
+				Actions.MapTileSet(110,177,202,1)
+				Actions.MapTileSet(111,178,202,1)
+				Actions.MapTileSet(110,178,202,3)
+				Actions.MapTileSet(111,179,202,3)
+			end;
+		end;
+		2: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,0)
+			end;
+			for l := 0 to 1 do begin
+				Actions.MapTileSet(109+l,179,206,0)
+				Actions.MapTileSet(117+l,179,206,0)
+				Actions.MapTileSet(111+l,177,206,2)
+				Actions.MapTileSet(115+l,177,206,2)
+				Actions.MapTileSet(109,178,206,2)
+				Actions.MapTileSet(118,178,206,2)
+				Actions.MapTileSet(112,178,206,0)
+				Actions.MapTileSet(115,178,206,0)
+				Actions.MapTileSet(116,179,202,0)
+				Actions.MapTileSet(117,178,202,0)
+				Actions.MapTileSet(116,178,202,2)
+				Actions.MapTileSet(117,177,202,2)
+				Actions.MapTileSet(110,177,202,1)
+				Actions.MapTileSet(111,178,202,1)
+				Actions.MapTileSet(110,178,202,3)
+				Actions.MapTileSet(111,179,202,3)
+			end;
+		end;
+		3: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,0)
+			end;
+			for l := 0 to 2 do begin
+				Actions.MapTileSet(110+l,179-l,202,3)
+				Actions.MapTileSet(117-l,179-l,202,0)
+				Actions.MapTileSet(109+l,178-l,202,1)
+				Actions.MapTileSet(118-l,178-l,202,2)
+				Actions.MapTileSet(109,179,206,0)
+				Actions.MapTileSet(118,179,206,0)
+				Actions.MapTileSet(110,178,206,1)
+				Actions.MapTileSet(111,177,206,1)
+				Actions.MapTileSet(117,178,206,3)
+				Actions.MapTileSet(116,177,206,3)
+			end;
+		end;
+		4: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,0)
+			end;
+			for l := 0 to 1 do begin
+				Actions.MapTileSet(117-l,179-l,202,0)
+				Actions.MapTileSet(118-l,178-l,202,0)
+				Actions.MapTileSet(110+l,179-l,202,3)
+				Actions.MapTileSet(109+l,178-l,202,3)
+				Actions.MapTileSet(109+l,177+l,202,1)
+				Actions.MapTileSet(118-l,177+l,202,2)
+				Actions.MapTileSet(110,175+l,206,1)
+				Actions.MapTileSet(117,175+l,206,3)
+			end;
+			for l := 0 to 2 do begin
+				Actions.MapTileSet(111,175+l,206,3)
+				Actions.MapTileSet(116,175+l,206,1)
+				Actions.MapTileSet(109,179,206,0)
+				Actions.MapTileSet(118,179,206,0)
+			end;
+		end;
+		5: begin
+			for i := 109 to 118 do
+			for l := 175 to 179 do begin
+				Actions.MapTileSet(i,l,35,0)
+			end;
+			for l := 0 to 3 do begin
+				Actions.MapTileSet(110,175+l,206,3)
+				Actions.MapTileSet(117,175+l,206,1)
+			end;
+			for l := 0 to 2 do begin
+				Actions.MapTileSet(118,175+l,206,3)
+				Actions.MapTileSet(109,175+l,206,1)
+				Actions.MapTileSet(117,179,202,0)
+				Actions.MapTileSet(118,178,202,0)
+				Actions.MapTileSet(109,178,202,3)
+				Actions.MapTileSet(110,179,202,3)
+				Actions.MapTileSet(109,179,206,0)
+				Actions.MapTileSet(118,179,206,0)
+			end;
+		end;
+	end;
+end;
+
+
+procedure RenewStone;
+var X,Y:Integer;
+begin
+	if States.GameTime MOD 100 = 0 then
+		for X:= 112 to 164 do
+			for Y:= 43 to 60 do 
+				If States.MapTileType(X,Y) in [128,133,195] then	
+					Actions.MapTileSet(X,Y,132,0)
+				
+end;
+
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+begin
+	If (States.UnitOwner(aUnitID) = 1) then  
+		if (States.UnitType(aUnitID) = 16) then 
+			If States.KamRandom < 0.4 then 
+				Actions.GiveGroup( 1, 26, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID)+1, 4, 1, 1);
+end;
+
+procedure GateOpening;
+var l : Integer;
+begin
+	With gGate do 
+	begin
+		if not (aMode in [gmClosing, gmOpening]) then 
+			Exit;
+			
+		If S.GameTime mod 20 <> 0 then
+			Exit;
+			
+		If (aMode = gmOpening) then 
+		begin
+			inc(GatePhase);
+			BramaEnemy(GatePhase);
+			
+			If GatePhase = 5 then 
+			begin
+				aMode := gmClosing;
+				If S.GameTime >= aDelay then 
+					aDelay := S.GameTime + aDef;
+			end;
+		end;
+		
+		If (aMode = gmClosing) then 
+		begin
+			If S.GameTime >= aDelay then  
+				If S.GameTime mod 20 = 0 then 
+				begin
+					dec(GatePhase);
+					BramaEnemy(GatePhase);
+					If GatePhase = 1 then
+						for l := 0 to 9 do begin
+							If States.UnitAt(109+l,177) > 0 then
+								Actions.UnitKill(States.UnitAt(109+l,177),false);
+							If States.UnitAt(109+l,180) > 0 then 
+								Actions.UnitKill(States.UnitAt(109+l,180),false);
+							If States.UnitAt(109+l,179) > 0 then 
+								Actions.UnitKill(States.UnitAt(109+l,179),false);
+							If States.UnitAt(109+l,178) > 0 then 
+								Actions.UnitKill(States.UnitAt(109+l,178),false);
+							end;
+					If GatePhase = 0 then 
+						aMode := gmClosed;
+					If GatePhase = 0 then 
+						aDef := 1800;
+				
+				end;		
+				
+		end;
+	end;
+	
+end;
+
+
+Procedure KillNotAllied(aUnit : Integer);
+begin
+	If aUnit <= 0 then 
+		Exit;
+	If S.UnitOwner(aUnit) in [1,2,3,12,11,13] then 
+		Exit;
+	A.UnitKill(aUnit, false);
+	
+end;
+
+
+procedure KineticEffect(aPos : TKMPoint);
+var aX ,aY, aRadius : integer;
+	aRandom : Single;
+begin
+	aRandom := S.KamRandom; 
+	If aRandom < 0.05 then 
+		aRadius := 4
+	else
+	If aRandom < 0.3 then 
+		aRadius := 2
+	else
+		aRadius := 1;
+				
+	for aX := aPos.X - aRadius to aPos.X + aRadius do
+		for aY := aPos.Y - aRadius to aPos.Y + aRadius do
+			KillNotAllied(S.UnitAt(aX,aY));
+		
+end;
+
+
+procedure OnHouseDestroyed(aHouse, aDestroyerIndex : Integer);
+begin
+	If aDestroyerIndex in [PLAYER, -1] then 
+		If not (S.HouseType(aHouse) in [17,21]) then 
+			A.PlayerDefeat(PLAYER);
+			
+end;
+
+
+Procedure OnUnitAttacked(aUnit,aAttacker : integer);
+begin
+	If length(aHeros) < 6 then 
+		Exit;
+	If not UnitIsHero(aAttacker) then 
+		Exit;
+	If S.UnitDead(aHeros[5].ID) then 
+		Exit;
+	If aAttacker = aHeros[5].ID then 
+		If S.GameTime >= aHeros[5].AttackTime then 
+			KineticEffect(aHeros[5].Pos);
+
+end;
+
+procedure DreinAttack;
+begin
+	if States.GameTime = DyronArrival+6000 then	
+	begin 
+		Actions.GiveGroup (10, 22, 88, 94, 0, 50, 10 )
+		Actions.GiveGroup (10, 22, 132, 99, 0, 50, 10 )
+		Actions.GiveGroup (10, 22, 52, 110, 0, 50, 10 ) 
+		end;
+	if States.GameTime = DyronArrival+9000 then 
+	begin
+		Actions.GiveGroup (10, 16, 88, 94, 0, 40, 10 )
+		Actions.GiveGroup (10, 16, 132, 99, 0, 40, 10 )
+		Actions.GiveGroup (10, 16, 52, 110, 0, 40, 10 ) 
+		end;
+	if States.GameTime = DyronArrival+12000 then 
+	begin
+		Actions.GiveGroup (10, 20, 88, 94, 0, 25, 5 )
+		Actions.GiveGroup (10, 20, 132, 99, 0, 25, 5 )
+		Actions.GiveGroup (10, 20, 52, 110, 0, 25, 5 ) 
+		end;
+	if States.GameTime = DyronArrival+15000 then 
+	begin
+		Actions.GiveGroup (10, 18, 88, 94, 0, 30, 10 )
+		Actions.GiveGroup (10, 18, 132, 99, 0, 30, 10 )
+		Actions.GiveGroup (10, 18, 52, 110, 0, 30, 10 )
+	end;
+
+end;
+
+procedure DoDyronArrival;
+begin
+
+	if States.GameTime = DyronArrival then 
+	begin
+		Actions.CinematicStart(0);
+		Actions.CinematicPanTo(0,122,253,0);
+		Actions.CinematicPanTo(0,113,180,800);
+		//Actions.OverlayTextSetFormatted(-1, '', []);
+		//Actions.OverlayTextAppendFormatted(-1, '<$4>', []);
+		aDyron := SetGroup(A.GiveGroup(13,26,122,253,0,1,1) );
+		A.UnitHpSetInvulnerable(aDyron.UID, true);
+		A.GroupOrderWalk(aDyron.aID, 113, 180, 0);
+		//gGate.aMode:= gmDestroyed;
+		A.GroupBlockOrders(aHeros[0].aGroupID, true);
+		
+		TeleportHero(aHeros[0], U.KMPoint(81,235) );
+		A.GroupOrderWalk(aHeros[0].aGroupID, 113,207,4);
+	end;	
+	
+	if States.GameTime = DyronArrival + 550 then 
+		A.GroupOrderWalk(aHeros[0].aGroupID, 112,190,0);
+		
+	if (States.GameTime MOD 60 = 0) then
+		If (States.StatArmyCount(4) > 200) then 
+		begin
+			If (States.StatArmyCount(5) >= 600) then 
+				Actions.GiveGroup(5,20,181,134,6,1,1)
+			else
+			If (States.StatArmyCount(5) >= 500) then 
+				Actions.GiveGroup(5,20,166,63,0,1,1)
+			else
+			If (States.StatArmyCount(5) >= 200) then 
+				Actions.GiveGroup(5,73,80,134,0,1,1)
+			else
+				Actions.GiveGroup(5,20,100,113,6,1,1);
+				
+		end;
+	{If S.GameTime >= DyronArrival + 1150 then 
+		begin
+			
+			If aHeros[5].Pos = U.KMPoint(113,107) then 
+				If S.HouseAt(113,106) > 0 then 	
+					A.PlayerWin([0],true);
+						
+			If S.GameTime mod 100 = 0 then 
+			with aHeros[5] do 
+			begin
+				if S.MapTileType(Pos.X,Pos.Y-1) = 206 then
+					if S.MapTileType(Pos.X-1,Pos.Y-1) = 206 then  
+						if S.MapTileType(Pos.X+1,Pos.Y-1) = 206 then  
+							if S.MapTileType(Pos.X,Pos.Y-2) <> 206 then 
+							begin
+								A.MapTileSet(Pos.X-1,Pos.Y-1, 175, 0);
+								A.MapTileSet(Pos.X,Pos.Y-1, 175, 0);
+								A.MapTileSet(Pos.X+1,Pos.Y-1, 175, 0);
+								KineticEffect(Pos);
+							end;
+			end;
+		end;}
+	If gGate.aMode <> gmDestroyed then 	
+		If (States.GameTime > DyronArrival )then 
+			If S.GameTime mod 10 = 0 then 
+				If GetGroupPos(aDyron) = U.KMPoint(113,180) then 
+				begin
+					A.UnitHpSetInvulnerable(aDyron.UID, false);
+					Actions.GroupKillAll(aDyron.aID,true)
+					aDyron.Killed := true;
+					
+					Actions.GroupKillAll(States.GroupAt(105,179),false);
+					Actions.GroupKillAll(States.GroupAt(122,179),false);
+					
+					AddHero(Actions.GiveGroup(0, 26, 113, 181, 0, 1, 1 ));//King Dyron
+					SetHeroIDStats(aHeros[5], 53, 76, 53, 5, 30, 0, hcDyron2)
+					aHeros[5].HouseBonus := 50;
+					Actions.AIAttackAdd(1, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0) );
+					Actions.AIAttackAdd(2, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0) );
+					Actions.AIAttackAdd(3, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0) );
+					Actions.AIAttackAdd(12, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0) );
+					
+					A.GroupBlockOrders(aHeros[0].aGroupID, false);
+					Actions.CinematicEnd(0);
+					BramaEnemy(0);
+					Brama;
+					
+					gGate.aMode := gmDestroyed;
+				end;
+end;
+
+procedure TeleportArmy;
+var I : Integer;
+begin
+	If gGate.aMode = gmClosed then 
+		if (States.GameTime < DyronArrival - 2000 ) 
+		and (States.GroupAt(106,117) <> -1)
+		and (States.GroupMemberCount(States.GroupAt(106,117)) >= 9) 
+		and not States.PlayerDefeated(4) and not (States.StatHouseTypeCount(4,21) = 0) then 
+		begin
+			Actions.GroupKillAll(States.GroupAt(91,116),true)
+			Actions.GroupKillAll(States.GroupAt(99,117),true)
+			Actions.GroupKillAll(States.GroupAt(73,101),true)
+			Actions.GroupKillAll(States.GroupAt(70,136),true)
+			Actions.GroupKillAll(States.GroupAt(38,125),true)
+			Actions.GroupKillAll(States.GroupAt(106,117),true)
+			If not BigAttackSent  and (S.GameTime >= 36000) then 
+			begin
+				for I := 0 to 5 do 
+				begin
+					Actions.GiveGroup(9,20,90,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,20,86,151 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,20,97,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,18,97,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,20,125,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,20,130,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,20,135,138 + (I * 4),4,9,3);
+					Actions.GiveGroup(9,18,135,138 + (I * 4),4,9,3);
+				end;
+				
+				BramaEnemy(1);
+				gGate.OpenTime := States.GameTime
+				gGate.aMode := gmOpening;
+				gGate.aDef := 6000;
+				BigAttackSent := true;
+				Exit;
+			end;
+			Actions.GiveGroup(9,20,90,138,4,9,3);
+			Actions.GiveGroup(9,20,86,151,4,9,3);
+			Actions.GiveGroup(9,20,97,138,4,9,3);
+			Actions.GiveGroup(9,18,97,138,4,9,3);
+			Actions.GiveGroup(9,20,125,138,4,9,3);
+			Actions.GiveGroup(9,20,130,138,4,9,3);
+			Actions.GiveGroup(9,20,135,138,4,9,3);
+			Actions.GiveGroup(9,18,135,138,4,9,3);
+			BramaEnemy(1);
+			gGate.OpenTime := States.GameTime
+			gGate.aMode := gmOpening;
+		end;
+end;
+
+procedure DoTunnels;
+begin
+	If S.GameTime < TunnelAttacks then
+			Exit;
+	If TunnelAttacks > DyronArrival then
+			Exit;
+			
+	If S.GameTime mod 400 = 0 then
+	begin
+		inc(TunnelMade);
+		//tunnel left
+		Actions.GiveGroup(9,20,13,53,4,18,6);
+		Actions.GiveGroup(9,18,8,39,4,18,6);
+		//tunnel right
+		Actions.GiveGroup( 9, 20, 245, 237, 6, 18, 6);
+		Actions.GiveGroup( 9, 18, 248, 237, 6, 18, 6);
+		
+		//tunnel middle 1
+		Actions.GiveGroup( 9, 20, 114, 211, 0, 18, 6);
+		Actions.GiveGroup( 9, 18, 114, 214, 0, 18, 6);
+		
+		If TunnelMade = TunnelDivCount then 
+		begin
+			TunnelMade := 0;
+			TunnelAttacks := U.FloorTo(S.GameTime + S.KamRandomI(18000), 10);
+		end;
+		
+	end; 
+end;
+
+procedure OnTick;
+begin 
+	OnTickHero;	
+	If S.GameTime mod 10 = 0 then 
+	begin
+		GateOpening;
+		RenewStone;
+		DreinAttack;
+		DoDyronArrival;
+		TeleportArmy;
+		DoTunnels;
+		
+		If S.GameTime mod 600 = 0 then 
+		begin
+			MultiUnlimitedDeposits([5]);
+			If S.GameTime mod 9000 = 0 then
+				FeedPlayers([6,7,8], false, true)
+		end;
+		A.MapTileSet(3, 241, 260, 0)
+	end;
+	
+	//If S.GameTime = 500 then 		
+	//	AddAnimation(aHeros[0].ID, PointDir(59, 215, 6), kdBackward, 10);
+		
+	
+end;
+
+
+Procedure OnMissionStart;
+begin	
+	SetDMod;
+	DyronArrival := U.FloorTo(CampaignData.HKS23.SearchingTime + CampaignData.HKS24.SearchingTime, 10);
+	DyronArrival := DyronArrival * 2;
+	If DyronArrival <= 36000 then 
+		DyronArrival := 72500;
+		
+	TunnelAttacks := 6000 + U.FloorTo(S.KamRandomI(23000), 10);
+	
+	AddMessage(0,10);	
+	AddMessage(1,100);	
+	AddOvMessage(15,300);	
+	AddOvMessage(2,6000);
+	AddOvMessage(20,TunnelAttacks);
+	
+	AddOvMessage(4,DyronArrival + 250);		
+	AddOvMessage(5,DyronArrival + 500);		
+	AddOvMessage(6,DyronArrival + 580);		
+	AddOvMessage(7,DyronArrival + 610);		
+	AddOvMessage(8,DyronArrival + 640);		
+	AddOvMessage(9,DyronArrival + 780);		
+	AddOvMessage(10,DyronArrival + 1100);		
+	AddOvMessage(11,DyronArrival + 1150);		
+	AddMessage(16,DyronArrival + 1300);	
+	AddOvMessage(17,DyronArrival + 1600);	
+	AddOvMessage(18,DyronArrival + 1680);	
+	AddMessage(19,DyronArrival + 1750);	
+	AddOvMessage(12,DyronArrival + 6050);	
+	AddOvMessage(13,DyronArrival + 6100);	
+	
+	AddHero(S.GroupAt(15,249));//malcolm 0
+	AddHero(S.GroupAt(20,193));//ratling 1
+	AddHero(S.GroupAt(173,247));//Tyrio 2
+	AddHero(S.GroupAt(202,241));//Livius 3
+	AddHero(S.GroupAt(239,180));//general tamaio 4 Dyron 5
+	
+	SetHeroIDStats(aHeros[0], 20, 13, 61, 3, 2, 1, hcMalcolm);
+	SetHeroIDStats(aHeros[1], 30, 20, 99, 6, 20, 0, hcRatling);
+	SetHeroIDStats(aHeros[2], 26, 21, 177, 3, 8, 3, hcTyrio);
+	SetHeroIDStats(aHeros[3], 25, 18, 80, 3, 60, 3, hcLivius);
+	SetHeroIDStats(aHeros[4], 47, 32, 222, 4, 20, 7, hcTamaio);
+	
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+	aHeros[0].LVL := 3;
+	
+	gGate.aMode := gmOpening;
+	gGate.aDef := 1200;
+	
+	case dMod of 
+		0 : TunnelDivCount := 1;
+		1 : TunnelDivCount := 2;
+		2 : TunnelDivCount := 4;
+	end;
+end;

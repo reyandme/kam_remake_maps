@@ -1,0 +1,25 @@
+
+
+const PLAYER = 1;
+
+{$I HKS_Functions.script}
+
+procedure RaisForDifficulty;
+var aRCNT : Integer;
+begin
+	SetDMod;
+	Case States.MissionDifficulty() of
+		0: aRCNT := -2;
+		1..2: aRCNT := -2;
+		3..5: aRCNT := 2;
+		5..7: aRCNT := 5;
+	end;
+	RaisPlayerArmy(3, aRCNT);
+	RaisPlayerArmy(2, aRCNT);
+end;
+
+Procedure OnMissionStart;
+begin
+	RaisForDifficulty
+	AddOvMessage(0, 20);
+end;

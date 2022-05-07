@@ -1,0 +1,135 @@
+
+function CheckHouse(var aHvar : Integer; aHouse : Integer) : Boolean; 
+var HType : integer;
+begin
+	HType := S.HouseType(aHouse);
+	aHvar := aHouse;
+	Result := false;
+	If aHvar = -1 then 
+		Exit;
+	If not S.HouseIsComplete(aHouse) then 
+		Result := true
+	else		
+	if (States.HouseDamage(aHouse) > 0) then 
+		Result := true;
+
+end;
+function GetHouseNearMalcolm(aPos : TKMPoint) : Integer;
+var aHouse : integer;
+begin
+	Result := -1;
+	
+	if CheckHouse(aHouse, S.HouseAt(aPos.X, aPos.Y - 1 )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X + 1, aPos.Y - 1 )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X + 1, aPos.Y )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X + 1, aPos.Y + 1 )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X, aPos.Y + 1 )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X - 1, aPos.Y + 1 )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X - 1, aPos.Y )) then 
+		Result := aHouse
+	else
+	if CheckHouse(aHouse, S.HouseAt(aPos.X - 1, aPos.Y - 1 )) then 
+		Result := aHouse;
+		
+end;
+
+
+{$EVENT evtHousePlanPlaced:OnHousePlanPlacedMalcolm}
+Procedure OnHousePlanPlacedMalcolm(aPlayer: Integer; X: Integer; Y: Integer; aType: Integer);
+begin
+	If not aHeros[0].UseSkills or not aHeros[0].UseSkill[1] then 
+		Exit;
+	if (aPlayer = PLAYER)then 
+		Actions.PlanConnectRoad(PLAYER,X,Y+1,States.HousePositionX(States.ClosestHouse(0,X,Y,11)),States.HousePositionY(States.ClosestHouse(0,X,Y,11))+1,false);
+end;
+
+{$EVENT evtPlanFieldPlaced:OnPlanFieldPlacedMalcolm}
+Procedure OnPlanFieldPlacedMalcolm(aPlayer: Integer; X: Integer; Y: Integer);
+var a,b:Integer;
+begin
+	If not aHeros[0].UseSkills and not aHeros[0].UseSkill[2] then 
+		Exit;
+		
+	If aHeros[0].LVL < 1 then 
+		Exit;
+		
+	if (aPlayer = PLAYER) then begin
+		for a := 0 to 1 do
+		for b := 0 to 1 do
+		Actions.PlanAddField(PLAYER,X+a,Y+b);
+	end;
+end;
+
+{$EVENT evtPlanWineFieldPlaced:OnPlanWineFieldPlacedMalcolm}
+Procedure OnPlanWineFieldPlacedMalcolm(aPlayer: Integer; X: Integer; Y: Integer);
+var a,b:Integer;
+begin
+	If not aHeros[0].UseSkills and not aHeros[0].UseSkill[2] then 
+		Exit;
+	If aHeros[0].LVL < 1 then 
+		Exit;
+	if (aPlayer = PLAYER) then begin
+		for a := 0 to 1 do
+		for b := 0 to 1 do
+		Actions.PlanAddWineField(PLAYER,X+a,Y+b);
+	end;
+end;
+
+{$EVENT evtPlanRoadPlaced:OnPlanRoadPlacedMalcolm}
+Procedure OnPlanRoadPlacedMalcolm(aPlayer: Integer; X: Integer; Y: Integer);
+var a,b:Integer;
+begin
+	If not aHeros[0].UseSkills and not aHeros[0].UseSkill[3] then 
+		Exit;
+	If aHeros[0].LVL < 2 then 
+		Exit;
+	if (aPlayer = PLAYER) then begin
+		for a := 0 to 1 do
+		for b := 0 to 1 do
+		Actions.PlanAddRoad(PLAYER,X+a,Y+b);
+	end;
+end;
+
+
+
+{$EVENT evtTick:OnTickMalcolm}
+procedure OnTickMalcolm;
+var HType, aHouse:Integer;
+begin	
+	If States.GameTime mod 20 = 0 then 
+	begin
+		If not aHeros[0].UseSkills and not aHeros[0].UseSkill[0] then 
+			Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := GetHouseNearMalcolm(aHeros[0].Pos);	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+		begin
+			Actions.HouseAddBuildingProgress(aHouse);		
+			Actions.HouseAddBuildingProgress(aHouse);		
+		end;
+		
+		If States.HouseIsComplete(aHouse) then 
+			Actions.HouseAddRepair(aHouse , 10);
+	end;
+end;

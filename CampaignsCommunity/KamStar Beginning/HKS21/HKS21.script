@@ -1,0 +1,215 @@
+var ARMY: array [16..22] of integer;
+
+Const PLAYER = 0;
+{$DEFINE MALCOLM}
+
+
+{$I HKS_Functions.script}
+
+function ArmyTypeToQuestCount(aType: integer): integer;
+begin
+	case States.MissionDifficulty of
+		0:begin
+		  case aType of
+			16: RESULT := 45;
+			18: RESULT := 35;
+			22: RESULT := 38;
+			20: RESULT := 38; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		1:begin
+		  case aType of
+			16: RESULT := 40;
+			18: RESULT := 30;
+			22: RESULT := 34;
+			20: RESULT := 34; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		2:begin
+		  case aType of
+			16: RESULT := 35;
+			18: RESULT := 25;
+			22: RESULT := 32;
+			20: RESULT := 32; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		3:begin
+		  case aType of
+			16: RESULT := 30;
+			18: RESULT := 20;
+			22: RESULT := 28;
+			20: RESULT := 28; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		4:begin
+		  case aType of
+			16: RESULT := 25;
+			18: RESULT := 15;
+			22: RESULT := 24;
+			20: RESULT := 24; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		5:begin
+		  case aType of
+			16: RESULT := 20;
+			18: RESULT := 10;
+			22: RESULT := 12;
+			20: RESULT := 12; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		6:begin
+		  case aType of
+			16: RESULT := 15;
+			18: RESULT := 8;
+			22: RESULT := 8;
+			20: RESULT := 8; 
+			else RESULT := 0; 
+		  end;
+	  end;
+		7:begin
+		  case aType of
+			16: RESULT := 10;
+			18: RESULT := 5;
+			22: RESULT := 4;
+			20: RESULT := 4; 
+			else RESULT := 0; 
+		  end;
+	  end;
+	end;
+end;
+
+procedure GetArmyCount;
+var
+	j, k: integer;
+begin
+	for j:= 16 to 22 do
+		ARMY[j]:= 0;
+		for k:= 16 to 22 do begin
+			if ( States.StatUnitTypeCount(0, k) > 0 ) and ( ArmyTypeToQuestCount(k) > 0 ) then
+				ARMY[k]:= ARMY[k] + States.StatUnitTypeCount(0, k);
+		end;
+	dec(ARMY[16]);
+end;
+
+procedure ShowMissionObjectives(aPlayer: integer);
+var j: integer;
+	canWin : Boolean;
+begin
+	canWin := true;
+	Actions.OverlayTextAppendFormatted(aPlayer, '||<$2>', []);
+	for j:= 16 to 22 do begin
+		if (ArmyTypeToQuestCount(j) > 0) then begin
+			if ARMY[j] >= ArmyTypeToQuestCount(j) then
+				Actions.OverlayTextAppendFormatted(-1, '|<$4>', [States.UnitTypeName(j)])
+			else
+			begin
+				canWin := false;
+				Actions.OverlayTextAppendFormatted(aPlayer, '|<$3>', [States.UnitTypeName(j), ARMY[j], ArmyTypeToQuestCount(j)]);
+			end;
+		end;
+	end;
+	If canWin then 
+		A.PlayerWin([0], true);
+end;
+
+Procedure Deposits;
+var H,X,Y:Integer;
+	J : array of integer;
+begin	
+	J := States.PlayerGetAllHouses(PLAYER);
+	for H := 0 to length(J) -1 do begin
+		If (States.HouseType(J[H])= 3) or  (States.HouseType(J[H])= 4) or  (States.HouseType(J[H])= 5) then begin
+			X:=States.HousePositionX(J[H]);
+			Y:=States.HousePositionY(J[H]);
+			
+			If (States.HouseType(J[H])= 3) and (States.MapTileType(X,Y)<>155) then //węgiel
+				Actions.MapTileSet(X,Y,155,0)
+			else				
+			If (States.HouseType(J[H])= 4) and (States.MapTileType(X,Y-2)<>151) then //żelazo
+				Actions.MapTileSet(X,Y-2,151,0)
+			else				
+			If (States.HouseType(J[H])= 5) and (J[H] <> States.HouseAt(31,87)) and (J[H] <> States.HouseAt(41,72)) and (States.MapTileType(X,Y-2)<>147) then //złoto
+				Actions.MapTileSet(X,Y-2,147,0);
+		end;
+	end;
+end;
+
+procedure OnTick;
+var HType, aHouse:Integer;
+begin
+	OnTickHero;
+	If S.GameTime mod 600 = 0 then 
+		Deposits;
+		
+	if (States.GameTime > 300) and(States.GameTime mod 10 = 0) then begin
+		GetArmyCount;
+		ShowMissionObjectives(0); 
+	end;
+	
+	If States.GameTime mod 10 = 0 then 
+	begin
+		If not aHeros[0].UseSkills then 
+			Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := S.HouseAt(aHeros[0].Pos.X, aHeros[0].Pos.Y - 1 );	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+			Actions.HouseAddBuildingProgress(aHouse);		
+			
+			If States.HouseIsComplete(aHouse)
+			and (States.HouseDamage(aHouse) < States.HouseTypeMaxHealth(HType)-5) then 
+				Actions.HouseAddRepair(aHouse , 5);
+	end;
+end;
+
+
+
+procedure AddGroupsFromPrevious;
+begin
+	with CampaignData.HKS20 do 
+	begin
+		If aWarriorsCount[16] > 0 then 
+			A.GiveGroup(PLAYER, 16, 29, 31, 7, aWarriorsCount[16], aWarriorsCount[16] div 4);
+		If aWarriorsCount[18] > 0 then 
+			A.GiveGroup(PLAYER, 18, 49, 28, 1, aWarriorsCount[18], aWarriorsCount[18] div 4);
+	end;
+
+end;
+
+procedure OnMissionStart;
+begin
+	SetDMod;
+	AddGroupsFromPrevious;
+	AddOvMessage(0, 10);
+	
+	AddAutoHeros;
+	
+	SetHeroStats(18, 12, 60, 4, 2, 0, hcMalcolm);
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+end;
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS21 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+		dec(aWarriorsCount[16]);
+	end;
+end;

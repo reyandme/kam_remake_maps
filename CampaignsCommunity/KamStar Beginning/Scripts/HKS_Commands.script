@@ -1,0 +1,60 @@
+
+{$COMMAND enable_skills:DisableSkills}
+{$COMMAND en_skill:DisableSkill}
+{$COMMAND en_overlay:EnableOverlayTexts}
+{$COMMAND help:SendHelpMsg}
+{$COMMAND showHeros:ShowHerosOverlays}
+
+procedure DisableSkills(aHandID : integer; atrue : Boolean);
+begin
+	If not aHeros[0].CanTurnOff then 
+		Exit;
+	aHeros[0].UseSkills := atrue;
+	CampaignData.UseMSkills := atrue;
+	If atrue then  
+		A.ShowMSG(aHandID, 'Hero skills enabled')
+	else
+		A.ShowMSG(aHandID, 'Hero skills disabled');
+end;
+
+
+procedure DisableSkill(aHandID, aSkill : integer; atrue : Boolean);
+var finString : String;
+begin
+	If not aHeros[0].CanTurnOff then 
+		Exit;
+		
+	aHeros[0].UseSkill[aSkill] := atrue;
+	CampaignData.UseSkill[aSkill] := atrue;
+	case aSkill of 
+		0 : finString := 'Building Scheme';
+		1 : finString := 'Builder';
+		2 : finString := 'XL Fields';
+		3 : finString := 'XL Streets';
+	end;
+	If atrue then  
+		A.ShowMSG(aHandID, finString + ': enabled')
+	else
+		A.ShowMSG(aHandID, finString + ': disabled');
+end;
+
+procedure EnableOverlayTexts(aHandID : integer; atrue : Boolean);
+var finString : String;
+begin
+	CampaignData.ShowOverlay := atrue;
+	aMessage.DoOverlay := atrue;
+end;
+
+procedure SendHelpMsg(aHandID : integer);
+var finString : String;
+begin
+	A.ShowMSG(PLAYER, '/en_overlay <true/false> : enable/disable showing dialogs in the left top corner|');
+	A.ShowMSG(PLAYER, '/en_skill <aSkill ID> <true/false> : enable/disable skills.| 0 - Building Sheme,| 1 - Builder,| 2 - XL Fields,| 3 - XL Streets');
+	A.ShowMSG(PLAYER, '/enable_skills <true/false> : disable/enable all Malcolm skills');
+	A.ShowMSG(PLAYER, '/showHeros : disable/enable showing statistics of all heros on the map');
+end;
+
+procedure ShowHerosOverlays(aHandID : integer);
+begin
+	showOwnerOnly := not showOwnerOnly;
+end;

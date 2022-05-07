@@ -1,0 +1,90 @@
+Const PLAYER = 0;
+
+{$I HKS_Functions.script}
+
+
+var CoalToSend:Integer;
+
+procedure GetCoalCount;
+var aHouses : array of Integer;
+	I : Integer;
+begin
+	aHouses := S.PlayerGetAllHouses(4);
+	for I := 0 to high(aHouses) do 
+		If States.HouseResourceAmount(aHouses[I],5)>0 then 
+			iF States.KamRandomI(10)<=5 then 
+			begin 
+				Actions.HouseTakeWaresFrom(States.HouseAt(4,18),5,1);
+				CoalToSend:=CoalToSend+1;
+			end;
+		
+
+end;
+
+procedure OnTick;
+begin
+	OnTickHero;
+		
+	If S.GameTime mod 600 = 0 then 
+		GetCoalCount;
+	If States.GameTime mod 6000 = 0 then begin
+		Actions.GiveWares(0,5,CoalToSend);
+		CoalToSend:=0;
+	end;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([4,5,6], true, true);
+end;
+
+
+procedure OnMissionStart;
+var dHMod:byte;
+	Count:Array of Integer;
+	aWarCount : Integer;
+begin
+	SetDMod;
+	Count:= [1,1,2,2,2,3,3]
+	dHMod:= byte(States.MissionDifficulty)-1
+	with CampaignData.HKS11 do 
+	begin
+		aWarCount := HorseCount div 3;
+		
+		if (aWarCount>5) then 
+		begin 
+			Actions.GiveGroup(0,22,42,74,2,aWarCount/Count[dHMod],6); 
+			Actions.GiveGroup(0,22,12,70,6,aWarCount/Count[dHMod],6);
+		end else
+		begin 
+			Actions.GiveGroup(0,22,42,74,2,20,6); 
+			Actions.GiveGroup(0,22,12,70,6,20,6); 
+		end;
+	
+	end;
+
+	RaisMultiplePlayerArmy([1,2,3], (Count[dHMod] - 1) * 6);
+	
+	AddOvMessage(0, 20);
+	AddMessage(3, 50);
+	AddOvMessage(4, 100);
+	AddOvMessage(2, 300);
+	AddOvMessage(1, 3000);
+	AddOvMessage(5, 9000);
+	
+	//FillPlayerHouses([2,3], true);
+	//AddUnitsToPlayer([2,3],true);
+	
+	AddAutoHeros;
+	
+	SetHeroStats(37, 28, 118, 5, 15, 6, hcTamaio);
+end;
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS13 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+		dec(aWarriorsCount[21]);
+	end;
+end;

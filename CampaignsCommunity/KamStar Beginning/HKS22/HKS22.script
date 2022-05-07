@@ -1,0 +1,143 @@
+{$I Trade.script}
+
+Const PLAYER = 0;
+{$DEFINE MALCOLM}
+
+
+{$I HKS_Functions.script}
+
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+begin
+	If (States.UnitOwner(aUnitID) = 1) and(States.UnitType(aUnitID) = 20) then If States.KamRandomI(100)<20 then 
+		Actions.GiveGroup(1,26,States.UnitPositionX(aUnitID),States.UnitPositionY(aUnitID)+1,4,1,1);
+end;
+  
+Procedure OnMarketTrade(aMarket: Integer; aFrom: Integer;  aTo: Integer);
+begin
+if (States.HouseOwner(aMarket) = 2) and (aFrom = 27) and not (aTo = 1) then
+	Actions.HouseAddWaresTo(aMarket,aFrom,5);
+	If aTo = 17 then Actions.GiveWeapons(2,17,1);
+	If aTo = 19 then Actions.GiveWeapons(2,19,1);
+	If aTo = 17 then Actions.HouseTakeWaresFrom(aMarket,17,1);
+	If aTo = 19 then Actions.HouseTakeWaresFrom(aMarket,19,1);
+end;
+
+
+Procedure OnPlanFieldPlaced(aPlayer: Integer; X: Integer; Y: Integer);
+var a,b:Integer;
+begin
+	If not aHeros[0].UseSkills then 
+		Exit;
+	if (aPlayer = PLAYER) then begin
+		for a := 0to 1 do
+		for b := 0to 1 do
+		Actions.PlanAddField(0,X+a,Y+b);
+	end;
+end;
+
+
+
+Procedure OnPlanWinefieldPlaced(aPlayer: Integer; X: Integer; Y: Integer);
+var a,b:Integer;
+begin
+	If not aHeros[0].UseSkills then 
+		Exit;
+	if (aPlayer = PLAYER) then begin
+		for a := 0to 1 do
+		for b := 0to 1 do
+		Actions.PlanAddWinefield(0,X+a,Y+b);
+	end;
+end;
+
+Procedure OnHousePlanPlaced(aPlayer: Integer; X: Integer; Y: Integer; aType: Integer);
+begin
+	If not aHeros[0].UseSkills then 
+		Exit;
+	if (aPlayer = PLAYER)then 
+		Actions.PlanConnectRoad(0,X,Y+1,States.HousePositionX(States.ClosestHouse(0,X,Y,11)),States.HousePositionY(States.ClosestHouse(0,X,Y,11))+1,false);
+end;
+	   
+procedure OnTick;
+var HType, aHouse:Integer;
+begin
+	OnTickHero;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([3,4], true, true);
+		
+	If States.GameTime mod 10 = 0 then 
+	begin
+		If not aHeros[0].UseSkills then 
+			Exit;
+		If aHeros[0].Pos.Y < 3 then 
+			Exit;
+			
+		aHouse := S.HouseAt(aHeros[0].Pos.X, aHeros[0].Pos.Y - 1 );	
+		If aHouse <= 0 then
+			Exit;
+		If (States.HouseOwner(aHouse) <> PLAYER) then
+			Exit;
+			
+		HType:= States.HouseType(aHouse);
+		
+		If States.HouseSiteIsDigged(aHouse) then 
+			Actions.HouseAddBuildingProgress(aHouse);		
+			
+			If States.HouseIsComplete(aHouse)
+			and (States.HouseDamage(aHouse) < States.HouseTypeMaxHealth(HType)-5) then 
+				Actions.HouseAddRepair(aHouse , 5);
+	end;
+end;
+
+procedure AddGroupsFromPrevious;
+var I, Top, Left : Integer;
+begin
+	Top := 24;
+	Left := 82;
+	with CampaignData.HKS21 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+		If aWarriorsCount[I] > 0 then 
+		begin
+			A.GiveGroup(PLAYER, I, Top, Left, 6, aWarriorsCount[I], aWarriorsCount[I] div 4);
+			
+			If Left = 82 then 
+				Left := 88
+			else
+			If Left = 88 then 
+				Left := 94
+			else
+			begin
+				Left := 82;
+				Top := Top + 5;
+			end;
+				
+		end;
+	
+	end;
+
+end;
+
+procedure OnMissionStart;
+begin
+	SetDMod;
+
+	Case States.MissionDifficulty() of
+		0: A.AIEquipRate(4,1,300);
+		1..2: A.AIEquipRate(4,1,600);
+		3..5: A.AIEquipRate(4,1,300);
+		5..7: A.AIEquipRate(4,1,1);
+	end;
+	AddGroupsFromPrevious;
+	
+	AddOvMessage(0, 10);
+	
+	AddAutoHeros;
+	
+	SetHeroStats(18, 12, 60, 4, 2, 0, hcMalcolm);
+	aHeros[0].CanTurnOff := true;
+	aHeros[0].UseSkills := true;
+	
+	SetDifficulty_EquipDelay([4], [0,1], [300], [1.5, 1,0.1]);
+
+end;

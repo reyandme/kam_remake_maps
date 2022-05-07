@@ -1,0 +1,43 @@
+
+const PLAYER = 0;
+var EndTime : Integer;
+
+{$DEFINE TYRIO}
+{$I HKS_Functions.script}
+{$I Chodzenie.script}
+ 
+procedure OnTick;
+begin
+	OnTickHero;
+	If S.GameTime = EndTime then 
+		A.PlayerDefeat(PLAYER);
+	If GT > aTimeToReset then 
+		If GT mod 10 = 0 then 
+			A.OverlayTextAppend(PLAYER, '||<$7>' + U.TimeToString(EndTime - S.GameTime));
+		
+		
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([0,1], true, true);
+end;
+
+procedure OnPlayerVictory(aIndex: Integer);
+begin
+	CampaignData.HKS11.HorseCount := States.StatUnitTypeCount(0,22) - 1;
+end;
+
+Procedure OnMissionStart;
+begin
+	
+	AddOvMessage(0, 20);
+	AddMessage(4, 100);
+	
+	Case States.MissionDifficulty() of
+		0: EndTime := 12000;
+		1..2: EndTime := 16000;
+		3..5: EndTime := 12000;
+		5..7: EndTime := 9000;
+	end;
+	
+	AddAutoHeros;
+	SetHeroStats(17, 13, 49, 6, 5, 2, hcTyrio);
+end;

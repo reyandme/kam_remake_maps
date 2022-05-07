@@ -1,0 +1,107 @@
+
+{$EVENT evtTick:OnTickAnimation}
+
+type	
+	KD_Animation = record
+		aUnit : Integer;
+		ToDirection, aMod: Integer;
+		ToPos : TKMPoint;
+		Rotate : KD_Direction;
+		Done : Boolean;
+	end;	
+
+var Animations : array of KD_Animation; 
+
+function IncAnimLength( var anArray : array of KD_Animation) : Integer;
+var J : Integer;
+begin
+	J := length(anArray);
+	SetLength(anArray, J + 1);
+	Result := J;
+	
+end;
+
+
+procedure AddAnimation(aUnit: Integer; aDirPoint : TKMDirPoint; Rotation : KD_Direction; aMod : Integer);
+var J : Integer;
+begin
+	J := IncAnimLength(Animations);
+	Animations[J].aUnit := aUnit;
+	Animations[J].ToDirection := aDirPoint.Dir;
+	
+	If aDirPoint.X > 0 then 
+	begin
+		Animations[J].ToPos.X := aDirPoint.X;
+		Animations[J].ToPos.Y := aDirPoint.Y;
+	end;
+	
+	Animations[J].Rotate := Rotation;
+	
+	If aMod <= 10 then 
+		Animations[J].aMod := aMod
+	else
+		Animations[J].aMod := aMod;
+end;
+procedure ClearEnded;
+var I, J : integer;
+	NewAnimations : array of KD_Animation; 
+begin
+	for I := 0 to high(Animations) do 
+		If not Animations[I].Done then 
+		begin
+			J := IncAnimLength(NewAnimations);
+			NewAnimations[J] := Animations[I];
+		end;
+		
+	Animations := NewAnimations;
+end;
+procedure OnTickAnimation;
+var I, aRot, aDir, finRot : Integer;
+	HasEnded : Boolean;
+	aPos : TKMPoint;
+begin
+	If Length(Animations) = 0 then 
+		Exit;
+	If S.GameTime mod 10 = 0 then 
+	begin
+		for I := 0 to high(Animations) do 
+		With Animations[I] do 
+			If S.GameTime mod aMod = 0 then 
+			begin
+				aPos := S.UnitPosition(aUnit);
+				If Rotate = kdForward then 
+					aRot := 1
+				else
+					aRot := -1;
+					
+				aDir := S.UnitDirection(aUnit);
+				finRot := aDir + aRot;
+				If finRot < 0 then 
+					finRot := 7
+				else
+				If finRot > 7 then
+					finRot := 0; 
+				
+				A.UnitDirectionSet(aUnit, finRot);
+				If ToPos.X > 0 then 
+					If ToPos <> aPos then 
+						A.GroupOrderWalk(S.UnitsGroup(aUnit), ToPos.X, ToPos.Y, finRot );
+				
+				If aDir + aRot = ToDirection then 
+				If ToPos.X > 0 then 				
+				begin
+					If aPos = ToPos then 
+					begin
+						Done := true;
+						HasEnded := true;
+					end;
+				end else
+				begin
+					Done := true;
+					HasEnded := true;
+				end;
+			end;
+		If HasEnded then 
+			ClearEnded;
+	end;
+end;

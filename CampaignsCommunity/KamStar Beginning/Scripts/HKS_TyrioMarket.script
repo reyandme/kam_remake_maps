@@ -1,0 +1,6 @@
+{$EVENT evtMarketTrade : OnMarketTradeTyrio}
+Procedure OnMarketTradeTyrio(aMarket: Integer; aFrom: Integer;  aTo: Integer);
+begin
+	if (States.HouseOwner(aMarket) = 0) and (aFrom = 27) and not (aTo = 1) then
+		Actions.GiveWares(0,aFrom,1);
+end;

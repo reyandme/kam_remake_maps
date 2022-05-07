@@ -1,0 +1,35 @@
+Const PLAYER = 0;
+{$I HKS_Functions.script}
+
+procedure OnTick;
+begin
+	OnTickHero;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([0,1], true, true);
+end;
+procedure OnMissionStart;
+begin
+	SetDMod;
+	
+	SetDifficulty_RaisArmy([1, 2], [-3, 0, 3 ]);
+	AddOvMessage(0, 10);
+	
+	FillPlayerHouses([3,4,5,6], true);
+	
+	AddAutoHeros;
+	
+	SetHeroStats(18, 12, 60, 4, 2, 0, hcMalcolm);
+end;
+
+
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS20 do 
+	begin
+		for I := low(aWarriorsCount) to high(aWarriorsCount) do 
+			aWarriorsCount[I] := States.StatUnitTypeCount(PLAYER,I);
+	end;
+end;

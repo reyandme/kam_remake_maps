@@ -1,0 +1,70 @@
+var	Count:array of Integer;
+	
+Const PLAYER = 0;
+
+{$I HKS_Functions.script}
+	
+procedure Random;
+var GG2,AX,AY : Integer;
+	groups2:array of Integer;
+	aPos : TKMPoint;
+begin
+	groups2:=States.PlayerGetAllGroups(1);
+	for GG2 := 0 to length(groups2)-1 do 
+		If S.GroupIdle(groups2[GG2]) then 
+		begin
+			aPos := S.UnitPosition(S.GroupMember(groups2[GG2], 0));
+			Actions.GroupOrderWalk(groups2[GG2], aPos.X-10+States.KaMRandomI(20), aPos.Y-10+States.KaMRandomI(20),States.KaMRandomI(7));
+		end;
+end;
+
+Procedure Win;
+var XW,YW,aa,bb,r:Integer;
+begin
+	XW:=States.UnitPositionX(aHeros[0].ID);
+	YW:=States.UnitPositionY(aHeros[0].ID);
+	aa:=112
+	bb:=52
+	r:=3
+	If ((XW-aa)*(XW-aa)+(YW-bb)*(YW-bb)<=r*r) then Actions.PlayerWin([0],true);
+end;
+
+
+procedure OnTick;
+begin
+	OnTickHero;
+	
+	if States.GameTime MOD 9000 = 0 then
+		FeedPlayers([0,1,2], true, true);
+	
+	
+	If States.GameTime mod Count[dMod] = 0 then Random;
+	
+	If States.GameTime mod 20 = 0 then Win;
+end;
+
+Procedure OnMissionStart;
+begin
+	Count:= [600,300,100];
+	
+	AddOvMessage(0, 10);
+	AddOvMessage(1, 30);
+	AddOvMessage(2, 100);
+	AddOvMessage(3, 150);
+	AddOvMessage(4, 200);
+	AddOvMessage(5, 250);
+	AddOvMessage(6, 300);
+	AddMessage(7, 600);
+	
+	AddAutoHeros;
+	
+	SetHeroIDStats(aHeros[0], 20, 5, 15, 7, 100, 3, hcDyron1);//Dyron
+end;
+
+
+procedure OnPlayerVictory(aIndex: Integer);
+var I : Integer;
+begin
+	with CampaignData.HKS23 do 
+		SearchingTime := S.GameTime;
+end;

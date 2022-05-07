@@ -1,0 +1,19 @@
+
+Niektóre umiejętności można wyłączyć.
+
+Malcolm
+	"Schemat BudowaniaI" - po postawieniu budowli, automatycznie łączy je drogą z najbliższym spichrzem. Można wyłączyć.
+	"Budowniczy" - będąc obok budynku w budowie, zaczyna go budować(o ile są surowcwe) oraz naprawiać jeżeli jest uszkodzony. 
+	"Pola XL" - postawia znaczniki pól i winnic w wielkości 2x2. Można wyłączyć.
+	"Jezdnia" - postawia znaczniki drogi 2x2. Można wyłączyć.
+	
+Dyron: 
+	"Uderzenie Kinetyczne" - natychmiastowo gładzi jednostki wroga dookoła postaci oraz posiada zwiększone obrażenia przeciwko budynkom. Potrafi zniszczyć mury, jeżeli Dyron jest pod nimi (działa tylko od północy)
+
+Tyrio: 
+	"Handel" - podczas wymiany ryby na inny towar, jedna ryba wraca do najbliższego spichrza, 
+	"Łup" - za każdy zniszczony budynek nieprzyjaciela, otrzymujesz 1 deskę oraz 1 kamień do spichrza głównego,
+	"Statek" - Możesz wysyłać oddziały statkiem. Ustaw beacon/sygnał("B") na oddział, który chcesz wysłać(musi być blisko wody) i jeszcze raz sygnał ("B") w inne miejsce przy brzegu jakiejkolwiek wyspy. Czas rejsu zależy od odległości i ilości jednostek w oddziale. Maksymalna ilość jednostek mieszcząca się w statku to 16.
+	
+Generał Tamaio : 
+	"Doświadczenie" - Zwiększone statystyki od początku kampanii.

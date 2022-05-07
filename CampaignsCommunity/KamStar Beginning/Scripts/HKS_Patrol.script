@@ -1,0 +1,62 @@
+{$EVENT evtTick:OnTickPatrol}
+
+type 
+	KD_Patrol = record 
+		aPos1, aPos2 : TKMPoint;
+		aID : Integer;
+		aMode, aSaturated : Boolean;
+	end;
+	
+var Patrolls : array of KD_Patrol;	
+
+
+procedure AddNewPatrol(aGroup : Integer; aPos1,aPos2 : TKMPoint);
+var J : Integer;
+begin
+	J := Length(Patrolls);
+	SetLength(Patrolls, J + 1);
+	Patrolls[J].aID := aGroup;
+	Patrolls[J].aPos1 := aPos1;
+	Patrolls[J].aPos2 := aPos2;
+	Patrolls[J].aSaturated := true;
+	with Patrolls[J] do
+		A.GroupOrderWalk(aID, aPos2.X, aPos2.Y, S.KaMRandomI(8));
+
+end;
+
+procedure CreateNewPatrol(aPlayer,aType,aCount,aColumns : Integer; aPos1,aPos2 : TKMPoint);
+begin
+	AddNewPatrol(A.GiveGroup(aPlayer,aType,aPos1.X,aPos1.Y, 0, aCount,aColumns), aPos1,aPos2);
+
+end;
+
+
+procedure OnTickPatrol;
+var I : Integer;
+begin
+	If Length(Patrolls) = 0 then 
+		Exit; 
+		
+		
+	If S.GameTime mod 600 = 0 then 
+	begin		
+		for I := 0 to high(Patrolls) do 
+			with Patrolls[I] do
+			begin
+				If not S.GroupDead(aID) then 
+					If S.GroupIdle(aID) then 
+						If not aMode then 
+						begin
+							A.GroupOrderWalk(aID, aPos1.X, aPos1.Y, S.KaMRandomI(8))
+							aMode := not aMode;
+						end	else
+						begin
+							A.GroupOrderWalk(aID, aPos2.X, aPos2.Y, S.KaMRandomI(8))
+							aMode := not aMode;
+						end;
+				If aSaturated then 
+					A.GroupHungerSet(aID, 27000);
+			end;
+		
+	end;
+end;

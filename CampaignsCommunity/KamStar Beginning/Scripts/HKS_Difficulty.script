@@ -1,0 +1,32 @@
+
+
+
+
+Procedure SetDifficulty_EquipDelay(aPlayers, aType, aDelay : array of Integer; aMultiplier : array of Single);
+var I : Integer;
+	aMLP : Single;
+begin
+	aMLP := aMultiplier[dMod];
+	for I := 0 to high(aPlayers) do 
+		A.AIEquipRate(aPlayers[I], aType[I], U.FloorTo(aDelay[I] * aMLP, 1) ); 
+		
+end;
+
+Procedure SetDifficulty_RecruitDelay(aPlayers, aDelay : array of Integer; aMultiplier : array of Single);
+var I : Integer;
+	aMLP : Single;
+begin
+	aMLP := aMultiplier[dMod];
+	for I := 0 to high(aPlayers) do 
+		A.AIRecruitDelay(aPlayers[I], U.FloorTo(aDelay[I] * aMLP, 1) ); 
+		
+end;
+
+Procedure SetDifficulty_RaisArmy(aPlayers, aCount: array of Integer);
+var I : Integer;
+	aMLP : Single;
+begin
+	for I := 0 to high(aPlayers) do 
+		RaisPlayerArmy(aPlayers[I], aCount[dMod]);
+		
+end;
