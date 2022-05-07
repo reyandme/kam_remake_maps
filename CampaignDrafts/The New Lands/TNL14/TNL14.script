@@ -35,7 +35,7 @@ AttackersCreated: Boolean;
 Xbow5, Xbow6: Integer;
 CreateEvilArmy1, CreateEvilArmy2, CreateEvilArmy3, CreateEvilArmy4: Integer;
 CreateGoodArmy1, CreateGoodArmy2, CreateGoodArmy3, CreateGoodArmy4, CreateGoodArmy5, CreateGoodArmy6, CreateGoodArmy7: Integer;
-U2, U10: Integer;
+U1, U2, U10: Integer;
 BriefingDelay2: Integer;
 WarningSent: Boolean;
 Stonemason: Integer;
@@ -406,10 +406,15 @@ begin
 			Actions.OverlayTextSet(0, '<$7>');
 			VisitedWolfbite := true;
 			Actions.GroupOrderWalk(Player2, 160, 215, 4);
+      A.GroupBlockOrders(Player2, True);
 			WolfbiteDelay2 := States.GameTime;
 			WolfbiteTextDelay1 := States.GameTime;
 			WolfbiteFight1 := true;
 		end;
+    if  (WolfbiteFightStarted = false) and (States.GameTime > WolfbiteDelay2 + 20) then
+    begin
+      A.GroupBlockOrders(Player2, False);
+    end;
 		if  (WolfbiteFightStarted = false) and (States.GameTime > WolfbiteDelay2 + 30) and (((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Player) - 1)) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster) + 1) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) + 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = States.UnitPositionX(Boaster)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) + 1))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = States.UnitPositionY(Boaster))) or ((States.UnitPositionX(Player) = (States.UnitPositionX(Boaster) - 1)) and (States.UnitPositionY(Player) = (States.UnitPositionY(Boaster) - 1)))) and (VisitedWolfbite = true) then
 		begin
 			ShowOverlayText := true;
@@ -785,8 +790,8 @@ begin
 
 		if States.GroupIdle(Xbow5) then
 		begin
-			U := ClosestUnit(4, 56, 196);
-			Actions.GroupOrderAttackUnit(Xbow5, U);
+			U1 := ClosestUnit(4, 56, 196);
+			Actions.GroupOrderAttackUnit(Xbow5, U1);
 		end;
 		if States.GroupIdle(Xbow6) then
 		begin
