@@ -39,6 +39,8 @@ U1, U2, U10: Integer;
 BriefingDelay2: Integer;
 WarningSent: Boolean;
 Stonemason: Integer;
+PlayerPos: TKMPoint;
+PlayerDir: TKMDirection;
 
 //********************
 //FOOD BONUS SCRIPT
@@ -424,8 +426,12 @@ begin
       WolfbiteDelay3 := States.GameTime;
       WolfbiteTextDelay2 := States.GameTime;
       WolfbiteFight2 := true;
+      A.UnitHPSetInvulnerable(Player, True);
+      A.UnitHPSetInvulnerable(Boaster, True);
+      PlayerPos := S.UnitPosition(Player);
+      PlayerDir := S.UnitDirectionEx(Player);
     end;
-    if (WolfbiteFightStarted = true) and (States.GameTime > WolfbiteDelay3 + 40) and (WolfbiteFight3 = false) then
+    if (WolfbiteFightStarted = true) and (States.GameTime > WolfbiteDelay3 + 200) and (WolfbiteFight3 = false) then
     begin
       ShowOverlayText := true;
       Actions.PlayerAllianceChange(0, 3, True, True);
@@ -441,6 +447,9 @@ begin
       Actions.FogCoverCircle(0, 100, 199, 5);
       Actions.FogCoverCircle(0, 25, 83, 10);
       WolfbiteFight3 := true;
+      A.GroupOrderWalkEx(Player2, PlayerPos.X, PlayerPos.Y, PlayerDir);
+      A.UnitHPSetInvulnerable(Player, False);
+      A.UnitHPSetInvulnerable(Boaster, False);
     end;
 
     if (States.GameTime = (WolfbiteTextDelay1 + 150)) and (WolfbiteFight1 = true) then
