@@ -1,0 +1,56 @@
+var  iStorehouse : Integer;
+var I,K: Integer;
+
+//script autofeed is from grayter
+procedure AutoFeed;
+var
+  UnitsToFeed: array of Integer;
+begin
+  for I := 6 to 6 do
+  begin
+    if States.PlayerEnabled(I) then
+      UnitsToFeed := States.PlayerGetAllUnits(I);
+    for K := 0 to length(UnitsToFeed) - 1 do
+      Actions.UnitHungerSet(UnitsToFeed[K], States.UnitMaxHunger);
+  end;
+end;
+
+procedure OnTick;
+begin
+if States.GameTime mod 120 = 0 then
+    Autofeed;
+	
+if States.GameTime = 10 then
+Actions.ShowMsg(0,'<$1>');	
+	
+	
+	
+	
+	
+
+end;	
+
+ procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+ begin
+ 
+ if (aHouseID = States.HouseAt(41, 102)) then
+	begin
+  Actions.ShowMsg(0,'<$0>');
+  Actions.HouseAddWaresTo(iStorehouse, 7, 50);
+  Actions.HouseAddWaresTo(iStorehouse, 17, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 19, 20);
+  Actions.HouseAddWaresTo(iStorehouse, 21, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 23, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 25, 10);
+  Actions.HouseAddWaresTo(iStorehouse, 3, 50);
+ 
+ 
+ 
+ end;
+ end;
+ procedure OnMissionStart;
+ begin
+ 
+ iStorehouse := States.HouseAt(33,148);
+ 
+ end;

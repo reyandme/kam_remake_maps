@@ -1,0 +1,151 @@
+var  iMain, iAdd,iRandom: Integer;
+var iX, iY, iD, iGiveG, iGiveU: Integer;
+var  bGiveNext: Boolean;
+
+//script onwarriorequipped is from grayter
+ procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+var  UnitKill : Integer;
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+var len : Integer;
+var arrayUnit : array of array[0..2] of Integer;
+var current : Integer;
+begin
+	typeU := States.UnitType(aUnitID);
+	 if (((typeU = 15) or (typeU = 19)) or (typeU = 17) and (States.UnitOwner(aUnitID) = 3)) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		if typeU = 15 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(States.UnitOwner(aUnitID), 23, tempX, tempY, 4, 1, 1);
+		end
+		else if typeU = 19 then
+		begin
+			typeU := 24;
+			temporary := Actions.GiveGroup(States.UnitOwner(aUnitID), 24, tempX, tempY, 4, 1, 1);		
+		end;
+		if typeU = 17 then
+		begin
+			typeU := 25;
+			temporary := Actions.GiveGroup(3, 25, tempX, tempY, 4, 1, 1);
+			end;
+		len := len +1;
+		SetLength(arrayUnit, len);
+		arrayUnit[len-1][0] := temporary;
+		arrayUnit[len-1][1] := States.GameTime;
+		arrayUnit[len-1][2] := typeU;
+		Actions.UnitKill(aUnitID, True);
+	end; 
+	end;
+procedure OnTick;
+begin
+  if States.GameTime = 80 then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+	Actions.PlayerAllianceChange(0, 3, true, true);
+	end;
+    if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 15, 130, 75, 6, 20, 5);
+	if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 20, 130, 79, 6, 10, 4);
+	if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 19, 129, 82, 6, 17, 5);
+	if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 17, 131, 70, 6, 12, 4);
+	if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 27, 124, 75, 6, 15, 5);
+	if States.GameTime = 33000 then
+	Actions.GiveGroup(4, 21, 123, 82, 6, 12, 4);
+	
+	
+	
+    if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 15, 130, 75, 6, 26, 5);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 20, 130, 79, 6, 20, 6);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 19, 129, 82, 6, 20, 5);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 17, 131, 70, 6, 18, 4);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 27, 124, 75, 6, 15, 5);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(4, 21, 123, 82, 6, 12, 4);
+	
+	
+	
+	if States.GameTime = 83000 then
+	Actions.GiveGroup(4, 15, 130, 75, 6, 26, 5);
+	if States.GameTime = 83000 then
+	Actions.GiveGroup(4, 20, 130, 79, 6, 20, 6);
+	if States.GameTime = 83000 then
+	Actions.GiveGroup(4, 19, 129, 82, 6, 20, 5);
+	if States.GameTime = 83000 then
+	Actions.GiveGroup(4, 17, 131, 70, 6, 18, 4);
+	
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 15, 130, 75, 6, 26, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 20, 130, 79, 6, 20, 6);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 19, 129, 82, 6, 20, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 17, 131, 70, 6, 18, 4);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 23, 124, 75, 6, 15, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(4, 24, 123, 82, 6, 20, 6);
+	
+	
+	
+	
+    if States.GameTime = 42000 then
+	Actions.GiveGroup(2, 16, 115, 16, 6, 12, 3);
+	if States.GameTime = 42000 then
+	Actions.GiveGroup(2, 20, 116, 20, 6, 12, 4);
+	if States.GameTime = 42000 then
+	Actions.GiveGroup(2, 18, 117, 13, 6, 16, 4);
+	if States.GameTime = 42000 then
+	Actions.GiveGroup(2, 22, 197, 17, 6, 10, 3);
+	
+	
+    if States.GameTime = 75000 then
+	Actions.GiveGroup(3, 14, 71, 63, 2, 13, 5);
+	if States.GameTime = 75000 then
+	Actions.GiveGroup(3, 23, 71, 58, 2, 8, 4);
+	if States.GameTime = 75000 then
+	Actions.GiveGroup(3, 25, 76, 64, 1, 4, 2);
+	if States.GameTime = 75000 then
+	Actions.GiveGroup(3, 24, 76,65, 1, 7, 4);
+end;
+
+
+procedure OnMissionStart;
+ begin
+ 
+iMain := Actions.GiveGroup(0, 15, 37, 50, 4, 9, 3);
+  iAdd := Actions.GiveGroup(0, 23, 37, 48, 4, 3, 2);
+  Actions.GroupOrderLink(iAdd, iMain);
+
+iMain := Actions.GiveGroup(0, 18, 44, 47, 4, 9, 3);
+  iAdd := Actions.GiveGroup(0, 17, 44, 45, 4, 3, 2);
+  Actions.GroupOrderLink(iAdd, iMain);
+
+ 
+ iMain := Actions.GiveGroup(0, 19, 43, 52, 4, 2, 4);
+  iAdd := Actions.GiveGroup(0, 20, 43, 50, 4, 7, 4);
+  Actions.GroupOrderLink(iAdd, iMain);
+  
+ iMain := Actions.GiveGroup(3, 14, 70, 77, 2, 9, 5);
+  iAdd := Actions.GiveGroup(3, 23, 69, 77, 2, 6, 5);
+  Actions.GroupOrderLink(iAdd, iMain);
+ 
+ iMain := Actions.GiveGroup(3, 14, 81, 79, 1, 11, 5);
+  iAdd := Actions.GiveGroup(3, 23, 81, 80, 1, 4, 5);
+  Actions.GroupOrderLink(iAdd, iMain); 
+	
+end;	

@@ -1,0 +1,134 @@
+﻿var iMain,iAdd,i, rX, rY, w , iBarbarian , iMilitia , iRouge , iLanceCarrier , iRebel,iVagabondd : Integer;
+var bStarted: Boolean;
+
+procedure OnTick;
+begin
+
+
+  if States.GameTime = 10 then
+    Actions.ShowMsg(0, '<$0>');
+		
+  
+  if States.GameTime = 10000 then
+	Actions.GiveGroup(0, 23, 18, 50, 2, 12, 4);
+	
+  
+  if States.GameTime = 10000 then 
+    Actions.ShowMsg(0, '<$1>');
+	
+  if (States.GroupDead(iVagabondd))
+  AND (bStarted = false)
+  then begin
+  bStarted := true;
+  Actions.ShowMsg(0,'<$3>');
+  Actions.GiveGroup(2,14,40,10,1,12,4);
+  Actions.GiveGroup(2,15,48,8,7,12,4);
+  Actions.GiveGroup(2,14,44,10,0,9,3);
+  Actions.GiveGroup(2,23,42,58,0,12,4);
+  Actions.GiveGroup(2,23,51,56,0,12,4);
+  Actions.GiveGroup(2,14,58,56,7,9,3);
+  end;
+	
+	if bStarted = true
+  then begin
+  end;
+	
+  end;
+	
+  
+procedure OnMissionStart;
+var iMain, iAdd,iVagabond: Integer;
+begin
+  iMain := Actions.GiveGroup(0, 21, 18, 49, 2, 4, 2);
+  iAdd := Actions.GiveGroup(0, 22, 20, 49, 2, 5, 3);
+  Actions.GroupOrderLink(iAdd, iMain);
+  //Actions.GroupHungerSet(iMain);
+ 
+  iMain := Actions.GiveGroup(0, 23, 23, 47, 2, 6, 3);
+  iAdd := Actions.GiveGroup(0, 15, 22, 47, 2, 2, 2);
+  Actions.GroupOrderLink(iAdd, iMain);
+  //Actions.GroupHungerSet(iMain);
+ 
+ iMain := Actions.GiveGroup(0, 18, 18, 42, 2, 4, 2);
+  iAdd := Actions.GiveGroup(0, 17, 18, 41, 2, 6, 3);
+  Actions.GroupOrderLink(iAdd, iMain);
+  //Actions.GroupHungerSet(iMain);
+  
+  iMain := Actions.GiveGroup(1, 16, 43, 41, 0, 5, 3);
+  iAdd := Actions.GiveGroup(1, 23, 45, 41, 0, 5, 1);
+  Actions.GroupOrderLink(iAdd, iMain);
+  iAdd := Actions.GiveGroup(1, 16, 38, 33, 0, 8, 3);
+  iAdd := Actions.GiveGroup(1, 23, 38, 31, 0, 5, 2);
+  Actions.GroupOrderLink(iAdd, iMain);
+  
+  iMain := Actions.GiveGroup(1, 18, 47, 41, 6, 4, 3);
+  iAdd := Actions.GiveGroup(1, 17, 47, 42, 6, 4, 1);
+  Actions.GroupOrderLink(iAdd, iMain);
+  iAdd := Actions.GiveGroup(1, 25, 47, 39, 6, 7, 3);
+  Actions.GroupOrderLink(iAdd, iMain);
+  
+ iVagabondd := States.GroupAt(42,2);
+     
+ bStarted := false;	 
+end;
+ procedure OnHouseBuilt(aHouseID: Integer);
+ begin
+ Actions.GiveWeapons(0,21,1)
+ Actions.GiveWeapons(0,19,1)
+ Actions.GiveWeapons(0,17,1)
+end;
+//script onhousedestroyed is from grayter
+ procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+ var units: array of integer;
+ var i, rX, rY, w,iBarbarian , iMilitia , iRouge , iLanceCarrier , iRebel : integer;  
+begin
+
+   //OnBarracksDestroyed
+   if States.HouseType(aHouseID) = 21 then
+	begin
+		 units := States.PlayerGetAllUnits(1);
+		 if (Length(units) > 10) then Actions.ShowMsg(0, '<$2>');
+		 for i:=0 to Length(units) - 1 do
+		 if (States.UnitType(units[i]) < 14) then
+			          begin
+					  rX := States.UnitPositionX(units[i]);
+					  rY := States.UnitPositionY(units[i]);
+					  Actions.UnitKill(units[i], true);
+					  w := Actions.GiveGroup(2, 14,rX, rY, 0, 1, 1);
+				      //Actions.GroupOrderAttackUnit(i,rX,rY,w);  
+	end;				
+   end;
+                      
+
+   //OnTowerDestroyed
+	if (aHouseID = States.HouseAt(43, 37)) then
+	begin
+	iBarbarian := Actions.GiveGroup(2, 23, 40, 40, 2, 6, 3);
+   iBarbarian := Actions.GiveGroup(2, 23, 48, 40, 6, 9, 3);
+   iMilitia := Actions.GiveGroup(2, 14, 50, 40, 6, 12, 4);
+   iBarbarian := Actions.GiveGroup(2, 23, 28, 41, 6, 9, 3);
+   iRouge := Actions.GiveGroup(2, 25, 42,45, 0, 8, 2); 
+   iRouge := Actions.GiveGroup(2, 25, 40, 37, 4, 8, 2);
+   iLanceCarrier := Actions.GiveGroup(2, 19, 46, 38, 5, 6, 2);
+   iRebel := Actions.GiveGroup(2, 24, 46, 45, 5, 9, 3); 
+  //Actions.GroupOrderAttackUnit(iBarbarian , iMilitia , iRouge , iLanceCarrier , iRebel);
+  end;
+end;
+
+  
+
+//script onwarriorequipped is from grayter	
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+var iGroup : Integer;
+begin
+	if (States.UnitOwner(aUnitID) = 1) then
+		begin
+			Actions.UnitKill(aUnitID, true);
+			iGroup := Actions.GiveGroup(1, 23, 55, 28, 4, 1, 1);
+			Actions.GroupOrderLink(iGroup, aGroupID);
+		end;
+end;	
+	
+
+
+  

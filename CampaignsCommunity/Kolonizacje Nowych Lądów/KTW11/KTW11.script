@@ -1,0 +1,317 @@
+const resourcesMaxCount = 27;
+var iBaracks,iStore,iCoal, iGold, iIron ,iAxeFighter,iLanceCarier,iMilitia,iVagabond,iTicks: Integer;
+var V,K,E,iA,iB,iC,iGiveG, iGiveU,iRandom: Integer;
+var  unitsArrived, housesRepaired,attack,portIsTaken,ownerChangedBefore, ownerChangedAfter,bGiveNext,bStarted: Boolean;
+var houses, iGroups : array of Integer;
+
+//script changeowners is from grayter
+procedure ChangeOwners;
+var x, y, t, d, i, j : Integer;
+var houseRes: array[0..resourcesMaxCount] of Integer;
+begin
+	houses := States.PlayerGetAllHouses(1);
+	for i := 0 to Length(houses) - 1 do
+		begin
+			x := States.HousePositionX(houses[i]);
+			y := States.HousePositionY(houses[i]);
+			t := States.HouseType(houses[i]);
+			d := States.HouseDamage(houses[i]);
+			for j := 0 to resourcesMaxCount do houseRes[j] := States.HouseResourceAmount(houses[i], j);
+			Actions.HouseDestroy(houses[i], true);
+			houses[i] := Actions.GiveHouse(0, t, x, y);
+			Actions.HouseAddDamage(houses[i], d);
+			for j := 0 to resourcesMaxCount do
+				if (houseRes[j] > 0) then Actions.HouseAddWaresTo(houses[i], j, houseRes[j]);
+		end;
+	ownerChangedAfter := true;
+end;
+
+//script autofeed is from grayter
+procedure AutoFeed;
+var
+  UnitsToFeed: array of Integer;
+begin
+  for V := 2 to 5 do
+  begin
+    if States.PlayerEnabled(V) then
+      UnitsToFeed := States.PlayerGetAllUnits(V);
+    for K := 0 to length(UnitsToFeed) - 1 do
+      Actions.UnitHungerSet(UnitsToFeed[K], States.UnitMaxHunger);
+  end;
+end;
+//script is from grayter
+procedure OnTick;
+var sTime: AnsiString;
+var i, j, c, iHours, iMinutes, iSecs: Integer;
+begin
+if States.GameTime mod 120 = 0 then
+    Autofeed;
+if States.GameTime = 10 then
+Actions.ShowMsg(0,'<$0>');
+if States.GameTime = 20 then
+Actions.ShowMsg(0,'<$10>');
+
+	if States.GameTime = 8000 then
+	Actions.GiveGroup(6,17,154,19,6,14,4);
+	if States.GameTime = 8000 then
+    Actions.GiveGroup(6,14,151,20,6,20,6);
+	if States.GameTime = 8000 then
+	Actions.GiveGroup(6,15,155,17,5,12,3);
+
+	if States.GameTime = 10000 then
+	Actions.GiveGroup(6,17,154,19,6,14,4);
+	if States.GameTime = 10000 then
+    Actions.GiveGroup(6,23,151,20,6,12,4);
+	if States.GameTime = 10000 then
+	Actions.GiveGroup(6,15,155,17,5,12,3);
+	if States.GameTime = 10000 then
+	Actions.GiveGroup(6,19,158,19,5,12,3);
+
+	if States.GameTime = 13000 then
+	Actions.GiveGroup(6,25,154,19,6,20,4);
+	if States.GameTime = 13000 then
+    Actions.GiveGroup(6,14,151,20,6,20,4);
+	if States.GameTime = 13000 then
+	Actions.GiveGroup(6,15,155,17,5,9,3);
+	if States.GameTime = 13000 then
+	Actions.GiveGroup(6,23,158,19,5,12,3);
+
+	if States.GameTime = 16000 then
+	Actions.GiveGroup(6,14,154,19,6,12,4);
+	if States.GameTime = 16000 then
+    Actions.GiveGroup(6,14,151,20,6,12,4);
+	if States.GameTime = 16000 then
+	Actions.GiveGroup(6,15,155,17,5,12,3);
+	if States.GameTime = 16000 then
+	Actions.GiveGroup(6,23,158,19,5,12,3);
+
+	if States.GameTime = 21000 then
+	Actions.GiveGroup(6,25,154,19,6,12,4);
+	if States.GameTime = 21000 then
+    Actions.GiveGroup(6,14,151,20,6,15,4);
+	if States.GameTime = 21000 then
+	Actions.GiveGroup(6,15,155,17,5,15,3);
+	if States.GameTime = 21000 then
+	Actions.GiveGroup(6,14,158,19,5,12,3);
+
+
+
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,25,154,19,6,20,4);
+	if States.GameTime = 96500 then
+    Actions.GiveGroup(5,14,151,20,6,20,4);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,15,155,17,5,22,6);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,23,158,19,5,22,6);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,14,139,19,5,22,6);
+
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,26,132,23,5,18,3);
+	if States.GameTime = 96500 then
+    Actions.GiveGroup(5,16,128,25,5,16,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,19,146,19,6,15,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,20,121,30,5,15,5);
+
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,17,154,59,6,20,5);
+	if States.GameTime = 96500 then
+    Actions.GiveGroup(5,15,145,57,6,20,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,19,149,66,6,20,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,20,156,62,6,15,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,23,153,65,6,15,5);
+
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,21,154,67,6,16,5);
+	if States.GameTime = 96500 then
+    Actions.GiveGroup(5,21,155,79,0,16,5);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,22,146,82,7,12,4);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,27,141,65,6,22,6);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,27,135,50,6,18,6);
+	if States.GameTime = 96500 then
+	Actions.GiveGroup(5,21,125,45,6,18,6);
+
+
+
+
+
+	 begin
+	bStarted := true;
+    end;
+
+
+  if bStarted = true
+  then begin
+	if(iTicks >= 0) then
+		iTicks := iTicks - 1;
+		iHours := (iTicks / 600) / 60;
+		iMinutes := (iTicks / 600) - (iHours * 60);
+		iSecs := (iTicks / 10) - (iMinutes * 60);
+        if iHours > 0 then begin
+			sTime := '<$5>: ' + IntToStr(iHours) + ' <$6>';
+			if iMinutes <> 0 then sTime := sTime + ', ' + IntToStr(iMinutes) + ' <$7>'
+		end else begin
+			sTime := '<$5>: ' + IntToStr(iMinutes) + ' <$7>';
+		end;
+		if (iMinutes <= 10)
+		AND(iHours <= 0)
+		then begin
+			sTime := sTime + ', ' + IntToStr(iSecs) + ' <$8>';
+		end;
+	Actions.OverlayTextSet(0, '<$1>: |'
+	+ '<$2>: ' + IntToStr(States.HouseResourceAmount(iStore, 8)) + '/' + IntToStr(iGold) + '|'
+	+ '<$3>: ' + IntToStr(States.HouseResourceAmount(iStore, 10)) + '/' + IntToStr(iIron) + '|'
+	+ '<$4>: ' + IntToStr(States.HouseResourceAmount(iStore, 13)) + '/' + IntToStr(iCoal) + '|'
+	+ '<$9>: ' + IntToStr(States.HouseResourceAmount(iStore, 27)) + '/' + IntToStr(iCoal) + '|'
+	+ '|' + sTime);
+
+	if (States.HouseDestroyed(iBaracks)) and (States.GameTime mod 12 = 0)  and (bStarted = false) then
+		begin
+		for i := 1 to 1 do
+			begin
+				iGroups := States.PlayerGetAllGroups(i);
+				for j := 0 to Length(iGroups) - 1 do
+					begin
+						if not States.GroupDead(iGroups[j]) then Actions.GroupOrderWalk(iGroups[j], 48, 57, 7);
+					end;
+			end;
+		c := Length(States.PlayerGetAllGroups(1));
+		attack := c = 0;
+		end;
+		begin
+		bStarted := true;
+		end;
+
+	if ((States.StatArmyCount(1) = 0) and (portIsTaken = false)) then
+		begin
+			Actions.PlayerAllianceChange(0, 1, true, true);
+			portIsTaken := true;
+		end;
+
+	if ((portIsTaken = true) and  (ownerChangedBefore = false)) then
+		begin
+			ownerChangedBefore := true;
+			ChangeOwners;
+			Actions.ShowMsg(0, '<$11>');
+		end;
+
+	end;
+
+  if((iGiveU <> -1)
+  AND(States.UnitDead(iGiveU)))
+  then begin
+    if bGiveNext then
+    begin
+        bGiveNext := false;
+        iGiveU := -1;
+        E := Actions.GiveGroup(0, 24, iA, iB, iC, 1, 1);
+        if not States.GroupDead(iGiveG) then
+          Actions.GroupOrderLink(E, iGiveG);
+    end
+    else
+      bGiveNext := true;
+  end;
+
+	if((States.GameTime > 96500)
+    AND (States.StatArmyCount(5) = 0))
+	then Actions.PlayerWin([0], false);
+
+	 if (States.HouseDestroyed(iStore))
+	then Actions.PlayerDefeat(0);
+
+
+	end;
+
+procedure OnMissionStart;
+begin
+
+Actions.GiveHouse(1,23,87,109);
+Actions.GiveHouse(3,23,147,101);
+
+
+ iTicks := 96500;
+ bStarted := false;
+ iStore := States.HouseAt(39, 33);
+ iBaracks := States.HouseAt(100,112);
+ attack := false;
+ portIsTaken := false;
+ ownerChangedBefore := false;
+ ownerChangedAfter := false;
+ unitsArrived := false;
+ housesRepaired := false;
+
+    iMilitia := States.GroupAt(16, 90);
+    iAxeFighter := States.GroupAt(18, 87);
+	iLanceCarier := States.GroupAt(32, 86);
+	iVagabond	:= States.GroupAt(40,86);
+
+
+
+  bGiveNext := false;
+  iRandom := 5;
+  iGiveU := -1;
+
+
+end;
+
+//script onwarriorequipped is from grayter
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+var iGroup : Integer;
+begin
+	if (States.UnitOwner(aUnitID) = 3) then
+		begin
+			Actions.UnitKill(aUnitID, true);
+			iGroup := Actions.GiveGroup(3, 23, 143, 109, 4, 1, 1);
+			Actions.GroupOrderLink(iGroup, aGroupID);
+	end;
+	if States.GroupOwner(aGroupID) = 0
+	then begin
+		if States.KaMRandomI(iRandom) = 0
+		then begin
+			iRandom := iRandom + 1;
+			if iRandom > 5 then iRandom := 5;
+			iA := States.UnitPositionX(aUnitID);
+			iB := States.UnitPositionY(aUnitID);
+			iC := States.UnitDirection(aUnitID);
+			Actions.UnitKill(aUnitID, true);
+			iGiveG := aGroupID;
+			iGiveU := aUnitID;
+		end else begin
+			iRandom := iRandom - 1;
+			if iRandom < 1 then iRandom := 1;
+		end;
+	end;
+
+
+
+
+end;
+
+
+
+
+
+//script housedamage is from grayter
+function CheckHousesDamage : AnsiString;
+var i : Integer;
+begin
+	houses := States.PlayerGetAllHouses(0);
+	housesRepaired := true;
+	for i:= 0 to Length(houses) - 1 do
+		begin
+			if (States.HouseDamage(houses[i]) > 0) then
+				begin
+					housesRepaired := false;
+					break;
+				end;
+		end;
+end;

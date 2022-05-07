@@ -1,0 +1,83 @@
+//script onwarriorequipped is from grayter
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+var iGroup : Integer;
+begin
+	if (States.UnitOwner(aUnitID) = 3) then
+		begin
+			Actions.UnitKill(aUnitID, true);
+			iGroup := Actions.GiveGroup(3, 23, 92, 22, 4, 1, 1);
+			Actions.GroupOrderLink(iGroup, aGroupID);
+		end;
+end;
+
+procedure OnTick;
+begin
+
+if States.GameTime = 36000 then
+	Actions.GiveGroup(1, 15, 124, 47, 6, 11, 4);
+	if States.GameTime = 36000 then
+	Actions.GiveGroup(1, 23, 124,49, 6, 9, 3);
+	if States.GameTime = 36000 then
+	Actions.GiveGroup(1, 25, 122, 44, 6, 13, 5);
+	if States.GameTime = 36000 then
+	Actions.GiveGroup(1, 19, 120, 47, 6, 10, 3);
+	if States.GameTime = 36000 then
+	Actions.GiveGroup(1, 24, 117, 48, 6, 14, 3);
+	
+	if States.GameTime = 50000 then
+	Actions.GiveGroup(1, 15, 124, 47, 6, 20,6);
+	if States.GameTime = 50000 then
+	Actions.GiveGroup(1, 16, 124,49, 6, 16, 4);
+	if States.GameTime = 50000 then
+	Actions.GiveGroup(1, 17, 122, 44, 6, 18, 6);
+	if States.GameTime = 50000 then
+	Actions.GiveGroup(1, 19, 120, 47, 6, 12, 3);
+	if States.GameTime = 50000 then
+	Actions.GiveGroup(1, 20, 117, 48, 6, 9, 3);
+	
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(1, 15, 124, 47, 6, 20,6);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(1, 16, 124,49, 6, 16, 4);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(1, 17, 122, 44, 6, 18, 6);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(1, 19, 120, 47, 6, 12, 3);
+	if States.GameTime = 70000 then
+	Actions.GiveGroup(1, 20, 117, 48, 6, 9, 3);
+	
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 27, 39, 39,4, 18, 6);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 14, 45,39, 4, 16, 5);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 15, 35,40, 4, 11, 3);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 24, 51, 40, 4, 12, 4);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 19, 48, 44, 4, 9, 3);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 17, 29,39, 4, 9, 3);
+	if States.GameTime = 78000 then
+	Actions.GiveGroup(4, 24, 48,38, 4, 22, 6);
+	
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 27, 39, 39,4, 18, 6);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 14, 45,39, 4, 16, 5);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 15, 35,40, 4, 11, 3);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 24, 51, 40, 4, 12, 4);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 19, 48, 44, 4, 12, 3);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 17, 29,39, 4, 12, 3);
+	if States.GameTime = 98000 then
+	Actions.GiveGroup(4, 24, 48,38, 4, 22, 6);
+
+	if States.GameTime = 10 then
+	Actions.ShowMsg(0,'<$1>');
+	if States.GameTime = 10000 then
+	Actions.ShowMsg(0,'<$2>');
+end;

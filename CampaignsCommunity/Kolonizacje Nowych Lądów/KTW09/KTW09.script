@@ -1,0 +1,124 @@
+var iAxeFighter,iBarbarian,iBowMan,iKnight,iMilitia,iRebel,iRebeliant,iRouge,iRougee,iStorehouse,iBaracks:Integer;
+var bStarted: Boolean;
+var I,K: Integer;
+
+//script autofeed is from grayter
+procedure AutoFeed;
+var
+  UnitsToFeed: array of Integer;
+begin
+  for I := 3 to 3 do
+  begin
+    if States.PlayerEnabled(I) then
+      UnitsToFeed := States.PlayerGetAllUnits(I);
+    for K := 0 to length(UnitsToFeed) - 1 do
+      Actions.UnitHungerSet(UnitsToFeed[K], States.UnitMaxHunger);
+  end;
+end;
+
+procedure OnTick;
+begin
+if States.GameTime mod 120 = 0 then
+    Autofeed;
+
+	
+	if (States.GroupDead(iBarbarian))
+	AND (States.GroupDead(iMilitia))
+	AND (States.GroupDead(iAxeFighter))
+	AND (States.GroupDead(iKnight))
+	AND (States.GroupDead(iBowMan))
+	AND (States.GroupDead(iRebel))
+	AND (States.GroupDead(iRebeliant))
+	AND (States.GroupDead(iRouge))
+	AND (States.GroupDead(iRougee))
+	AND (bStarted = false)
+  then begin
+  bStarted := true;
+  Actions.ShowMsg(0,'<$0>');
+  Actions.HouseAddWaresTo(iStorehouse, 7, 45);
+  Actions.HouseAddWaresTo(iStorehouse, 16, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 18, 20);
+  Actions.HouseAddWaresTo(iStorehouse, 20, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 22, 5);
+  Actions.HouseAddWaresTo(iStorehouse, 24, 10);
+  Actions.HouseAddWaresTo(iStorehouse, 26, 10);
+  Actions.HouseAddWaresTo(iStorehouse, 0, 30);
+  end;
+	
+	if bStarted = true
+  then begin	
+end;
+
+	if States.GameTime = 10 then
+	Actions.ShowMsg(0,'<$1>');
+	
+	
+	if States.GameTime = 120000 then
+	Actions.GiveGroup(1, 16, 14, 7,4, 12, 6);
+	if States.GameTime = 124000 then
+	Actions.GiveGroup(1, 18, 19, 6,4, 15, 5);
+	if States.GameTime = 124000 then
+	Actions.GiveGroup(1, 20, 20, 12,4, 12, 5);
+	if States.GameTime = 124000 then
+	Actions.GiveGroup(1, 16, 18, 3,4, 15, 6);
+	
+	if States.GameTime = 54000 then
+	Actions.GiveGroup(1, 16, 14, 7,4, 18, 6);
+	if States.GameTime = 54000 then
+	Actions.GiveGroup(1, 18, 19, 6,4, 15, 5);
+	if States.GameTime = 54000 then
+	Actions.GiveGroup(1, 20, 20, 12,4, 18, 5);
+	if States.GameTime = 54000 then
+	Actions.GiveGroup(1, 16, 18, 3,4, 14, 6);
+	
+	if States.GameTime = 72000 then
+	Actions.GiveGroup(1, 16, 14, 7,4, 20, 6);
+	if States.GameTime = 72000 then
+	Actions.GiveGroup(1, 18, 19, 6,4, 18, 5);
+	if States.GameTime = 72000 then
+	Actions.GiveGroup(1, 20, 20, 12,4, 18, 5);
+	if States.GameTime = 72000 then
+	Actions.GiveGroup(1, 16, 18, 3,4, 20, 6);
+	
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 14, 119, 5,4, 20, 6);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 15, 111, 4,4, 18, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 23, 121, 15,4, 18, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 17, 120, 10,4, 20, 6);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 24, 102, 5,4, 20, 5);
+	if States.GameTime = 100000 then
+	Actions.GiveGroup(3, 19, 118,19,4, 20, 6)
+	
+		
+	
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+ if  aHouseID = iBaracks then
+	 begin
+	Actions.PlayerWin([0], false);
+	end;
+end;
+procedure OnMissionStart;
+begin
+
+ iBarbarian := States.GroupAt(117, 125);
+ iMilitia := States.GroupAt(111, 125);
+ iAxeFighter := States.GroupAt(103, 126);
+ iBowMan := States.GroupAt(107, 123);
+ iRouge := States.GroupAt(101, 118);
+ iRougee := States.GroupAt(98, 124);
+ iRebel := States.GroupAt(96, 121);
+ iRebeliant := States.GroupAt(100, 114);
+ iKnight := States.GroupAt(123, 126);
+ 
+ iStorehouse := States.HouseAt(58,113);
+ iBaracks := States.HouseAt(69,9);
+ 
+  bStarted := false;
+end;

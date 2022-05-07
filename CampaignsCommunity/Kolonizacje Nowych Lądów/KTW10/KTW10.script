@@ -1,0 +1,234 @@
+
+procedure OnTick;
+var iMain,iAdd,id,iPikeMan,iSwordFighter,iCrossBowMan,iKnight  : integer;
+begin
+
+ if States.GameTime = 2400 then
+  begin
+	iMain := Actions.GiveHouse(0, 11, 3, 88);
+	Actions.HouseAddWaresTo(iMain, 1, 800);
+	Actions.HouseAddWaresTo(iMain, 2, 50);
+	Actions.HouseAddWaresTo(iMain, 7, 60);
+	Actions.HouseAddWaresTo(iMain, 8, 65);
+	Actions.HouseAddWaresTo(iMain, 10, 35);
+	Actions.HouseAddWaresTo(iMain, 13, 15);
+	
+	Actions.GiveUnit(0, 0, 7, 90, 0);
+	Actions.GiveUnit(0, 0, 8, 90, 0);
+	Actions.GiveUnit(0, 0, 9, 90, 0);
+	Actions.GiveUnit(0, 0, 10, 90, 0);
+	Actions.GiveUnit(0, 0, 11, 90, 0);
+	Actions.GiveUnit(0, 0, 12, 90, 0);
+
+	Actions.GiveUnit(0, 9, 7, 91,0);
+	Actions.GiveUnit(0, 9, 8,91,0);
+	Actions.GiveUnit(0, 9, 9, 91, 0);
+	Actions.GiveUnit(0, 9, 10, 91, 0);
+	Actions.GiveUnit(0, 9, 11, 91, 0);
+	Actions.GiveUnit(0, 9, 12,91, 0);
+
+	iMain := Actions.GiveGroup(0, 17, 17, 85, 1, 12, 4);
+	iMain := Actions.GiveGroup(0, 16, 9, 84, 1, 9, 3);
+    iMain := Actions.GiveGroup(0, 20, 17, 80, 1, 8, 4);
+	end;
+	
+	if States.GameTime = 4700 then
+	begin
+	Actions.GiveGroup(9,20,27,40,2,9,3);
+	Actions.GiveGroup(9,16,39,39,4,12,4);
+	Actions.GiveGroup(9,18,35,41,4,8,4);
+	Actions.GiveGroup(9,22,22,45,2,12,4);
+	
+	Actions.GiveUnit(9, 0, 40, 40, 0);
+	Actions.GiveUnit(9, 0, 41, 40, 0);
+	Actions.GiveUnit(9, 0, 42, 40, 0);
+	Actions.GiveUnit(9, 0, 43, 40, 0);
+	Actions.GiveUnit(9, 0, 44, 40, 0);
+	Actions.GiveUnit(9, 0, 45, 40, 0);
+	Actions.GiveUnit(9, 0, 42, 39, 0);
+	Actions.GiveUnit(9, 0, 43, 39, 0);
+	Actions.GiveUnit(9, 0, 44, 39, 0);
+	
+	Actions.GiveUnit(9, 9, 40, 41, 0);
+	Actions.GiveUnit(9, 9, 41, 41, 0);
+	Actions.GiveUnit(9, 9, 42, 41, 0);
+	Actions.GiveUnit(9, 9, 43, 41, 0);
+	
+	Actions.GiveUnit(9, 8, 37, 39, 0);
+	Actions.GiveUnit(9, 4, 38, 40, 0);
+	Actions.GiveUnit(9, 4, 37, 38, 0);
+	
+	iAdd := Actions.GiveHouse(9,11,35,38);
+	Actions.HouseAddWaresTo(iAdd, 1, 100);
+	Actions.HouseAddWaresTo(iAdd, 2, 100);
+	Actions.HouseAddWaresTo(iAdd, 13, 1000);
+	Actions.HouseAddWaresTo(iAdd, 8, 1000);
+	Actions.HouseAddWaresTo(iAdd, 10, 1000);
+	
+    Actions.PlanAddHouse(9, 27, 25, 44);
+	Actions.PlanAddHouse(9, 28, 28, 40);
+	Actions.PlanAddHouse(9, 28, 33, 41);
+	Actions.PlanAddHouse(9, 6, 39, 37);
+    Actions.PlanAddHouse(9, 17, 34, 50);
+    Actions.PlanAddHouse(9, 17, 39, 44);
+    Actions.PlanAddRoad(9, 25, 45);
+    Actions.PlanAddRoad(9, 34,51);
+	Actions.PlanAddRoad(9, 39,38);
+	Actions.PlanAddRoad(9, 39,39);
+	Actions.PlanAddWinefield(9,30,41);
+	Actions.PlanAddWinefield(9,30,40);
+	Actions.PlanAddWinefield(9,30,39);
+	Actions.PlanAddWinefield(9,31,39);
+	
+	if States.GameTime = 4700 then
+	begin
+	Actions.GiveGroup(10,20,89,29,5,6,3);
+	Actions.GiveGroup(10,16,92,37,6,6,3);
+	Actions.GiveGroup(10,26,92,39,6,6,3);
+	Actions.GiveGroup(10,18,93,32,6,9,3);
+	Actions.GiveGroup(10,18,93,30,6,9,3);
+	Actions.GiveGroup(10,20,88,27,5,6,3);
+	Actions.GiveGroup(10,22,89,38,5,6,3);
+	
+	id := Actions.GiveHouse(10,11,73,48);
+	Actions.HouseAddWaresTo(id, 1, 100);
+	Actions.HouseAddWaresTo(id, 2, 100);
+	Actions.HouseAddWaresTo(id, 13, 1000);
+	Actions.HouseAddWaresTo(id, 8, 1000);
+	Actions.HouseAddWaresTo(id, 10, 1000);
+	
+	
+	Actions.GiveUnit(10, 0, 73, 49, 0);
+	Actions.GiveUnit(10, 0, 65, 49, 0);
+	Actions.GiveUnit(10, 0, 66, 49, 0);
+	Actions.GiveUnit(10, 0, 67, 49, 0);
+	Actions.GiveUnit(10, 0, 68, 49, 0);
+	Actions.GiveUnit(10, 0, 69, 49, 0);
+	Actions.GiveUnit(10, 0, 70, 49, 0);
+	Actions.GiveUnit(10, 0, 71, 49, 0);
+	Actions.GiveUnit(10, 0, 72, 49, 0);
+	Actions.GiveUnit(10, 0, 74, 49, 0);
+	
+	Actions.GiveUnit(10, 9, 73, 50, 0);
+	Actions.GiveUnit(10, 9, 65, 50, 0);
+	Actions.GiveUnit(10, 9, 66, 50, 0);
+	Actions.GiveUnit(10,9, 67, 50, 0);
+	Actions.GiveUnit(10, 9, 68, 50, 0);
+	
+	Actions.GiveUnit(10, 4, 71, 51, 0);
+	Actions.GiveUnit(10, 4, 72, 51, 0);
+	Actions.GiveUnit(10, 4,74, 51, 0);
+	
+	Actions.GiveUnit(10, 6, 71, 52, 0);
+	Actions.GiveUnit(10, 6, 72, 52, 0);
+	
+	Actions.PlanAddHouse(10, 27, 78, 46);
+	Actions.PlanAddHouse(10, 28, 86, 49);
+	Actions.PlanAddHouse(10, 28, 94, 44);
+    Actions.PlanAddHouse(10, 8, 85,46);
+    Actions.PlanAddHouse(10, 22, 39, 44);
+	Actions.PlanAddHouse(10, 7, 74, 43);
+    Actions.PlanAddHouse(10, 22, 93, 51);
+	Actions.PlanAddRoad(10, 93,52);
+	end;
+    end;
+	
+	if States.GameTime = 66000 then
+	iPikeMan := Actions.GiveGroup(5,20,27,40,2,9,3);
+	if States.GameTime = 66000 then
+	iSwordFighter := Actions.GiveGroup(5,16,39,39,4,12,4);
+	if States.GameTime = 66000 then
+	iCrossBowMan := Actions.GiveGroup(5,18,35,41,4,8,4);
+	if States.GameTime = 66000 then
+	iKnight :=  Actions.GiveGroup(5,22,22,45,2,9,3);
+	
+	if States.GameTime = 98000 then
+	iPikeMan := Actions.GiveGroup(5,20,27,40,2,16,5);
+	if States.GameTime = 98000 then
+	iSwordFighter := Actions.GiveGroup(5,16,39,39,4,16,4);
+	if States.GameTime = 98000 then
+	iCrossBowMan := Actions.GiveGroup(5,18,35,41,4,12,4);
+	if States.GameTime = 98000 then
+	iKnight :=  Actions.GiveGroup(5,22,22,45,2,12,4);
+	
+	if States.GameTime = 2400 then
+	begin
+	Actions.ShowMsg(0,'<$1>');
+	end;
+	
+	if States.GameTime = 4700 then
+	begin
+	Actions.ShowMsg(0,'<$2>');
+	end;
+	
+	end;
+	
+ procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+	begin
+	if (aHouseID = States.HouseAt(94, 44)) then 
+	begin
+	Actions.GiveHouse(2, 13, 73, 48);
+    Actions.PlanAddHouse(2, 21, 68, 47);
+	Actions.PlanAddHouse(2, 19, 85, 49);
+	Actions.PlanAddHouse(2, 20, 74, 43);
+    Actions.PlanAddHouse(2, 17, 90,38);
+    Actions.PlanAddHouse(2, 17, 81,41);
+	Actions.PlanAddHouse(2, 17, 70,41);
+	Actions.PlanAddHouse(2, 8, 78,46);
+	Actions.PlanAddHouse(2, 8, 84,46);
+	Actions.PlanAddRoad(2, 85, 50);
+    Actions.PlanAddRoad(2, 70,42);
+	Actions.PlanAddRoad(2, 70,43);
+	Actions.PlanAddRoad(2, 71,42);
+	Actions.PlanAddRoad(2, 71,43);
+	Actions.PlanAddRoad(2, 81,42);
+	Actions.PlanAddRoad(2, 81, 43);
+    Actions.PlanAddRoad(2, 81,44);
+	Actions.PlanAddRoad(2, 81,45);
+	Actions.PlanAddRoad(2, 81,46);
+	Actions.PlanAddRoad(2, 90,41);
+	Actions.PlanAddRoad(2, 90,40);
+	Actions.PlanAddRoad(2, 90,39);
+	Actions.GiveGroup(2,14,91,82,0,8,3);
+	Actions.GiveGroup(2,14,87,83,0,8,3);
+	Actions.GiveGroup(2,24,80,80,0,9,3);
+	Actions.GiveGroup(2,24,82,83,0,9,3);
+	Actions.GiveGroup(2,25,85,83,0,8,3);
+		
+	Actions.ShowMsg(0,'<$3>');
+	end;	
+end;
+//script onwarriorequipped is from grayter
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var  UnitKill : Integer;
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+var len : Integer;
+var arrayUnit : array of array[0..2] of Integer;
+var current : Integer;
+begin
+	typeU := States.UnitType(aUnitID);
+	 if (((typeU = 17) or (typeU = 19)) and (States.UnitOwner(aUnitID) = 2)) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		if typeU = 17 then
+		begin
+			typeU := 25;
+			temporary := Actions.GiveGroup(States.UnitOwner(aUnitID), 25, tempX, tempY, 4, 1, 1);
+		end
+		else if typeU = 19 then
+		begin
+			typeU := 24;
+			temporary := Actions.GiveGroup(States.UnitOwner(aUnitID), 24, tempX, tempY, 4, 1, 1);		
+		end;
+		len := len +1;
+		SetLength(arrayUnit, len);
+		arrayUnit[len-1][0] := temporary;
+		arrayUnit[len-1][1] := States.GameTime;
+		arrayUnit[len-1][2] := typeU;
+		Actions.UnitKill(aUnitID, True);
+	end; 
+	end;

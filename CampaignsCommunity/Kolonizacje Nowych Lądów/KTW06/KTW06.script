@@ -1,0 +1,17 @@
+ procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+var units: array of integer;
+var iBowman,iLanceCarrier: integer;
+begin
+   
+    if (aHouseID = States.HouseAt(125, 20)) then
+	begin
+iBowman :=	Actions.GiveGroup(1, 17,103,5,3,9,3);
+ iLanceCarrier := Actions.GiveGroup(1, 19,99, 4, 3, 12, 4);
+   Actions.ShowMsg(0,'<$2>');
+   end;
+end;
+procedure OnTick;
+begin
+if States.GameTime =  10 then
+Actions.ShowMsg(0,'<$1>');
+end;

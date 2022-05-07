@@ -1,0 +1,166 @@
+const resourcesMaxCount = 27;
+
+var iStore, iStone, iTimber, iCoal : Integer;
+var bStarted: Boolean;
+var iBarbarian,iBowMan,iBowMann,iVagabond,iLanceCarier,iTicks: Integer;
+var attack, portIsTaken, ownerChangedBefore, ownerChangedAfter, unitsArrived, housesRepaired : Boolean;
+var houses, iGroups : array of Integer;
+
+//script onwarriorequipped is from grayter
+procedure ChangeOwners;
+var x, y, t, d, i, j : Integer;
+var houseRes: array[0..resourcesMaxCount] of Integer;
+begin
+	houses := States.PlayerGetAllHouses(1);
+	for i := 0 to Length(houses) - 1 do
+		begin
+			x := States.HousePositionX(houses[i]);
+			y := States.HousePositionY(houses[i]);
+			t := States.HouseType(houses[i]);
+			d := States.HouseDamage(houses[i]);
+			for j := 0 to resourcesMaxCount do houseRes[j] := States.HouseResourceAmount(houses[i], j);
+			Actions.HouseDestroy(houses[i], true);
+			houses[i] := Actions.GiveHouse(0, t, x, y);
+			Actions.HouseAddDamage(houses[i], d);
+			for j := 0 to resourcesMaxCount do 
+				if (houseRes[j] > 0) then Actions.HouseAddWaresTo(houses[i], j, houseRes[j]);
+		end;
+	ownerChangedAfter := true;
+end;
+
+procedure OnMissionStart;
+begin
+
+    iVagabond := States.GroupAt(31, 43);
+	iBarbarian := States.GroupAt(32, 49);
+	iBowMan := States.GroupAt(39,47);
+	iBowMann := States.GroupAt(53,47);
+	iLanceCarier := States.GroupAt(60,44);
+	
+	attack := false;
+	portIsTaken := false;
+	ownerChangedBefore := false;
+	ownerChangedAfter := false;
+	unitsArrived := false;
+	housesRepaired := false;
+	
+	iTicks := 41300;
+  bStarted := false;
+  
+  iStore := States.HouseAt(3, 27);
+  iStone := 150;
+  iTimber := 150;
+  iCoal := 200;
+
+
+
+
+
+end;
+//script  is from grayter
+function CheckHousesDamage : AnsiString;
+var i : Integer;
+begin
+	houses := States.PlayerGetAllHouses(0);
+	housesRepaired := true;
+	for i:= 0 to Length(houses) - 1 do
+		begin
+			if (States.HouseDamage(houses[i]) > 0) then
+				begin
+					housesRepaired := false;
+					break;
+				end;
+		end;
+	if (housesRepaired) then Result := '<$4>'
+	else Result := '<$5>';
+end;
+//script is from vas
+procedure OnTick;
+var i, j, c,iHours, iMinutes, iSecs : Integer;
+var sTime: AnsiString;
+begin
+	if (States.GroupDead(iBarbarian)) and (States.GroupDead(iBowMan)) and (States.GroupDead(iBowMann)) and (States.GroupDead(iLanceCarier)) and (States.GameTime mod 12 = 0)  and (bStarted = false) then   
+		begin
+		for i := 1 to 1 do
+			begin
+				iGroups := States.PlayerGetAllGroups(i);
+				for j := 0 to Length(iGroups) - 1 do
+					begin
+						if not States.GroupDead(iGroups[j]) then Actions.GroupOrderWalk(iGroups[j], 48, 57, 7);
+					end;
+			end;
+		c := Length(States.PlayerGetAllGroups(1));
+		attack := c = 0;
+		end;
+		begin
+		bStarted := true;	
+		end;
+		
+				
+		if bStarted = true
+  then begin
+	if(iTicks >= 0) then
+		iTicks := iTicks - 1;
+		iHours := (iTicks / 600) / 60;
+		iMinutes := (iTicks / 600) - (iHours * 60);	
+		iSecs := (iTicks / 10) - (iMinutes * 60);
+		if iHours > 0 then begin
+			sTime := '<$6>: ' + IntToStr(iHours) + ' <$7>';
+			if iMinutes <> 0 then sTime := sTime + ', ' + IntToStr(iMinutes) + ' <$8>'
+		end else begin
+			sTime := '<$6>: ' + IntToStr(iMinutes) + ' <$8>';
+		end;
+		if (iMinutes <= 10)
+		AND(iHours <= 0) 
+		then begin
+			sTime := sTime + ', ' + IntToStr(iSecs) + ' <$9>';
+		end;
+	Actions.OverlayTextSet(0, '<$15>: |' 
+	+ '<$12>: ' + IntToStr(States.HouseResourceAmount(iStore, 1)) + '/' + IntToStr(iStone) + '|'
+	+ '<$13>: ' + IntToStr(States.HouseResourceAmount(iStore, 2)) + '/' + IntToStr(iTimber) + '|'
+	+ '<$14>: ' + IntToStr(States.HouseResourceAmount(iStore, 5)) + '/' + IntToStr(iCoal) + '|'
+	+ '|' + sTime);
+	end;
+
+	
+  if (States.HouseResourceAmount(iStore, 1) >= iStone)
+  AND(States.HouseResourceAmount(iStore, 2) >= iTimber)
+  AND(States.HouseResourceAmount(iStore, 5) >= iCoal)
+  then begin
+	Actions.PlayerWin([0], false);
+  end;
+		
+	if iTicks <= 0 then Actions.PlayerDefeat(0);
+	if ((States.StatArmyCount(1) = 0) and (portIsTaken = false)) then
+		begin
+			Actions.PlayerAllianceChange(0, 1, true, true);
+			portIsTaken := true;
+		end;
+	
+	if ((portIsTaken = true) and  (ownerChangedBefore = false)) then 
+		begin
+			ownerChangedBefore := true;		
+			ChangeOwners;
+			Actions.ShowMsg(0, '<$0>');
+		end;
+		
+    if States.GameTime = 10 then
+	Actions.ShowMsg(0,'<$1>');
+	
+	if States.GameTime = 18000 then
+	Actions.ShowMsg(0,'<$2>');
+    
+    if States.GameTime = 18000 then
+	Actions.GiveGroup(2,14,10,76,0,12,4);
+	if States.GameTime = 18000 then
+	Actions.GiveGroup(2,17,6,77,0,8,4);
+	if States.GameTime = 18000 then
+	Actions.GiveGroup(2,15,10,73,0,6,3);
+	if States.GameTime = 18000 then
+	Actions.GiveGroup(2,24,18,76,0,9,3);
+	if States.GameTime = 18000 then
+	Actions.GiveGroup(2,19,4,73,2,6,3);
+	
+	
+	
+end;
