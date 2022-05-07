@@ -1,214 +1,214 @@
 var
-	StartDestruction: Boolean;
-	TotalBuildings: Integer;
-	Bow1, Bow2, Bow3, Bow4, Militia1, Militia2, Militia3, Rebel1, Rebel2, Rebel3, Rogue1: Integer;
-	Crossbow1, Crossbow2, Crossbow3, Crossbow4, Crossbow5, Crossbow6, Sword1, Sword2, Sword3, Sword4, Sword5, Knight1, Knight2, Knight3, Knight4, Pike1, Pike2, Pike3, Pike4, Pike5, Pike6, Pike7: Integer;
-	Barracks, Tower1, Tower2, Tower3, Tower4, Tower5, Tower6, Bakery, SwineFarm: Integer;
+  StartDestruction: Boolean;
+  TotalBuildings: Integer;
+  Bow1, Bow2, Bow3, Bow4, Militia1, Militia2, Militia3, Rebel1, Rebel2, Rebel3, Rogue1: Integer;
+  Crossbow1, Crossbow2, Crossbow3, Crossbow4, Crossbow5, Crossbow6, Sword1, Sword2, Sword3, Sword4, Sword5, Knight1, Knight2, Knight3, Knight4, Pike1, Pike2, Pike3, Pike4, Pike5, Pike6, Pike7: Integer;
+  Barracks, Tower1, Tower2, Tower3, Tower4, Tower5, Tower6, Bakery, SwineFarm: Integer;
 
 
 procedure OnMissionStart;
 begin
 
-	Actions.FogCoverCircle(0, 49, 64, 51);
-	Actions.PlayerShareFog(1, 0, False);
-	Actions.FogRevealCircle(0, 29, 11, 19);
-	Actions.FogRevealCircle(0, 30, 32, 13);
-	Actions.FogRevealCircle(0, 21, 25, 5);
-	Actions.FogRevealCircle(0, 23, 39, 5);
-	Actions.FogRevealCircle(0, 22, 43, 5);
-	Actions.FogRevealCircle(0, 23, 50, 5);
-	Actions.FogRevealCircle(0, 24, 53, 5);
-	Actions.FogRevealCircle(0, 56, 44, 22);
-	Actions.FogRevealCircle(0, 42, 48, 16);
-	Actions.FogRevealCircle(0, 28, 55, 2);
-	Actions.FogRevealCircle(0, 57, 60, 12);
-	Actions.FogRevealCircle(0, 48, 68, 10);
-	Actions.FogRevealCircle(0, 39, 63, 2);
-	Actions.FogRevealCircle(0, 41, 65, 2);
-	Actions.FogRevealCircle(0, 48, 24, 12);
-	Actions.FogRevealCircle(0, 47, 17, 11);
+  Actions.FogCoverCircle(0, 49, 64, 51);
+  Actions.PlayerShareFog(1, 0, False);
+  Actions.FogRevealCircle(0, 29, 11, 19);
+  Actions.FogRevealCircle(0, 30, 32, 13);
+  Actions.FogRevealCircle(0, 21, 25, 5);
+  Actions.FogRevealCircle(0, 23, 39, 5);
+  Actions.FogRevealCircle(0, 22, 43, 5);
+  Actions.FogRevealCircle(0, 23, 50, 5);
+  Actions.FogRevealCircle(0, 24, 53, 5);
+  Actions.FogRevealCircle(0, 56, 44, 22);
+  Actions.FogRevealCircle(0, 42, 48, 16);
+  Actions.FogRevealCircle(0, 28, 55, 2);
+  Actions.FogRevealCircle(0, 57, 60, 12);
+  Actions.FogRevealCircle(0, 48, 68, 10);
+  Actions.FogRevealCircle(0, 39, 63, 2);
+  Actions.FogRevealCircle(0, 41, 65, 2);
+  Actions.FogRevealCircle(0, 48, 24, 12);
+  Actions.FogRevealCircle(0, 47, 17, 11);
 
-	Crossbow1 := States.GroupAt(70, 59);
-	Tower1 := States.HouseAt(63, 56);
-	Actions.GroupOrderAttackHouse(Crossbow1, Tower1);
-	
-	Sword1 := States.GroupAt(74, 60);
-	Barracks := States.HouseAt(55, 54);
-	Actions.GroupOrderWalk(Sword1, 63, 50, 7);
-	
-	Crossbow2 := States.GroupAt(79, 49);
-	Bow1 := States.GroupAt(74, 45);
-	Tower2 := States.HouseAt(72, 49);
-	
-	Rebel1 := States.GroupAt(69, 52);
-	Actions.GroupOrderWalk(Rebel1, 73, 52, 2);
-	Knight1 := States.GroupAt(74, 51);
-	Actions.GroupOrderWalk(Knight1, 71, 51, 6);
-	
-	Militia1 := States.GroupAt(59, 46);
-	Actions.GroupOrderWalk(Militia1, 57, 44, 7);
-	Sword2 := States.GroupAt(58, 43);
-	Actions.GroupOrderWalk(Sword2, 57, 45, 4);
-	Knight4 := States.GroupAt(53, 44);
-	
-	Sword3 := States.GroupAt(46, 36);
-	Bakery := States.HouseAt(44, 37);
-	Actions.GroupOrderAttackHouse(Sword3, Bakery);
-	
-	Pike1 := States.GroupAt(68, 38);
-	SwineFarm := States.HouseAt(69, 41);
-	Actions.GroupOrderAttackHouse(Pike1, SwineFarm)
-	
-	Crossbow3 := States.GroupAt(54, 39);
-	Rebel2 := States.GroupAt(52, 45);
-	
-	Pike4 := States.GroupAt(89, 73);
-	Knight2 := States.GroupAt(84, 78);
-	Knight3 := States.GroupAt(54, 89);
-	
-	Crossbow4 := States.GroupAt(61, 80);
-	Crossbow5 := States.GroupAt(43, 82);
-	Bow2 := States.GroupAt(41, 74);
-	Militia2 := States.GroupAt(53, 74);
-	Actions.GroupOrderWalk(Militia2, 53, 76, 4);
-	Tower3 := States.HouseAt(48, 73);
-	Tower4 := States.HouseAt(57, 72);
-	Sword4 := States.GroupAt(66, 88);
-	Sword5 := States.GroupAt(48, 76);
-	Actions.GroupOrderWalk(Sword5, 54, 70, 1);
-	Pike5 := States.GroupAt(53, 77);
-	Actions.GroupOrderWalk(Pike5, 53, 75, 0);
-	
-	Crossbow6 := States.GroupAt(9, 53);
-	Actions.GroupOrderWalk(Crossbow6, 15, 53, 2);
-	Pike6 := States.GroupAt(12, 48);
-	Actions.GroupOrderWalk(Pike6, 23, 51, 2);
-	Pike7 := States.GroupAt(12, 59);
-	Actions.GroupOrderWalk(Pike7, 23, 57, 2);
-	
-	Militia3 := States.GroupAt(25, 52);
-	Rebel3 := States.GroupAt(24, 56);
-	Rogue1 := States.GroupAt(27, 56);
-	Bow4 := States.GroupAt(21, 62);
-	Tower5 := States.HouseAt(22, 50);
-	Tower6 :=States.HouseAt(22, 57);
-	
+  Crossbow1 := States.GroupAt(70, 59);
+  Tower1 := States.HouseAt(63, 56);
+  Actions.GroupOrderAttackHouse(Crossbow1, Tower1);
+  
+  Sword1 := States.GroupAt(74, 60);
+  Barracks := States.HouseAt(55, 54);
+  Actions.GroupOrderWalk(Sword1, 63, 50, 7);
+  
+  Crossbow2 := States.GroupAt(79, 49);
+  Bow1 := States.GroupAt(74, 45);
+  Tower2 := States.HouseAt(72, 49);
+  
+  Rebel1 := States.GroupAt(69, 52);
+  Actions.GroupOrderWalk(Rebel1, 73, 52, 2);
+  Knight1 := States.GroupAt(74, 51);
+  Actions.GroupOrderWalk(Knight1, 71, 51, 6);
+  
+  Militia1 := States.GroupAt(59, 46);
+  Actions.GroupOrderWalk(Militia1, 57, 44, 7);
+  Sword2 := States.GroupAt(58, 43);
+  Actions.GroupOrderWalk(Sword2, 57, 45, 4);
+  Knight4 := States.GroupAt(53, 44);
+  
+  Sword3 := States.GroupAt(46, 36);
+  Bakery := States.HouseAt(44, 37);
+  Actions.GroupOrderAttackHouse(Sword3, Bakery);
+  
+  Pike1 := States.GroupAt(68, 38);
+  SwineFarm := States.HouseAt(69, 41);
+  Actions.GroupOrderAttackHouse(Pike1, SwineFarm)
+  
+  Crossbow3 := States.GroupAt(54, 39);
+  Rebel2 := States.GroupAt(52, 45);
+  
+  Pike4 := States.GroupAt(89, 73);
+  Knight2 := States.GroupAt(84, 78);
+  Knight3 := States.GroupAt(54, 89);
+  
+  Crossbow4 := States.GroupAt(61, 80);
+  Crossbow5 := States.GroupAt(43, 82);
+  Bow2 := States.GroupAt(41, 74);
+  Militia2 := States.GroupAt(53, 74);
+  Actions.GroupOrderWalk(Militia2, 53, 76, 4);
+  Tower3 := States.HouseAt(48, 73);
+  Tower4 := States.HouseAt(57, 72);
+  Sword4 := States.GroupAt(66, 88);
+  Sword5 := States.GroupAt(48, 76);
+  Actions.GroupOrderWalk(Sword5, 54, 70, 1);
+  Pike5 := States.GroupAt(53, 77);
+  Actions.GroupOrderWalk(Pike5, 53, 75, 0);
+  
+  Crossbow6 := States.GroupAt(9, 53);
+  Actions.GroupOrderWalk(Crossbow6, 15, 53, 2);
+  Pike6 := States.GroupAt(12, 48);
+  Actions.GroupOrderWalk(Pike6, 23, 51, 2);
+  Pike7 := States.GroupAt(12, 59);
+  Actions.GroupOrderWalk(Pike7, 23, 57, 2);
+  
+  Militia3 := States.GroupAt(25, 52);
+  Rebel3 := States.GroupAt(24, 56);
+  Rogue1 := States.GroupAt(27, 56);
+  Bow4 := States.GroupAt(21, 62);
+  Tower5 := States.HouseAt(22, 50);
+  Tower6 :=States.HouseAt(22, 57);
+  
 end;
 
 procedure OnTick;
 begin
 
-	if States.GameTime = 30 then
-	begin
-		Actions.ShowMsg(0, '<$1>');
-	end;
+  if States.GameTime = 30 then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+  end;
 
-	TotalBuildings := (States.StatHouseTypeCount(1, 0) + States.StatHouseTypeCount(1, 7) + States.StatHouseTypeCount(1, 8) + States.StatHouseTypeCount(1, 9) + States.StatHouseTypeCount(1, 11) + States.StatHouseTypeCount(1, 12) + States.StatHouseTypeCount(1, 13) + States.StatHouseTypeCount(1, 16) + States.StatHouseTypeCount(1, 17) + States.StatHouseTypeCount(1, 19) + States.StatHouseTypeCount(1, 20) + States.StatHouseTypeCount(1, 21) + States.StatHouseTypeCount(1, 22) + States.StatHouseTypeCount(1, 24) + States.StatHouseTypeCount(1, 25) + States.StatHouseTypeCount(1, 27) + States.StatHouseTypeCount(1, 28));
-	Actions.OverlayTextSetFormatted(0, 'Number of buildings remaining: %u', [TotalBuildings]);
-	if (TotalBuildings < 25) or (States.HouseDestroyed(Barracks) = true) then
-	begin
-		Actions.PlayerDefeat(0);
-	end;
-	
-	if (States.HouseDestroyed(Tower1) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Crossbow1, Barracks);
-		Actions.GroupOrderAttackHouse(Sword1, Barracks);
-	end;
-	if (States.HouseDestroyed(Tower2) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		Actions.GroupOrderAttackUnit(Crossbow2, States.ClosestUnit(0, 79, 49, -1));
-	end;
-	if (States.HouseDestroyed(SwineFarm) = true) and ((States.GameTime mod 50) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Pike1, States.ClosestHouse(1, 69, 38, -1));
-	end;
-	if (States.HouseDestroyed(Bakery) = true) and ((States.GameTime mod 50) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Sword3, States.ClosestHouse(1, 44, 37, -1));
-	end;
-	
-	if (States.GroupDead(Bow1) = true) and ((States.GameTime mod 50) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Crossbow2, Tower2);
-		if States.HouseDestroyed(Tower2) = true then
-		begin
-		end;
-	end;
-	if (States.GroupDead(Rebel1) = true) and ((States.GameTime mod 50) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Knight1, Tower2);
-		if States.HouseDestroyed(Tower2) = true then
-		begin
-			Actions.GroupOrderAttackHouse(Knight1, Barracks);
-		end;
-	end;
-	if (States.GroupDead(Rebel2) = true) and (States.GroupDead(Militia1) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Crossbow3, Barracks);
-		Actions.GroupOrderAttackHouse(Knight4, Barracks);
-		Actions.GroupOrderAttackHouse(Sword2, Barracks);
-	end;
-	if (States.GroupDead(Militia2) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Crossbow4, Tower4);
-	end;	
-	if (States.GroupDead(Bow2) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		if (States.HouseDestroyed(Tower3) = false) then
-		begin
-			Actions.GroupOrderAttackHouse(Crossbow5, Tower3);
-		end;
-		if (States.HouseDestroyed(Tower3) = true) then
-		begin
-			Actions.GroupOrderAttackHouse(Crossbow5, States.ClosestHouse(1, 43, 82, -1));
-		end;
-	end;
-	if (States.GroupDead(Militia2) = true) and (States.GroupDead(Bow3) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		if (States.HouseDestroyed(Tower4) = false) then
-		begin
-			Actions.GroupOrderAttackHouse(Crossbow4, Tower4);
-		end;
-		if (States.HouseDestroyed(Tower4) = true) then
-		begin
-			Actions.GroupOrderAttackUnit(Crossbow4, States.ClosestUnit(0, 61, 80, -1));
-			Actions.GroupOrderAttackUnit(Sword4, States.ClosestUnit(0, 61, 80, -1));
-		end;
-		Actions.GroupOrderAttackHouse(Sword5, Barracks);
-		Actions.GroupOrderAttackHouse(Pike5, Barracks);		
-	end;
-	if (States.GroupDead(Militia3) = true) and (States.GroupDead(Bow4) = true) and (States.GroupDead(Rebel3) = true) and (States.GroupDead(Rogue1) = true) and ((States.GameTime mod 100) = 0) then
-	begin
-		if (States.HouseDestroyed(Tower5) = false) then
-		begin
-			Actions.GroupOrderAttackHouse(Pike6, Tower5);
-		end;
-		if (States.HouseDestroyed(Tower5) = true) then
-		begin
-			Actions.GroupOrderAttackUnit(Pike6, States.ClosestUnit(0, 22, 50, -1));
-		end;
-		if (States.HouseDestroyed(Tower6) = false) then
-		begin
-			Actions.GroupOrderAttackHouse(Pike7, Tower6);
-		end;
-		if (States.HouseDestroyed(Tower6) = true) then
-		begin
-			Actions.GroupOrderAttackHouse(Pike7, States.ClosestHouse(1, 26, 61, -1));
-		end;
-		Actions.GroupOrderAttackHouse(Crossbow6, States.ClosestHouse(1, 15, 53, -1));
-	end;
-	
-	if (States.GameTime = 1200) then
-	begin
-		StartDestruction := True;
-	end;
-	if (StartDestruction = true) and ((States.GameTime mod 50) = 0) then
-	begin
-		Actions.GroupOrderAttackHouse(Pike4, States.ClosestHouse(1, 89, 73, -1));
-		Actions.GroupOrderAttackHouse(Knight2, States.ClosestHouse(1, 84, 78, -1));
-		Actions.GroupOrderAttackHouse(Knight3, States.ClosestHouse(1, 54, 72, -1));
-	end;
-	
+  TotalBuildings := (States.StatHouseTypeCount(1, 0) + States.StatHouseTypeCount(1, 7) + States.StatHouseTypeCount(1, 8) + States.StatHouseTypeCount(1, 9) + States.StatHouseTypeCount(1, 11) + States.StatHouseTypeCount(1, 12) + States.StatHouseTypeCount(1, 13) + States.StatHouseTypeCount(1, 16) + States.StatHouseTypeCount(1, 17) + States.StatHouseTypeCount(1, 19) + States.StatHouseTypeCount(1, 20) + States.StatHouseTypeCount(1, 21) + States.StatHouseTypeCount(1, 22) + States.StatHouseTypeCount(1, 24) + States.StatHouseTypeCount(1, 25) + States.StatHouseTypeCount(1, 27) + States.StatHouseTypeCount(1, 28));
+  Actions.OverlayTextSetFormatted(0, 'Number of buildings remaining: %u', [TotalBuildings]);
+  if (TotalBuildings < 25) or (States.HouseDestroyed(Barracks) = true) then
+  begin
+    Actions.PlayerDefeat(0);
+  end;
+  
+  if (States.HouseDestroyed(Tower1) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Crossbow1, Barracks);
+    Actions.GroupOrderAttackHouse(Sword1, Barracks);
+  end;
+  if (States.HouseDestroyed(Tower2) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    Actions.GroupOrderAttackUnit(Crossbow2, States.ClosestUnit(0, 79, 49, -1));
+  end;
+  if (States.HouseDestroyed(SwineFarm) = true) and ((States.GameTime mod 50) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Pike1, States.ClosestHouse(1, 69, 38, -1));
+  end;
+  if (States.HouseDestroyed(Bakery) = true) and ((States.GameTime mod 50) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Sword3, States.ClosestHouse(1, 44, 37, -1));
+  end;
+  
+  if (States.GroupDead(Bow1) = true) and ((States.GameTime mod 50) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Crossbow2, Tower2);
+    if States.HouseDestroyed(Tower2) = true then
+    begin
+    end;
+  end;
+  if (States.GroupDead(Rebel1) = true) and ((States.GameTime mod 50) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Knight1, Tower2);
+    if States.HouseDestroyed(Tower2) = true then
+    begin
+      Actions.GroupOrderAttackHouse(Knight1, Barracks);
+    end;
+  end;
+  if (States.GroupDead(Rebel2) = true) and (States.GroupDead(Militia1) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Crossbow3, Barracks);
+    Actions.GroupOrderAttackHouse(Knight4, Barracks);
+    Actions.GroupOrderAttackHouse(Sword2, Barracks);
+  end;
+  if (States.GroupDead(Militia2) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Crossbow4, Tower4);
+  end;  
+  if (States.GroupDead(Bow2) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    if (States.HouseDestroyed(Tower3) = false) then
+    begin
+      Actions.GroupOrderAttackHouse(Crossbow5, Tower3);
+    end;
+    if (States.HouseDestroyed(Tower3) = true) then
+    begin
+      Actions.GroupOrderAttackHouse(Crossbow5, States.ClosestHouse(1, 43, 82, -1));
+    end;
+  end;
+  if (States.GroupDead(Militia2) = true) and (States.GroupDead(Bow3) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    if (States.HouseDestroyed(Tower4) = false) then
+    begin
+      Actions.GroupOrderAttackHouse(Crossbow4, Tower4);
+    end;
+    if (States.HouseDestroyed(Tower4) = true) then
+    begin
+      Actions.GroupOrderAttackUnit(Crossbow4, States.ClosestUnit(0, 61, 80, -1));
+      Actions.GroupOrderAttackUnit(Sword4, States.ClosestUnit(0, 61, 80, -1));
+    end;
+    Actions.GroupOrderAttackHouse(Sword5, Barracks);
+    Actions.GroupOrderAttackHouse(Pike5, Barracks);    
+  end;
+  if (States.GroupDead(Militia3) = true) and (States.GroupDead(Bow4) = true) and (States.GroupDead(Rebel3) = true) and (States.GroupDead(Rogue1) = true) and ((States.GameTime mod 100) = 0) then
+  begin
+    if (States.HouseDestroyed(Tower5) = false) then
+    begin
+      Actions.GroupOrderAttackHouse(Pike6, Tower5);
+    end;
+    if (States.HouseDestroyed(Tower5) = true) then
+    begin
+      Actions.GroupOrderAttackUnit(Pike6, States.ClosestUnit(0, 22, 50, -1));
+    end;
+    if (States.HouseDestroyed(Tower6) = false) then
+    begin
+      Actions.GroupOrderAttackHouse(Pike7, Tower6);
+    end;
+    if (States.HouseDestroyed(Tower6) = true) then
+    begin
+      Actions.GroupOrderAttackHouse(Pike7, States.ClosestHouse(1, 26, 61, -1));
+    end;
+    Actions.GroupOrderAttackHouse(Crossbow6, States.ClosestHouse(1, 15, 53, -1));
+  end;
+  
+  if (States.GameTime = 1200) then
+  begin
+    StartDestruction := True;
+  end;
+  if (StartDestruction = true) and ((States.GameTime mod 50) = 0) then
+  begin
+    Actions.GroupOrderAttackHouse(Pike4, States.ClosestHouse(1, 89, 73, -1));
+    Actions.GroupOrderAttackHouse(Knight2, States.ClosestHouse(1, 84, 78, -1));
+    Actions.GroupOrderAttackHouse(Knight3, States.ClosestHouse(1, 54, 72, -1));
+  end;
+  
 end;
 

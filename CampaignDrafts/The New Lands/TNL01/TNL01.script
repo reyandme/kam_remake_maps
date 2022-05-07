@@ -1,15 +1,15 @@
 const
-	DELAY = 40;
+  DELAY = 40;
 var
-	Message3Sent, Message4Sent: Boolean;
-	Scout1, Scout2, Scout3, Mil1, Mil2, Axe1, Bow1, Bow2, Lance1, Sword1, Sword2, Xbow1, Xbow2, Pike1, Pike2: Integer;
-	SneakingUnit1, SneakingUnit2: Integer;
-	AttackImmediately: Boolean;
-	L: Integer;
-	H1, H2: Integer;
-	DelayClosestUnit: Integer;
-	Barracks: Integer;
-	
+  Message3Sent, Message4Sent: Boolean;
+  Scout1, Scout2, Scout3, Mil1, Mil2, Axe1, Bow1, Bow2, Lance1, Sword1, Sword2, Xbow1, Xbow2, Pike1, Pike2: Integer;
+  SneakingUnit1, SneakingUnit2: Integer;
+  AttackImmediately: Boolean;
+  L: Integer;
+  H1, H2: Integer;
+  DelayClosestUnit: Integer;
+  Barracks: Integer;
+  
 function ClosestUnit(aPlayer, X, Y: Integer): Integer; var Groups: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY, Member0: Integer;
 begin
    Result := -1;
@@ -30,21 +30,21 @@ end;
 
 function ClosestHouse(aPlayer, X, Y: Integer): Integer; var Houses: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
 begin
-	Result := -1;
-	Houses := States.PlayerGetAllHouses(aPlayer);
-	for i := 0 to Length(Houses) -1 do
-	begin
-		DX := X - States.HousePositionX(Houses[i]);
-		DY := Y - States.HousePositionY(Houses[i]);
-		ThisDistanceSqr := (DX*DX) + (DY*DY);
-		if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
-		begin
-			BestDistanceSqr := ThisDistanceSqr;
-			Result := Houses[i];
-		end;
-	end;
+  Result := -1;
+  Houses := States.PlayerGetAllHouses(aPlayer);
+  for i := 0 to Length(Houses) -1 do
+  begin
+    DX := X - States.HousePositionX(Houses[i]);
+    DY := Y - States.HousePositionY(Houses[i]);
+    ThisDistanceSqr := (DX*DX) + (DY*DY);
+    if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
+    begin
+      BestDistanceSqr := ThisDistanceSqr;
+      Result := Houses[i];
+    end;
+  end;
 end;
-	
+  
 procedure OnMissionStart;
 begin
 
@@ -77,117 +77,117 @@ procedure OnTick;
 begin
 
 //Send first message to player:
-	if States.GameTime = 30 then
-	begin
-		Actions.ShowMsg(0, '<$1>');
-	end;
+  if States.GameTime = 30 then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+  end;
 
 //Check whether the hostile army is 'untouched' after 10 minutes and, if so, send a message to the player:
-	if (States.GameTime = 6000) then
-	begin
-		if (States.StatArmyCount(2) = 60) and (States.StatArmyCount(4) = 60) and (States.StatArmyCount(5) = 24) then
-		begin
-			Actions.ShowMsg(0, '<$2>');
-		end;
-	end;
+  if (States.GameTime = 6000) then
+  begin
+    if (States.StatArmyCount(2) = 60) and (States.StatArmyCount(4) = 60) and (States.StatArmyCount(5) = 24) then
+    begin
+      Actions.ShowMsg(0, '<$2>');
+    end;
+  end;
 
 //If the player has killed one or more soldiers before the attack should start, make the AI retaliate:
-	if (States.GameTime < 7250) and ((States.StatArmyCount(2) < 60) or (States.StatArmyCount(4) < 60) or (States.StatArmyCount(5) < 24)) then
-	begin
-		if (Message4Sent = False) then
-		begin
-			Actions.ShowMsg(0, '<$3>');
-			Message4Sent := True;
-			AttackImmediately := True;
-			DelayClosestUnit := States.GameTime;
-		end;
-	end;
-	
-	if (AttackImmediately = True) and (States.GameTime = DelayClosestUnit) then
-	begin
-		if States.StatArmyCount(0) >= 8 then
-		begin
-			L := ClosestUnit(0, 28, 51);
-			if L <> -1 then
-			begin
-				Actions.GroupOrderAttackUnit(Mil1, L);
-				Actions.GroupOrderAttackUnit(Mil2, L);
-				Actions.GroupOrderAttackUnit(Axe1, L);
-				Actions.GroupOrderAttackUnit(Bow1, L);
-				Actions.GroupOrderAttackUnit(Bow2, L);
-				Actions.GroupOrderAttackUnit(Scout1, L);
-				Actions.GroupOrderAttackUnit(Scout2, L);
-				Actions.GroupOrderAttackUnit(Scout3, L);
-				Actions.GroupOrderAttackUnit(Lance1, L);
-				Actions.GroupOrderAttackUnit(Sword1, L);
-				Actions.GroupOrderAttackUnit(Sword2, L);
-				Actions.GroupOrderAttackUnit(Pike1, L);
-				Actions.GroupOrderAttackUnit(Pike2, L);
-				Actions.GroupOrderAttackUnit(Xbow1, L);
-				Actions.GroupOrderAttackUnit(Xbow2, L);
-			end;
-		end;
-		if States.StatArmyCount(0) < 8 then
-		begin
-			H1 := ClosestHouse(0, 28, 52);
-			H2 := ClosestHouse(0, 67, 71);
-			if (H1 <> -1) or (H2 <> -1) then
-			begin
-				Actions.GroupOrderAttackHouse(Mil1, H1);
-				Actions.GroupOrderAttackHouse(Mil2, H1);
-				Actions.GroupOrderAttackHouse(Axe1, H1);
-				Actions.GroupOrderAttackHouse(Bow1, H1);
-				Actions.GroupOrderAttackHouse(Bow2, H1);
-				Actions.GroupOrderAttackHouse(Scout1, H1);
-				Actions.GroupOrderAttackHouse(Scout2, H1);
-				Actions.GroupOrderAttackHouse(Scout3, H1);
-				Actions.GroupOrderAttackHouse(Lance1, H1);
-				Actions.GroupOrderAttackHouse(Sword1, H2);
-				Actions.GroupOrderAttackHouse(Sword2, H2);
-				Actions.GroupOrderAttackHouse(Pike1, H2);
-				Actions.GroupOrderAttackHouse(Pike2, H2);
-				Actions.GroupOrderAttackHouse(Xbow1, H2);
-				Actions.GroupOrderAttackHouse(Xbow2, H2);
-			end;
-		end;
-		DelayClosestUnit := (States.GameTime + DELAY);
-	end;
-		
+  if (States.GameTime < 7250) and ((States.StatArmyCount(2) < 60) or (States.StatArmyCount(4) < 60) or (States.StatArmyCount(5) < 24)) then
+  begin
+    if (Message4Sent = False) then
+    begin
+      Actions.ShowMsg(0, '<$3>');
+      Message4Sent := True;
+      AttackImmediately := True;
+      DelayClosestUnit := States.GameTime;
+    end;
+  end;
+  
+  if (AttackImmediately = True) and (States.GameTime = DelayClosestUnit) then
+  begin
+    if States.StatArmyCount(0) >= 8 then
+    begin
+      L := ClosestUnit(0, 28, 51);
+      if L <> -1 then
+      begin
+        Actions.GroupOrderAttackUnit(Mil1, L);
+        Actions.GroupOrderAttackUnit(Mil2, L);
+        Actions.GroupOrderAttackUnit(Axe1, L);
+        Actions.GroupOrderAttackUnit(Bow1, L);
+        Actions.GroupOrderAttackUnit(Bow2, L);
+        Actions.GroupOrderAttackUnit(Scout1, L);
+        Actions.GroupOrderAttackUnit(Scout2, L);
+        Actions.GroupOrderAttackUnit(Scout3, L);
+        Actions.GroupOrderAttackUnit(Lance1, L);
+        Actions.GroupOrderAttackUnit(Sword1, L);
+        Actions.GroupOrderAttackUnit(Sword2, L);
+        Actions.GroupOrderAttackUnit(Pike1, L);
+        Actions.GroupOrderAttackUnit(Pike2, L);
+        Actions.GroupOrderAttackUnit(Xbow1, L);
+        Actions.GroupOrderAttackUnit(Xbow2, L);
+      end;
+    end;
+    if States.StatArmyCount(0) < 8 then
+    begin
+      H1 := ClosestHouse(0, 28, 52);
+      H2 := ClosestHouse(0, 67, 71);
+      if (H1 <> -1) or (H2 <> -1) then
+      begin
+        Actions.GroupOrderAttackHouse(Mil1, H1);
+        Actions.GroupOrderAttackHouse(Mil2, H1);
+        Actions.GroupOrderAttackHouse(Axe1, H1);
+        Actions.GroupOrderAttackHouse(Bow1, H1);
+        Actions.GroupOrderAttackHouse(Bow2, H1);
+        Actions.GroupOrderAttackHouse(Scout1, H1);
+        Actions.GroupOrderAttackHouse(Scout2, H1);
+        Actions.GroupOrderAttackHouse(Scout3, H1);
+        Actions.GroupOrderAttackHouse(Lance1, H1);
+        Actions.GroupOrderAttackHouse(Sword1, H2);
+        Actions.GroupOrderAttackHouse(Sword2, H2);
+        Actions.GroupOrderAttackHouse(Pike1, H2);
+        Actions.GroupOrderAttackHouse(Pike2, H2);
+        Actions.GroupOrderAttackHouse(Xbow1, H2);
+        Actions.GroupOrderAttackHouse(Xbow2, H2);
+      end;
+    end;
+    DelayClosestUnit := (States.GameTime + DELAY);
+  end;
+    
 
 //Check whether the attack is defeated and, if so, send a message to the player:
-	if (States.StatArmyCount(2) = 0) and (States.StatArmyCount(4) = 0) and (States.StatArmyCount(5) = 0) and (Message4Sent = false) then
-	begin
-		Actions.ShowMsg(0, '<$4>');
-		Message4Sent := True;	
-	end;
+  if (States.StatArmyCount(2) = 0) and (States.StatArmyCount(4) = 0) and (States.StatArmyCount(5) = 0) and (Message4Sent = false) then
+  begin
+    Actions.ShowMsg(0, '<$4>');
+    Message4Sent := True;  
+  end;
 
 //Check whether units try to sneak through the small passage at 57, 52 and 57, 53 and if so, attack them:
-	if (States.GameTime < 7250) then
-	begin
-		SneakingUnit1 := States.UnitAt(58, 53);
-		SneakingUnit2 := States.UnitAt(58, 54);
-		if (SneakingUnit1 <> -1) and (States.UnitOwner(SneakingUnit1) = 0) then
-		begin
-			Actions.GroupOrderAttackUnit(Scout3, SneakingUnit1);
-		end;
-		if (SneakingUnit1 <> -1) and (States.UnitDead(SneakingUnit1) = True) and (States.GroupMemberCount(Scout2) = 8) and (States.GroupMemberCount(Scout3) = 8) then
-		begin
-			Actions.GroupOrderWalk(Scout3, 66, 40, 6);
-		end;
-		if (SneakingUnit2 <> -1) and (States.UnitOwner(SneakingUnit2) = 0) then
-		begin
-			Actions.GroupOrderAttackUnit(Scout2, SneakingUnit2);
-		end;
-		if (SneakingUnit2 <> -1) and (States.UnitDead(SneakingUnit2) = True) and (States.GroupMemberCount(Scout2) = 8) and (States.GroupMemberCount(Scout3) = 8) then
-		begin
-			Actions.GroupOrderWalk(Scout2, 63, 45, 6);
-		end;
-	end;
-	
+  if (States.GameTime < 7250) then
+  begin
+    SneakingUnit1 := States.UnitAt(58, 53);
+    SneakingUnit2 := States.UnitAt(58, 54);
+    if (SneakingUnit1 <> -1) and (States.UnitOwner(SneakingUnit1) = 0) then
+    begin
+      Actions.GroupOrderAttackUnit(Scout3, SneakingUnit1);
+    end;
+    if (SneakingUnit1 <> -1) and (States.UnitDead(SneakingUnit1) = True) and (States.GroupMemberCount(Scout2) = 8) and (States.GroupMemberCount(Scout3) = 8) then
+    begin
+      Actions.GroupOrderWalk(Scout3, 66, 40, 6);
+    end;
+    if (SneakingUnit2 <> -1) and (States.UnitOwner(SneakingUnit2) = 0) then
+    begin
+      Actions.GroupOrderAttackUnit(Scout2, SneakingUnit2);
+    end;
+    if (SneakingUnit2 <> -1) and (States.UnitDead(SneakingUnit2) = True) and (States.GroupMemberCount(Scout2) = 8) and (States.GroupMemberCount(Scout3) = 8) then
+    begin
+      Actions.GroupOrderWalk(Scout2, 63, 45, 6);
+    end;
+  end;
+  
 //Human player lost when barracks is destroyed:
-	if States.HouseDestroyed(Barracks) = True then
-	begin
-		Actions.PlayerDefeat(0);
-	end;
+  if States.HouseDestroyed(Barracks) = True then
+  begin
+    Actions.PlayerDefeat(0);
+  end;
 
 end;

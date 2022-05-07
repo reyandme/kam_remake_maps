@@ -1,33 +1,33 @@
 const
-DELAY = 20;
+  DELAY = 20;
 
 var
-Message1Sent, Message2Sent: Boolean;
-DelayMessage: Integer;
+  Message1Sent, Message2Sent: Boolean;
+  DelayMessage: Integer;
 
 procedure OnMissionStart;
 begin
-	DelayMessage := 19200
+  DelayMessage := 19200
 end;
 
 procedure OnTick;
 begin
 
-	if (States.GameTime = 370) and (Message1Sent = False) then
-	begin
-		Actions.ShowMsg(0, '<$1>');
-		Message1Sent := True;
-	end;
-	
-	if (States.GameTime < 2400) and (Message2Sent = False) and (States.StatArmyCount(4) = 0) then
-	begin
-		DelayMessage := States.GameTime;
-		Message2Sent := True;
-	end;
-	if (States.GameTime = DelayMessage + DELAY) then
-	begin
-		Actions.ShowMsg(0, '<$2>');
-	end;
+  if (States.GameTime = 370) and (Message1Sent = False) then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+    Message1Sent := True;
+  end;
+  
+  if (States.GameTime < 2400) and (Message2Sent = False) and (States.StatArmyCount(4) = 0) then
+  begin
+    DelayMessage := States.GameTime;
+    Message2Sent := True;
+  end;
+  if (States.GameTime = DelayMessage + DELAY) then
+  begin
+    Actions.ShowMsg(0, '<$2>');
+  end;
 
 
 end;

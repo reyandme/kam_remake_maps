@@ -6,76 +6,76 @@ SplitPikes, PositionsTaken: Boolean;
 procedure OnMissionStart;
 begin
 
-	Actions.PlayerShareFog(1, 0, False);
-	Actions.FogCoverCircle(0, 72, 36, 40);
-	Actions.FogRevealCircle(0, 72, 36, 8);
+  Actions.PlayerShareFog(1, 0, False);
+  Actions.FogCoverCircle(0, 72, 36, 40);
+  Actions.FogRevealCircle(0, 72, 36, 8);
 
-	AllyXbow1 := States.GroupAt(68, 36);
-	AllyXbow2 := States.GroupAt(75, 39);
-	AllyPike1 := States.GroupAt(72, 33);
-	AllySword := States.GroupAt(70, 40);
-	AllyKnight1 := States.GroupAt(76, 35);
-	AllyKnight2 := States.GroupAt(72, 37);
-	
-	Actions.PlayWAVAtLocationLooped(0, 'Ambient', 2.0, 32, 67, 40);
-	
+  AllyXbow1 := States.GroupAt(68, 36);
+  AllyXbow2 := States.GroupAt(75, 39);
+  AllyPike1 := States.GroupAt(72, 33);
+  AllySword := States.GroupAt(70, 40);
+  AllyKnight1 := States.GroupAt(76, 35);
+  AllyKnight2 := States.GroupAt(72, 37);
+  
+  Actions.PlayWAVAtLocationLooped(0, 'Ambient', 2.0, 32, 67, 40);
+  
 end;
 
 procedure OnTick;
 begin
-	Actions.OverlayTextSetWordWrap(0, true);
-	if ShowOverlayText = false then
-	begin
-		Actions.OverlayTextSet(0, '');
-	end;
+  Actions.OverlayTextSetWordWrap(0, true);
+  if ShowOverlayText = false then
+  begin
+    Actions.OverlayTextSet(0, '');
+  end;
 
-	if States.GameTime = 1 then
-	begin
-		Actions.CinematicStart(0);
-		Actions.CinematicPanTo(0, 72, 33, 0);
-		ShowOverlayText := true;
-		Actions.OverlayTextSet(0, '<$1>');
-	end;
-	if (States.GameTime > 100) and (States.GameTime < 180) then
-	begin
-		Actions.OverlayTextSet(0, '<$2>');
-	end;
-	if (States.GameTime > 180) and (States.GameTime < 200) then
-	begin	
-		ShowOverlayText := false;
-		if SplitPikes = false then
-		begin
-			AllyPike2 := Actions.GroupOrderSplit(AllyPike1);
-			SplitPikes := true;
-		end;
-		if SplitPikes = true then
-		begin
-			Actions.GroupOrderWalk(AllyXbow1, 82, 32, 2);
-			Actions.GroupOrderWalk(AllyXbow2, 90, 37, 0);
-			Actions.GroupOrderWalk(AllyPike1, 79, 31, 6);
-			Actions.GroupOrderWalk(AllyPike2, 90, 39, 4);
-			Actions.GroupOrderWalk(AllySword, 85, 34, 2);
-			Actions.GroupOrderWalk(AllyKnight1, 87, 36, 0);
-			Actions.GroupOrderWalk(AllyKnight2, 86, 35, 1);
-		end;
-	end;	
-	if (States.GameTime = 200) then
-	begin	
-		Actions.CinematicPanTo(0, 12, 70, 0);
-		Actions.FogRevealCircle(0, 86, 32, 10);
-		Actions.CinematicEnd(0);
-		Actions.ShowMsg(0, '<$3>');
-	end;	
-	if States.GameTime = 400 then
-	begin
-		Actions.GroupOrderWalk(AllyXbow1, 82, 32, 2);
-		Actions.GroupOrderWalk(AllyXbow2, 90, 37, 0);
-		Actions.GroupOrderWalk(AllyPike1, 79, 31, 6);
-		Actions.GroupOrderWalk(AllyPike2, 90, 39, 4);
-		Actions.GroupOrderWalk(AllySword, 85, 34, 2);
-		Actions.GroupOrderWalk(AllyKnight1, 87, 36, 0);
-		Actions.GroupOrderWalk(AllyKnight2, 86, 35, 1);
-	end;
+  if States.GameTime = 1 then
+  begin
+    Actions.CinematicStart(0);
+    Actions.CinematicPanTo(0, 72, 33, 0);
+    ShowOverlayText := true;
+    Actions.OverlayTextSet(0, '<$1>');
+  end;
+  if (States.GameTime > 100) and (States.GameTime < 180) then
+  begin
+    Actions.OverlayTextSet(0, '<$2>');
+  end;
+  if (States.GameTime > 180) and (States.GameTime < 200) then
+  begin  
+    ShowOverlayText := false;
+    if SplitPikes = false then
+    begin
+      AllyPike2 := Actions.GroupOrderSplit(AllyPike1);
+      SplitPikes := true;
+    end;
+    if SplitPikes = true then
+    begin
+      Actions.GroupOrderWalk(AllyXbow1, 82, 32, 2);
+      Actions.GroupOrderWalk(AllyXbow2, 90, 37, 0);
+      Actions.GroupOrderWalk(AllyPike1, 79, 31, 6);
+      Actions.GroupOrderWalk(AllyPike2, 90, 39, 4);
+      Actions.GroupOrderWalk(AllySword, 85, 34, 2);
+      Actions.GroupOrderWalk(AllyKnight1, 87, 36, 0);
+      Actions.GroupOrderWalk(AllyKnight2, 86, 35, 1);
+    end;
+  end;  
+  if (States.GameTime = 200) then
+  begin  
+    Actions.CinematicPanTo(0, 12, 70, 0);
+    Actions.FogRevealCircle(0, 86, 32, 10);
+    Actions.CinematicEnd(0);
+    Actions.ShowMsg(0, '<$3>');
+  end;  
+  if States.GameTime = 400 then
+  begin
+    Actions.GroupOrderWalk(AllyXbow1, 82, 32, 2);
+    Actions.GroupOrderWalk(AllyXbow2, 90, 37, 0);
+    Actions.GroupOrderWalk(AllyPike1, 79, 31, 6);
+    Actions.GroupOrderWalk(AllyPike2, 90, 39, 4);
+    Actions.GroupOrderWalk(AllySword, 85, 34, 2);
+    Actions.GroupOrderWalk(AllyKnight1, 87, 36, 0);
+    Actions.GroupOrderWalk(AllyKnight2, 86, 35, 1);
+  end;
 
 end;
 

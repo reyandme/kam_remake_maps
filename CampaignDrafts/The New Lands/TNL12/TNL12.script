@@ -1,65 +1,65 @@
 var
-	Storehouse1, Storehouse2, Storehouse3, Storehouse4, Storehouse5, Storehouse6, Storehouse7, Storehouse8: Integer;
-	SneakAttackers: Integer;
-	
+  Storehouse1, Storehouse2, Storehouse3, Storehouse4, Storehouse5, Storehouse6, Storehouse7, Storehouse8: Integer;
+  SneakAttackers: Integer;
+  
 procedure OnMissionStart;
 begin
 
-	Actions.HouseAllow(0, 9, False);
-	Actions.HouseAllow(0, 14, False);
-	Actions.HouseAllow(0, 27, False);
-	
-	Storehouse1 := States.HouseAt(84, 40);
-	Actions.HouseWareBlock(Storehouse1, 3, True);
-	Actions.HouseWareBlock(Storehouse1, 4, True);
-	Actions.HouseWareBlock(Storehouse1, 5, True);
-	Actions.HouseWareBlock(Storehouse1, 6, True);
-	Actions.HouseWareBlock(Storehouse1, 7, True);
-	Storehouse2 := States.HouseAt(94, 47);
-	Actions.HouseWareBlock(Storehouse2, 3, True);
-	Actions.HouseWareBlock(Storehouse2, 4, True);
-	Actions.HouseWareBlock(Storehouse2, 5, True);
-	Actions.HouseWareBlock(Storehouse2, 6, True);
-	Actions.HouseWareBlock(Storehouse2, 7, True);
-	Storehouse3 := States.HouseAt(117, 29);
-	Actions.HouseWareBlock(Storehouse3, 3, True);
-	Actions.HouseWareBlock(Storehouse3, 4, True);
-	Actions.HouseWareBlock(Storehouse3, 5, True);
-	Actions.HouseWareBlock(Storehouse3, 6, True);
-	Actions.HouseWareBlock(Storehouse3, 7, True);
-	Storehouse4 := States.HouseAt(115, 14);
-	Actions.HouseWareBlock(Storehouse4, 3, True);
-	Actions.HouseWareBlock(Storehouse4, 4, True);
-	Actions.HouseWareBlock(Storehouse4, 5, True);
-	Actions.HouseWareBlock(Storehouse4, 6, True);
-	Actions.HouseWareBlock(Storehouse4, 7, True);
-	Storehouse5 := States.HouseAt(122, 47);
-	Actions.HouseWareBlock(Storehouse5, 3, True);
-	Actions.HouseWareBlock(Storehouse5, 4, True);
-	Actions.HouseWareBlock(Storehouse5, 5, True);
-	Actions.HouseWareBlock(Storehouse5, 6, True);
-	Actions.HouseWareBlock(Storehouse5, 7, True);
-	Actions.HouseWareBlock(Storehouse5, 8, True);
-	Actions.HouseWareBlock(Storehouse5, 9, True);
-	Actions.HouseWareBlock(Storehouse5, 10, True);
-	Actions.HouseWareBlock(Storehouse5, 13, True);
+  Actions.HouseAllow(0, 9, False);
+  Actions.HouseAllow(0, 14, False);
+  Actions.HouseAllow(0, 27, False);
+  
+  Storehouse1 := States.HouseAt(84, 40);
+  Actions.HouseWareBlock(Storehouse1, 3, True);
+  Actions.HouseWareBlock(Storehouse1, 4, True);
+  Actions.HouseWareBlock(Storehouse1, 5, True);
+  Actions.HouseWareBlock(Storehouse1, 6, True);
+  Actions.HouseWareBlock(Storehouse1, 7, True);
+  Storehouse2 := States.HouseAt(94, 47);
+  Actions.HouseWareBlock(Storehouse2, 3, True);
+  Actions.HouseWareBlock(Storehouse2, 4, True);
+  Actions.HouseWareBlock(Storehouse2, 5, True);
+  Actions.HouseWareBlock(Storehouse2, 6, True);
+  Actions.HouseWareBlock(Storehouse2, 7, True);
+  Storehouse3 := States.HouseAt(117, 29);
+  Actions.HouseWareBlock(Storehouse3, 3, True);
+  Actions.HouseWareBlock(Storehouse3, 4, True);
+  Actions.HouseWareBlock(Storehouse3, 5, True);
+  Actions.HouseWareBlock(Storehouse3, 6, True);
+  Actions.HouseWareBlock(Storehouse3, 7, True);
+  Storehouse4 := States.HouseAt(115, 14);
+  Actions.HouseWareBlock(Storehouse4, 3, True);
+  Actions.HouseWareBlock(Storehouse4, 4, True);
+  Actions.HouseWareBlock(Storehouse4, 5, True);
+  Actions.HouseWareBlock(Storehouse4, 6, True);
+  Actions.HouseWareBlock(Storehouse4, 7, True);
+  Storehouse5 := States.HouseAt(122, 47);
+  Actions.HouseWareBlock(Storehouse5, 3, True);
+  Actions.HouseWareBlock(Storehouse5, 4, True);
+  Actions.HouseWareBlock(Storehouse5, 5, True);
+  Actions.HouseWareBlock(Storehouse5, 6, True);
+  Actions.HouseWareBlock(Storehouse5, 7, True);
+  Actions.HouseWareBlock(Storehouse5, 8, True);
+  Actions.HouseWareBlock(Storehouse5, 9, True);
+  Actions.HouseWareBlock(Storehouse5, 10, True);
+  Actions.HouseWareBlock(Storehouse5, 13, True);
 
-	Actions.HouseWeaponsOrderSet(States.HouseAt(140, 115), 18, 999);
-	
-	SneakAttackers := States.GroupAt(113, 119);
-	
+  Actions.HouseWeaponsOrderSet(States.HouseAt(140, 115), 18, 999);
+  
+  SneakAttackers := States.GroupAt(113, 119);
+  
 end;
 
 procedure OnHouseBuilt(aHouse: Integer);
 begin
   if States.HouseOwner(aHouse) <> 0 then Exit;
 
-	if States.HouseType(aHouse) = 13 then
-		Actions.HouseAllow(0, 27, True);
-	if States.HouseType(aHouse) = 27 then
-		Actions.HouseAllow(0, 14, True);
-	if States.HouseType(aHouse) = 14 then
-		Actions.HouseAllow(0, 9, True);
+  if States.HouseType(aHouse) = 13 then
+    Actions.HouseAllow(0, 27, True);
+  if States.HouseType(aHouse) = 27 then
+    Actions.HouseAllow(0, 14, True);
+  if States.HouseType(aHouse) = 14 then
+    Actions.HouseAllow(0, 9, True);
 end;
 
 procedure OnTick;
@@ -67,12 +67,12 @@ begin
 
 if (States.GameTime = 15500) then
 begin
-	Actions.ShowMsg(0, '<$1>');
+  Actions.ShowMsg(0, '<$1>');
 end;
 
 if (States.GameTime = 10001) then
 begin
-	Actions.GroupOrderAttackHouse(SneakAttackers, States.HouseAt(40, 117));
+  Actions.GroupOrderAttackHouse(SneakAttackers, States.HouseAt(40, 117));
 end;
 
 end;

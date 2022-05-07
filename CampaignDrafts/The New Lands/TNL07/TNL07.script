@@ -13,54 +13,54 @@ procedure OnMissionStart;
 begin
   AllyInn := 0;
   AllyInnBuild := False;
-	Actions.FogCoverCircle(0, 40, 120, 50);
-	Actions.PlayerShareFog(3, 0, False);
-	Actions.PlayerShareFog(4, 0, False);
-	Actions.FogRevealCircle(0, 33, 129, 15);
+  Actions.FogCoverCircle(0, 40, 120, 50);
+  Actions.PlayerShareFog(3, 0, False);
+  Actions.PlayerShareFog(4, 0, False);
+  Actions.FogRevealCircle(0, 33, 129, 15);
 end;
 
 
 procedure CheckVictoryCondition;
 var
-	groups: array of Integer;
-	enemy, grp, member, id, cnt, x, y: Integer;
+  groups: array of Integer;
+  enemy, grp, member, id, cnt, x, y: Integer;
 
 begin
-	for enemy := 1 to 2 do
-	begin
-		groups := States.PlayerGetAllGroups(enemy);
-		cnt := 0;
+  for enemy := 1 to 2 do
+  begin
+    groups := States.PlayerGetAllGroups(enemy);
+    cnt := 0;
 
-		for grp := 0 to Length(groups) - 1 do
-		cnt := cnt + States.GroupMemberCount(groups[grp]);
+    for grp := 0 to Length(groups) - 1 do
+    cnt := cnt + States.GroupMemberCount(groups[grp]);
 
-		if cnt > 7 then
-		exit
-		else
-		begin
-			for grp := 0 to Length(groups) - 1 do	
-			begin
-				cnt := States.GroupMemberCount(groups[grp]);
+    if cnt > 7 then
+    exit
+    else
+    begin
+      for grp := 0 to Length(groups) - 1 do  
+      begin
+        cnt := States.GroupMemberCount(groups[grp]);
 
-				for member := 0 to cnt - 1 do
-				begin
-					id := States.GroupMember(groups[grp], member);
+        for member := 0 to cnt - 1 do
+        begin
+          id := States.GroupMember(groups[grp], member);
 
-					x := States.UnitPositionX(id);
-					if (x > (PointOfDefenceX - DefenceRadius)) and (x < (PointOfDefenceX + DefenceRadius)) then
-					exit;
+          x := States.UnitPositionX(id);
+          if (x > (PointOfDefenceX - DefenceRadius)) and (x < (PointOfDefenceX + DefenceRadius)) then
+          exit;
 
-					y := States.UnitPositionY(id);
-					if (y > (PointOfDefenceY - DefenceRadius)) and (y < (PointOfDefenceY + DefenceRadius)) then
-					exit;
-				end;
-            	end
-		end;
-	end;
+          y := States.UnitPositionY(id);
+          if (y > (PointOfDefenceY - DefenceRadius)) and (y < (PointOfDefenceY + DefenceRadius)) then
+          exit;
+        end;
+              end
+    end;
+  end;
 
-	Actions.PlayerWin([0], False);
-	Actions.PlayerShareFog(3, 0, True);
-	Actions.PlayerShareFog(4, 0, True);
+  Actions.PlayerWin([0], False);
+  Actions.PlayerShareFog(3, 0, True);
+  Actions.PlayerShareFog(4, 0, True);
 end;
 
 
@@ -78,13 +78,13 @@ procedure OnHouseBuilt(aHouse: Integer);
 begin
   if States.HouseOwner(aHouse) <> 3 then Exit;
 
-	if States.HouseType(aHouse) = 13 then
-		Actions.HouseAllow(3, 27, True);
-	if States.HouseTypeEx(aHouse) = htInn then
+  if States.HouseType(aHouse) = 13 then
+    Actions.HouseAllow(3, 27, True);
+  if States.HouseTypeEx(aHouse) = htInn then
     AllyInnBuild := True;
-		//Actions.HouseAllow(3, 14, True);
-	if States.HouseType(aHouse) = 14 then
-		Actions.HouseAllow(3, 9, True);
+    //Actions.HouseAllow(3, 14, True);
+  if States.HouseType(aHouse) = 14 then
+    Actions.HouseAllow(3, 9, True);
 
 end;
 
@@ -95,12 +95,12 @@ begin
   if not AllyInnBuild and (AllyInn <> 0) and ((S.GameTime mod 10) = 0) and (S.HouseBuildingProgress(AllyInn) > 300) then
     A.HandHouseLock(3, htQuarry, hlGranted);
 
-	if (States.GameTime = 2500) and (Message1Sent = False) then
-	begin
-		Actions.ShowMsg(0, '<$1>');
-		Message1Sent := True;
-	end;
-	
+  if (States.GameTime = 2500) and (Message1Sent = False) then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+    Message1Sent := True;
+  end;
+  
   if (States.GameTime mod 15) = 0 then
     CheckVictoryCondition;  
 end;

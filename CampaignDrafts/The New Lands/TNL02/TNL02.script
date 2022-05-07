@@ -1,8 +1,8 @@
 procedure OnMissionStart;
 begin
-Actions.HouseAllow(0, 9, False);
-Actions.HouseAllow(0, 14, False);
-Actions.HouseAllow(0, 27, False);
+  Actions.HouseAllow(0, 9, False);
+  Actions.HouseAllow(0, 14, False);
+  Actions.HouseAllow(0, 27, False);
 end;
 
 procedure OnHouseBuilt(aHouse: Integer);

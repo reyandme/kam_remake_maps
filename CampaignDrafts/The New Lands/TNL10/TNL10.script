@@ -1,11 +1,11 @@
 var
-	Storehouse2, Storehouse3: Integer;
-	EnemyStorehouse1, EnemyStorehouse2, EnemyStorehouse3: Integer;
-	TimeUntilAttack, Minutes, Seconds: Integer;
-	Top1, Top2, Top3, Top4, Top5, Top6, Top7, Top8, Right1, Right2, Right3, Right4, Right5, Right6: Integer;
-	StartAttack, XbowPositions: Boolean;
-	k, H1, H2, L: Integer;
-	MessageSent, Message2Sent: Boolean;
+  Storehouse2, Storehouse3: Integer;
+  EnemyStorehouse1, EnemyStorehouse2, EnemyStorehouse3: Integer;
+  TimeUntilAttack, Minutes, Seconds: Integer;
+  Top1, Top2, Top3, Top4, Top5, Top6, Top7, Top8, Right1, Right2, Right3, Right4, Right5, Right6: Integer;
+  StartAttack, XbowPositions: Boolean;
+  k, H1, H2, L: Integer;
+  MessageSent, Message2Sent: Boolean;
 
 function ClosestUnit(aPlayer, X, Y: Integer): Integer; var Groups: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY, Member0: Integer;
 begin
@@ -27,70 +27,70 @@ end;
 
 function ClosestHouse(aPlayer, X, Y: Integer): Integer; var Houses: array of Integer; i, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
 begin
-	Result := -1;
-	Houses := States.PlayerGetAllHouses(aPlayer);
-	for i := 0 to Length(Houses) -1 do
-	begin
-		DX := X - States.HousePositionX(Houses[i]);
-		DY := Y - States.HousePositionY(Houses[i]);
-		ThisDistanceSqr := (DX*DX) + (DY*DY);
-		if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
-		begin
-			BestDistanceSqr := ThisDistanceSqr;
-			Result := Houses[i];
-		end;
-	end;
+  Result := -1;
+  Houses := States.PlayerGetAllHouses(aPlayer);
+  for i := 0 to Length(Houses) -1 do
+  begin
+    DX := X - States.HousePositionX(Houses[i]);
+    DY := Y - States.HousePositionY(Houses[i]);
+    ThisDistanceSqr := (DX*DX) + (DY*DY);
+    if (Result = -1) or (ThisDistanceSqr  < BestDistanceSqr) then
+    begin
+      BestDistanceSqr := ThisDistanceSqr;
+      Result := Houses[i];
+    end;
+  end;
 end;
 
 procedure OnMissionStart;
 begin
 
-	//Actions.FogRevealCircle(0, 1, 1, 250);
-	Actions.PlayerShareFog(1, 0, False);
-	Actions.PlayerShareFog(2, 0, False);
-	Actions.FogCoverCircle(0, 38, 130, 50);
-	Actions.FogRevealCircle(0, 65, 121, 6);
-	Actions.FogRevealCircle(0, 34, 99, 6);
-	Actions.FogRevealCircle(0, 35, 99, 6);
+  //Actions.FogRevealCircle(0, 1, 1, 250);
+  Actions.PlayerShareFog(1, 0, False);
+  Actions.PlayerShareFog(2, 0, False);
+  Actions.FogCoverCircle(0, 38, 130, 50);
+  Actions.FogRevealCircle(0, 65, 121, 6);
+  Actions.FogRevealCircle(0, 34, 99, 6);
+  Actions.FogRevealCircle(0, 35, 99, 6);
 
-	Actions.HouseAllow(0, 9, False);
-	Actions.HouseAllow(0, 14, False);
-	Actions.HouseAllow(0, 27, False);
+  Actions.HouseAllow(0, 9, False);
+  Actions.HouseAllow(0, 14, False);
+  Actions.HouseAllow(0, 27, False);
 
-	Storehouse2 := States.HouseAt(45, 125);
-	Actions.HouseWareBlock(Storehouse2, 2, True);
-	Actions.HouseWareBlock(Storehouse2, 8, True);
-	Actions.HouseWareBlock(Storehouse2, 9, True);
-	Actions.HouseWareBlock(Storehouse2, 11, True);
-	Actions.HouseWareBlock(Storehouse2, 13, True);
-	Actions.HouseWareBlock(Storehouse2, 14, True);
-	Actions.HouseWareBlock(Storehouse2, 15, True);
-	Storehouse3 := States.HouseAt(30, 154);
-	Actions.HouseWareBlock(Storehouse3, 6, True);
-	Actions.HouseWareBlock(Storehouse3, 7, True);
+  Storehouse2 := States.HouseAt(45, 125);
+  Actions.HouseWareBlock(Storehouse2, 2, True);
+  Actions.HouseWareBlock(Storehouse2, 8, True);
+  Actions.HouseWareBlock(Storehouse2, 9, True);
+  Actions.HouseWareBlock(Storehouse2, 11, True);
+  Actions.HouseWareBlock(Storehouse2, 13, True);
+  Actions.HouseWareBlock(Storehouse2, 14, True);
+  Actions.HouseWareBlock(Storehouse2, 15, True);
+  Storehouse3 := States.HouseAt(30, 154);
+  Actions.HouseWareBlock(Storehouse3, 6, True);
+  Actions.HouseWareBlock(Storehouse3, 7, True);
 
-	EnemyStorehouse1 := States.HouseAt(23, 46);
-	Actions.HouseWareBlock(EnemyStorehouse1, 0, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 1, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 2, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 9, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 12, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 14, True);
-	Actions.HouseWareBlock(EnemyStorehouse1, 15, True);
-	EnemyStorehouse2 := States.HouseAt(129, 53);
-	Actions.HouseWareBlock(EnemyStorehouse2, 0, True);
-	Actions.HouseWareBlock(EnemyStorehouse2, 2, True);
-	Actions.HouseWareBlock(EnemyStorehouse2, 9, True);
-	EnemyStorehouse3 := States.HouseAt(155, 61);
-	Actions.HouseWareBlock(EnemyStorehouse3, 0, True);
-	Actions.HouseWareBlock(EnemyStorehouse3, 1, True);
-	Actions.HouseWareBlock(EnemyStorehouse3, 2, True);
-	Actions.HouseWareBlock(EnemyStorehouse3, 9, True);
+  EnemyStorehouse1 := States.HouseAt(23, 46);
+  Actions.HouseWareBlock(EnemyStorehouse1, 0, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 1, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 2, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 9, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 12, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 14, True);
+  Actions.HouseWareBlock(EnemyStorehouse1, 15, True);
+  EnemyStorehouse2 := States.HouseAt(129, 53);
+  Actions.HouseWareBlock(EnemyStorehouse2, 0, True);
+  Actions.HouseWareBlock(EnemyStorehouse2, 2, True);
+  Actions.HouseWareBlock(EnemyStorehouse2, 9, True);
+  EnemyStorehouse3 := States.HouseAt(155, 61);
+  Actions.HouseWareBlock(EnemyStorehouse3, 0, True);
+  Actions.HouseWareBlock(EnemyStorehouse3, 1, True);
+  Actions.HouseWareBlock(EnemyStorehouse3, 2, True);
+  Actions.HouseWareBlock(EnemyStorehouse3, 9, True);
 
-	Top1 := States.GroupAt(63, 59);
+  Top1 := States.GroupAt(63, 59);
 
-	TimeUntilAttack := 18001;
-	XbowPositions := true;
+  TimeUntilAttack := 18001;
+  XbowPositions := true;
 
 end;
 
@@ -98,193 +98,193 @@ procedure OnHouseBuilt(aHouse: Integer);
 begin
   if States.HouseOwner(aHouse) <> 0 then Exit;
   
-	if States.HouseType(aHouse) = 13 then
+  if States.HouseType(aHouse) = 13 then
     Actions.HouseAllow(0, 27, True);
-	if States.HouseType(aHouse) = 27 then
+  if States.HouseType(aHouse) = 27 then
     Actions.HouseAllow(0, 14, True);
-	if States.HouseType(aHouse) = 14 then
+  if States.HouseType(aHouse) = 14 then
     Actions.HouseAllow(0, 9, True);
 end;
 
 procedure OnTick;
 begin
 
-	if States.GameTime = 20 then
-	begin
-		Actions.ShowMsg(0, '<$1>');
-	end;
+  if States.GameTime = 20 then
+  begin
+    Actions.ShowMsg(0, '<$1>');
+  end;
 
-	if TimeUntilAttack > 0 then
-	begin
-		TimeUntilAttack := TimeUntilAttack - 1;
-		Minutes := TimeUntilAttack div 600;
-		Seconds := (TimeUntilAttack div 10) mod 60;
-		Actions.OverlayTextSetFormatted(0, 'Time until attack: %.2d:%.2d', [Minutes, Seconds]);
-	end;
-	if TimeUntilAttack = 0 then
-	begin
-		Actions.OverlayTextSet(0, '');
-	end;
+  if TimeUntilAttack > 0 then
+  begin
+    TimeUntilAttack := TimeUntilAttack - 1;
+    Minutes := TimeUntilAttack div 600;
+    Seconds := (TimeUntilAttack div 10) mod 60;
+    Actions.OverlayTextSetFormatted(0, 'Time until attack: %.2d:%.2d', [Minutes, Seconds]);
+  end;
+  if TimeUntilAttack = 0 then
+  begin
+    Actions.OverlayTextSet(0, '');
+  end;
 
-	if (States.StatArmyCount(7) = 0) then
-	begin
-		if MessageSent = false then
-		begin
-			Actions.ShowMsg(0, '<$2>');
-			MessageSent := true;
-		end;
-	end;
+  if (States.StatArmyCount(7) = 0) then
+  begin
+    if MessageSent = false then
+    begin
+      Actions.ShowMsg(0, '<$2>');
+      MessageSent := true;
+    end;
+  end;
 
-	if States.GameTime = 15000 then
-	begin
-		Actions.FogRevealCircle(0, 172, 97, 8);
-		Actions.GiveGroup(0, 18, 173, 100, 6, 9, 3);
-		Actions.GiveGroup(0, 17, 173, 95, 6, 15, 5);
-		Actions.ShowMsgGoto(0, 172, 97, '<$3>');
-	end;
+  if States.GameTime = 15000 then
+  begin
+    Actions.FogRevealCircle(0, 172, 97, 8);
+    Actions.GiveGroup(0, 18, 173, 100, 6, 9, 3);
+    Actions.GiveGroup(0, 17, 173, 95, 6, 15, 5);
+    Actions.ShowMsgGoto(0, 172, 97, '<$3>');
+  end;
 
-	if States.GameTime = 18000 then
-	begin
-		Right1 := Actions.GiveGroup(5, 22, 91, 6, 4, 25, 5);  Actions.GroupOrderWalk(Right1, 99, 64, 4);
-		Right2 := Actions.GiveGroup(5, 22, 97, 6, 4, 25, 5);  Actions.GroupOrderWalk(Right2, 122, 72, 4);
-		Right3 := Actions.GiveGroup(5, 20, 95, 21, 4, 16, 4);  Actions.GroupOrderWalk(Right3, 101, 89, 5);
-		Right4 := Actions.GiveGroup(5, 18, 90, 23, 4, 15, 5);  Actions.GroupOrderWalk(Right4, 106, 84, 5);
-		Right5 := Actions.GiveGroup(5, 16, 103, 6, 4, 20, 5);  Actions.GroupOrderWalk(Right5, 97, 58, 4);
-		Right6 := Actions.GiveGroup(5, 18, 103, 10, 4, 15, 5);  Actions.GroupOrderWalk(Right6, 97, 53, 4);
-		Top2 := Actions.GiveGroup(6, 18, 87, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top2, 26, 85, 4);
-		Top3 := Actions.GiveGroup(6, 18, 92, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top3, 42, 85, 4);
-		Top4 := Actions.GiveGroup(6, 16, 97, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top4, 31, 86, 4);
-		Top5 := Actions.GiveGroup(6, 16, 96, 15, 4, 16, 4);  Actions.GroupOrderWalk(Top5, 37, 86, 4);
-		Top6 := Actions.GiveGroup(6, 20, 89, 15, 4, 15, 5);  Actions.GroupOrderWalk(Top6, 26, 80, 4);
-		Top7 := Actions.GiveGroup(6, 20, 89, 19, 4, 15, 5);  Actions.GroupOrderWalk(Top7, 43, 80, 4);
-		Top8 := Actions.GiveGroup(6, 22, 85, 6, 4, 20, 5);  Actions.GroupOrderWalk(Top8, 68, 55, 5);
-		Actions.ShowMsg(0, '<$4>');
-	end;
-	if States.GameTime = 19000 then
-	begin
-		Actions.GroupOrderWalk(Top1, 34, 81, 4);
-	end;
-	if States.GameTime = 19450 then
-	begin
-		Actions.GroupOrderWalk(Right3, 80, 114, 5);
-		Actions.GroupOrderWalk(Right4, 79, 119, 6);
-	end;
-	if States.GameTime = 19600 then
-	begin
-		Actions.GroupOrderWalk(Top1, 34, 81, 4);
-		Actions.GroupOrderWalk(Top2, 26, 85, 4);
-		Actions.GroupOrderWalk(Top3, 42, 85, 4);
-		Actions.GroupOrderWalk(Top4, 32, 87, 4);
-		Actions.GroupOrderWalk(Top5, 36, 87, 4);
-		Actions.GroupOrderWalk(Top6, 26, 80, 4);
-		Actions.GroupOrderWalk(Top7, 43, 80, 4);
-		Actions.GroupOrderWalk(Top8, 68, 55, 5);
-	end;
-	if States.GameTime = 19670 then
-	begin
-		StartAttack := true;
-	end;
-	if States.GameTime = 19800 then
-	begin
-		Actions.GroupOrderWalk(Right6, 80, 114, 5);
-		Actions.GroupOrderWalk(Right5, 79, 119, 6);
-	end;
+  if States.GameTime = 18000 then
+  begin
+    Right1 := Actions.GiveGroup(5, 22, 91, 6, 4, 25, 5);  Actions.GroupOrderWalk(Right1, 99, 64, 4);
+    Right2 := Actions.GiveGroup(5, 22, 97, 6, 4, 25, 5);  Actions.GroupOrderWalk(Right2, 122, 72, 4);
+    Right3 := Actions.GiveGroup(5, 20, 95, 21, 4, 16, 4);  Actions.GroupOrderWalk(Right3, 101, 89, 5);
+    Right4 := Actions.GiveGroup(5, 18, 90, 23, 4, 15, 5);  Actions.GroupOrderWalk(Right4, 106, 84, 5);
+    Right5 := Actions.GiveGroup(5, 16, 103, 6, 4, 20, 5);  Actions.GroupOrderWalk(Right5, 97, 58, 4);
+    Right6 := Actions.GiveGroup(5, 18, 103, 10, 4, 15, 5);  Actions.GroupOrderWalk(Right6, 97, 53, 4);
+    Top2 := Actions.GiveGroup(6, 18, 87, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top2, 26, 85, 4);
+    Top3 := Actions.GiveGroup(6, 18, 92, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top3, 42, 85, 4);
+    Top4 := Actions.GiveGroup(6, 16, 97, 11, 4, 16, 4);  Actions.GroupOrderWalk(Top4, 31, 86, 4);
+    Top5 := Actions.GiveGroup(6, 16, 96, 15, 4, 16, 4);  Actions.GroupOrderWalk(Top5, 37, 86, 4);
+    Top6 := Actions.GiveGroup(6, 20, 89, 15, 4, 15, 5);  Actions.GroupOrderWalk(Top6, 26, 80, 4);
+    Top7 := Actions.GiveGroup(6, 20, 89, 19, 4, 15, 5);  Actions.GroupOrderWalk(Top7, 43, 80, 4);
+    Top8 := Actions.GiveGroup(6, 22, 85, 6, 4, 20, 5);  Actions.GroupOrderWalk(Top8, 68, 55, 5);
+    Actions.ShowMsg(0, '<$4>');
+  end;
+  if States.GameTime = 19000 then
+  begin
+    Actions.GroupOrderWalk(Top1, 34, 81, 4);
+  end;
+  if States.GameTime = 19450 then
+  begin
+    Actions.GroupOrderWalk(Right3, 80, 114, 5);
+    Actions.GroupOrderWalk(Right4, 79, 119, 6);
+  end;
+  if States.GameTime = 19600 then
+  begin
+    Actions.GroupOrderWalk(Top1, 34, 81, 4);
+    Actions.GroupOrderWalk(Top2, 26, 85, 4);
+    Actions.GroupOrderWalk(Top3, 42, 85, 4);
+    Actions.GroupOrderWalk(Top4, 32, 87, 4);
+    Actions.GroupOrderWalk(Top5, 36, 87, 4);
+    Actions.GroupOrderWalk(Top6, 26, 80, 4);
+    Actions.GroupOrderWalk(Top7, 43, 80, 4);
+    Actions.GroupOrderWalk(Top8, 68, 55, 5);
+  end;
+  if States.GameTime = 19670 then
+  begin
+    StartAttack := true;
+  end;
+  if States.GameTime = 19800 then
+  begin
+    Actions.GroupOrderWalk(Right6, 80, 114, 5);
+    Actions.GroupOrderWalk(Right5, 79, 119, 6);
+  end;
 
-	if StartAttack = true then
-	begin
+  if StartAttack = true then
+  begin
 
-		if XbowPositions = true then
-		begin
-			Actions.GroupOrderWalk(Top2, 26, 89, 4);
-			Actions.GroupOrderWalk(Top3, 42, 89, 4);
-			XbowPositions := false;
-		end;
+    if XbowPositions = true then
+    begin
+      Actions.GroupOrderWalk(Top2, 26, 89, 4);
+      Actions.GroupOrderWalk(Top3, 42, 89, 4);
+      XbowPositions := false;
+    end;
 
-		if States.GroupIdle(Top4) then
-		begin
-			Actions.GroupOrderStorm(Top4);
-		end;
-		if States.GroupIdle(Top5) then
-		begin
-			Actions.GroupOrderStorm(Top5);
-		end;
+    if States.GroupIdle(Top4) then
+    begin
+      Actions.GroupOrderStorm(Top4);
+    end;
+    if States.GroupIdle(Top5) then
+    begin
+      Actions.GroupOrderStorm(Top5);
+    end;
 
-	end;
+  end;
 
-	if (States.GameTime > 19650) then
-	begin
-		for k := 1 to 2 do
-		begin
-			H1 := ClosestHouse(k, 57, 118);
-			H2 := ClosestHouse(k, 57, 124);
-			if (H1 <> -1) or (H2 <> -1) then
-			begin
-				if States.GroupIdle(Right1) = true then
-				begin
-					Actions.GroupOrderAttackHouse(Right1, H1);
-				end;
-				if States.GroupIdle(Right2) = true then
-				begin
-					Actions.GroupOrderAttackHouse(Right2, H2);
-				end;
-			end;
-		end;
-	end;
+  if (States.GameTime > 19650) then
+  begin
+    for k := 1 to 2 do
+    begin
+      H1 := ClosestHouse(k, 57, 118);
+      H2 := ClosestHouse(k, 57, 124);
+      if (H1 <> -1) or (H2 <> -1) then
+      begin
+        if States.GroupIdle(Right1) = true then
+        begin
+          Actions.GroupOrderAttackHouse(Right1, H1);
+        end;
+        if States.GroupIdle(Right2) = true then
+        begin
+          Actions.GroupOrderAttackHouse(Right2, H2);
+        end;
+      end;
+    end;
+  end;
 
-	if (States.GameTime > 19850) then
-	begin
-		for k := 1 to 2 do
-		begin
-			H1 := ClosestHouse(k, 57, 118);
-			if (H1 <> -1) then
-			begin
-				if States.GroupIdle(Right3) = true then
-				begin
-					Actions.GroupOrderAttackHouse(Right3, H1);
-				end;
-			end;
-		end;
-	end;
+  if (States.GameTime > 19850) then
+  begin
+    for k := 1 to 2 do
+    begin
+      H1 := ClosestHouse(k, 57, 118);
+      if (H1 <> -1) then
+      begin
+        if States.GroupIdle(Right3) = true then
+        begin
+          Actions.GroupOrderAttackHouse(Right3, H1);
+        end;
+      end;
+    end;
+  end;
 
-	if (States.GameTime > 20000) then
-	begin
-		for k := 1 to 2 do
-		begin
-			H2 := ClosestHouse(k, 57, 124);
-			if H2 <> -1 then
-			begin
-				if States.GroupIdle(Right5) = true then
-				begin
-					Actions.GroupOrderAttackHouse(Right5, H2);
-				end;
-			end;
-			U := ClosestUnit(k, 73, 118);
-			if L <> -1 then
-			begin
-				if States.GroupIdle(Right6) = true then
-				begin
-					Actions.GroupOrderAttackUnit(Right6, U);
-				end;
-				if States.GroupIdle(Right4) = true then
-				begin
-					Actions.GroupOrderAttackUnit(Right4, U);
-				end;
-			end;
-		end;
-	end;
+  if (States.GameTime > 20000) then
+  begin
+    for k := 1 to 2 do
+    begin
+      H2 := ClosestHouse(k, 57, 124);
+      if H2 <> -1 then
+      begin
+        if States.GroupIdle(Right5) = true then
+        begin
+          Actions.GroupOrderAttackHouse(Right5, H2);
+        end;
+      end;
+      U := ClosestUnit(k, 73, 118);
+      if L <> -1 then
+      begin
+        if States.GroupIdle(Right6) = true then
+        begin
+          Actions.GroupOrderAttackUnit(Right6, U);
+        end;
+        if States.GroupIdle(Right4) = true then
+        begin
+          Actions.GroupOrderAttackUnit(Right4, U);
+        end;
+      end;
+    end;
+  end;
 
-	if ((States.StatArmyCount(5)) + (States.StatArmyCount(6))) = 0 then
-	begin
-		if Message2Sent = false then
-		begin
-			Actions.ShowMsg(0, '<$5>');
-			Message2Sent := true;
-		end;
-	end;
+  if ((States.StatArmyCount(5)) + (States.StatArmyCount(6))) = 0 then
+  begin
+    if Message2Sent = false then
+    begin
+      Actions.ShowMsg(0, '<$5>');
+      Message2Sent := true;
+    end;
+  end;
 
-	if ((States.StatArmyCount(3)) + (States.StatArmyCount(4))) < 3 then
-	begin
-		Actions.PlayerWin([0], False);
-	end;
+  if ((States.StatArmyCount(3)) + (States.StatArmyCount(4))) < 3 then
+  begin
+    Actions.PlayerWin([0], False);
+  end;
 
 end;
