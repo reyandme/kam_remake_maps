@@ -177,11 +177,13 @@ begin
   
   if (States.GameTime = DelayAttacks + 1000) then
   begin
+    A.ShowMsg(0, '<$2>');
     Actions.GroupOrderAttackHouse(Sword1, States.HouseAt(70, 134));
   end;
   
   if (States.GameTime = DelayAttacks + 2000) then
   begin
+    A.ShowMsg(0, '<$3>');
     InitiateAttack2 := True;
   end;
   

@@ -1,0 +1,18 @@
+
+procedure OnTick;
+begin
+  if S.GameTime = 20 then   
+    A.ShowMsg(0, '<$1>');
+  if S.GameTime = 30 then   
+    A.ShowMsg(0, '<$2>');
+  if S.GameTime = 300 then   
+    A.ShowMsg(0, '<$3>');
+  if S.GameTime = 1800 then   
+    A.ShowMsg(0, '<$4>');
+  if S.GameTime = 12000 then   
+    A.ShowMsg(0, '<$5>');
+  if S.GameTime = 24000 then   
+    A.ShowMsg(0, '<$6>');
+  if S.GameTime = 37000 then   
+    A.ShowMsg(0, '<$7>');
+end;

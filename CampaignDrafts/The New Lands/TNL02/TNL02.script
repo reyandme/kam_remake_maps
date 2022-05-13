@@ -5,6 +5,12 @@ begin
   Actions.HouseAllow(0, 27, False);
 end;
 
+procedure OnTick;
+begin
+  if S.GameTime = 20 then   
+    A.ShowMsg(0, '<$1>');
+end;
+
 procedure OnHouseBuilt(aHouse: Integer);
 begin
   if States.HouseOwner(aHouse) <> 0 then Exit;
