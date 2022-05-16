@@ -100,8 +100,9 @@ begin
     Actions.ShowMsg(0, '<$1>');
     Message1Sent := True;
   end;
+  if S.GameTime = 5400 then   
+    A.ShowMsg(0, '<$2>');
   
   if (States.GameTime mod 15) = 0 then
     CheckVictoryCondition;  
 end;
-

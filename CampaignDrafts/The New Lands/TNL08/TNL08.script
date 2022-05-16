@@ -43,6 +43,7 @@ begin
   if States.GameTime = 20 then
   begin
     Actions.ShowMsg(0, '<$1>');
+	Actions.ShowMsg(0, '<$2>');
   end;
 
   if States.GroupDead(WallBow1) = false then
