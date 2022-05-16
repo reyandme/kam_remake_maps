@@ -64,15 +64,12 @@ end;
 
 procedure OnTick;
 begin
+  if States.GameTime = 300 then
+    Actions.ShowMsg(0, '<$2>');
+  
+  if (States.GameTime = 10001) then
+    Actions.GroupOrderAttackHouse(SneakAttackers, States.HouseAt(40, 117));
 
-if (States.GameTime = 15500) then
-begin
-  Actions.ShowMsg(0, '<$1>');
-end;
-
-if (States.GameTime = 10001) then
-begin
-  Actions.GroupOrderAttackHouse(SneakAttackers, States.HouseAt(40, 117));
-end;
-
+  if (States.GameTime = 15500) then
+    Actions.ShowMsg(0, '<$1>');
 end;
