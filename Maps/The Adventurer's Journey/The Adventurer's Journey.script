@@ -408,6 +408,8 @@ begin
 	temporaryNumber := Length(UNMOVABLEUNITSLOCATIONS);
 	for i:= 0 to temporaryNumber-1 do
 	begin
+		if UNMOVABLEUNITSLOCATIONS[i].id = -1 then
+			continue;
 		if (States.UnitPositionX(UNMOVABLEUNITSLOCATIONS[i].id) <> UNMOVABLEUNITSLOCATIONS[i].x) or (States.UnitPositionY(UNMOVABLEUNITSLOCATIONS[i].id) <> UNMOVABLEUNITSLOCATIONS[i].y) then
 		begin
 			Actions.UnitOrderWalk(UNMOVABLEUNITSLOCATIONS[i].id, UNMOVABLEUNITSLOCATIONS[i].x, UNMOVABLEUNITSLOCATIONS[i].y);
@@ -484,11 +486,11 @@ begin
 		for j := 1 to 255 do
 		begin
 			TILESREVEALED[i][j] := False;
-			if (i <= 255) and (i >= 135) and (j >=1) and (j <= 28) then //castle's hall
+			if (i <= 255) and (i >= 134) and (j >=1) and (j <= 28) then //castle's hall
 			begin
 				TILESREVEALED[i][j] := True;
 			end;
-			if (i <= 148) and (i >= 135) and (j >=37) and (j <= 67) then //castle's recruiting area
+			if (i <= 148) and (i >= 134) and (j >=37) and (j <= 67) then //castle's recruiting area
 			begin
 				TILESREVEALED[i][j] := True;
 			end;
@@ -520,7 +522,7 @@ end;
 
 procedure CoverCastleMap;
 begin
-	Actions.FogCoverRect(0, 135, 1, 190, 67);
+	Actions.FogCoverRect(0, 134, 1, 190, 67);
 end;
 
 procedure CoverBattleMap;
@@ -725,7 +727,7 @@ begin
 		end;
 		
 		//Lancers
-		if not (g_rank = '<$45>') then
+		if not (g_rank = '<$75>') then
 		begin
 			if (States.UnitPositionX(g_charactergroup) = 142) and  (States.UnitPositionY(g_charactergroup) = 43) and (g_armyslots[1].unitType = 0) then //set lancers slot 1
 			begin
@@ -841,7 +843,7 @@ begin
 		end;
 		
 		//Lancers
-		if not (g_rank = '<$45>') then
+		if not (g_rank = '<$75>') then
 		begin
 			if (States.UnitPositionX(g_charactergroup) = 142) and  (States.UnitPositionY(g_charactergroup) = 50) and (g_armyslots[2].unitType = 0) then //set lancers slot 2
 			begin
@@ -957,7 +959,7 @@ begin
 		end;
 		
 		//Lancers
-		if not (g_rank = '<$45>') then
+		if not (g_rank = '<$75>') then
 		begin
 			if (States.UnitPositionX(g_charactergroup) = 142) and  (States.UnitPositionY(g_charactergroup) = 57) and (g_armyslots[3].unitType = 0) then //set lancers slot 3
 			begin
