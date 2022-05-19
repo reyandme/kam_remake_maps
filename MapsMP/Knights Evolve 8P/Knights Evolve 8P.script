@@ -292,6 +292,9 @@ end;
 
 procedure AIState(aPlayer: integer);
 begin
+  if States.PlayerVictorious(aPlayer) then
+    Exit;
+    
 	//AI[aPlayer].State:= 0; //idle
 	if ( States.StatArmyCount(aPlayer) >= AI[aPlayer].MinCount ) then begin
 		if AI[aPlayer].State <> 2 then begin//attacking
@@ -378,8 +381,7 @@ var j: integer;
 begin
 	AI_COUNTER:= 0;
 	for j:= 0 to MAX_PLAYERS-1 do begin
-		if States.PlayerEnabled(j) and States.PlayerIsAI(j) and ( States.PlayerDefeated(j) = false ) then begin
-		//if States.PlayerEnabled(j) and ( States.PlayerDefeated(j) = false ) then begin
+		if States.PlayerEnabled(j) and States.PlayerIsAI(j) and not States.PlayerDefeated(j) and not States.PlayerVictorious(j) then begin
 			AI[j].MinCount:= AI_MIN_ARMY_COUNT + States.KaMRandomI(AI_COUNT_RANDOM10)*10;
 			AI[j].State:= 1; //poke
 			AI[j].Base:= PLAYER[j].Tower;
@@ -632,12 +634,10 @@ procedure SortPlayerByKills;
 var j, temp: integer;
 begin
 	for j:= MAX_PLAYERS-1 downto 1 do begin
-		if ( States.PlayerEnabled(j-1) and (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) ) then begin
-			if (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) then begin
-				temp := PLAYERS_SORTED[j-1];
-				PLAYERS_SORTED[j-1] := PLAYERS_SORTED[j];
-				PLAYERS_SORTED[j] := temp;
-			end;
+		if States.PlayerEnabled(j) and  States.PlayerEnabled(j-1) and (PLAYER[PLAYERS_SORTED[j]].Kills > PLAYER[PLAYERS_SORTED[j-1]].Kills) then begin
+			temp := PLAYERS_SORTED[j-1];
+			PLAYERS_SORTED[j-1] := PLAYERS_SORTED[j];
+			PLAYERS_SORTED[j] := temp;
 		end;
 	end;
 end;
@@ -740,6 +740,7 @@ begin
 			Actions.PlayerDefeat(States.HouseOwner(aHouseID));
 			Actions.PlayWAV(-1, 'defeated', VOLUME_PLAYER_DEFEATED);
 			CheckVictory;
+			SetAI;
 		end;
 	end;
 end;
@@ -794,13 +795,15 @@ begin
 	if ( States.GameTime mod 20 = 0 ) then begin
 		GiveStoneAndHealthToTowers;
 	end;
-	if ( States.GameTime mod AI_THINK_SLOWER = 0 ) then begin
+	if ( States.GameTime mod AI_THINK_SLOWER = 0 ) and ( GAME_STATE = 0 ) then begin
 		AIThink;
 	end;
 end;
 
 // ON MISSION START
 procedure OnMissionStart;
+var 
+  I: integer;
 begin
 	GAME_STATE:= 0; //game
 	BARB_AMOUNT:= START_BARB_AMOUNT;
