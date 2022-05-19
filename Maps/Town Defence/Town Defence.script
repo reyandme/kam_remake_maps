@@ -8,8 +8,8 @@ warriorS: AnsiString;
 
 Procedure OnMissionStart;
 begin
-	Actions.FogRevealRect(0, 153, 1, 159, 13);
-	Actions.FogRevealRect(0, 157, 15, 159, 15);
+	Actions.FogRevealRect(0, 154, 1, 160, 14);
+	Actions.FogRevealRect(0, 158, 16, 160, 16);
 	enemyMultiplierB := true; attTimeB := true; attPointsB := true; goldB := true; coalB := true; ironB := true; foodB := true; warriorB := true;
 	storehouseB := true;
 	waveCounter := 0;

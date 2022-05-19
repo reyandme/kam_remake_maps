@@ -43,8 +43,8 @@ begin
 		SECOND_MESSAGE_COUNTER:= SECOND_MESSAGE_COUNTER - 1;
 		if SECOND_MESSAGE_COUNTER <= 0 then begin
 			Actions.ShowMsg(PLAYER, '<$1>');
-			Actions.FogRevealRect(PLAYER, 6, 55, 33, 70);
-			Actions.FogRevealRect(PLAYER, 82, 52, 110, 68);
+			Actions.FogRevealRect(PLAYER, 7, 56, 34, 71);
+			Actions.FogRevealRect(PLAYER, 83, 53, 111, 69);
 			Actions.FogRevealCircle(PLAYER, 20, 79, FOG_RADIUS);
 			Actions.FogRevealCircle(PLAYER, 24, 93, FOG_RADIUS);
 			Actions.FogRevealCircle(PLAYER, 27, 109, FOG_RADIUS);
