@@ -517,7 +517,7 @@ end;
 procedure CoverGlobalMap;
 begin
 	Actions.FogCoverRect(0, 1, 124, 255, 255);
-        Actions.FogCoverRect(0, 1, 1, 122, 20);
+    Actions.FogCoverRect(0, 1, 1, 122, 20);
 end;
 
 procedure CoverCastleMap;
@@ -555,6 +555,13 @@ begin
 			end;
 		end;
 	end;
+end;
+
+procedure MoveScreenTo (x : Integer; y : Integer);
+begin
+	Actions.CinematicStart(0);
+	Actions.CinematicPanTo(0, x, y, 0);
+	Actions.CinematicEnd(0);
 end;
 
 procedure UpdateText;
@@ -1071,6 +1078,7 @@ begin
 	begin
 		CoverGlobalMap;
 		RevealTiles(207, 255, 1, 35);
+		MoveScreenTo(232,17);
 		menPerRow := 8;
 		if States.KaMRandomI(101) <= 50 then //randomize sides
 		begin
@@ -1129,6 +1137,7 @@ begin
 	begin
 		CoverGlobalMap;
 		RevealTiles(134, 192, 78, 121);
+		MoveScreenTo(162,100);
 		menPerRow := 6;
 		if States.KaMRandomI(101) <= 50 then //randomize sides
 		begin
@@ -1188,6 +1197,7 @@ begin
 		ISONSIEGE := True;
 		CoverGlobalMap;
 		RevealTiles(207, 255, 51, 76);
+		MoveScreenTo(231,62);
 		menPerRow := 5;
 		facedirectionAI := 6;
 		facedirectionHuman := 2;
@@ -1218,6 +1228,7 @@ begin
 	begin
 		CoverGlobalMap;
 		RevealTiles(205, 255, 87, 122);
+		MoveScreenTo(230,105);
 		menPerRow := 7;
 		if States.KaMRandomI(101) <= 50 then //randomize sides
 		begin
@@ -1276,6 +1287,7 @@ begin
 	begin
 		CoverGlobalMap;
 		RevealTiles(74, 120, 29, 58);
+		MoveScreenTo(96, 42);
 		menPerRow := 5;
 		if States.KaMRandomI(101) <= 50 then //randomize sides
 		begin
@@ -1329,12 +1341,13 @@ begin
 		end;
 	end;
 	
-	//ARENA 3 : SIEGE
+	//ARENA 6 : FINAL BATTLE
 	if ArenaNum=6 then
 	begin
 		ISONSIEGE := True;
 		CoverGlobalMap;
 		RevealTiles(1, 117, 71, 112);
+		MoveScreenTo(30, 90);
 		menPerRow := 10;
 		facedirectionAI := 6;
 		facedirectionHuman := 2;
@@ -1438,6 +1451,7 @@ begin
 	CoverBattleMap;
 	RevealTiles(1, 255, 129, 255);
 	RevealTiles(1, 121, 1, 17);
+	MoveScreenTo(States.UnitPositionX(g_charactergroup), States.UnitPositionY(g_charactergroup));
 	
 	for i := 1 to 5 do
 	begin
@@ -2021,8 +2035,10 @@ begin
 		KillCharacter;
 		AddCharacter(111,184);
 		CoverCastleMap;
+		RECRUITINGTUTOTIMER := 1;//Reset message timer after leaving castle
 		RevealTiles(1, 255, 129, 255);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(111, 184);
 	end;
 	
 	if (States.UnitPositionX(g_charactergroup) = 110) and (States.UnitPositionY(g_charactergroup) = 183) then
@@ -2032,6 +2048,7 @@ begin
 		CoverGlobalMap;
 		RevealTiles(135, 190, 1, 67);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(153, 9);
 	end;
 	
 	if (States.UnitPositionX(g_charactergroup) >= 151) and (g_mainquest > 26) and (States.UnitPositionX(g_charactergroup) < 157) and (States.UnitPositionY(g_charactergroup) = 217) then
@@ -2039,18 +2056,21 @@ begin
 		KillCharacter;
 		AddCharacter(5,7);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(5, 7);
 	end;
 	if (States.UnitPositionX(g_charactergroup) = 1) and (g_mainquest > 26) then
 	begin
 		KillCharacter;
 		AddCharacter(154, 220);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(154, 220);
 	end;
 	if (States.UnitPositionX(g_charactergroup) = 121) and (g_mainquest > 26) and (States.UnitPositionY(g_charactergroup) < 20) then
 	begin
 		KillCharacter;
 		AddCharacter(227, 202);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(227, 202);
 	end;
 	
 	if (States.UnitPositionX(g_charactergroup) >= 225) and (g_mainquest > 26) and (States.UnitPositionX(g_charactergroup) < 229) and (States.UnitPositionY(g_charactergroup) = 199) then
@@ -2058,6 +2078,7 @@ begin
 		KillCharacter;
 		AddCharacter(117,10);
 		RevealTiles(1, 121, 1, 17);
+		MoveScreenTo(117, 10);
 	end;
 end;
 
