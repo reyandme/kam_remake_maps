@@ -808,6 +808,15 @@ begin
 	GAME_STATE:= 0; //game
 	BARB_AMOUNT:= START_BARB_AMOUNT;
 	SetPlayers;
-	GOW_PLAYER:= -1;
 	SetAI;
+	GOW_PLAYER:= -1;
+  
+  
+  for I := 0 to MAX_PLAYERS - 1 do 
+  begin
+    // Set house types to target for AdvancedAI
+		if S.PlayerEnabled(I) and S.HandIsAdvancedAI(I) then
+      A.AAIAttackHouseTypesSet(I, [htWatchTower, htBarracks, htSchool, htFarm, htMarket]);
+  end;
+  
 end;
