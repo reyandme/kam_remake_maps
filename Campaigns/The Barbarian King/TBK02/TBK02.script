@@ -126,7 +126,7 @@ begin
 					end else
 						if k = Length(aHouses) then
 							//Nothing found? Cover area
-							Actions.FogCoverRect(1, 1, 68, 79, 127);
+							Actions.FogCoverRect(0, 0, 68, 79, 127);
 				end;
 			//After Player is revealed -> Move Spy back to Base
 			if (Spy.Routine = 2) and (States.GameTime mod 60 = 30) then

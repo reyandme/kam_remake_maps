@@ -1199,9 +1199,9 @@ begin
 			//FOG
 			Actions.FogCoverAll(j);
 			if InRange(j, 0, 3) then
-				Actions.FogRevealRect(j, 1, 1, RIGHT_BUILD_BORDER-5, 95)
+				Actions.FogRevealRect(j, 0, 0, RIGHT_BUILD_BORDER-5, 95)
 			else 
-				Actions.FogRevealRect(j, LEFT_BUILD_BORDER+5, 1, 159, 95);
+				Actions.FogRevealRect(j, LEFT_BUILD_BORDER+5, 0, 159, 95);
 			if TEST_MODE = 1 then
 				Actions.FogRevealAll(j);
 			Actions.FogCoverRect(j, 34, 38, 125, 53);
@@ -1377,9 +1377,9 @@ begin
 				AIBuildHouses;
 				if TEST_MODE = 0 then begin
 					if InRange(j, 4, 7) then
-						Actions.FogCoverRect(j, 1, 1, LEFT_BUILD_BORDER+1, 95)
+						Actions.FogCoverRect(j, 0, 0, LEFT_BUILD_BORDER+1, 95)
 					else 
-						Actions.FogCoverRect(j, RIGHT_BUILD_BORDER-1, 1, 159, 95);
+						Actions.FogCoverRect(j, RIGHT_BUILD_BORDER-1, 0, 159, 95);
 					Actions.FogCoverRect(j, 34, 38, 125, 53);
 					for k:= 0 to Length(PLAYER[j].Elite)-1 do
 						if ( PLAYER[j].Elite[k] > 0 ) and not States.UnitDead(PLAYER[j].Elite[k]) then
