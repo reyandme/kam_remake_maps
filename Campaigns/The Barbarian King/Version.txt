@@ -1,4 +1,4 @@
-0.9.9b
-Released on 24.06.2021
-KaMRemake r12945 (beta)
+0.9.9c
+Released on 25.04.2022
+KaMRemake r14423 (beta)
 By Strangelove

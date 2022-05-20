@@ -20,6 +20,12 @@ var
 
 procedure OnMissionStart();
 begin
+	//Define Modifiers [Easy3, Easy2, Easy1, Normal, Hard1, Hard2, Hard3]
+	EquipRateMod := [3, 2, 1.5, 1, 0.66, 0.5, 0.33]; //Schools are usually the limiting factor
+	RecruitDelayMod := [1, 1, 1, 1, 1, 1, 1];
+	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	
 	iDefeatCounter := 0;
 	iBackstabSheduler := 0;
 	//AI village does not share fog with other AI Players

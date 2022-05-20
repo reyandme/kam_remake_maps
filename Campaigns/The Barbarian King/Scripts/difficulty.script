@@ -1,0 +1,365 @@
+//-- Difficulty --//
+//By Strangelove
+//v0.8.6b (No Cheat version)
+//13.11.2021
+//Developed for KaM Remake r10745
+//Last Tested on KaM Remake r12945
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Modifies Recruitment Rate, Recruitment Delay, Recruit Limit and Worker Limit of AI Players that arent allied to Human Player
+//The Values can be adjusted to to fit your map and needs
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Copy the fallowing code into OnMissionStart() procedure in [mapname].script:
+{
+procedure OnMissionStart();
+begin
+	//[Very Easy, Easier, Easy, Normal, Hard, Harder, Very Hard]
+	EquipRateMod := [2, 1.5, 1.25, 1, 0.75, 0.5, 0.3];
+	RecruitDelayMod := [2, 1.5, 1.25, 1, 1, 1, 1];
+	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+end;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+{$EVENT evtMissionStart:DifficultyOnMissionStart}
+
+
+{$DEFINE TESTMODE}
+{$UNDEF TESTMODE}
+
+
+const
+	MAX_HANDS = 18; //Number of Max Possible Players
+
+	
+var
+	EquipRateMod, RecruitDelayMod, RecruitLimitMod, WorkerLimitMod: array of Single;
+	dMod: Byte;
+
+	
+	
+
+//Identify human player in SP maps (in the unlikely case its not Player0)
+function GetHumanPlayer(): Byte; 
+var
+	p: Byte;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if not States.PlayerIsAI(p) then
+		begin
+			Result := p;
+			break; //Only need 1 human player
+		end;
+end;
+
+
+
+procedure SetEquipRate(aPlayer: Byte; Modifier: Single; Offset: Integer);
+var
+	EquipRate: Integer;
+	t: Byte;
+begin
+	if Modifier <> 0 then
+	begin
+		for t := 0 to 1 do
+		begin
+			EquipRate := States.AIEquipRate(aPlayer, t);
+			{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '|EquipRate' +inttostr(t) +': ' +inttostr(EquipRate));{$ENDIF}
+			if EquipRate <> -1 then
+			begin
+				EquipRate := Round(EquipRate *Modifier) +Offset;
+				Actions.AIEquipRate(aPlayer, t, EquipRate);
+				{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, ' -> ' +inttostr(EquipRate));{$ENDIF}
+			end else
+				Actions.Log('AIEquipRate could not be modified: Actions.AIEquipRate(' +inttostr(aPlayer) + ', ' +inttostr(t) + ', ' +inttostr(EquipRate) + ');');
+		end;
+	{$IFDEF TESTMODE}
+	end else
+		for t := 0 to 1 do
+			Actions.OverlayTextAppend(-1, '|EquipRate' +inttostr(t) +': ' +inttostr(States.AIEquipRate(aPlayer, t)) + ' (Not Modified)');
+	{$ELSE}
+	end;
+	{$ENDIF}
+end;
+
+
+procedure SetRecruitDelay(aPlayer: Byte; Modifier: Single; Offset: Integer);
+var
+	RecruitDelay: Integer;
+begin
+	if Modifier <> 0 then
+	begin
+		RecruitDelay := States.AIRecruitDelay(aPlayer);
+		{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '|RecruitDelay: ' +inttostr(RecruitDelay));{$ENDIF}
+		if RecruitDelay <> -1 then
+		begin
+			RecruitDelay := Round(RecruitDelay *Modifier) +Offset;
+			{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, ' -> ' +inttostr(RecruitDelay));{$ENDIF}
+			Actions.AIRecruitDelay(aPlayer, RecruitDelay);
+		end else
+			Actions.Log('AIRecruitDelay could not be modified: Actions.AIRecruitDelay(' +inttostr(aPlayer) + ', ' +inttostr(RecruitDelay) + ');');
+	{$IFDEF TESTMODE}
+	end else
+		Actions.OverlayTextAppend(-1, '|RecruitDelay: ' +inttostr(States.AIRecruitDelay(aPlayer)) + ' (Not Modified)');
+	{$ELSE}
+	end;
+	{$ENDIF}
+end;
+
+
+procedure SetRecruitLimit(aPlayer: Byte; Modifier: Single; Offset: Integer);
+var
+	RecruitLimit: Integer;
+begin
+	if Modifier <> 0 then
+	begin
+		RecruitLimit := States.AIRecruitLimit(aPlayer);
+		if RecruitLimit <> -1 then
+		begin
+			{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '|RecruitLimit: ' +inttostr(RecruitLimit));{$ENDIF}
+			RecruitLimit := Round(RecruitLimit *Modifier) +Offset;
+			{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, ' -> ' +inttostr(RecruitLimit));{$ENDIF}
+			Actions.AIRecruitLimit(aPlayer, RecruitLimit);
+		end else
+			Actions.Log('AIRecruitLimit could not be modified: Actions.AIRecruitLimit(' +inttostr(aPlayer) + ', ' +inttostr(RecruitLimit) + ');');
+	{$IFDEF TESTMODE}
+	end else
+		Actions.OverlayTextAppend(-1, '|RecruitLimit: ' +inttostr(States.AIRecruitLimit(aPlayer)) + ' (Not Modified)');
+	{$ELSE}
+	end;
+	{$ENDIF}
+end;
+
+
+procedure SetWorkerLimit(aPlayer: Byte; Modifier: Single; Offset: Integer);
+var
+	WorkerLimit: Integer;
+begin
+	if Modifier <> 0 then
+	begin
+		WorkerLimit := States.AIWorkerLimit(aPlayer);
+		{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '|WorkerLimit: ' +inttostr(WorkerLimit));{$ENDIF}
+		if WorkerLimit <> -1 then
+		begin
+			WorkerLimit := Round(WorkerLimit *Modifier) +Offset;
+			{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, ' -> ' +inttostr(WorkerLimit));{$ENDIF}
+			Actions.AIWorkerLimit(aPlayer, WorkerLimit);
+		end else
+			Actions.Log('AIWorkerLimit could not be modified: Actions.AIWorkerLimit(' +inttostr(aPlayer) + ', ' +inttostr(WorkerLimit) + ');');
+	{$IFDEF TESTMODE}
+	end else
+		Actions.OverlayTextAppend(-1, '|WorkerLimit: ' +inttostr(States.AIWorkerLimit(aPlayer)) + ' (Not Modified)');
+	{$ELSE}
+	end;
+	{$ENDIF}
+end;
+
+
+procedure SetResourceAmount(aPlayer: Byte; HouseType: Byte; Modifier: Single; Offset: Integer);
+var
+	aHouses: array of Integer;
+	h, Wares: Word;
+	t: Byte;
+begin
+	aHouses := States.PlayerGetAllHouses(aPlayer);
+	for h := 0 to Length(aHouses) -1 do
+		if (States.HouseType(aHouses[h]) = HouseType) then //Check for Storehouses and Barracks
+			for t := 0 to 27 do
+			begin
+				Wares := States.HouseResourceAmount(aHouses[h], t);
+				if Wares <> 0 then
+				begin
+					Actions.HouseTakeWaresFrom(aHouses[h], t, Wares); //Delete Wares
+					Actions.HouseAddWaresTo(aHouses[h], t, Utils.RoundTo((Wares *Modifier), 5) +Offset); //Add updated Amount (Round up or down to a multiple of 5 for looks)
+				end;
+			end;
+end;
+
+
+
+//Return GroupType of Army Units
+function GetGroupType(UnitType: Byte): Byte; 
+begin
+	case UnitType of
+		14,15,16,23,26: Result := 0; //Melee
+		19,20,25:		Result := 1; //Antihorse
+		17,18,24:		Result := 2; //Ranged
+		21,22,27:		Result := 3; //Mounted
+	end;
+end;
+
+
+//Increases Group size by Column Count (+Offset) of all Groups target Player controls
+procedure IncreaseGroupSize(aPlayer: Byte; Offset: ShortInt);
+var 
+	aGroups: array of Integer;
+	aX, aY: array of ShortInt;
+	g, Calc: ShortInt;
+	X, Y: Word;
+	iGroupLeader, GroupID: Integer;
+	D, GroupColumnCount: Byte;
+begin
+	aX := [0, -1, -1, -1, 0, 1, 1, 1];
+	aY := [1, 1, 0, -1, -1, -1, 0, 1];
+	aGroups := States.PlayerGetAllGroups(aPlayer);
+	for g := 0 to Length(aGroups) -1 do
+	begin
+		iGroupLeader := States.GroupMember(aGroups[g], 0);
+		GroupColumnCount := States.GroupColumnCount(aGroups[g]);
+		D := States.UnitDirection(iGroupLeader);
+		Calc := Round(States.GroupMemberCount(aGroups[g]) /GroupColumnCount); //Calculate where to spawn new groups to make it more aestheticly pleasing (right behind group)
+		X := States.UnitPositionX(iGroupLeader) +(Calc *aX[D]);
+		Y := States.UnitPositionY(iGroupLeader) +(Calc *aY[D]);
+		GroupID := Actions.GiveGroup(aPlayer, States.UnitType(iGroupLeader), X, Y, D, GroupColumnCount, GroupColumnCount +Offset);
+		Actions.GroupHungerSet(GroupID, States.UnitHunger(iGroupLeader));
+		Actions.GroupOrderLink(GroupID, aGroups[g]); //Link newly created Units to Group
+	end;
+end;
+
+
+//Increases Group size by Column Count (+Offset) of target Group
+procedure IncreaseTargetGroupSize(aPlayer, GroupPosX, GroupPosY: Byte; Offset: ShortInt);
+var 
+	aGroups: array of Integer;
+	aX, aY: array of ShortInt;
+	g, Calc: ShortInt;
+	X, Y: Word;
+	iGroupLeader, GroupID: Integer;
+	D, GroupColumnCount: Byte;
+begin
+	aX := [0, -1, -1, -1, 0, 1, 1, 1];
+	aY := [1, 1, 0, -1, -1, -1, 0, 1];
+	aGroups := States.PlayerGetAllGroups(aPlayer);
+	for g := 0 to Length(aGroups) -1 do
+		if States.GroupAt(GroupPosX, GroupPosY) = aGroups[g] then
+		begin
+			iGroupLeader := States.GroupMember(aGroups[g], 0);
+			GroupColumnCount := States.GroupColumnCount(aGroups[g]);
+			D := States.UnitDirection(iGroupLeader);
+			Calc := Round(States.GroupMemberCount(aGroups[g]) /GroupColumnCount); //Calculate where to spawn new groups to make it more aestheticly pleasing (right behind group)
+			X := States.UnitPositionX(iGroupLeader) +(Calc *aX[D]);
+			Y := States.UnitPositionY(iGroupLeader) +(Calc *aY[D]);
+			GroupID := Actions.GiveGroup(aPlayer, States.UnitType(iGroupLeader), X, Y, D, GroupColumnCount, GroupColumnCount +Offset);
+			Actions.GroupHungerSet(GroupID, States.UnitHunger(iGroupLeader));
+			Actions.GroupOrderLink(GroupID, aGroups[g]); //Link newly created Units to Group
+		end;
+end;
+
+
+//Remove DefencePosition and the Group assigned to it
+procedure RemoveDefencePositionAndGroup(Player, X, Y: Byte); //Doesnt work OnMissionStart(); needs time to initialize (~18 Ticks)
+var
+	aGroups: array of Integer;
+	g: Integer;
+begin
+	aGroups := States.PlayerGetAllGroups(Player);
+	for g := 0 to Length(aGroups) -1 do
+		if States.GroupAssignedToDefencePosition(aGroups[g], X, Y) then
+		begin
+			//Actions.Log('GroupID: ' +inttostr(aGroups[g]));
+			Actions.GroupKillAll(aGroups[g], true);
+			break;
+		end;
+	Actions.AIDefencePositionRemove(Player, X, Y);
+end;
+
+
+procedure AddDefencePositionAndGroup(Player, UnitType, X, Y, D, Radius: Byte); //Causes Problems if AI already has Attack defence positions with same GroupType (Added Groups will  be asigned to previously existing positions)
+var
+	Count, Columns, GroupID: Integer;
+begin
+	Actions.AIDefencePositionAdd(Player, X, Y, D, GetGroupType(UnitType), Radius, 0);
+	States.AIGroupsFormationGet(Player, GetGroupType(UnitType), Count, Columns);
+	GroupID := Actions.GiveGroup(Player, UnitType, X, Y, D, Count, Columns);
+	Actions.GroupHungerSet(GroupID, States.UnitMaxHunger()/2 +States.KaMRandomI(States.UnitMaxHunger()/2 +1));
+end;
+
+
+procedure AddAIAttack(Player: Byte; Repeating: Boolean; Delay: Cardinal; MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups: Byte; Target: TKMAIAttackTarget; CustomPosition: TKMPoint);
+var
+	g: Byte;
+	outCount, outColums: Integer;
+	GroupUnitCount: array[0..3] of Byte;
+	Total: Word;
+begin
+	for g := 0 to 3 do
+	begin
+		States.AIGroupsFormationGet(Player, g, outCount, outColums);
+		GroupUnitCount[g] := outCount;
+		{$IFDEF TESTMODE}Actions.Log('Player: ' + inttostr(Player) + ', GroupType: ' +inttostr(g) + ', Count: ' +inttostr(GroupUnitCount[g]));{$ENDIF}
+	end;
+	Total := MeleeGroups *GroupUnitCount[0] +AntiHorseGroups *GroupUnitCount[1] +RangedGroups *GroupUnitCount[2] +MountedGroups *GroupUnitCount[3];
+	Actions.AIAttackAdd(Player, Repeating, Delay, Total, MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups, false, Target, CustomPosition); //Once
+	{$IFDEF TESTMODE}Actions.Log('Attack of Player' +inttostr(Player) + '; Units Total: ' + inttostr(Total));{$ENDIF}
+end;
+
+
+procedure GiveHouseAndConnect(Player, HouseType, X, Y: Byte);
+var
+	HouseID, ClosestHouse: Integer;
+begin
+	HouseID := Actions.GiveHouse(Player, HouseType, X, Y);
+	if  HouseID <> -1 then
+	begin
+		ClosestHouse := States.ClosestHouse(Player, X, Y, 11); //Closest Storehouse
+		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(ClosestHouse), States.HousePositionY(ClosestHouse) +1, true);
+		if HouseType = 17 then
+		begin
+			Actions.HouseAddWaresTo(HouseID, 1, 5); //Add Stone to House if Tower
+			Actions.GiveUnit(Player, 13, X, Y +1, 4); //Add Recruit
+		end;
+	end else
+		Actions.Log('House could not be added!' + ' Player:' + inttostr(Player) + ' X:' + inttostr(X) + ' Y:' + inttostr(Y));
+end;
+
+
+procedure HouseUpdateWares(X, Y, WareType: Byte; Count: Word);
+var
+	HouseID: Integer;
+begin
+	HouseID := States.HouseAt(X, Y);
+	Actions.HouseTakeWaresFrom(HouseID, WareType, States.HouseResourceAmount(HouseID, WareType)); //Remove all of specified WareType
+	Actions.HouseAddWaresTo(HouseID, WareType, Count); //Add set amount/count
+end;
+
+
+
+//-- Default Procedures --//
+
+procedure DifficultyOnMissionStart();
+var
+	Difficulty: TKMMissionDifficulty;
+	p: Byte;
+begin
+	//Set Array length; Modifiers are to be assigned in main script OnMissionStart
+	SetLength(EquipRateMod, 7);
+	SetLength(RecruitDelayMod, 7);
+	SetLength(RecruitLimitMod, 7);
+	SetLength(WorkerLimitMod, 7);
+	
+	//Check and apply difficulty modifiers
+	Difficulty := States.MissionDifficulty();
+	if (Difficulty <> mdNone) then
+	begin
+		dMod := Byte(Difficulty) -1; 
+		{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, 'dMod=' + inttostr(dMod));{$ENDIF}
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.PlayerIsAI(p) then
+				if not States.PlayerAllianceCheck(GetHumanPlayer(), p) then //Only Modify EquipRate for AIPlayers that arent allied to HumanPlayer
+				begin
+					{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '||Player ' + inttostr(p));{$ENDIF}
+					//Update Enemy AI Values
+					SetEquipRate(p, EquipRateMod[dMod], 0);
+					SetRecruitDelay(p, RecruitDelayMod[dMod], 0);
+					SetRecruitLimit(p, RecruitLimitMod[dMod], 0);
+					SetWorkerLimit(p, WorkerLimitMod[dMod], 0);
+					{$IFDEF TESTMODE}Actions.OverlayTextAppend(-1, '|Schools: ' +inttostr(States.StatHouseTypeCount(p, 13))); {$ENDIF}
+				end;
+	end else
+		Actions.ShowMsg(-1, 'Error in "difficulty.script". Please check if Difficulty level has been enabled in the Map Editor!');
+end;
+
+

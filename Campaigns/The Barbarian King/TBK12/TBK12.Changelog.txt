@@ -15,3 +15,6 @@ TBK12: Version 1.1: (17.05.2021)
 
 TBK12: Version 1.1b (28.05.2021)
 - Various visual updates to the map
+
+TBK12: Version 1.1c (25.04.2022)
+- Reinforcement Wave once again start with 32 Soldiers

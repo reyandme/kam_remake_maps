@@ -52,6 +52,11 @@ end;
 	
 procedure OnMissionStart();
 begin
+	//Define Modifiers [Easy3, Easy2, Easy1, Normal, Hard1, Hard2, Hard3]
+	EquipRateMod := [3, 2, 1.5, 1, 0.66, 0.5, 0.33];
+	RecruitDelayMod := [1, 1, 1, 1, 1, 1, 1];
+	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
+	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
 	{$IFDEF NOSTANDALONE}
 	GlobalD := 0;
 	SetLength(aDestroyedHouseBuffer, 255); //Set random Length
@@ -126,7 +131,7 @@ begin
 					end else
 						if k = Length(aHouses) then
 							//Nothing found? Cover area
-							Actions.FogCoverRect(0, 0, 68, 79, 127);
+							Actions.FogCoverRect(1, 1, 68, 79, 127);
 				end;
 			//After Player is revealed -> Move Spy back to Base
 			if (Spy.Routine = 2) and (States.GameTime mod 60 = 30) then

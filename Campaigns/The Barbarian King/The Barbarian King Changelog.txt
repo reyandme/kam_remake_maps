@@ -599,3 +599,13 @@ TBK12: Version 1.1: (17.05.2021)
 
 TBK12: Version 1.1b (28.05.2021)
 - Various visual updates to the map
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Version 0.9.9c (25.04.2022)
+- Campaign should now work on beta r14423 now
+- Various minor script changes
+
+TBK12: Version 1.1c (25.04.2022)
+- Reinforcement Wave once again start with 32 Soldiers
