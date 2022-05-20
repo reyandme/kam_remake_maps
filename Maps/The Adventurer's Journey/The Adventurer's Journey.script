@@ -516,20 +516,20 @@ end;
 
 procedure CoverGlobalMap;
 begin
-  Actions.FogCoverRect(0, 1, 125, 256, 256);
-  Actions.FogCoverRect(0, 1, 1, 123, 21);
+	Actions.FogCoverRect(0, 1, 124, 255, 255);
+    Actions.FogCoverRect(0, 1, 1, 122, 20);
 end;
 
 procedure CoverCastleMap;
 begin
-	Actions.FogCoverRect(0, 135, 1, 191, 68);
+	Actions.FogCoverRect(0, 134, 1, 190, 67);
 end;
 
 procedure CoverBattleMap;
 begin
-	Actions.FogCoverRect(0, 195, 1, 256, 130);
-	Actions.FogCoverRect(0, 135, 79, 193, 121);
-	Actions.FogCoverRect(0, 74, 29, 121, 59);
+	Actions.FogCoverRect(0, 194, 1, 255, 129);
+	Actions.FogCoverRect(0, 134, 78, 192, 120);
+	Actions.FogCoverRect(0, 73, 28, 120, 58);
 end;
 
 procedure GetAllRevealedTiles;
