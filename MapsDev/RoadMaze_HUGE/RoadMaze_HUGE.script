@@ -1,0 +1,18 @@
+
+
+procedure OnMissionStart;
+var
+  G1, G2, U1, U2, US: Integer;
+begin
+  US := A.GiveUnitEx(0, utSerf, 4,6,dirN);
+  
+  G1 := A.GiveGroupEx(0, utKnight, 1,6,dirN,1,1);
+  G2 := A.GiveGroupEx(1, utKnight, 1,5,dirN,1,1);
+  
+  U1 := S.UnitAt(1,6);
+  U2 := S.UnitAt(1,5);
+  
+  A.UnitHPSetInvulnerable(US, True);
+  A.UnitHPSetInvulnerable(U1, True);
+A.UnitHPSetInvulnerable(U2, True);  
+end;
