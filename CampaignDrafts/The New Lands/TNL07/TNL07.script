@@ -8,6 +8,7 @@ Message1Sent: Boolean;
 AttackIntruders: Boolean;
 AllyInnBuild: Boolean;
 AllyInn: Integer;
+VagabondsG: Integer;
 
 procedure OnMissionStart;
 begin
@@ -17,6 +18,9 @@ begin
   Actions.PlayerShareFog(3, 0, False);
   Actions.PlayerShareFog(4, 0, False);
   Actions.FogRevealCircle(0, 33, 129, 15);
+	Actions.FogRevealCircle(0, 70, 80, 10);
+  
+  VagabondsG := S.GroupAt(126,44);
 end;
 
 
@@ -105,4 +109,16 @@ begin
   
   if (States.GameTime mod 15) = 0 then
     CheckVictoryCondition;  
+	
+  if S.GameTime = 1 then 
+    Actions.OverlayTextSet(0,'<$3>');
+
+  if S.GameTime = 100 then 
+    Actions.OverlayTextSet(0,'');
+
+  if (S.GameTime = 3200) and not S.GroupDead(VagabondsG) and not S.GroupInFight(VagabondsG, True) then
+    Actions.OverlayTextAppend(0, '<$4>');
+	
+  if S.GameTime = 3300 then 
+    Actions.OverlayTextSet(0,'');
 end;
