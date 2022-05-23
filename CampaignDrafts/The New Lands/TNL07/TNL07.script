@@ -97,7 +97,7 @@ begin
 
   // Grant quarry on the middle of Inn construction
   if not AllyInnBuild and (AllyInn <> 0) and ((S.GameTime mod 10) = 0) and (S.HouseBuildingProgress(AllyInn) > 300) then
-    A.HandHouseLock(3, htQuarry, hlGranted);
+    A.PlayerHouseTypeLock(3, htQuarry, hlGranted);
 
   if (States.GameTime = 2500) and (Message1Sent = False) then
   begin

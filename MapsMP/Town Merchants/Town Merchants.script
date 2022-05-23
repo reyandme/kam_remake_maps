@@ -822,7 +822,7 @@ begin
       PLAYER[j].Merchant.ID:= States.GroupMember(Actions.GiveGroup(j, 24, States.HousePositionX(PLAYER[j].StorehouseID), States.HousePositionY(PLAYER[j].StorehouseID)+1, 4, 1, 1), 0);
       PLAYER[j].Merchant.aType:= PLAYER_START_MERCHANT_TYPE;
       PLAYER[j].Merchant.InHouse:= false;
-      Actions.HandHouseLock(j, htAny, hlBlocked);
+      Actions.PlayerHouseTypeLock(j, htAny, hlBlocked);
     end;
     
   end;
@@ -918,13 +918,13 @@ begin
     if HT = htMarket then Continue;
     
     if HouseTypeToRankHT(HT) = aClass then
-      Actions.HandHouseLock(aPlayer, HT, hlGranted);
+      Actions.PlayerHouseTypeLock(aPlayer, HT, hlGranted);
   end;
 end;
 
 procedure ClearAllowHouse(aPlayer: integer);
 begin
-  Actions.HandHouseLock(aPlayer, htAny, hlBlocked);
+  Actions.PlayerHouseTypeLock(aPlayer, htAny, hlBlocked);
 end;
 
 procedure BuyHouseOffer(aPlayer: integer);
