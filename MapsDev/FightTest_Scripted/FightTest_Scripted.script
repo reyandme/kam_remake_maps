@@ -1,0 +1,896 @@
+//Version 2.3
+
+const
+	pHum = 0; //Player 1
+	pA1 = 1; //Player 2, Army 1; NOTE: the script assumes that pA1 < pA2
+	pA2 = 2; //Player 3, Army 2
+	cType = 20; //Hand Axe
+	cCount = 22; //Lance
+	cColumns = 24; //Longbow
+	aColor = '00FFFF'; //Yellow
+
+type
+	atWalkPar = Record
+		aX, aY, aDir: Integer;
+	end;
+
+var
+	aQuadrStats: array[0..3] of Record
+		aCooldown, aSideUp, aDuration: Integer;
+		aDone: Boolean;
+	end;
+	
+	aArmy: array[pA1..pA2] of Record
+		aWon, aCost: Integer;
+		aStats: array[0..1] of Record //Front(0) or Back(1)
+			aType, aCount, aColumns, aSurvivors: Integer; //The buildings' settings may be different from the final settings used, so we save both
+			aID: array[0..3] of Integer; //Quadrant(0..3)
+			aUnits: array[0..3] of array of Integer; //Quadrant(0..3); individual soldiers' GroupID
+		end;
+	end;
+
+	aTime: Record
+		aTotal, aLongest, aShortest, aAverage: Integer;
+	end;
+
+	aMarket, aTower: Integer;
+	aChoices: array[0..3] of Record //0 is Army 1 Front, 1 is Army 1 Back, 2 is Army 2 Front, 3 is Army 2 Back
+		aID, aType, aCount, aColumns: Integer;
+		aAllowStorming, aSplitUnits: Boolean;
+	end;
+	
+	aStartedFights, aTotalToFight, aTick: Integer;
+	aAllowAutoComputing, aUseEconomicValue, aChangeDetected, bDataMode, bHideData: Boolean;
+	
+function aRound(aNum, aDen: Integer): Integer; //The default Round function is... not exactly the correct one math-wise
+var
+	i: Integer;
+begin
+	result := 0; //Should be infinite instead, but I need it to return 0 if Den = 0
+	if aDen <> 0 then begin
+		i := (aNum div aDen);
+		
+		if (aNum mod aDen) >= (aDen/2) then result := i+1
+		else result := i;
+	end;
+end;
+
+function aAbs(aVal: Integer): Integer; //Given the experience with Round, I don't trust Abs either
+begin
+	if aVal < 0 then result := -aVal
+	else result := aVal;
+end;
+
+function aOtherArmy(aWhich: Integer): Integer;
+begin
+	if aWhich = pA1 then result := pA2
+	else result := pA1;
+end;
+
+function aWareValue(aWare: Integer): Integer;
+begin
+	result := Round((States.MarketLossFactor*States.MarketValue(aWare))/States.MarketValue(9));
+end;
+
+function aWareVals(aWares: array of Integer): Integer;
+var
+	i, aVal: Integer;
+begin
+	aVal := 0;
+	for i := 0 to Length(aWares)-1 do aVal := aVal+aWareValue(aWares[i]);
+	result := aVal;
+end;
+
+function aCost(aType: Integer): Integer;
+begin
+	if aUseEconomicValue then begin
+		case aType of
+			14: result := 7; //Militia
+			15: result := 15; //Axe Fighter
+			16: result := 22; //Sword Fighter
+			17: result := 12; //Bowman
+			18: result := 16; //Crossbowman
+			19: result := 12; //Lance Carrier
+			20: result := 16; //Pikeman
+			21: result := 27; //Scout
+			22: result := 33; //Knight
+			
+			23: result := 18; //Barbarian
+			24: result := 7; //Rebel
+			25: result := 7; //Rogue
+			26: result := 18; //Warrior
+			27: result := 19; //Vagabond
+			
+			{23: result := 20; //Barbarian
+			24: result := 4; //Rebel
+			25: result := 8; //Rogue
+			26: result := 20; //Warrior
+			27: result := 12; //Vagabond}
+			
+			else result := 3;
+		end;
+	end else begin
+		case aType of
+			14: result := aWareVals([7, 20]); //Militia
+			15: result := aWareVals([7, 20, 18, 16]); //Axe Fighter
+			16: result := aWareVals([7, 21, 19, 17]); //Sword Fighter
+			17: result := aWareVals([7, 24, 18]); //Bowman
+			18: result := aWareVals([7, 25, 19]); //Crossbowman
+			19: result := aWareVals([7, 22, 18]); //Lance Carrier
+			20: result := aWareVals([7, 23, 19]); //Pikeman
+			21: result := aWareVals([7, 20, 18, 16, 26]); //Scout
+			22: result := aWareVals([7, 21, 19, 17, 26]); //Knight
+			
+			23: result := aWareVals([7, 20, 20, 20, 20]); //Barbarian
+			24: result := aWareVals([7, 22]); //Rebel
+			25: result := aWareVals([7, 24]); //Rogue
+			26: result := aWareVals([7, 20, 20, 20, 20]); //Warrior
+			27: result := aWareVals([7, 20, 26]); //Vagabond
+			
+			{23: result := aWareVals([7, 7, 7, 7, 7]); //Barbarian
+			24: result := aWareVals([7]); //Rebel
+			25: result := aWareVals([7, 7]); //Rogue
+			26: result := aWareVals([7, 7, 7, 7, 7]); //Warrior
+			27: result := aWareVals([7, 7, 7]); //Vagabond}
+			
+			else result := aWareVals([7]);
+		end;
+	end;
+end;
+
+function aChoice(aWhich, aPos: Integer): Integer;
+begin
+	if aWhich = pA1 then result := aPos
+	else result := aPos+2;
+end;
+
+procedure aResetSimulation;
+var
+	i, i2, i3, i4: Integer;
+begin
+	Actions.PlayerAllianceChange(pA1, pA2, True, True);
+	
+	//Rebuild
+	for i := 0 to 3 do begin
+		aChoices[i].aID := Actions.GiveHouse(pHum, 19, 120+i*5, 134);
+		Actions.HouseDisableUnoccupiedMessage(aChoices[i].aID, True);
+		Actions.HouseRepairEnable(aChoices[i].aID, aChoices[i].aSplitUnits);
+		Actions.HouseDeliveryBlock(aChoices[i].aID, aChoices[i].aAllowStorming);
+		
+		Actions.HouseWeaponsOrderSet(aChoices[i].aID, cType, aChoices[i].aType);
+		Actions.HouseWeaponsOrderSet(aChoices[i].aID, cCount, aChoices[i].aCount);
+		Actions.HouseWeaponsOrderSet(aChoices[i].aID, cColumns, aChoices[i].aColumns);
+	end;
+
+	//Variables default
+	for i := pA1 to pA2 do begin
+		for i2 := 0 to 1 do for i3 := 0 to 3 do begin
+			if (aArmy[i].aStats[i2].aID[i3] > 0) then begin
+				if aChoices[aChoice(i, i2)].aSplitUnits then begin
+					for i4 := 0 to Length(aArmy[i].aStats[i2].aUnits[i3])-1 do if not States.GroupDead(aArmy[i].aStats[i2].aUnits[i3][i4]) then Actions.GroupKillAll(aArmy[i].aStats[i2].aUnits[i3][i4], True);
+				end else begin
+					if not States.GroupDead(aArmy[i].aStats[i2].aID[i3]) then Actions.GroupKillAll(aArmy[i].aStats[i2].aID[i3], True);
+				end;
+			end;
+			
+			aArmy[i].aStats[i2].aSurvivors := 0;
+			aArmy[i].aStats[i2].aID[i3] := -1;
+			SetLength(aArmy[i].aStats[i2].aUnits[i3], 0);
+		end;
+		aArmy[i].aWon := 0;
+	end;
+	
+	aStartedFights := 0;
+	aTime.aTotal:= 0;
+	aTime.aShortest := 0;
+	aTime.aLongest := 0;
+	aTime.aAverage := 0;
+	
+	for i := 0 to 3 do begin
+		aQuadrStats[i].aCooldown := 0;
+		aQuadrStats[i].aSideUp := pA1;
+		aQuadrStats[i].aDone := True;
+	end;
+	
+	aChangeDetected := True;
+end;
+
+function aOffSet(aSide, aQuadrant: Integer): Integer;
+var
+	i, aWhich: Integer;
+begin
+	result := 0;
+	
+	if aSide = 0 then aWhich := aQuadrStats[aQuadrant].aSideUp
+	else aWhich := aOtherArmy(aQuadrStats[aQuadrant].aSideUp);
+	
+	if aArmy[aWhich].aStats[0].aColumns > 0 then begin
+		i := aArmy[aWhich].aStats[0].aCount div aArmy[aWhich].aStats[0].aColumns;
+		if aArmy[aWhich].aStats[0].aCount mod aArmy[aWhich].aStats[0].aColumns > 0 then Inc(i);
+		
+		if i > 4 then begin
+			if aSide = 0 then result := 4-i
+			else result := i-4;
+		end;
+	end;
+end;
+
+function aCoords(aWhat, aSide, aQuadrant, aPos: Integer): Integer; //aWhat: 0 is X, 1 is Y, 2 is Direction; aSide: 0 is Up, 1 is Down
+begin
+	result := -1;
+	
+	if aSide = 0 then begin //Up
+		if aWhat = 0 then begin //X
+			if aQuadrant = 0 then begin
+				if aPos = 0 then result := 64; //Front
+				if aPos = 1 then result := 64; //Back
+			end;
+			if aQuadrant = 1 then begin
+				if aPos = 0 then result := 192; //Front
+				if aPos = 1 then result := 192; //Back
+			end;
+			if aQuadrant = 2 then begin
+				if aPos = 0 then result := 64; //Front
+				if aPos = 1 then result := 64; //Back
+			end;
+			if aQuadrant = 3 then begin
+				if aPos = 0 then result := 192; //Front
+				if aPos = 1 then result := 192; //Back
+			end;
+		end;
+		
+		if aWhat = 1 then begin //Y
+			if aQuadrant = 0 then begin
+				if aPos = 0 then result := 63; //Front
+				if aPos = 1 then result := 59+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 1 then begin
+				if aPos = 0 then result := 63; //Front
+				if aPos = 1 then result := 59+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 2 then begin
+				if aPos = 0 then result := 191; //Front
+				if aPos = 1 then result := 187+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 3 then begin
+				if aPos = 0 then result := 191; //Front
+				if aPos = 1 then result := 187+aOffSet(aSide, aQuadrant); //Back
+			end;
+		end;
+		
+		if aWhat = 2 then result := 4; //Up
+	end;
+	
+	if aSide = 1 then begin //Down
+		if aWhat = 0 then begin //X
+			if aQuadrant = 0 then begin
+				if aPos = 0 then result := 64; //Front
+				if aPos = 1 then result := 64; //Back
+			end;
+			if aQuadrant = 1 then begin
+				if aPos = 0 then result := 192; //Front
+				if aPos = 1 then result := 192; //Back
+			end;
+			if aQuadrant = 2 then begin
+				if aPos = 0 then result := 64; //Front
+				if aPos = 1 then result := 64; //Back
+			end;
+			if aQuadrant = 3 then begin
+				if aPos = 0 then result := 192; //Front
+				if aPos = 1 then result := 192; //Back
+			end;
+		end;
+		
+		if aWhat = 1 then begin //Y
+			if aQuadrant = 0 then begin
+				if aPos = 0 then result := 66; //Front
+				if aPos = 1 then result := 70+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 1 then begin
+				if aPos = 0 then result := 66; //Front
+				if aPos = 1 then result := 70+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 2 then begin
+				if aPos = 0 then result := 194; //Front
+				if aPos = 1 then result := 198+aOffSet(aSide, aQuadrant); //Back
+			end;
+			if aQuadrant = 3 then begin
+				if aPos = 0 then result := 194; //Front
+				if aPos = 1 then result := 198+aOffSet(aSide, aQuadrant); //Back
+			end;
+		end;
+		
+		if aWhat = 2 then result := 0; //Down
+	end;
+end;
+
+procedure OnMissionStart;
+begin
+	Actions.ShowMSG(-1, 'Order weapons to set each troop.|Change the trade order in the Market to change the number of fights to be simulated.|Toggle the Repair or Delivery options in any building to toggle the options.||Destroy any building to start or restart the simulation.');
+	Actions.ShowMSG(-1, 'Auto computing means that the game will set the formation for each troop and the number of units for army 2; the number of troops will be done using the same proportion of the values you set, trying to make army 2 equivalent to army 1 cost-wise.');
+	Actions.ShowMSG(-1, 'EcoUnits are an estimation of the economic worth of each warrior, based on the max productivity of the involved economic chains in a fixed given space.');
+	
+	aTotalToFight := 500;
+	aAllowAutoComputing := True;
+	aUseEconomicValue := True;
+	aMarket := States.HouseAt(128, 131);
+	Actions.MarketSetTrade(aMarket, 1, 9, aTotalToFight);
+	Actions.HouseDeliveryBlock(aMarket, aAllowAutoComputing);
+	Actions.HouseRepairEnable(aMarket, aUseEconomicValue);
+	
+	bDataMode := False;
+	bHideData := False;
+	aTower := States.HouseAt(131, 131);
+	Actions.HouseDisableUnoccupiedMessage(aTower, True);
+	Actions.HouseDeliveryBlock(aTower, bDataMode);
+	Actions.HouseRepairEnable(aTower, bHideData);
+	
+	aResetSimulation;
+end;
+
+function aBoolToStr(aBool: Boolean): String;
+begin
+	if aBool then result := 'enabled'
+	else result := 'disabled';
+end;
+
+procedure aToggleComputing;
+begin
+	aAllowAutoComputing := not aAllowAutoComputing;
+	Actions.HouseDeliveryBlock(aMarket, aAllowAutoComputing);
+	
+	aChangeDetected := True;
+end;
+
+procedure aToggleEconomyUnit;
+begin
+	aUseEconomicValue := not aUseEconomicValue;
+	Actions.HouseRepairEnable(aMarket, aUseEconomicValue);
+	
+	aChangeDetected := True;
+end;
+
+procedure aToggleStorming(aWhich: Integer);
+begin
+	aChoices[aWhich].aAllowStorming := not aChoices[aWhich].aAllowStorming;
+	Actions.HouseDeliveryBlock(aChoices[aWhich].aID, aChoices[aWhich].aAllowStorming);
+end;
+
+procedure aToggleSplitting(aWhich: Integer);
+begin
+	aChoices[aWhich].aSplitUnits := not aChoices[aWhich].aSplitUnits;
+	Actions.HouseRepairEnable(aChoices[aWhich].aID, aChoices[aWhich].aSplitUnits);
+end;
+
+procedure aSetTestUp;
+var
+	i, v1, v2: Integer;
+begin
+	if States.MarketOrderAmount(aMarket) = 0 then Actions.MarketSetTrade(aMarket, 1, 9, 1);
+	aTotalToFight := States.MarketOrderAmount(aMarket);
+	
+	if States.HouseDeliveryBlocked(aMarket) = not aAllowAutoComputing then aToggleComputing;
+	if States.HouseRepair(aMarket) = not aUseEconomicValue then aToggleEconomyUnit;
+	
+	for i := 0 to 3 do begin
+		if States.HouseRepair(aChoices[i].aID) = not aChoices[i].aSplitUnits then aToggleSplitting(i);
+		if States.HouseDeliveryBlocked(aChoices[i].aID) = not aChoices[i].aAllowStorming then aToggleStorming(i);
+	end;
+	
+	for i := 0 to 3 do begin
+		//Unit Type limits
+		if States.HouseWeaponsOrdered(aChoices[i].aID, cType) < 14 then Actions.HouseWeaponsOrderSet(aChoices[i].aID, cType, 14);
+		if States.HouseWeaponsOrdered(aChoices[i].aID, cType) > 27 then Actions.HouseWeaponsOrderSet(aChoices[i].aID, cType, 27);
+		
+		//Check values
+		if (aChoices[i].aType <> States.HouseWeaponsOrdered(aChoices[i].aID, cType)) OR (aChoices[i].aCount <> States.HouseWeaponsOrdered(aChoices[i].aID, cCount)) then begin
+			aChangeDetected := True;
+		
+			aChoices[i].aType := States.HouseWeaponsOrdered(aChoices[i].aID, cType);
+			aChoices[i].aCount := States.HouseWeaponsOrdered(aChoices[i].aID, cCount);
+		end;
+		
+		aChoices[i].aColumns := States.HouseWeaponsOrdered(aChoices[i].aID, cColumns);
+	end;
+	if aChangeDetected then begin
+		for v1 := pA1 to pA2 do for v2 := 0 to 1 do begin
+			aArmy[v1].aStats[v2].aType := aChoices[aChoice(v1, v2)].aType;
+			aArmy[v1].aStats[v2].aCount := aChoices[aChoice(v1, v2)].aCount;
+		end;
+				
+		aArmy[pA1].aCost := (aCost(aArmy[pA1].aStats[0].aType)*aArmy[pA1].aStats[0].aCount)+(aCost(aArmy[pA1].aStats[1].aType)*aArmy[pA1].aStats[1].aCount);
+		
+		if aAllowAutoComputing AND (aArmy[pA1].aCost <> 0) then begin
+			if (aArmy[pA2].aStats[0].aCount+aArmy[pA2].aStats[1].aCount) <> 0 then begin
+				v1 := aArmy[pA2].aStats[0].aCount;
+				v2 := aArmy[pA2].aStats[1].aCount;
+				
+				v1 := aRound(aArmy[pA2].aStats[0].aCount*aArmy[pA1].aCost, (aArmy[pA2].aStats[0].aCount+aArmy[pA2].aStats[1].aCount)*aCost(aArmy[pA2].aStats[0].aType));
+				v2 := aRound(aArmy[pA2].aStats[1].aCount*aArmy[pA1].aCost, (aArmy[pA2].aStats[0].aCount+aArmy[pA2].aStats[1].aCount)*aCost(aArmy[pA2].aStats[1].aType));
+				
+				aArmy[pA2].aStats[0].aCount := v1;
+				aArmy[pA2].aStats[1].aCount := v2;
+				
+				if aCost(aArmy[pA2].aStats[0].aType) > aCost(aArmy[pA2].aStats[1].aType) then v1 := 1
+				else v1 := 0;
+				
+				if aArmy[pA2].aStats[v1].aCount = 0 then v1 := 1-v1;
+			
+				aArmy[pA2].aCost := (aCost(aArmy[pA2].aStats[0].aType)*aArmy[pA2].aStats[0].aCount)+(aCost(aArmy[pA2].aStats[1].aType)*aArmy[pA2].aStats[1].aCount);
+
+				if (2*aAbs(aArmy[pA1].aCost-aArmy[pA2].aCost)) > aCost(aArmy[pA2].aStats[v1].aType) then begin
+					if aArmy[pA2].aStats[v1].aCount > 0 then begin
+						if aArmy[pA1].aCost > aArmy[pA2].aCost then Inc(aArmy[pA2].aStats[v1].aCount)
+						else aArmy[pA2].aStats[v1].aCount := aArmy[pA2].aStats[v1].aCount-1;
+					end;
+				end;
+			end else begin
+				for i := 0 to 1 do aArmy[pA2].aStats[i].aCount := aRound(aArmy[pA1].aStats[i].aCount*aCost(aArmy[pA1].aStats[i].aType), aCost(aArmy[pA2].aStats[i].aType));
+			end;
+		end; 
+		
+		aArmy[pA2].aCost := (aCost(aArmy[pA2].aStats[0].aType)*aArmy[pA2].aStats[0].aCount)+(aCost(aArmy[pA2].aStats[1].aType)*aArmy[pA2].aStats[1].aCount);
+		
+		aChangeDetected := False;
+	end;
+	
+	//Check formations
+	for v1 := pA1 to pA2 do for v2 := 0 to 1 do begin
+		if aChoices[aChoice(v1, v2)].aColumns = 0 then begin
+			aArmy[v1].aStats[v2].aColumns := aArmy[v1].aStats[v2].aCount div 3;
+			if aArmy[v1].aStats[v2].aColumns < 15 then aArmy[v1].aStats[v2].aColumns := 15;
+		end else aArmy[v1].aStats[v2].aColumns := aChoices[aChoice(v1, v2)].aColumns;
+		
+		if aArmy[v1].aStats[v2].aColumns > aArmy[v1].aStats[v2].aCount then aArmy[v1].aStats[v2].aColumns := aArmy[v1].aStats[v2].aCount;
+	end;
+end;
+
+function aHalfIdle(aGroup: Integer): Boolean;
+var
+	i, iCount: Integer;
+begin
+	result := False;
+	iCount := 0;
+	
+	for i := 0 to States.GroupMemberCount(aGroup)-1 do begin
+		if States.UnitIdle(States.GroupMember(aGroup, i)) then iCount := iCount+2;
+		
+		if iCount >= States.GroupMemberCount(aGroup) then begin
+			result := True;
+			Break;
+		end;
+	end;
+end;
+
+function aGetDirections(aTarX, aTarY, aGroupX, aGroupY: Integer): atWalkPar;
+var
+	aCoeff, aDistance: Integer;
+begin
+	if aTarX = aGroupX then aCoeff := 1000
+	else aCoeff := aAbs(aRound((aTarY-aGroupY)*100, aTarX-aGroupX));
+	
+	aDistance := ((aTarY-aGroupY)*(aTarY-aGroupY)+(aTarX-aGroupX)*(aTarX-aGroupX));
+	
+	if aCoeff < 33 then begin
+		result.aY := aGroupY;
+		if aTarX > aGroupX then begin
+			result.aX := aGroupX+1;
+			result.aDir := 2;
+		end else begin
+			result.aX := aGroupX-1;
+			result.aDir := 6;
+		end;
+	end;
+	if (aCoeff >= 33) AND (aCoeff <= 300) then begin
+		if aTarX > aGroupX then begin
+			result.aX := aGroupX+1;
+			
+			if aTarY > aGroupY then begin
+				result.aY := aGroupY+1;
+				result.aDir := 3;
+			end else begin
+				result.aY := aGroupY-1;
+				result.aDir := 1;
+			end;
+		end else begin
+			result.aX := aGroupX-1;
+			
+			if aTarY > aGroupY then begin
+				result.aY := aGroupY+1;
+				result.aDir := 5;
+			end else begin
+				result.aY := aGroupY-1;
+				result.aDir := 7;
+			end;
+		end;
+	end;
+	if aCoeff > 300 then begin
+		result.aX := aGroupX;
+		if aTarY > aGroupY then begin
+			result.aY := aGroupY+1;
+			result.aDir := 4;
+		end else begin
+			result.aY := aGroupY-1;
+			result.aDir := 0;
+		end;
+	end;
+	
+	//Only move forward if the target is too far; move away if the target is too close; range limits in KaM Remake are 4->10.99 tiles.
+	if (aDistance < 81) AND (aDistance > 16) then begin
+		result.aX := aGroupX;
+		result.aY := aGroupY;
+	end;
+	if aDistance <= 16 then begin
+		result.aX := 2*aGroupX-result.aX;
+		result.aY := 2*aGroupY-result.aY;
+	end;
+end;
+
+procedure aIssueCommand(aGroupID, aEnemy: Integer);
+var
+	aTarget: Integer;
+	aWalk: atWalkPar;
+begin
+	if (aGroupID > 0) AND (not States.GroupDead(aGroupID)) then begin //Group exists and is alive
+		if States.GroupType(aGroupID) = 2 then begin //For ranged units, individual soldiers must be checked and a Walk command needs to be issued
+			if aHalfIdle(aGroupID) then begin //More than half of the troop is idle? Then walk towards the enemy
+				aTarget := States.ClosestGroup(aEnemy, States.UnitPositionX(States.GroupMember(aGroupID, 0)), States.UnitPositionY(States.GroupMember(aGroupID, 0)), -1);
+				aTarget := States.GroupMember(aTarget, 0);
+				
+				if aTarget > 0 then begin
+					aWalk := aGetDirections(States.UnitPositionX(aTarget), States.UnitPositionY(aTarget), States.UnitPositionX(States.GroupMember(aGroupID, 0)), States.UnitPositionY(States.GroupMember(aGroupID, 0)));
+					
+					if (aWalk.aX <> States.UnitPositionX(States.GroupMember(aGroupID, 0))) OR (aWalk.aY <> States.UnitPositionY(States.GroupMember(aGroupID, 0))) OR (aWalk.aDir <> States.UnitDirection(States.GroupMember(aGroupID, 0))) then begin
+						if States.UnitAt(aWalk.aX, aWalk.aY) > 0 then Actions.GroupOrderWalk(aGroupID, States.UnitPositionX(States.GroupMember(aGroupID, 0)), States.UnitPositionY(States.GroupMember(aGroupID, 0)), aWalk.aDir)
+						else Actions.GroupOrderWalk(aGroupID, aWalk.aX, aWalk.aY, aWalk.aDir);
+					end;
+				end;
+			end;
+		end else begin
+			if States.GroupIdle(aGroupID) then begin //Melee units just need to be told who the enemy is
+				aTarget := States.ClosestGroup(aEnemy, States.UnitPositionX(States.GroupMember(aGroupID, 0)), States.UnitPositionY(States.GroupMember(aGroupID, 0)), -1);
+				aTarget := States.GroupMember(aTarget, 0);
+				if aTarget > 0 then Actions.GroupOrderAttackUnit(aGroupID, aTarget);
+			end;
+		end;
+	end;
+end;
+
+procedure aSpawnWarriors(aQuadrant: Integer);
+var
+	v1, v2, v3: Integer;
+begin
+	if (aStartedFights < aTotalToFight) AND aQuadrStats[aQuadrant].aDone then begin
+		//Spawn groups
+		for v1 := pA1 to pA2 do begin
+			for v2 := 0 to 1 do if aArmy[v1].aStats[v2].aCount > 0 then begin
+				if v1 = aQuadrStats[aQuadrant].aSideUp then v3 := 0
+				else v3 := 1;
+				
+				if aArmy[v1].aStats[v2].aCount > 0 then aArmy[v1].aStats[v2].aID[aQuadrant] := Actions.GiveGroup(v1, aArmy[v1].aStats[v2].aType, aCoords(0, v3, aQuadrant, v2), aCoords(1, v3, aQuadrant, v2), aCoords(2, v3, aQuadrant, v2), aArmy[v1].aStats[v2].aCount, aArmy[v1].aStats[v2].aColumns);
+			end;
+		end;
+		
+		for v1 := pA1 to pA2 do for v2 := 0 to 1 do if aArmy[v1].aStats[v2].aID[aQuadrant] > 0 then begin
+			//Split units?
+			if aChoices[aChoice(v1, v2)].aSplitUnits then begin
+				SetLength(aArmy[v1].aStats[v2].aUnits[aQuadrant], 0);
+				
+				for v3 := States.GroupMemberCount(aArmy[v1].aStats[v2].aID[aQuadrant])-1 downto 0 do begin
+					SetLength(aArmy[v1].aStats[v2].aUnits[aQuadrant], Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])+1);
+					
+					if States.GroupMemberCount(aArmy[v1].aStats[v2].aID[aQuadrant]) > 1 then aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1] := Actions.GroupOrderSplitUnit(aArmy[v1].aStats[v2].aID[aQuadrant], States.GroupMember(aArmy[v1].aStats[v2].aID[aQuadrant], v3))
+					else aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1] := aArmy[v1].aStats[v2].aID[aQuadrant];
+					
+					if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupType(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]) = 0) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]);
+				end;
+			end else begin
+				if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupType(aArmy[v1].aStats[v2].aID[aQuadrant]) = 0) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aID[aQuadrant]);
+			end;
+		end;
+
+		//Switch
+		Inc(aStartedFights);
+		aQuadrStats[aQuadrant].aDone := False;
+		aQuadrStats[aQuadrant].aDuration := 0;
+		aQuadrStats[aQuadrant].aSideUp := aOtherArmy(aQuadrStats[aQuadrant].aSideUp);
+	end;
+end;
+
+function aBattlesCompleted: Integer;
+var
+	i: Integer;
+begin
+	result := aStartedFights;
+	for i := 0 to 3 do if not aQuadrStats[i].aDone then result := result-1;
+end;
+
+function aAllDead(aWhich, aQuadrant: Integer): Boolean;
+var
+	i, i2: Integer;
+begin
+	result := False;
+	for i := 0 to 1 do if (aArmy[aWhich].aStats[i].aID[aQuadrant] > 0) then begin
+		if aChoices[aChoice(aWhich, i)].aSplitUnits then begin
+			for i2 := 0 to Length(aArmy[aWhich].aStats[i].aUnits[aQuadrant])-1 do if not States.GroupDead(aArmy[aWhich].aStats[i].aUnits[aQuadrant][i2]) then Exit;
+		end else if not States.GroupDead(aArmy[aWhich].aStats[i].aID[aQuadrant]) then Exit;
+	end;
+	result := True;
+end;
+
+procedure aPerformTest;
+var
+	i, i2, v1, v2: Integer;
+	aArmyDead: array[pA1..pA2] of Boolean;
+begin
+	//FIGHT!
+	Inc(aTick);
+	if aTick > 15 then aTick := 0;
+	
+	v1 := (aTick div 4) mod 2; //Army
+	if v1 = 0 then v1 := pA1
+	else v1 := pA2;
+	
+	i := aTick mod 4; //Quadrant
+	v2 := aTick div 8; //Position
+	
+	if aChoices[aChoice(v1, v2)].aSplitUnits then begin
+		for i2 := 0 to Length(aArmy[v1].aStats[v2].aUnits[i])-1 do aIssueCommand(aArmy[v1].aStats[v2].aUnits[i][i2], aOtherArmy(v1));
+	end else aIssueCommand(aArmy[v1].aStats[v2].aID[i], aOtherArmy(v1));
+	
+	if aQuadrStats[i].aCooldown < 20 then aQuadrStats[i].aCooldown := aQuadrStats[i].aCooldown+4 //Skip 2.4 seconds (20+4 Ticks) before respawning, so that every death animation is done
+	else aSpawnWarriors(i);
+	
+	if not aQuadrStats[i].aDone then begin
+		aQuadrStats[i].aDuration := aQuadrStats[i].aDuration+4;
+		
+		//Check if fight ended
+		for v1 := pA1 to pA2 do aArmyDead[v1] := aAllDead(v1, i);
+		
+		if aArmyDead[pA1] OR aArmyDead[pA2] then begin
+			//Record result
+			if aArmyDead[pA1] then Inc(aArmy[pA2].aWon);
+			if aArmyDead[pA2] then Inc(aArmy[pA1].aWon);
+			
+			//Dispose of any survivor
+			for v1 := pA1 to pA2 do for v2 := 0 to 1 do if (aArmy[v1].aStats[v2].aID[i] > 0) then begin
+				if aChoices[aChoice(v1, v2)].aSplitUnits then begin
+					for i2 := 0 to Length(aArmy[v1].aStats[v2].aUnits[i])-1 do if not States.GroupDead(aArmy[v1].aStats[v2].aUnits[i][i2]) then begin
+						aArmy[v1].aStats[v2].aSurvivors := aArmy[v1].aStats[v2].aSurvivors+States.GroupMemberCount(aArmy[v1].aStats[v2].aUnits[i][i2]);
+						Actions.GroupKillAll(aArmy[v1].aStats[v2].aUnits[i][i2], True);
+					end;
+				end else begin
+					if not States.GroupDead(aArmy[v1].aStats[v2].aID[i]) then begin
+						aArmy[v1].aStats[v2].aSurvivors := aArmy[v1].aStats[v2].aSurvivors+States.GroupMemberCount(aArmy[v1].aStats[v2].aID[i]);
+						Actions.GroupKillAll(aArmy[v1].aStats[v2].aID[i], True);
+					end;
+				end;
+			end;
+			
+			aTime.aTotal := aTime.aTotal+aQuadrStats[i].aDuration;
+			aTime.aAverage := aRound(aTime.aTotal, aStartedFights*10);
+			if (aQuadrStats[i].aDuration < (aTime.aShortest*10)) OR (aTime.aShortest = 0) then aTime.aShortest := aRound(aQuadrStats[i].aDuration, 10);
+			if aQuadrStats[i].aDuration > (aTime.aLongest*10) then aTime.aLongest := aRound(aQuadrStats[i].aDuration, 10);
+		
+			aQuadrStats[i].aCooldown := 0;
+			aQuadrStats[i].aDone := True;
+		end;
+	end;
+end;
+
+function aAllDone: Boolean;
+begin
+	result := aQuadrStats[0].aDone AND aQuadrStats[1].aDone AND aQuadrStats[2].aDone AND aQuadrStats[3].aDone AND (aStartedFights = aTotalToFight);
+end;
+
+function aGetName: String;
+begin
+	if aUseEconomicValue then result := 'EcoUnits'
+	else result := States.WareTypeName(9);
+end;
+
+function aSplitToString(aSplit: Boolean): String;
+begin
+	if aSplit then result := 'split'
+	else result := 'joined';
+end;
+
+function aAverageSurvivors(aPlayer, aType: Integer): String; //aType: 0 Front, 1 Back, 2 Total
+begin
+	case aType of
+		0: result := IntToStr(aRound(aArmy[aPlayer].aStats[0].aSurvivors, aArmy[aPlayer].aWon));
+		1: result := IntToStr(aRound(aArmy[aPlayer].aStats[1].aSurvivors, aArmy[aPlayer].aWon));
+		2: result := IntToStr(aRound(aArmy[aPlayer].aStats[0].aSurvivors+aArmy[aPlayer].aStats[1].aSurvivors, aArmy[aPlayer].aWon));
+	end;
+end;
+
+procedure aUpdateData;
+begin
+	bHideData := States.HouseRepair(aTower);
+	bDataMode := States.HouseDeliveryBlocked(aTower);
+		
+	Actions.OverlayTextSetFormatted(-1, 'Auto computing is [$%s]%s[]|', [aColor, aBoolToStr(aAllowAutoComputing)]);
+	Actions.OverlayTextAppendFormatted(-1, 'Currently using [$%s]%s[]|', [aColor, aGetName]);
+	
+	if bDataMode then begin
+		Actions.OverlayTextAppendFormatted(-1, '|[$%s]'+IntToStr(aArmy[pA1].aCost)+'[] - [$%s]'+IntToStr(aArmy[pA2].aCost)+'[]; army cost ([$%s]'+aGetName+'[])|', [States.PlayerColorText(1), States.PlayerColorText(2), aColor]);
+		if not bHideData then begin
+			Actions.OverlayTextAppend(-1, '|Front:|');
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aArmy[pA1].aStats[0].aCount)+' '+States.UnitTypeName(aArmy[pA1].aStats[0].aType)+'[] - [$%s]'+IntToStr(aArmy[pA2].aStats[0].aCount)+' '+States.UnitTypeName(aArmy[pA2].aStats[0].aType)+'[]|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aArmy[pA1].aStats[0].aColumns)+'[] - [$%s]'+IntToStr(aArmy[pA2].aStats[0].aColumns)+'[] columns|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aCost(aArmy[pA1].aStats[0].aType))+'[] - [$%s]'+IntToStr(aCost(aArmy[pA2].aStats[0].aType))+'[] '+aGetName+' per unit|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  Storming is [$%s]%s[] - [$%s]%s[]', [States.PlayerColorText(1), aBoolToStr(aChoices[0].aAllowStorming), States.PlayerColorText(2), aBoolToStr(aChoices[2].aAllowStorming)]);
+			Actions.OverlayTextAppendFormatted(-1, '  Units are [$%s]%s[] - [$%s]%s[]', [States.PlayerColorText(1), aSplitToString(aChoices[0].aSplitUnits), States.PlayerColorText(2), aSplitToString(aChoices[2].aSplitUnits)]);
+			Actions.OverlayTextAppend(-1, '|');
+			
+			Actions.OverlayTextAppend(-1, '|Back:|');
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aArmy[pA1].aStats[1].aCount)+' '+States.UnitTypeName(aArmy[pA1].aStats[1].aType)+'[] - [$%s]'+IntToStr(aArmy[pA2].aStats[1].aCount)+' '+States.UnitTypeName(aArmy[pA2].aStats[1].aType)+'[]|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aArmy[pA1].aStats[1].aColumns)+'[] - [$%s]'+IntToStr(aArmy[pA2].aStats[1].aColumns)+'[] columns|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  [$%s]'+IntToStr(aCost(aArmy[pA1].aStats[1].aType))+'[] - [$%s]'+IntToStr(aCost(aArmy[pA2].aStats[1].aType))+'[] '+aGetName+' per unit|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+			Actions.OverlayTextAppendFormatted(-1, '  Storming is [$%s]%s[] - [$%s]%s[]', [States.PlayerColorText(1), aBoolToStr(aChoices[1].aAllowStorming), States.PlayerColorText(2), aBoolToStr(aChoices[3].aAllowStorming)]);
+			Actions.OverlayTextAppendFormatted(-1, '  Units are [$%s]%s[] - [$%s]%s[]', [States.PlayerColorText(1), aSplitToString(aChoices[1].aSplitUnits), States.PlayerColorText(2), aSplitToString(aChoices[3].aSplitUnits)]);
+			Actions.OverlayTextAppend(-1, '|');
+		end;
+		
+		Actions.OverlayTextAppendFormatted(-1, '|[$%s]'+IntToStr(aArmy[pA1].aWon)+'[] - [$%s]'+IntToStr(aArmy[pA2].aWon)+'[] ([$%s]'+IntToStr(aRound(aArmy[pA1].aWon*100, aBattlesCompleted))+'%%[] - [$%s]'+IntToStr(aRound(aArmy[pA2].aWon*100, aBattlesCompleted))+'%%[]); battles won|', [States.PlayerColorText(1), States.PlayerColorText(2), States.PlayerColorText(1), States.PlayerColorText(2)]);
+		Actions.OverlayTextAppendFormatted(-1, '|[$%s]'+aAverageSurvivors(pA1, 0)+'[] - [$%s]'+aAverageSurvivors(pA2, 0)+'[]; average survivors per won battle (front)|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+		Actions.OverlayTextAppendFormatted(-1, '[$%s]'+aAverageSurvivors(pA1, 1)+'[] - [$%s]'+aAverageSurvivors(pA2, 1)+'[]; average survivors per won battle (back)|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+		Actions.OverlayTextAppendFormatted(-1, '[$%s]'+aAverageSurvivors(pA1, 2)+'[] - [$%s]'+aAverageSurvivors(pA2, 2)+'[]; average survivors per won battle (total)|', [States.PlayerColorText(1), States.PlayerColorText(2)]);
+		
+	end else begin
+		Actions.OverlayTextAppendFormatted(-1, '|[$%s]Army 1[] costed [$%s]'+IntToStr(aArmy[pA1].aCost)+' '+aGetName+'[]|', [States.PlayerColorText(1), States.PlayerColorText(1)]);
+		if not bHideData then begin
+			Actions.OverlayTextAppendFormatted(-1, '[$%s]Front[]:|  '+IntToStr(aArmy[pA1].aStats[0].aCount)+' '+States.UnitTypeName(aArmy[pA1].aStats[0].aType)+'|  '+IntToStr(aArmy[pA1].aStats[0].aColumns)+' columns|  '+IntToStr(aCost(aArmy[pA1].aStats[0].aType))+' '+aGetName+' per unit|  Storming is [$%s]%s[], units are [$%s]%s[]|', [States.PlayerColorText(1), States.PlayerColorText(1), aBoolToStr(aChoices[0].aAllowStorming), States.PlayerColorText(1), aSplitToString(aChoices[0].aSplitUnits)]);
+			Actions.OverlayTextAppendFormatted(-1, '[$%s]Back[]:|  '+IntToStr(aArmy[pA1].aStats[1].aCount)+' '+States.UnitTypeName(aArmy[pA1].aStats[1].aType)+'|  '+IntToStr(aArmy[pA1].aStats[1].aColumns)+' columns|  '+IntToStr(aCost(aArmy[pA1].aStats[1].aType))+' '+aGetName+' per unit|  Storming is [$%s]%s[], units are [$%s]%s[]|', [States.PlayerColorText(1), States.PlayerColorText(1), aBoolToStr(aChoices[1].aAllowStorming), States.PlayerColorText(1), aSplitToString(aChoices[1].aSplitUnits)]);
+		end;
+		Actions.OverlayTextAppendFormatted(-1, 'They won [$%s]'+IntToStr(aArmy[pA1].aWon)+' times[], [$%s]'+IntToStr(aRound(aArmy[pA1].aWon*100, aBattlesCompleted))+'%%[] of the battles|', [States.PlayerColorText(1), States.PlayerColorText(1)]);
+		Actions.OverlayTextAppendFormatted(-1, 'Average survivors: [$%s]'+aAverageSurvivors(pA1, 0)+'[] (front) + [$%s]'+aAverageSurvivors(pA1, 1)+'[] (back) per won battle (total: [$%s]'+aAverageSurvivors(pA1, 2)+'[])|', [States.PlayerColorText(1), States.PlayerColorText(1), States.PlayerColorText(1)]);
+		
+		Actions.OverlayTextAppendFormatted(-1, '|[$%s]Army 2[] costed [$%s]'+IntToStr(aArmy[pA2].aCost)+' '+aGetName+'[]|', [States.PlayerColorText(2), States.PlayerColorText(2)]);
+		if not bHideData then begin
+			Actions.OverlayTextAppendFormatted(-1, '[$%s]Front[]:|  '+IntToStr(aArmy[pA2].aStats[0].aCount)+' '+States.UnitTypeName(aArmy[pA2].aStats[0].aType)+'|  '+IntToStr(aArmy[pA2].aStats[0].aColumns)+' columns|  '+IntToStr(aCost(aArmy[pA2].aStats[0].aType))+' '+aGetName+' per unit|  Storming is [$%s]%s[], units are [$%s]%s[]|', [States.PlayerColorText(2), States.PlayerColorText(2), aBoolToStr(aChoices[2].aAllowStorming), States.PlayerColorText(2), aSplitToString(aChoices[2].aSplitUnits)]);
+			Actions.OverlayTextAppendFormatted(-1, '[$%s]Back[]:|  '+IntToStr(aArmy[pA2].aStats[1].aCount)+' '+States.UnitTypeName(aArmy[pA2].aStats[1].aType)+'|  '+IntToStr(aArmy[pA2].aStats[1].aColumns)+' columns|  '+IntToStr(aCost(aArmy[pA2].aStats[1].aType))+' '+aGetName+' per unit|  Storming is [$%s]%s[], units are [$%s]%s[]|', [States.PlayerColorText(2), States.PlayerColorText(2), aBoolToStr(aChoices[3].aAllowStorming), States.PlayerColorText(2), aSplitToString(aChoices[3].aSplitUnits)]);
+		end;
+		Actions.OverlayTextAppendFormatted(-1, 'They won [$%s]'+IntToStr(aArmy[pA2].aWon)+' times[], [$%s]'+IntToStr(aRound(aArmy[pA2].aWon*100, aBattlesCompleted))+'%%[] of the battles|', [States.PlayerColorText(2), States.PlayerColorText(2)]);
+		Actions.OverlayTextAppendFormatted(-1, 'Average survivors: [$%s]'+aAverageSurvivors(pA2, 0)+'[] (front) + [$%s]'+aAverageSurvivors(pA2, 1)+'[] (back) per won battle (total: [$%s]'+aAverageSurvivors(pA2, 2)+'[])|', [States.PlayerColorText(2), States.PlayerColorText(2), States.PlayerColorText(2)]);
+	end;
+	
+	Actions.OverlayTextAppendFormatted(-1, '|Average duration of each battle: [$%s]'+IntToStr(aTime.aAverage)+' seconds[]|', [aColor]);
+	Actions.OverlayTextAppendFormatted(-1, 'The shortest one lasted for [$%s]'+IntToStr(aTime.aShortest)+' seconds[]|', [aColor]);
+	Actions.OverlayTextAppendFormatted(-1, 'The longest one lasted for [$%s]'+IntToStr(aTime.aLongest)+' seconds[]|', [aColor]);
+	Actions.OverlayTextAppendFormatted(-1, '|Number of completed fights: [$%s]'+IntToStr(aBattlesCompleted)+'[]|', [aColor]);
+	
+	if aAllDone then Actions.OverlayTextAppendFormatted(-1, '[$%s]Done[]', [aColor])
+	else Actions.OverlayTextAppendFormatted(-1, 'Still [$%s]'+IntToStr(aTotalToFight-aBattlesCompleted)+'[] battles to go, [$%s]'+IntToStr(aRound(aBattlesCompleted*100, aTotalToFight))+'%%[] complete', [aColor, aColor]);
+end;
+
+{var aaaaaWait, aaaaaType1, aaaaaType2, aaaaaCount1, aaaaaCount2: Integer;
+procedure aCheckTestAccuracy;
+var
+	i: Integer;
+begin
+	if aaaaaType1 >= 19 then Exit;
+	
+	if (aArmy[pA1].aWon > 520) OR (aArmy[pA2].aWon > 520) then begin
+		aTotalToFight := aStartedFights;
+	end; 
+	
+	if ((aArmy[pA1].aWon > 200) AND (aRound(aArmy[pA1].aWon*100, aBattlesCompleted) > 90)) OR ((aArmy[pA2].aWon > 200) AND (aRound(aArmy[pA2].aWon*100, aBattlesCompleted) > 90)) then begin
+		aTotalToFight := aStartedFights;
+	end; 
+	
+	if not States.PlayerAllianceCheck(1, 2) then begin
+		if aAllDone then begin //precision test tool
+			Inc(aaaaaWait);
+
+			if aaaaaWait = 5 then begin
+				if aAbs(aArmy[pA1].aWon-aArmy[pA2].aWon) < 40 then begin
+					Actions.Log('//');
+					Actions.Log('A1 won: '+IntToStr(aArmy[pA1].aWon)+'; type: '+IntToStr(aaaaaType1)+'; count: '+IntToStr(aaaaaCount1));
+					Actions.Log('A2 won: '+IntToStr(aArmy[pA2].aWon)+'; type: '+IntToStr(aaaaaType2)+'; count: '+IntToStr(aaaaaCount2));
+					Actions.Log('//');
+					
+					aaaaaCount1 := 5;
+					aaaaaCount2 := 5;
+					
+					Inc(aaaaaType2);
+					if aaaaaType1 = aaaaaType2 then Inc(aaaaaType2);
+					
+					if aaaaaType2 > 22 then begin
+						inc(aaaaaType1);
+						aaaaaType2 := aaaaaType1+1;
+						
+						if aaaaaType1 >= 17 then Exit;
+					end;
+					if aaaaaType2 = 17 then aaaaaType2 := 19;
+				end else begin
+					if aArmy[pA1].aWon > aArmy[pA2].aWon then Inc(aaaaaCount2)
+					else Inc(aaaaaCount1);
+				end;
+				
+				aResetSimulation;
+			end;
+		end;
+	end else begin
+		Inc(aaaaaWait);
+		if aaaaaWait = 30 then begin
+			if (aaaaaType1 < 14) OR (aaaaaType2 < 14) then begin
+				aaaaaType1 := 15;
+				aaaaaType2 := 20;
+				aaaaaCount1 := 6;
+				aaaaaCount2 := 5;
+				
+				aChoices[0].aSplitUnits := True;
+				aChoices[1].aSplitUnits := True;
+				aChoices[2].aSplitUnits := True;
+				aChoices[3].aSplitUnits := True;
+				
+				Actions.HouseRepairEnable(aChoices[0].aID, aChoices[0].aSplitUnits);
+				Actions.HouseRepairEnable(aChoices[1].aID, aChoices[1].aSplitUnits);
+				Actions.HouseRepairEnable(aChoices[2].aID, aChoices[2].aSplitUnits);
+				Actions.HouseRepairEnable(aChoices[3].aID, aChoices[3].aSplitUnits);
+				
+				aAllowAutoComputing := False;
+				Actions.HouseDeliveryBlock(aMarket, aAllowAutoComputing);
+			end;
+			
+			aTotalToFight := 1000;
+			Actions.MarketSetTrade(aMarket, 1, 9, aTotalToFight);
+		
+			Actions.HouseWeaponsOrderSet(aChoices[1].aID, cType, aaaaaType1);
+			Actions.HouseWeaponsOrderSet(aChoices[1].aID, cCount, aaaaaCount1);
+			Actions.HouseWeaponsOrderSet(aChoices[1].aID, cColumns, 5);
+			Actions.HouseWeaponsOrderSet(aChoices[3].aID, cType, aaaaaType2);
+			Actions.HouseWeaponsOrderSet(aChoices[3].aID, cCount, aaaaaCount2);
+			Actions.HouseWeaponsOrderSet(aChoices[3].aID, cColumns, 5);
+		end;
+		
+		if aaaaaWait = 50 then begin
+			Actions.PlayerAllianceChange(pA1, pA2, True, False);
+			for i := 0 to 3 do if not States.HouseDestroyed(aChoices[i].aID) then Actions.HouseDestroy(aChoices[i].aID, True);
+			for i := 0 to 3 do aSpawnWarriors(i);
+			
+			aaaaaWait := 0;
+		end;
+	end;
+end;}
+
+procedure OnTick;
+begin
+	//aCheckTestAccuracy;
+
+	if States.PlayerAllianceCheck(1, 2) then aSetTestUP
+	else aPerformTest;
+	
+  if (S.GameTime mod 10) = 0 then
+    aUpdateData;
+end;
+
+procedure OnHouseAfterDestroyed(aHouseType, aOwner, aX, aY: Integer);
+begin
+	if aHouseType = 29 then begin
+		aMarket := Actions.GiveHouse(pHum, 29, aX, aY);
+		Actions.MarketSetTrade(aMarket, 1, 9, aTotalToFight);
+		Actions.HouseDeliveryBlock(aMarket, aAllowAutoComputing);
+		Actions.HouseRepairEnable(aMarket, aUseEconomicValue);
+	end;
+	if aHouseType = 17 then begin
+		aTower := Actions.GiveHouse(pHum, 17, aX, aY);
+		Actions.HouseDisableUnoccupiedMessage(aTower, True);
+		Actions.HouseDeliveryBlock(aTower, bDataMode);
+		Actions.HouseRepairEnable(aTower, bHideData);
+	end;
+end;
+
+procedure OnHouseDestroyed(aHouseID, aDestroyer: Integer);
+var
+	i: Integer;
+begin
+	if aDestroyer = pHum then begin
+		if States.PlayerAllianceCheck(pA1, pA2) then begin //Start simulation
+			Actions.PlayerAllianceChange(pA1, pA2, True, False);
+			for i := 0 to 3 do if not States.HouseDestroyed(aChoices[i].aID) then Actions.HouseDestroy(aChoices[i].aID, True);
+			for i := 0 to 3 do aSpawnWarriors(i);
+		end else aResetSimulation; //Restart simulation
+	end;
+end;
