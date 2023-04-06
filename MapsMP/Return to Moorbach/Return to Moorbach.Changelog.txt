@@ -114,3 +114,8 @@ Version 0.8.4e (24.06.2021)
 
 Version 0.8.5 (08.10.2021)
 - Updated scripts to new version
+
+Version 0.8.5b (06.04.2023)
+- Updated improvestaticai.script to newest version
+- Added newest version of difficulty.script and set MAX_HANDS to 28
+- Reduced Auto Attack Range of Player6 from 4 to 2
