@@ -1,0 +1,581 @@
+//-- Shores in Flames --//
+//By Strangelove
+//v0.7.2
+//20.01.2023
+
+{$I difficulty.script}
+{$I improvestaticai.script}
+{$I dynamicmap.script}
+{$I replacesnow.script}
+
+const
+	HUMAN_PLAYER = 0;
+	HARBOUR_PLAYER = 1;
+
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+
+	StorehouseDiggedTiming, BaseTiming: Cardinal;
+	SpawnDelay, SpawnTimer: Cardinal;
+	
+	EventScheduler: Byte;
+	StorehouseID: Integer;
+	
+	iTicks: Integer;
+	bMarketMsg: Boolean;
+	
+
+
+{============================================================================
+EVENTS:
+1. Spawn Troops up north
+2. Fight with enemy troops over harbour
+3. Destroy Harbour
+4. Reinforcements (Builders and Serfs)
+5. Automaticly build storehouse
+6. Msg to player that there is coal under Snow
+7. Build economy
+8. Snow is melting in 3 stages
+9. Enemys lands troops on player side of bridge periodicly 
+10. Kill enemy bases as usual
+=============================================================================}
+
+
+function MinToTick(Minutes: Cardinal): Cardinal;
+begin
+	Result := Minutes *600;
+end;
+
+
+function Randomize(Value: Integer; Percentage: Single): Integer;
+begin
+	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
+end;
+
+
+procedure IronEquipRate(Player: Byte; Rate: Word);
+begin
+	Actions.AIEquipRate(Player, 1, Rate);
+	Actions.AIEquipRate(Player, 0, Rate *2); //Leather Equip Rate = Iron Equip Rate *2
+end;
+
+
+procedure OnMissionStart();
+var
+	aCustomPosition: TKMPoint;
+	X, Y: Word;
+begin
+	DifficultySetting := States.MissionDifficulty();
+	
+	//Set Melting Timings
+	MeltingStage[0] := MinToTick(40);
+	MeltingStage[1] := MinToTick(70);
+	MeltingStage[2] := MinToTick(110);
+
+	//Set high defaults
+	BaseTiming := MinToTick(60);
+	StorehouseDiggedTiming := MinToTick(60);
+	
+	case DifficultySetting of
+		mdEasy1: begin
+			//Player1: Harbour & Reinforcements
+			SpawnDelay := MinToTick(54);
+			SpawnTimer := MinToTick(36);
+			//Defence Positions of Player1
+			Actions.AIDefencePositionAdd(1, 52, 70, 1, 0, 18, 0); //DefencePosition #0
+			Actions.AIDefencePositionAdd(1, 56, 89, 3, 0, 18, 0); //DefencePosition #1
+			Actions.AIDefencePositionAdd(1, 59, 83, 2, 1, 18, 0); //DefencePosition #2
+			Actions.AIDefencePositionAdd(1, 54, 77, 1, 2, 18, 0); //DefencePosition #3
+			Actions.AIDefencePositionAdd(1, 57, 74, 1, 3, 18, 0); //DefencePosition #4
+			Actions.AIDefencePositionAdd(1, 46, 85, 2, 3, 18, 0); //DefencePosition #5
+			Actions.AIDefencePositionAdd(1, 47, 66, 0, 1, 18, 0); //DefencePosition #6
+			Actions.AIDefencePositionAdd(1, 52, 86, 3, 2, 18, 0); //DefencePosition #7
+			
+			//Player2: Across the Bridge
+			Actions.AIWorkerLimit(2, 4);
+			Actions.AIRecruitLimit(2, 10);
+			Actions.AIRecruitDelay(2, MinToTick(54));
+			IronEquipRate(2, Randomize(585, 1));
+			//Defence Positions of Player2
+			AddDefencePositionAndGroup(2, 16, 101, 87, 6, 22); //DefencePosition #0
+			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 25); //DefencePosition #1
+			AddDefencePositionAndGroup(2, 16, 100, 72, 6, 13); //DefencePosition #2
+			AddDefencePositionAndGroup(2, 20, 102, 82, 6, 19); //DefencePosition #3
+			AddDefencePositionAndGroup(2, 20, 104, 78, 6, 19); //DefencePosition #4
+			AddDefencePositionAndGroup(2, 18, 104, 87, 6, 23); //DefencePosition #5
+			AddDefencePositionAndGroup(2, 18, 110, 89, 6, 25); //DefencePosition #6
+			AddDefencePositionAndGroup(2, 22, 99, 77, 6, 14); //DefencePosition #7
+			AddDefencePositionAndGroup(2, 22, 108, 83, 6, 25); //DefencePosition #8
+			//Attack Positions of Player2
+			Actions.AIDefencePositionAdd(2, 114, 105, 6, 0, 25, 1); //DefencePosition #9
+			Actions.AIDefencePositionAdd(2, 118, 105, 6, 2, 25, 1); //DefencePosition #10
+			Actions.AIDefencePositionAdd(2, 123, 102, 6, 3, 25, 1); //DefencePosition #11
+			//Amount of Army Units assigned to DefencePositions: 153
+			AddAIAttack(2, true, 0, 1, 0, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //37
+			
+			//Player3: Mountaintop
+			Actions.AIWorkerLimit(3, 4);
+			Actions.AIRecruitLimit(3, 10);
+			Actions.AIRecruitDelay(3, MinToTick(85));
+			IronEquipRate(3, Randomize(430, 1));
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 25); //DefencePosition #0
+			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
+			AddDefencePositionAndGroup(3, 16, 100, 53, 2, 17); //DefencePosition #2
+			AddDefencePositionAndGroup(3, 20, 101, 43, 2, 25); //DefencePosition #3
+			AddDefencePositionAndGroup(3, 20, 109, 35, 4, 25); //DefencePosition #4
+			AddDefencePositionAndGroup(3, 18, 104, 39, 3, 25); //DefencePosition #5
+			AddDefencePositionAndGroup(3, 18, 101, 48, 2, 22); //DefencePosition #6
+			AddDefencePositionAndGroup(3, 22, 113, 38, 4, 25); //DefencePosition #7
+			AddDefencePositionAndGroup(3, 22, 98, 48, 2, 21); //DefencePosition #8
+			//Attack Positions of Player3
+			Actions.AIDefencePositionAdd(3, 94, 49, 2, 0, 19, 1); //DefencePosition #9
+			Actions.AIDefencePositionAdd(3, 93, 44, 2, 1, 24, 1); //DefencePosition #10
+			Actions.AIDefencePositionAdd(3, 95, 54, 2, 1, 14, 1); //DefencePosition #11
+			Actions.AIDefencePositionAdd(3, 91, 49, 2, 2, 14, 1); //DefencePosition #12
+			Actions.AIDefencePositionAdd(3, 103, 33, 4, 3, 25, 1); //DefencePosition #13
+			//Amount of Army Units assigned to DefencePositions: 144
+			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(3, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+		end;
+		mdNormal: begin
+			//Player1: Harbour & Reinforcements
+			SpawnDelay := MinToTick(65);
+			SpawnTimer := MinToTick(15);
+			//Defence Positions of Player1
+			Actions.AIDefencePositionAdd(1, 52, 70, 1, 0, 26, 0); //DefencePosition #0
+			Actions.AIDefencePositionAdd(1, 56, 89, 3, 0, 26, 0); //DefencePosition #1
+			Actions.AIDefencePositionAdd(1, 59, 83, 2, 1, 26, 0); //DefencePosition #2
+			Actions.AIDefencePositionAdd(1, 54, 77, 1, 2, 26, 0); //DefencePosition #3
+			Actions.AIDefencePositionAdd(1, 57, 74, 1, 3, 26, 0); //DefencePosition #4
+			Actions.AIDefencePositionAdd(1, 46, 85, 2, 3, 26, 0); //DefencePosition #5
+			Actions.AIDefencePositionAdd(1, 47, 66, 0, 1, 26, 0); //DefencePosition #6
+			Actions.AIDefencePositionAdd(1, 52, 86, 3, 2, 26, 0); //DefencePosition #7
+			
+			//Player2: Across the Bridge
+			Actions.AIWorkerLimit(2, 6);
+			Actions.AIRecruitLimit(2, 15);
+			Actions.AIRecruitDelay(2, MinToTick(47));
+			IronEquipRate(2, Randomize(365, 2));
+			//Defence Positions of Player2
+			AddDefencePositionAndGroup(2, 16, 101, 87, 6, 22); //DefencePosition #0
+			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 25); //DefencePosition #1
+			AddDefencePositionAndGroup(2, 16, 100, 72, 6, 13); //DefencePosition #2
+			AddDefencePositionAndGroup(2, 20, 102, 82, 6, 19); //DefencePosition #3
+			AddDefencePositionAndGroup(2, 20, 104, 78, 6, 19); //DefencePosition #4
+			AddDefencePositionAndGroup(2, 20, 111, 95, 6, 25); //DefencePosition #5
+			AddDefencePositionAndGroup(2, 20, 106, 67, 6, 17); //DefencePosition #6
+			AddDefencePositionAndGroup(2, 18, 104, 87, 6, 23); //DefencePosition #7
+			AddDefencePositionAndGroup(2, 18, 110, 89, 6, 25); //DefencePosition #8
+			AddDefencePositionAndGroup(2, 22, 99, 77, 6, 14); //DefencePosition #9
+			AddDefencePositionAndGroup(2, 22, 108, 83, 6, 25); //DefencePosition #10
+			//Attack Positions of Player2
+			Actions.AIDefencePositionAdd(2, 116, 106, 6, 0, 25, 1); //DefencePosition #11
+			Actions.AIDefencePositionAdd(2, 119, 106, 6, 2, 25, 1); //DefencePosition #12
+			Actions.AIDefencePositionAdd(2, 123, 102, 6, 3, 25, 1); //DefencePosition #13
+			Actions.AIDefencePositionAdd(2, 110, 104, 6, 3, 25, 1); //DefencePosition #14
+			//Amount of Army Units assigned to DefencePositions: 186
+			AddAIAttack(2, false, 0, 1, 0, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //37
+			AddAIAttack(2, true, 300, 1, 0, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //49
+			
+			//Player3: Mountaintop
+			Actions.AIWorkerLimit(3, 6);
+			Actions.AIRecruitLimit(3, 15);
+			Actions.AIRecruitDelay(3, MinToTick(60));
+			IronEquipRate(3, Randomize(360, 2));
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 25); //DefencePosition #0
+			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
+			AddDefencePositionAndGroup(3, 16, 100, 53, 2, 17); //DefencePosition #2
+			AddDefencePositionAndGroup(3, 20, 101, 43, 2, 25); //DefencePosition #3
+			AddDefencePositionAndGroup(3, 20, 109, 35, 4, 25); //DefencePosition #4
+			AddDefencePositionAndGroup(3, 18, 104, 39, 3, 25); //DefencePosition #5
+			AddDefencePositionAndGroup(3, 18, 101, 48, 2, 22); //DefencePosition #6
+			AddDefencePositionAndGroup(3, 22, 113, 38, 4, 25); //DefencePosition #7
+			AddDefencePositionAndGroup(3, 22, 98, 48, 2, 21); //DefencePosition #8
+			AddDefencePositionAndGroup(3, 22, 103, 33, 4, 25); //DefencePosition #9
+			//Attack Positions of Player3
+			Actions.AIDefencePositionAdd(3, 94, 49, 2, 0, 19, 1); //DefencePosition #10
+			Actions.AIDefencePositionAdd(3, 94, 44, 2, 1, 24, 1); //DefencePosition #11
+			Actions.AIDefencePositionAdd(3, 95, 54, 2, 1, 14, 1); //DefencePosition #12
+			Actions.AIDefencePositionAdd(3, 90, 52, 2, 2, 14, 1); //DefencePosition #13
+			Actions.AIDefencePositionAdd(3, 89, 45, 2, 3, 20, 1); //DefencePosition #14
+			//Amount of Army Units assigned to DefencePositions: 156
+			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(3, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+		end;
+		mdHard1: begin
+			//Replace buildable Bridge-Tiles with none-buildable ones (near and on the Bridge only!)
+			for X := 72 to 90 do
+				for Y := 86 to 92 do
+					if States.MapTileType(X, Y) = 215 then
+						Actions.MapTileSet(X, Y, 197, Utils.RandomRangeI(0, 3));
+						
+			//Player1: Harbour & Reinforcements
+			SpawnDelay := MinToTick(47);
+			SpawnTimer := MinToTick(8);
+			//Defence Positions of Player1
+			Actions.AIDefencePositionAdd(1, 52, 70, 1, 0, 36, 0); //DefencePosition #0
+			Actions.AIDefencePositionAdd(1, 56, 89, 3, 0, 36, 0); //DefencePosition #1
+			Actions.AIDefencePositionAdd(1, 59, 83, 2, 1, 36, 0); //DefencePosition #2
+			Actions.AIDefencePositionAdd(1, 54, 77, 1, 2, 36, 0); //DefencePosition #3
+			Actions.AIDefencePositionAdd(1, 57, 74, 1, 3, 36, 0); //DefencePosition #4
+			Actions.AIDefencePositionAdd(1, 46, 85, 2, 3, 36, 0); //DefencePosition #5
+			Actions.AIDefencePositionAdd(1, 47, 66, 0, 1, 36, 0); //DefencePosition #6
+			Actions.AIDefencePositionAdd(1, 52, 86, 3, 2, 36, 0); //DefencePosition #7
+		
+			//Player2: Across the Bridge
+			Actions.AIWorkerLimit(2, 8);
+			Actions.AIRecruitLimit(2, 20);
+			Actions.AIRecruitDelay(2, MinToTick(35));
+			IronEquipRate(2, Randomize(295, 3));
+			//Defence Positions of Player2
+			AddDefencePositionAndGroup(2, 16, 103, 87, 6, 22); //DefencePosition #0
+			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 27); //DefencePosition #1
+			AddDefencePositionAndGroup(2, 16, 100, 72, 6, 13); //DefencePosition #2
+			AddDefencePositionAndGroup(2, 20, 102, 82, 6, 19); //DefencePosition #3
+			AddDefencePositionAndGroup(2, 20, 104, 78, 6, 19); //DefencePosition #4
+			AddDefencePositionAndGroup(2, 20, 111, 95, 6, 30); //DefencePosition #5
+			AddDefencePositionAndGroup(2, 20, 106, 67, 6, 17); //DefencePosition #6
+			AddDefencePositionAndGroup(2, 18, 101, 87, 6, 23); //DefencePosition #7
+			AddDefencePositionAndGroup(2, 18, 110, 89, 6, 30); //DefencePosition #8
+			AddDefencePositionAndGroup(2, 22, 99, 77, 6, 14); //DefencePosition #9
+			AddDefencePositionAndGroup(2, 22, 108, 83, 6, 25); //DefencePosition #10
+			AddDefencePositionAndGroup(2, 22, 107, 102, 7, 30); //DefencePosition #11
+			//Attack Positions of Player2
+			Actions.AIDefencePositionAdd(2, 113, 105, 6, 0, 30, 1); //DefencePosition #12
+			Actions.AIDefencePositionAdd(2, 126, 102, 6, 0, 30, 1); //DefencePosition #13
+			Actions.AIDefencePositionAdd(2, 121, 102, 6, 1, 30, 1); //DefencePosition #14
+			Actions.AIDefencePositionAdd(2, 116, 105, 6, 2, 30, 1); //DefencePosition #15
+			//Amount of Army Units assigned to DefencePositions: 198
+			AddAIAttack(2, true, 0, 2, 1, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //49
+			
+			//Player3: Mountaintop			
+			Actions.AIWorkerLimit(3, 8);
+			Actions.AIRecruitLimit(3, 20);
+			Actions.AIRecruitDelay(3, MinToTick(47));
+			IronEquipRate(3, Randomize(290, 3));
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 30); //DefencePosition #0
+			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
+			AddDefencePositionAndGroup(3, 16, 99, 54, 2, 16); //DefencePosition #2
+			AddDefencePositionAndGroup(3, 20, 101, 43, 2, 27); //DefencePosition #3
+			AddDefencePositionAndGroup(3, 20, 109, 35, 4, 30); //DefencePosition #4
+			AddDefencePositionAndGroup(3, 18, 104, 39, 3, 30); //DefencePosition #5
+			AddDefencePositionAndGroup(3, 18, 101, 48, 2, 22); //DefencePosition #6
+			AddDefencePositionAndGroup(3, 18, 96, 54, 2, 14); //DefencePosition #7
+			AddDefencePositionAndGroup(3, 22, 113, 38, 4, 30); //DefencePosition #8
+			AddDefencePositionAndGroup(3, 22, 98, 48, 2, 21); //DefencePosition #9
+			AddDefencePositionAndGroup(3, 22, 103, 33, 4, 30); //DefencePosition #10
+			//Attack Positions of Player3
+			Actions.AIDefencePositionAdd(3, 94, 49, 2, 0, 19, 1); //DefencePosition #11
+			Actions.AIDefencePositionAdd(3, 94, 44, 2, 1, 24, 1); //DefencePosition #12
+			Actions.AIDefencePositionAdd(3, 93, 54, 2, 1, 13, 1); //DefencePosition #13
+			Actions.AIDefencePositionAdd(3, 90, 50, 2, 2, 16, 1); //DefencePosition #14
+			Actions.AIDefencePositionAdd(3, 89, 45, 2, 3, 20, 1); //DefencePosition #15
+			//Amount of Army Units assigned to DefencePositions: 164
+			AddAIAttack(3, true, 0, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+			//Add more Towers
+			GiveHouseAndConnect(3, 17, 102, 53);
+			GiveHouseAndConnect(3, 17, 117, 39);
+		end;
+	end;
+		
+	//Block certain buildings
+	Actions.HouseAllow(HUMAN_PLAYER, 11, false); //Storehouse
+	Actions.HouseAllow(HUMAN_PLAYER, 3, false); //Coalmine
+end;
+
+
+procedure OnTick();
+var
+	GameTime: Cardinal;
+	t: Byte;
+begin
+	GameTime := States.GameTime();
+
+	//Make Waterfalls more dynamic (Change end tiles)
+	if GameTime mod 6 = 0 then
+		ChangeWaterfallEndTiles(90, 91, 64);
+		
+	if EventScheduler = 1 then
+	begin
+		Actions.CinematicStart(HUMAN_PLAYER);
+		
+		//Add Labourers
+		Actions.GiveUnitEx(HUMAN_PLAYER, utBuilder, 27, 75, dirNE);
+		Actions.GiveUnitEx(HUMAN_PLAYER, utBuilder, 27, 76, dirNE);
+		Actions.GiveUnitEx(HUMAN_PLAYER, utBuilder, 27, 77, dirNE);
+		Actions.GiveUnitEx(HUMAN_PLAYER, utBuilder, 27, 78, dirNE);
+		
+		Actions.CinematicPanTo(HUMAN_PLAYER, 44, 76, 200);
+		
+		//Build Storehouse
+		StorehouseID := Actions.GiveHouseSiteEx(HUMAN_PLAYER, htStore, 44, 77, 6, 5);
+		//If Site cant be placed -> Add Plan instead
+		if StorehouseID = -1 then
+			Actions.PlanAddHouseEx(HUMAN_PLAYER, htStore, 44, 77);
+			
+		Inc(EventScheduler);
+	end;
+	
+	//Add Buildings to Site with a Delay (Does not work in OnHouseDigged-Event)
+	if GameTime = StorehouseDiggedTiming +MAX_HANDS +1 then
+		Actions.HouseAddBuildingMaterials(StorehouseID);
+	
+	{EventScheduler is moved from 2 to 3 in OnHouseBuilt-Event}
+	
+	if EventScheduler = 3 then
+	begin
+		//Add Serfs and make them Walk to Storehouse
+		Actions.UnitOrderWalk(Actions.GiveUnitEx(HUMAN_PLAYER, utSerf, 27, 75, dirNE), 43, 78);
+		Actions.UnitOrderWalk(Actions.GiveUnitEx(HUMAN_PLAYER, utSerf, 27, 76, dirNE), 44, 78);
+		Actions.UnitOrderWalk(Actions.GiveUnitEx(HUMAN_PLAYER, utSerf, 27, 77, dirNE), 45, 78);
+		Actions.UnitOrderWalk(Actions.GiveUnitEx(HUMAN_PLAYER, utSerf, 27, 78, dirNE), 44, 79);
+		Actions.CinematicEnd(HUMAN_PLAYER);
+		
+		//Allow building of Storehouse again
+		Actions.HouseAllow(HUMAN_PLAYER, 11, true);
+		
+		//Delete Defense Positions for Harbour Player
+		Actions.AIDefencePositionRemoveAll(HARBOUR_PLAYER);
+		
+		//Record Time of Base Finished
+		BaseTiming := Utils.EnsureRangeI(GameTime, 0, MintoTick(15));
+
+		//Update Recruit Delays
+		Actions.AIRecruitDelay(2, States.AIRecruitDelay(2) +BaseTiming);
+		Actions.AIRecruitDelay(3, States.AIRecruitDelay(3) +BaseTiming);
+		 
+		//Update Spawn Timer
+		iTicks := SpawnDelay +SpawnTimer +BaseTiming;
+		
+		Inc(EventScheduler);
+	end;
+	
+	if EventScheduler = 4 then
+	begin
+		if iTicks <> 0 then
+		begin
+			iTicks := iTicks -1; //Count down...
+		end else
+		begin
+			//Reset timer!
+			iTicks := SpawnTimer;
+			
+			//Random landing Positions (Clockwise)
+			case DifficultySetting of
+				mdEasy1: 
+				begin
+					case Utils.RandomRangeI(0, 1) of
+						0: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
+							//Add Groups (38 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 39, 18, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 44, 18, dirS, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 39, 15, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 35, 17, dirS, 9, 3);
+						end;
+						1: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 58, 34); //Closest Iron Mine
+							//Add Groups (43 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 62, 17, dirSW, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 67, 21, dirSW, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 67, 14, dirSW, 6, 2);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 71, 17, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 74, 15, dirSW, 8, 4);
+						end;
+					end;
+				end;
+				mdNormal: 
+				begin
+					case Utils.RandomRangeI(0, 1) of
+						0: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
+							//Add Groups (41 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 39, 18, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 44, 18, dirS, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 39, 15, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 34, 18, dirS, 12, 4);
+						end;
+						1: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 58, 34); //Closest Iron Mine
+							//Add Groups (48 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 64, 23, dirSW, 12, 6);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 65, 16, dirSW, 6, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 69, 20, dirSW, 6, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 69, 15, dirSW, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 72, 18, dirSW, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 77, 16, dirSW, 6, 3);
+						end;
+					end;
+				end;
+				mdHard1:
+				begin
+					case Utils.RandomRangeI(0, 1) of
+						0: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
+							//Add Groups (47 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 40, 20, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 41, 20, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 45, 19, dirS, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 40, 15, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 35, 19, dirS, 6, 3);	
+						end;
+						1: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 58, 34); //Closest Iron Mine
+							//Add Groups (48 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 64, 23, dirSW, 12, 6);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 65, 16, dirSW, 6, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 69, 20, dirSW, 6, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 69, 15, dirSW, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 72, 18, dirSW, 9, 3);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 77, 16, dirSW, 6, 3);
+						end;
+					end;
+				end;
+			end;
+		end;	 	
+	end;
+	
+	//Show Initial Message and Target
+	if GameTime = 30 then
+	begin
+		Actions.ShowMsg(HUMAN_PLAYER, '<$0>');
+		Actions.FogRevealCircle(HUMAN_PLAYER, 44, 76, 3);
+	end;
+	
+	//Add Groups to reinforce Habour defence
+	if GameTime = MinToTick(3) then
+	begin
+		case DifficultySetting of
+			mdEasy1: begin
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 120, 101, dirW, 6, 3);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 124, 102, dirW, 6, 3);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 128, 100, dirW, 6, 3);
+			end;
+			mdNormal: begin
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 120, 101, dirW, 6, 3);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 124, 102, dirW, 8, 4);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 128, 100, dirW, 6, 3);
+			end;
+			mdHard1: begin
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 120, 101, dirW, 9, 3);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 124, 102, dirW, 8, 4);
+				Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 128, 100, dirW, 6, 3);
+			end;
+		end;
+	end;
+
+	
+	//Enemy reinforcements arrive from sea
+	if GameTime = Round(BaseTiming +SpawnDelay +(SpawnTimer/3 *2)) then
+	begin
+		if DifficultySetting <> mdHard1 then
+		begin
+			Actions.ShowMsg(HUMAN_PLAYER, '<$2>');
+		end else
+			Actions.ShowMsg(HUMAN_PLAYER, '<$3>');
+	end;
+	
+	//Block Trading on Hard1
+	if GameTime = Round(BaseTiming +SpawnDelay +(SpawnTimer/4 *3)) then
+		if DifficultySetting = mdHard1 then
+			for t := 0 to 27 do
+				Actions.SetTradeAllowed(HUMAN_PLAYER, t, false);
+		
+		
+	//Melting Messages
+	if GameTime = MeltingStage[0] then
+	begin
+		Actions.HouseAllow(HUMAN_PLAYER, 3, true); //Allow Coalmine to be build
+		Actions.ShowMsg(HUMAN_PLAYER, '<$4>');
+	end;
+end;
+
+
+procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+begin
+	//Loss Condition #1
+	if EventScheduler < 3 then
+		if States.StatUnitCount(HUMAN_PLAYER) = 0 then
+			Actions.PlayerDefeat(HUMAN_PLAYER);
+end;
+
+
+procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+	if States.HouseOwner(aHouse) = HARBOUR_PLAYER then
+		if States.StatHouseCount(HARBOUR_PLAYER) = 0 then
+			Inc(EventScheduler);
+			
+	//Loss Condition #2
+	if EventScheduler > 2 then
+		if States.StatHouseMultipleTypesCountEx(HUMAN_PLAYER, [htStore, htSchool, htBarracks]) = 0 then
+			Actions.PlayerDefeat(HUMAN_PLAYER);
+end;
+
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+	if aHouse = StorehouseID then
+	begin
+		//Add Wares to finished Storehouse
+		case DifficultySetting of
+			mdEasy1: begin	
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtTimber, 80);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtStone, 160);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtGold, 100);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtCoal, 45);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtFish, 35);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtBread, 40);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtWine, 50);
+			end;
+			mdNormal: begin
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtTimber, 60);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtStone, 120);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtGold, 80);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtCoal, 30);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtFish, 35);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtBread, 40);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtWine, 50);
+			end;
+			mdHard1: begin
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtTimber, 50);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtStone, 100);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtGold, 70);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtCoal, 15);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtFish, 35);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtBread, 40);
+				Actions.GiveWaresEx(HUMAN_PLAYER, wtWine, 50);
+			end;
+		end;
+			
+		Inc(EventScheduler);
+	end;
+	
+	//Inform the Player of the Fact that he has to survive till coal is availible, when Sawmill has been built
+	if States.HouseType(aHouse) = 0 then
+		if not bMarketMsg then
+		begin
+			Actions.ShowMsgGoto(HUMAN_PLAYER, 62, 89, '<$1>');
+			bMarketMsg := true;
+		end;
+end;
+
+
+procedure OnHousePlanDigged(aHouse: Integer);
+begin
+	if EventScheduler = 2 then
+	begin
+		StorehouseID := aHouse;
+		StorehouseDiggedTiming := States.GameTime();
+	end;
+end;

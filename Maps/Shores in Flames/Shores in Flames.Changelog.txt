@@ -1,0 +1,37 @@
+Shores in Flames
+****************
+
+0.7a (01.10.2022)
+- Player can now loose
+- Increased tile variety of mountain north of Harbour
+
+0.7.1 (02.10.2022)
+- Updated Coal Masks to avoid problems with fields
+
+0.7.1a (05.10.2022)
+- Added Wolfs to the map
+- Added Elevation and tile variety to Sea
+- AI Player3 had unused attack position for horses, screwing up attack timings
+- Rebalanced attacks of Player3 on Easy1 and Normal
+
+0.7.1b (05.10.2022)
+- Reduced auto attack range for Player1 from 4 to 2
+
+0.7.1c (13.10.2022)
+- Added Seaweed
+- Player now cant build on brown Stonetile near and on the Bridge on Hard1
+
+0.7.2 (20.01.2023)
+- Removed unnecessary snow-melting-messages from libx and script
+- Made ingames messages and objectives more clear
+- Fixed typos in libx
+- Added polish translation by donttalk
+- Changed bottleneck between stone and iron mountain to be less abusive (reduced stone supply slightly)
+- Fixed imperfections on iron and gold mountains
+- Auto Attack range of Player2 and 3 reduced from 4 to 2
+- Player3 now has 2 additional Towers on Hard1
+- Shuffled around Player3's defense positions to match added tower placement
+- Changed defense radius of some of Player3's defense positions
+
+0.7.2b (06.04.2023)
+- Set MAX_HANDS to 28

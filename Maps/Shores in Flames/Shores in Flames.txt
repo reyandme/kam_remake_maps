@@ -1,0 +1,15 @@
+Author
+Strangelove
+
+Version
+0.7.2b (06.04.2023)
+
+SmallDescLIBX
+10
+
+BigDescLIBX
+11
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+
