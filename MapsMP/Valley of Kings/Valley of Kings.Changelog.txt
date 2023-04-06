@@ -82,6 +82,10 @@ Version 0.7.3: (24.06.2021)
 Version 0.7.4: (08.10.2021)
 - Updated all scripts to the newest version
 
+Version 0.7.4b: (06.04.2023)
+- Updated improvestaticai.script to newest version
+- Added newest version of difficulty.script and set MAX_HANDS to 28
+
 
 TODO:
 - Add more translations
