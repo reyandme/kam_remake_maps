@@ -2,7 +2,7 @@ Author
 Strangelove
 
 Version
-0.7.2d (03.02.2022)
+0.8.0c (06.04.2023)
 
 SmallDescLIBX
 10
@@ -19,5 +19,5 @@ BlockTeamSelection
 BlockFullMapPreview
 
 DifficultyLevels
-mdNormal,mdHard1,mdHard2,mdHard3
+mdEasy3,mdEasy2,mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
 

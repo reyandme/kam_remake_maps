@@ -56,3 +56,24 @@ Home of Once Brave
   - Enabled AutoRepair
 - Enabled "Defend Allies" of Player7, 10 and 13 on Hard3
 - Reduced Defense Position Radius of one of Player13's Pike Groups
+
+
+0.7.2e: (20.04.2022)
+- Fixed a bug in "player3.script" that got introduced with version r14423
+
+
+0.7.2f: (29.04.2022)
+- Increased starting resources of Human Players
+- Finalized Enemy Colors
+
+0.8: (11.06.2022)
+- Rebalanced Difficulty Hard1
+- Setup difficulty settings Easy1, Easy2 and Easy3
+- Changed color of AI player5
+
+0.8.0b: (16.06.2022)
+- Added more variety to iron and gold mountains
+
+0.8.0c: (06.04.2023)
+- Updated improvestaticai.script to newest version
+- Added newest version of difficulty.script and set MAX_HANDS to 28

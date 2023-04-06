@@ -32,7 +32,7 @@ end;
 
 
 const
-	MAX_HANDS = 18; //Number of Max Possible Players
+	MAX_HANDS = 28; //Number of Max Possible Players
 
 	
 var
