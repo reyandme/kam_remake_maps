@@ -1,0 +1,100 @@
+{$EVENT evtMissionStart:TownhallPlayerOnMissionStart}
+{$EVENT evtWarriorEquipped:TownhallPlayerOnWarriorEquipped}
+{$EVENT evtHouseBuilt:TownhallPlayerOnHouseBuilt}
+{$EVENT evtHouseDestroyed:TownhallPlayerOnHouseDestroyed}
+
+const
+	PLAYER = 3;
+
+
+var
+	Townhall: Integer;
+	bTownhallDestroyed: Boolean;
+	
+	
+
+function RecruitTownhallUnit(TownhallID: Integer; UnitType, Amount: Byte): Integer;
+begin
+	case UnitType of
+		15: UnitType := 23; //Axefighter -> Barbarian
+		16: UnitType := 26; //Swordfighter -> Warrior
+		else
+			exit;
+	end;
+	if Actions.HouseTownHallEquip(TownhallID, UnitType, Amount) <> Amount then
+	begin
+		Result := -1;
+	end else
+		Result := Amount;
+end;
+
+
+procedure TownhallPlayerOnMissionStart();
+var
+	aHouses: array of Integer;
+	h: Word;
+begin
+	//Identify Townhall and save ID
+	aHouses := States.PlayerGetAllHouses(PLAYER);
+	for h := 0 to High(aHouses) do
+		if States.HouseType(aHouses[h]) = 18 then
+		begin
+			Townhall := aHouses[h];
+			break;
+		end;
+
+	//Set Townhall Gold Amount
+	Actions.HouseTownHallMaxGold(Townhall, 999);
+end;
+
+
+procedure TownhallPlayerOnWarriorEquipped(aUnitID, aGroupID: Integer);
+var
+	UnitType: Byte;
+begin
+	if not bTownhallDestroyed then
+	begin
+		if States.UnitOwner(aUnitID)= PLAYER then
+		begin
+			UnitType := States.UnitType(aUnitID);
+			//UnitType is the same as the Units in the Group its gonna get linked to: Do nothing
+			if (States.GroupMemberCount(aGroupID) > 1) and (States.UnitType(aUnitID) = States.UnitType(States.GroupMember(aGroupID, 0))) then
+				exit;
+			//UnitType is a different Unit: Kill it and give appropriate Type
+			if (States.GroupMemberCount(aGroupID) > 1) and (States.UnitType(aUnitID) <> States.UnitType(States.GroupMember(aGroupID, 0))) then
+			begin
+				if RecruitTownhallUnit(Townhall, UnitType, 1) <> -1 then
+					Actions.UnitKill(aUnitID, true);
+				exit;
+			end;
+			//First Member of a Group (New Group): Leave as is or kill (by chance)
+			if (States.GroupMemberCount(aGroupID) <= 1) then
+				if States.KaMRandomI(2) = 0 then //50% Chance
+				begin
+					if RecruitTownhallUnit(Townhall, UnitType, 1) <> -1 then
+						Actions.UnitKill(aUnitID, true);
+					exit;
+				end;
+		end;
+	end;
+end;
+
+
+procedure TownhallPlayerOnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+	if States.HouseOwner(aHouse) = PLAYER then
+		if States.HouseType(aHouse) = 18 then
+			bTownhallDestroyed := true;
+end;
+
+
+//Update HouseIDs for Townhall if they are rebuilt
+procedure TownhallPlayerOnHouseBuilt(aHouse: Integer);
+begin
+	if States.HouseOwner(aHouse) = PLAYER then
+		if States.HouseType(aHouse) = 18 then
+			Townhall := aHouse;
+			bTownhallDestroyed := false;
+			//Reset defaults
+			Actions.HouseTownHallMaxGold(Townhall, 80);
+end;

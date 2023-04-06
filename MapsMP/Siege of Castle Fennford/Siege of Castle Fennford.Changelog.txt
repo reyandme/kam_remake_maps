@@ -110,3 +110,15 @@ Version 0.8.3b: (20.08.2021)
 
 Version 0.8.4: (08.10.2021)
 - Updated scripts to the newest version
+
+Version 0.8.4b: (02.04.2022)
+- Replaced Stable of Player3 with Townhall
+- 'transformunits.script' replaced with 'townhallunits.script': Barbarians are now recruited at the Townhall
+- Removed auto-rebalancing of difficulty when played with less then 3 players, as it did not work as intended; removed mention of it in ENG and GER BigDesc
+- 'improvestaticai.script' has been updated to v0.5.1 (experimental)
+
+Version 0.8.4c: (06.04.2023)
+- Fixed weird coal mask tile on Player2s Coalfield
+- Added newest version of difficulty.script and set MAX_HANDS to 28
+- Reduced Autoattack Range of Player6 and Player7 from 4 to 2
+- Increased and finetuned Defense Radius of Player6 and Player7's Groups

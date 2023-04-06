@@ -1,14 +1,15 @@
 //-- Siege of Castle Fennford --//
 //By Strangelove
-//v0.8.4
-//08.10.2021
+//v0.8.4b
+//02.04.2022
 //Developed for r10548
-//Last tested on r12945
+//Last tested on r14281
 
 {$I dynamicmap.script}
 {$I improvestaticai.script}
 {$I difficulty.script}
-{$I transformunits.script}
+{$I townhallplayer.script}
+
 
 {$COMMAND cmd: ShowCommands}
 {$COMMAND skipopeningfight: SkipInitialFightSequence}
@@ -16,7 +17,6 @@
 
 const
 	Offset_X = 16; //Adjust for new MapSize
-	MAX_HUMAN_PLAYERS = 3; //Maximum Amount of Human Players
 
 
 var
@@ -49,18 +49,6 @@ begin
 		KillPlayerGroups(g);
 end;
 
-
-//Check amount of Active Human Players on the Map
-function GetHumanPlayerCount(): Byte;
-var
-	p, HumanPlayerCount: Byte;
-begin
-    for	p := 0 to States.StatPlayerCount() -1 do
-		if not States.PlayerIsAI(p) then
-			if States.PlayerEnabled(p) then
-				Inc(HumanPlayerCount);
-	Result := HumanPlayerCount;
-end;
 
 
 procedure OnMissionStart();
@@ -200,40 +188,12 @@ begin
 	Actions.UnitKill(States.UnitAt(145 +Offset_X, 127), true);
 	Actions.UnitKill(States.UnitAt(146 +Offset_X, 127), true);
 	Actions.UnitKill(States.UnitAt(147 +Offset_X, 127), true);
-	
-	//Modify  if there are less then MAX_HUMAN_PLAYERS in the game
-	if GetHumanPlayerCount() < MAX_HUMAN_PLAYERS then
-	begin
-		//Reduce Recruit Rate of AI Players
-		for p := 0 to States.StatPlayerCount() -1 do
-			if States.PlayerIsAI(p) then
-				SetEquipRate(p, MAX_HUMAN_PLAYERS /GetHumanPlayerCount(), 0);
-		
-		for p := 0 to States.LocationCount() -1 do
-			if not States.PlayerEnabled(p) then		
-			begin
-				//Kill Enemy units that would attack disabled Player
-				case p of
-					0: KillPlayerGroups(9);
-					1: KillPlayerGroups(10);
-					2: KillPlayerGroups(11);
-				end;
-			end else
-			begin
-				//Allow all trades
-				for w := 0 to 27 do
-					Actions.SetTradeAllowed(p, w, true);
-				//Allow all houses to be built
-				for w := 0 to 29 do
-					Actions.HouseAllow(p, w, true);
-			end;
-	end;
 end;
 
 procedure OnTick();
 begin
 	//Make Waterfalls more dynamic (Change end tiles) Not automated yet...
-	if States.GameTime() mod 9 = 0 then
+	if States.GameTime() mod 11 = 0 then
 		ChangeWaterfallEndTiles(147 +Offset_X, 148 +Offset_X, 98);
 
 	//Remove/Add Enemy Defence Positions and Groups
