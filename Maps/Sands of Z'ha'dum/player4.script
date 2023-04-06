@@ -1,0 +1,200 @@
+{$EVENT evtHousePlanPlaced:Player4OnHousePlanPlaced}
+{$EVENT evtHousePlanDigged:Player4OnHousePlanDigged}
+{$EVENT evtUnitDied:Player4OnUnitDied}
+{$EVENT evtTick:Player4OnTick}
+
+
+const
+	PLAYER = 4;
+
+var
+	UndiggedSites: Word;
+	ConstructionIndex: Byte;
+
+
+
+procedure ConstructCity(Player, Index: Byte);
+begin
+	case States.MissionDifficulty() of
+		mdEasy1: 
+		begin
+			case Index of
+				0: begin
+					PlanAddHouseAndConnect(Player, 19, 98, 125); //Weapons Workshop
+				end;
+				1: begin
+					PlanAddHouseAndConnect(Player, 21, 109, 121); //Barracks
+				end;
+				2: begin
+					PlanAddHouseAndConnect(Player, 17, 80, 110); //Towers
+					PlanAddHouseAndConnect(Player, 17, 74, 116);
+				end;
+				3: begin
+					PlanAddHouseAndConnect(Player, 25, 109, 125); //Tannery
+				end;
+				4: begin
+					PlanAddHouseAndConnect(Player, 20, 114, 122); //Armor Workshop
+				end;
+				5: begin
+					//Add Armor to Barracks
+					Actions.GiveWeapons(Player, 18, 65535); //Leather Armor
+					Actions.GiveWeapons(Player, 16, 65535); //Woodshield
+					PlanAddHouseAndConnect(Player, 19, 114, 117); //Weapons Workshop
+				end;
+				6: begin
+					//Add Weapons to Barracks
+					Actions.GiveWeapons(Player, 20, 65535); //Axe
+					Actions.GiveWeapons(Player, 22, 65535); //Lance
+					Actions.GiveWeapons(Player, 24, 65535); //Bow
+					PlanAddHouseAndConnect(Player, 20, 119, 116); //Armor Workshop
+				end;
+				7: begin
+					PlanAddHouseAndConnect(Player, 12, 124, 120); //Stable
+				end;
+				8: begin
+					Actions.GiveWeapons(Player, 26, 65535); //Add Horses to Barracks
+					PlanAddHouseAndConnect(Player, 6, 70, 120); //Fisher
+				end;
+				9: begin
+					Actions.GiveWares(Player, 27, 65535); //Add Fish to Storehouse
+				end;
+			end;
+		end;
+		
+		mdNormal: 
+		begin
+			case Index of
+				0: begin
+					PlanAddHouseAndConnect(Player, 20, 84, 111); //Armor Workshop
+				end;
+				1: begin
+					PlanAddHouseAndConnect(Player, 19, 94, 102); //Weapons Workshop
+				end;
+				2: begin
+					PlanAddHouseAndConnect(Player, 12, 115, 118); //Stables
+				end;
+				3: begin
+					PlanAddHouseAndConnect(Player, 5, 102, 109); //Goldmine
+				end;
+				4: begin
+					PlanAddHouseAndConnect(Player, 15, 115, 123); //Metallurgist
+					PlanAddHouseAndConnect(Player, 3, 120, 122); //Coalmine
+				end;
+				5: begin
+					PlanAddHouseAndConnect(Player, 3, 118, 126); //Coalmine
+				end;
+				6: begin
+					PlanAddHouseAndConnect(Player, 8, 98, 126); //Farms
+				end;
+				7: begin
+					Actions.PlanAddField(Player, 95, 124); //Farmland
+					Actions.PlanAddField(Player, 96, 124);
+					Actions.PlanAddField(Player, 93, 125);
+					Actions.PlanAddField(Player, 94, 125);
+					Actions.PlanAddField(Player, 95, 125);
+					Actions.PlanAddField(Player, 96, 125);
+					Actions.PlanAddField(Player, 93, 126);
+					Actions.PlanAddField(Player, 94, 126);
+					Actions.PlanAddField(Player, 95, 126);
+					Actions.PlanAddField(Player, 96, 126);
+					Actions.PlanAddField(Player, 93, 127);
+					Actions.PlanAddField(Player, 94, 127);
+					Actions.PlanAddField(Player, 95, 127);
+					Actions.PlanAddField(Player, 96, 127);
+					Actions.PlanAddField(Player, 97, 127);
+				end;
+				8: begin
+					PlanAddHouseAndConnect(Player, 6, 85, 96); //Fisher
+				end;
+				9: begin
+					Actions.GiveWares(Player, 27, 65535); //Add Fish to Storehouse
+					PlanAddHouseAndConnect(Player, 3, 124, 124); //Coalmine
+				end;
+			end;
+		end;
+	end;
+	if ConstructionIndex < 255 then
+		Inc(ConstructionIndex);
+end;
+
+
+procedure Construction(Player: Byte);
+var
+	aHouses: array of Integer;
+	h, u: Word;
+begin
+	if UndiggedSites > 0 then
+		exit;
+	
+	aHouses := States.PlayerGetAllHouses(Player);
+			
+	for h := 0 to High(aHouses) do
+	begin
+		if not States.HouseIsComplete(aHouses[h]) then
+		begin
+			//Only 1 Building unfinished and has to be at least 50% done
+			if States.HouseBuildingProgress(aHouses[h]) < (States.HouseTypeMaxHealth(States.HouseType(aHouses[h])) /2) then
+			begin
+				exit;
+			end else
+				Inc(u);
+			if u > 1 then
+				exit;
+		end;
+	end;
+	
+	if u < 2 then
+		ConstructCity(Player, ConstructionIndex);
+end;
+
+
+
+procedure Player4OnHousePlanPlaced(aPlayer, aX, aY, aType: Integer);
+begin
+	if aPlayer = PLAYER then
+		Inc(UndiggedSites);
+end;
+
+
+
+procedure Player4OnHousePlanDigged(aHouse: Integer);
+begin
+	if States.HouseOwner(aHouse) = PLAYER then
+		Dec(UndiggedSites);
+end;
+
+
+
+//Check if a civilian of PLAYER was killed and launch an attack on its murderer(s)
+procedure Player4OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+var
+	UnitPosX, UnitPosY: Word;
+	ClosestGroup, ClosestGroupEnemy: Integer;
+begin
+	if States.UnitOwner(aUnit) = PLAYER then
+		if aKillerOwner <> -1 then
+			if States.UnitsGroup(aUnit) = -1 then
+			begin
+				UnitPosX := States.UnitPositionX(aUnit);
+				UnitPosY := States.UnitPositionY(aUnit);
+				ClosestGroupEnemy := States.ClosestGroup(aKillerOwner, UnitPosX, UnitPosY, -1);
+				ClosestGroup := States.ClosestGroupMultipleTypes(PLAYER, UnitPosX, UnitPosY, [0,1,3]); //Exclude Ranged Units
+				if ClosestGroup <> -1 then
+					Actions.GroupOrderAttackUnit(ClosestGroup, States.GroupMember(ClosestGroupEnemy, 0));
+			end;
+end;
+
+
+
+procedure Player4OnTick();
+begin
+	if States.GameTime() mod 307 = 0 then
+	begin
+		if not States.PlayerDefeated(PLAYER) then
+			Construction(PLAYER);
+	end;
+	
+	//Proactive Error Recovery...
+	if States.GameTime() mod 3511 = 0 then
+		UndiggedSites := 0;
+end;

@@ -1,0 +1,50 @@
+Sands of Z'ha'dum
+*****************
+
+v0.5c (17.02.2022):
+- Added story to the game
+- Gold amount reduced @Player loc from 240 to 160
+- Fish reduced in main river stream to 160
+- Changes to some of AIs defense positions
+- Player3 cavalry attack replaced by melee and ranged units; more soldiers too
+- Player4 now has 2 buildings less from the start, but continues building for about 30minutes into the game
+- First set of attacks are pushed back by 5minutes
+- Minor changes to terrain and additional objects
+
+v0.7 (19.02.2022):
+- A Million other additons and changes!
+
+v0.7b (19.02.2022):
+- Increased defense radius of various groups
+
+v0.7c (20.02.2022):
+- Increased defense radius of player2
+- Fixed broken tile
+- Changed enemy colors
+
+v0.7d (23.02.2022):
+- Minor Elevation fixes
+- Added more variety to Gold Mountains
+
+v0.7e (27.02.2022):
+- Fixes to construction script of Player4, so it wont bug out in special cases
+- Added defeat conditions for Player4
+- Added a little script to avoid sneaking into Player4s base and murdering its citizens without reperucsions
+
+v0.7.1 (05.08.2022):
+- Minor changes to script
+- Minor Elevation fixes
+- Updated 'improvestaticai.script' to the newest version (ManualRepair disabled tho)
+- Updated code in 'player4.script' that sometimes resulted in errors
+
+v0.7.1b (29.10.2022):
+- Reduced Auto Attack Range of Player2 from 4 to 2
+- Updated 'improvestaticai.script' to the newest version and enabled ManualRepair
+- Player now cant build on brown Stonetile near and on the Bridge (On Hard only)
+
+0.7.1c (16.03.2023)
+- Added Towers to Player2s defences (on Hard only)
+
+0.7.1d (06.04.2023)
+- Updated improvestaticai.script to newest version
+- Added newest version of difficulty.script and set MAX_HANDS to 28
