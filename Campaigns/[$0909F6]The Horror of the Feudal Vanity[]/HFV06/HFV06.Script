@@ -1,0 +1,140 @@
+var
+Units: Integer;
+n: Integer;
+Time: Integer;
+number: Integer;
+number1: Integer;
+rein: Integer;
+Timerein: Integer;
+add: Integer;
+procedure OnMissionStart;
+begin
+    case States.MissionDifficulty of
+    mdHard3: begin
+    n:= 0;
+    Time:= 9000;
+    Timerein:= 2700;
+    rein:= 1;
+    add:= 0;
+    end;
+    end;
+end;
+
+function randomnumber: Integer;
+begin
+    case States.KamRandomI(4) of
+    0:result:=15;
+    1:result:=21;
+    2:result:=27;
+    3:result:=19;
+    end;
+end;
+
+function randomnumber1: Integer;
+begin
+    case States.KamRandomI(4) of
+    0:result:=1;
+    1:result:=2;
+    2:result:=3;
+    3:result:=4;
+    end;
+end;
+
+procedure OnTick;
+begin
+  case States.MissionDifficulty of
+   mdHard1:
+    begin
+    if States.GameTime = 50 then
+    Actions.ShowMsg(0, '<$0>');
+    end;
+   mdHard3:
+   begin
+    if States.GameTime = 50 then
+    Actions.ShowMsg(0, '<$0>');
+
+     if (Time > 0) and (States.PlayerVictorious(0) = false) then
+      Time := Time - 1;
+
+     if (Timerein > 0) and (States.PlayerVictorious(0) = false) and (rein = 1) then
+      Timerein:= Timerein - 1;
+
+     if  (Timerein = 0) and (rein > 0) then
+      rein:= rein - 1;
+
+    if (States.GameTime = (1800+690*n)) and
+       (Time > 0) and
+       (States.PlayerVictorious(0) = false) then
+     begin
+         number:= randomnumber;
+         number1:= randomnumber1;
+         if number1 = 1 then
+          begin
+             Units:= Actions.GiveGroup(6, number, 77, 22, 6, Utils.RandomRangeI(7,14), 4);
+             n:= n + 1;
+          end else
+         if number1 = 2 then
+          begin
+             Units:= Actions.GiveGroup(6, number, 7, 45, 2, Utils.RandomRangeI(7,14), 4);
+             n:= n + 1;
+          end else
+             if number1 = 3 then
+          begin
+             Units:= Actions.GiveGroup(6, number, 7, 10, 6, Utils.RandomRangeI(7,14), 4);
+             n:= n + 1;
+          end else
+             if number1 = 4 then
+          begin
+             Units:= Actions.GiveGroup(6, number, 7, 64, 75, Utils.RandomRangeI(7,14), 4);
+             n:= n + 1;
+          end;
+      end;
+
+    begin
+     if rein = 0 then
+     begin
+          if (Time > 5800) and
+             (Time <= 9000) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$41F841]'+Utils.TimeToString(Time)+'[$ffffff]');
+          if (Time > 1200) and
+             (Time <= 5800) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$6BFAF1]'+Utils.TimeToString(Time)+'[$ffffff]');
+          if (Time > 0) and
+             (Time <= 1200) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+          if (Time = 0) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+
+         end;
+      end;
+
+          if Timerein > 0 then
+    begin
+          if (Time > 5800) and
+             (Time <= 9000) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$41F841]'+Utils.TimeToString(Time)+'[$ffffff]'+'|<$2>: ' + '[$41F841]'+Utils.TimeToString(Timerein)+'[$ffffff]');
+           if (Time > 1200) and
+             (Time <= 5800) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$6BFAF1]'+Utils.TimeToString(Time)+'[$ffffff]'+'|<$2>: ' + '[$41F841]'+Utils.TimeToString(Timerein)+'[$ffffff]');
+          if (Time > 0) and
+             (Time <= 1200) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]'+'|<$2>: ' + '[$41F841]'+Utils.TimeToString(Timerein)+'[$ffffff]');
+          if (Time = 0) then
+           Actions.OverlayTextSet(-1, '|<$1>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+
+  end;
+
+      if Time = 0 then
+      Actions.PlayerDefeat(0);
+
+      if (Timerein = 0) and (add = 0) then
+      begin
+      Units:= Actions.GiveGroup(0, 15, 20, 74, 1, 9, 3);
+      Units:= Actions.GiveGroup(0, 20, 10, 68, 1, 9, 3);
+      Units:= Actions.GiveGroup(0, 14, 7, 73, 1, 15, 5);
+      Actions.ShowMsg(0, '<$3>');
+      add:= add + 1;
+      end;
+   end;
+end;
+end;

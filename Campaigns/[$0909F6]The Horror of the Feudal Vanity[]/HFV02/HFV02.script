@@ -1,0 +1,168 @@
+var
+Storehouses: array of Integer;
+TimeLimitVeryHard: Integer;
+procedure OnMissionStart;
+var I, P: Integer;
+H: array of Integer;
+begin
+
+begin
+  H:= States.PlayerGetAllHouses(0);
+    for I := 0 to Length(H) - 1 do
+    if States.HouseType(H[I]) = 11 then
+    begin
+      SetLength(Storehouses, Length(Storehouses)+1);
+      Storehouses[Length(Storehouses)-1] := H[I];
+    end;
+end;
+
+  for P := 0 to 5 do
+    if States.PlayerEnabled(P) then
+    begin
+        Actions.HouseAllow(P, 27, False);
+        Actions.HouseAllow(P, 14, False);
+        Actions.HouseAllow(P, 9, False);
+   end;
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 13 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 27, True);
+  if States.HouseType(aHouse) = 27 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 14, True);
+  if States.HouseType(aHouse) = 14 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 9, True);
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+var
+S: Integer;
+P: Integer;
+R: Integer;
+C: Integer;
+Sp: Integer;
+begin
+
+ begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 1) and (Utils.RandomRangeI(1,15) < 7) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 15, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 3) and ((Utils.RandomRangeI(1,10) < 8)) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 15, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 15) and (States.UnitOwner(aUnit) = 3) and ((Utils.RandomRangeI(1,100) < 18)) then
+            begin
+              S := Actions.GiveGroup(States.UnitOwner(aUnit), 16, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(S, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 17) and (States.UnitOwner(aUnit) = 3) and ((Utils.RandomRangeI(1,100) < 9)) then
+            begin
+              R := Actions.GiveGroup(States.UnitOwner(aUnit), 18, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(R, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 19) and (States.UnitOwner(aUnit) = 3) and ((Utils.RandomRangeI(1,100) < 9)) then
+            begin
+              Sp := Actions.GiveGroup(States.UnitOwner(aUnit), 20, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(Sp, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 21) and (States.UnitOwner(aUnit) = 3) and ((Utils.RandomRangeI(1,100) < 9)) then
+            begin
+              C := Actions.GiveGroup(States.UnitOwner(aUnit), 22, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(C, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+           end;
+          end;
+         end;
+        end;
+       end;
+      end;
+     end;
+    end;
+ end;
+
+procedure OnTick;
+var
+Pos: TKMPoint;
+Pos1: TKMPoint;
+Gold: Integer;
+begin
+  if States.GameTime = 50 then
+    Actions.ShowMsg(0, '<$0>');
+  if States.GameTime = 600 then
+    Actions.ShowMsg(0, '<$1>');
+  if States.GameTime = 19600 then
+    Actions.ShowMsg(0, '<$2>');
+
+    case States.MissionDifficulty of
+    mdHard3:
+    begin
+
+    if States.GameTime = 10 then
+    begin
+    Pos.X:= 0;
+    Pos.Y:= 0;
+    Pos1.X:= 29;
+    Pos1.Y:= 103;
+    TimeLimitVeryHard:= 82650;
+    Actions.AIAttackRemoveAll(1);
+    Actions.AIAttackRemoveAll(2);
+    Actions.AIAttackRemoveAll(3);
+    Actions.AIEquipRate(3, 0, 180);
+    Actions.HouseAllow(0, 11, false);
+    Actions.AIAttackAdd(1, false, 46100, 1, 2, 0, 0, 0, false, attCustomPosition, Pos1);
+    Actions.AIAttackAdd(1, true, 20270, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+    Actions.AIAttackAdd(1, false, 20260, 1, 0, 1, 0, 1, false, attCustomPosition, Pos1);
+    Actions.AIAttackAdd(2, false, 25400, 1, 1, 0, 0, 0, false, attCustomPosition, Pos1);
+    Actions.AIAttackAdd(2, false, 48200, 1, 2, 1, 0, 0, false, attClosestBuildingFromStartPos, Pos);
+    Actions.AIAttackAdd(2, false, 28300, 1, 0, 0, 0, 2, false, attCustomPosition, Pos1);
+    Actions.AIAttackAdd(3, true, 0, 48, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    end;
+    begin
+    if (TimeLimitVeryHard > 0) and (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+    TimeLimitVeryHard := TimeLimitVeryHard - 1;
+
+    end;
+    begin
+    if TimeLimitVeryHard > 0 then
+     begin
+     Gold := States.HouseResourceAmount(Storehouses[0], 7);
+     Actions.OverlayTextSet(0,'|<$3>: ' + '[$9DCA07]'+Utils.TimeToString(TimeLimitVeryHard)+'[$ffffff]' + '|<$4>: ' + IntToStr(Gold) + '/0');
+     if Gold <= 0 then
+     Actions.OverlayTextSet(0,'|<$3>: ' + '[$9DCA07]'+Utils.TimeToString(TimeLimitVeryHard)+'[$ffffff]' + '[$0909F6]'+'|<$4>: ' + IntToStr(Gold) + '/0'+'[$ffffff]');
+     if (TimeLimitVeryHard > 0) and (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = true) then
+     Actions.OverlayTextSet(0,'|<$3>: ' + '[$41F841]'+Utils.TimeToString(TimeLimitVeryHard)+'[$ffffff]' + '[$41F841]'+'|<$4>: ' + IntToStr(Gold) + '/0'+'[$ffffff]');
+     end;
+    end;
+    begin
+    if (States.GameTime > 20) and ((TimeLimitVeryHard = 0) or (Gold <= 0)) then
+    Actions.PlayerDefeat(0);
+
+    end;
+
+    end;
+    end;
+end;

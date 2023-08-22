@@ -1,0 +1,45 @@
+var
+Time: Integer;
+procedure OnMissionStart();
+begin
+ case States.MissionDifficulty of
+ mdHard3:
+ Time:= 9750;
+ end;
+end;
+
+procedure OnTick;
+begin
+  if States.GameTime = 30 then
+    Actions.ShowMsg(0, '<$0>');
+
+  if States.GameTime = 1320 then
+    Actions.ShowMsg(0, '<$1>');
+
+  if States.GameTime = 3830 then
+    Actions.ShowMsg(0, '<$2>');
+
+   case States.MissionDifficulty of
+   mdHard3:
+    begin
+     if (Time > 0) and (States.PlayerVictorious(0) = false) then
+      Time := Time - 1;
+
+      if (Time > 5400) and
+         (Time <= 10350) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$41F841]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time > 1500) and
+         (Time <= 5400) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$6BFAF1]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time >= 0) and
+         (Time <= 1500) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time = 0) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+
+      if Time = 0 then
+      Actions.PlayerDefeat(0);
+     end;
+     end;
+
+end;

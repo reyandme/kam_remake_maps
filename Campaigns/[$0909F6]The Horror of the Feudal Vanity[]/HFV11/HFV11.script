@@ -1,0 +1,738 @@
+var
+  DiedUnits1: Integer;
+  DiedUnits2: Integer;
+  Group1: Integer;
+  Group2: Integer;
+  Group3: Integer;
+  Group4: Integer;
+  Group5: Integer;
+  Group6: Integer;
+  Group7: Integer;
+  Group8: Integer;
+  Group9: Integer;
+  Group10: Integer;
+  Group11: Integer;
+  r: Integer;
+  unitToGive: Integer;
+  POSx: Integer;
+  POSy: Integer;
+  Flag0: Integer;
+  Pos: TKMPoint;
+  T2H: Integer;
+  T2H1: Integer;
+  T2H2: Integer;
+  Army: Integer;
+  Count: Integer;
+  Time: Integer;
+  Storehouses: array of Integer;
+  Schoolhouses: array of Integer;
+  Barracks: array of Integer;
+  Flag1: Integer;
+  Optional: Integer;
+  TimeCount1: Integer;
+  TimeCount2: Integer;
+  TimeCount3: Integer;
+  Time1: Integer;
+  Time2: Integer;
+  Time3: Integer;
+  Flag5: Integer;
+  Flag6: Integer;
+  Flag7: Integer;
+  TSAB: Integer;
+procedure OnMissionStart;
+var
+  H: array of Integer;
+  H1: array of Integer;
+  H2: array of Integer;
+  I: Integer;
+  I1: Integer;
+  I2: Integer;
+begin
+begin
+ Army:= 1;
+ Flag7:= 0;
+end;
+
+begin
+  H:= States.PlayerGetAllHouses(0);
+    for I := 0 to Length(H) - 1 do
+    if States.HouseType(H[I]) = 11 then
+    begin
+      SetLength(Storehouses, Length(Storehouses)+1);
+      Storehouses[Length(Storehouses)-1] := H[I];
+    end;
+end;
+
+begin
+  H1:= States.PlayerGetAllHouses(0);
+    for I1 := 0 to Length(H1) - 1 do
+    if States.HouseType(H1[I1]) = 13 then
+    begin
+      SetLength(Schoolhouses, Length(Schoolhouses)+1);
+      Schoolhouses[Length(Schoolhouses)-1] := H1[I1];
+    end;
+end;
+
+begin
+  H2 := States.PlayerGetAllHouses(0);
+    for I2 := 0 to Length(H2) - 1 do
+    if States.HouseType(H2[I2]) = 21 then
+    begin
+      SetLength(Barracks, Length(Barracks)+1);
+      Barracks[Length(Barracks)-1] := H2[I2];
+    end;
+end;
+end;
+
+function positionx: Integer;
+begin
+  case States.KamRandomI(3) of
+    0:result:=197;
+    1:result:=175;
+    2:result:=151;
+  end;
+end;
+
+function Position: Integer;
+begin
+  case States.KamRandomI(7) of
+    0:result:=161;
+    1:result:=173;
+    2:result:=168;
+    3:result:=170;
+    4:result:=178;
+    5:result:=163;
+    6:result:=139;
+  end;
+end;
+
+function TypeUn: Integer;
+begin
+  case States.KamRandomI(5) of
+    0:result:=16;
+    1:result:=18;
+    2:result:=20;
+    3:result:=22;
+    4:result:=26;
+  end;
+end;
+
+function positiony: Integer;
+begin
+  case States.KamRandomI(2) of
+    0:result:=134;
+    1:result:=185;
+  end;
+end;
+
+procedure RemoveStorehouse(aHouse: Integer);
+var
+  indexToRemove: Integer;
+  I: Integer;
+begin
+  indexToRemove := -1;
+  for I := 0 to Length(Storehouses)- 1 do
+  if Storehouses[I] = aHouse then
+      indexToRemove := I;
+
+
+  for I := indexToRemove to Length(Storehouses) - 2 do
+   Storehouses[I] := Storehouses[I+1];
+
+
+  SetLength(Storehouses, Length(Storehouses)-1);
+end;
+
+procedure RemoveSchoolhouse(aHouse: Integer);
+var
+  indexToRemove: Integer;
+  I1: Integer;
+begin
+  indexToRemove := -1;
+  for I1 := 0 to Length(Schoolhouses)- 1 do
+  if Schoolhouses[I1] = aHouse then
+      indexToRemove := I1;
+
+
+  for I1 := indexToRemove to Length(Schoolhouses) - 2 do
+   Schoolhouses[I1] := Schoolhouses[I1+1];
+
+
+  SetLength(Schoolhouses, Length(Schoolhouses)-1);
+end;
+
+procedure RemoveBarracks(aHouse: Integer);
+var
+  indexToRemove: Integer;
+  I2: Integer;
+begin
+  indexToRemove := -1;
+  for I2 := 0 to Length(Barracks)- 1 do
+  if Barracks[I2] = aHouse then
+      indexToRemove := I2;
+
+
+  for I2 := indexToRemove to Length(Barracks) - 2 do
+   Barracks[I2] := Barracks[I2+1];
+
+
+  SetLength(Barracks, Length(Barracks)-1);
+
+end;
+
+
+procedure OnHouseBuilt(House: Integer);
+begin
+  if (States.HouseType(House) = 11) and (States.HouseOwner(House) = 0) then
+  begin
+    SetLength(Storehouses, length(Storehouses)+1);
+    Storehouses[length(Storehouses)-1]:= House;
+  end;
+
+  if (States.HouseType(House) = 13) and (States.HouseOwner(House) = 0) then
+  begin
+    SetLength(Schoolhouses, length(Schoolhouses)+1);
+    Schoolhouses[length(Schoolhouses)-1]:= House;
+  end;
+
+  if (States.HouseType(House) = 21) and (States.HouseOwner(House) = 0) then
+  begin
+    SetLength(Barracks, length(Barracks)+1);
+    Barracks[length(Barracks)-1]:= House;
+  end;
+
+end;
+
+procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+  begin
+  if ((States.HouseType(aHouse) = 11) or (States.HouseType(aHouse) = 13) or (States.HouseType(aHouse) = 21)) and (States.HouseOwner(aHouse) = 0) and (States.HouseIsComplete(aHouse) = true) then
+   begin
+   Actions.AIAttackRemoveAll(14);
+   Flag5:= Flag5 + 1;
+   Flag6:= 0;
+   end;
+  end;
+
+  begin
+  if (States.HouseType(aHouse) = 11) and (States.HouseOwner(aHouse) = 0) and (States.HouseIsComplete(aHouse) = true) then
+   begin
+   RemoveStorehouse(aHouse);
+   end else
+  if (States.HouseType(aHouse) = 13) and (States.HouseOwner(aHouse) = 0) and (States.HouseIsComplete(aHouse) = true) then
+   begin
+   RemoveSchoolhouse(aHouse);
+   end else
+  if (States.HouseType(aHouse) = 21) and (States.HouseOwner(aHouse) = 0) and (States.HouseIsComplete(aHouse) = true) then
+   begin
+   RemoveBarracks(aHouse);
+   end;
+  end;
+end;
+
+procedure OnTick;
+var
+storeschoolPos: TKMPoint;
+storehousePos: TKMPoint;
+barracksPos: TKMPoint;
+begin
+
+if Length(Schoolhouses) > 0 then
+  begin
+  storeschoolPos.X:= States.HousePositionX(Schoolhouses[0]);
+  storeschoolPos.Y:= States.HousePositionY(Schoolhouses[0]);
+  end;
+if Length(Storehouses) > 0 then
+  begin
+  storehousePos.X:= States.HousePositionX(Storehouses[0]);
+  storehousePos.Y:= States.HousePositionY(Storehouses[0]);
+  end;
+if Length(Barracks) > 0 then
+  begin
+  barracksPos.X:= States.HousePositionX(Barracks[0]);
+  barracksPos.Y:= States.HousePositionY(Barracks[0]);
+  end;
+
+if States.GameTime = 20 then
+    Actions.ShowMsg(0, '<$0>');
+if States.GameTime = 30 then
+    Actions.ShowMsg(0, '<$1>');
+if States.GameTime = 3180 then
+    Actions.ShowMsg(0, '<$2>');
+if States.GameTime = 6660 then
+    Actions.ShowMsg(0, '<$3>');
+if States.GameTime = 6960 then
+    Actions.ShowMsg(0, '<$4>');
+if States.GameTime = 7260 then
+    Actions.ShowMsg(0, '<$5>');
+if States.GameTime = 7560 then
+    Actions.ShowMsg(0, '<$6>');
+if States.GameTime = 7860 then
+    Actions.ShowMsg(0, '<$7>');
+if States.GameTime = 43800 then
+    Actions.ShowMsg(0, '<$8>');
+if States.GameTime = 63000 then
+    Actions.ShowMsg(0, '<$9>');
+
+  if (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+  begin
+  if (States.GameTime >= 72300) and (Flag1 = 0) then
+  begin
+  Count:= Count + 1;
+  Flag1:= Flag1 + 1;
+  Time:= States.GameTime + 4790 - (10*T2H);
+  end;
+
+  if Time < States.GameTime then
+  Time:= States.GameTime + 10;
+
+  if States.GameTime = Time then
+  Flag1:= Flag1 - 1;
+
+
+  if (States.GameTime = (72000+((4200*T2H)))) then
+  begin
+  Optional:= Position;
+  T2H:= T2H + 1;
+    begin
+    if Optional = 161 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 161, 79, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 173 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 173, 100, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 168 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 168, 107, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 170 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 170, 176, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 178 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 178, 152, 6, (3+Count), (2+(4+Count)/5));
+     end else
+    if Optional = 163 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 163, 183, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 139 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 139, 203, 0, (3+Count), (2+(4+Count)/5));
+    end;
+  end;
+ end;
+
+  if (States.GameTime = (72000+((4200*T2H1)))) then
+  begin
+  Optional:= Position;
+  T2H1:= T2H1 + 1;
+    begin
+    if Optional = 161 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 161, 79, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 173 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 173, 100, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 168 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 168, 107, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 170 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 170, 176, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 178 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 178, 152, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 163 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 163, 183, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 139 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 139, 203, 0, (3+Count), (2+(4+Count)/5));
+    end;
+  end;
+ end;
+
+ if (States.GameTime = (72000+((4200*T2H2)))) then
+  begin
+  Optional:= Position;
+  T2H2:= T2H2 + 1;
+    begin
+    if Optional = 161 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 161, 79, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 173 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 173, 100, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 168 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 168, 107, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 170 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 170, 176, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 178 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 178, 152, 6, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 163 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 163, 183, 0, (3+Count), (2+(4+Count)/5));
+    end else
+    if Optional = 139 then
+    begin
+    Army:=Actions.GiveGroup(11, TypeUn, 139, 203, 0, (3+Count), (2+(4+Count)/5));
+    end;
+  end;
+ end;
+ end;
+
+ begin
+       if (Flag5 > 0) and (Length(Schoolhouses) > 0) and (Flag6 = 0) then
+       begin
+       Actions.AIAttackAdd(14, true, 0, 1, 0, 0, 0, 0, true, attCustomPosition, storeschoolPos);
+       Flag5:= 0;
+       Flag6:= Flag6 + 1;
+       end else
+       if (Flag5 > 0) and (Length(Storehouses) > 0) and (Flag6 = 0) then
+       begin
+       Actions.AIAttackAdd(14, true, 0, 1, 0, 0, 0, 0, true, attCustomPosition, storehousePos);
+       Flag5:= 0;
+       Flag6:= Flag6 + 1;
+       end else
+       if (Flag5 > 0) and (Length(Barracks) > 0) and (Flag6 = 0) then
+       begin
+       Actions.AIAttackAdd(14, true, 0, 1, 0, 0, 0, 0, true, attCustomPosition, barracksPos);
+       Flag5:= 0;
+       Flag6:= Flag6 + 1;
+       end;
+      end;
+
+
+      if (States.StatArmyCount(8) > 0) and (Flag6 = 1) then
+      Flag5:= Flag5 + 1;
+
+      if States.GameTime = TSAB then
+      Flag7:= Flag7 - 1;
+
+      if States.GameTime = (48000+2400*Time1) then
+      begin
+      Time1:= Time1 + 1;
+      TimeCount1:= TimeCount1 + 1
+      end;
+
+      if States.GameTime = (99000+7800*Time2) then
+      begin
+      Time2:= Time2 + 1;
+      TimeCount2:= TimeCount2 + 1;
+      end;
+
+
+      if States.GameTime = (108000+4500*Time3) then
+      begin
+      Time3:= Time3 + 1;
+      TimeCount3:= TimeCount3 + 1;
+      end;
+
+      if (States.GameTime >= 42000) and (States.PlayerEnabled(0)) then
+      Actions.HouseAllow(0, 21, False);
+end;
+
+procedure OnHouseDamaged(Bul: Integer; aAttacker: Integer);
+begin
+ if (States.GameTime >= 108000) and ((States.HouseType(Bul) = 11) or (States.HouseType(Bul) = 13) or (States.HouseType(Bul) = 21)) and (States.HouseOwner(Bul) = 4) and (States.UnitOwner(aAttacker) = 0) and (Flag7 = 0) then
+ begin
+  if Utils.RandomRangeI(1,2) = 1 then
+  begin
+  Flag7:= Flag7 + 1;
+  TSAB:= States.GameTime + 1200;
+  Group1 := Actions.GiveGroup(14, 21, Utils.RandomRangeI(28,59), 219, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group2 := Actions.GiveGroup(14, 22, Utils.RandomRangeI(28,59), 219, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group3 := Actions.GiveGroup(14, 27, Utils.RandomRangeI(28,59), 219, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group11 := Actions.GiveUnit(4, 0, 165, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 166, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 167, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 168, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 169, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 165, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 166, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 167, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 168, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 169, 2, 3);
+  Group11 := Actions.GiveUnit(4, 9, 165, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 166, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 167, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 168, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 169, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 166, 4, 3);
+  Group11 := Actions.GiveUnit(4, 9, 168, 4, 3);
+  Flag5:= Flag5 + 1;
+  end else
+  begin
+  Flag7:= Flag7 + 1;
+  TSAB:= States.GameTime + 1500;
+  Group1 := Actions.GiveGroup(14, 21, 58, 6, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group2 := Actions.GiveGroup(14, 22, 4, 70, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group3 := Actions.GiveGroup(14, 27, 5, 52, 0, 0+TimeCount3, 3+TimeCount3/5);
+  Group11 := Actions.GiveUnit(4, 0, 165, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 166, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 167, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 168, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 169, 1, 3);
+  Group11 := Actions.GiveUnit(4, 0, 165, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 166, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 167, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 168, 2, 3);
+  Group11 := Actions.GiveUnit(4, 0, 169, 2, 3);
+  Group11 := Actions.GiveUnit(4, 9, 165, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 166, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 167, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 168, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 169, 3, 3);
+  Group11 := Actions.GiveUnit(4, 9, 166, 4, 3);
+  Group11 := Actions.GiveUnit(4, 9, 168, 4, 3);
+  Flag5:= Flag5 + 1;
+  end;;
+ end;
+end;
+
+procedure OnPlayerDefeated(DPlayer: Integer);
+begin
+   if DPlayer = 4 then
+   begin
+    Actions.PlayerAllianceChange(1, 2, true, true);
+    Actions.PlayerAllianceChange(1, 4, true, true);
+    Actions.PlayerAllianceChange(1, 6, true, true);
+    Actions.PlayerAllianceChange(1, 7, true, true);
+    Actions.PlayerAllianceChange(1, 8, true, true);
+    Actions.PlayerAllianceChange(1, 9, true, true);
+    Actions.PlayerAllianceChange(1, 10, true, true);
+    Actions.PlayerAllianceChange(1, 13, true, true);
+    Actions.PlayerAllianceChange(1, 14, true, true);
+    Actions.PlayerAllianceChange(1, 15, true, true);
+    Actions.PlayerAllianceChange(0, 2, true, true);
+    Actions.PlayerAllianceChange(0, 4, true, true);
+    Actions.PlayerAllianceChange(0, 6, true, true);
+    Actions.PlayerAllianceChange(0, 7, true, true);
+    Actions.PlayerAllianceChange(0, 8, true, true);
+    Actions.PlayerAllianceChange(0, 9, true, true);
+    Actions.PlayerAllianceChange(0, 10, true, true);
+    Actions.PlayerAllianceChange(0, 13, true, true);
+    Actions.PlayerAllianceChange(0, 14, true, true);
+    Actions.PlayerAllianceChange(0, 15, true, true);
+    Actions.ShowMsg(0, '<$10>');
+   end;
+end;
+
+procedure OnUnitDied(aUnitID: Integer; aKillerOwner: Integer);
+begin
+
+  if States.UnitType(aUnitID) = 0 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 15 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 16 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 17 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 18 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 21 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 22 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 19 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+  if States.UnitType(aUnitID) = 20 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 2 then
+       DiedUnits1 := DiedUnits1 + 1;
+
+  if DiedUnits1 >= 166 then
+    begin
+      Group1 := Actions.GiveGroup(2, 15, 133, 16, 6, 6,4);
+      Group2 := Actions.GiveGroup(2, 16, 133, 16, 6, 6,4);
+      Group3 := Actions.GiveGroup(2, 15, 133, 45, 6, 6,4);
+      Group4 := Actions.GiveGroup(2, 16, 133, 45, 6, 6,4);
+      Group5 := Actions.GiveGroup(2, 15, 133, 31, 6, 6,4);
+      Group6 := Actions.GiveGroup(2, 16, 133, 31, 6, 6,4);
+      Group7 := Actions.GiveGroup(2, 19, 130, 60, 6, 6,4);
+      Group8 := Actions.GiveGroup(2, 20, 130, 60, 6, 6,4);
+      Group9 := Actions.GiveGroup(2, 21, 146, 45, 6, 6,4);
+      Group10 := Actions.GiveGroup(2, 22, 146, 45, 6, 6,4);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveUnit(2, 0, 173, 30, 6);
+      Group11 := Actions.GiveGroup(15, Utils.RandomRangeI(21,22), 151, 11, 6, 0+TimeCount1,3+TimeCount1/5);
+      Actions.GroupOrderLink(Group1,Group2);
+      Actions.GroupOrderLink(Group3,Group4);
+      Actions.GroupOrderLink(Group5,Group6);
+      Actions.GroupOrderLink(Group7,Group8);
+      Actions.GroupOrderLink(Group9,Group10);
+      DiedUnits1 := 0;
+    end;
+
+  if States.UnitType(aUnitID) = 0 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 15 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 16 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 17 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 18 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 21 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 22 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 19 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+  if States.UnitType(aUnitID) = 20 then
+    if aKillerOwner = 0 then
+     if States.UnitOwner(aUnitID) = 4 then
+       DiedUnits2 := DiedUnits2 + 1;
+
+  if DiedUnits2 >= 309 - TimeCount2 then
+  begin
+      Group1 := Actions.GiveGroup(14, 21, 8, 8, 4, Utils.RandomRangeI(5,13)+TimeCount2, 5+TimeCount2/5);
+      Group2 := Actions.GiveGroup(14, 22, 8, 8, 4, Utils.RandomRangeI(8,12)+TimeCount2, 5+TimeCount2/5);
+      Group3 := Actions.GiveGroup(14, 21, 4, 53, 3, Utils.RandomRangeI(5,13)+TimeCount2, 5+TimeCount2/5);
+      Group4 := Actions.GiveGroup(14, 22, 4, 53, 3, Utils.RandomRangeI(8,12)+TimeCount2, 5+TimeCount2/5);
+      Group5 := Actions.GiveGroup(15, 21, 92, 3, 6, Utils.RandomRangeI(7,15)+TimeCount2, 5+TimeCount2/5);
+      Group6 := Actions.GiveGroup(15, 22, 151, 5, 6, Utils.RandomRangeI(8,12)+TimeCount2, 5+TimeCount2/5);
+      Group7 := Actions.GiveGroup(15, 21, 5, 51, 6, Utils.RandomRangeI(7,15)+TimeCount2, 5+TimeCount2/5);
+      Group8 := Actions.GiveGroup(15, 22, 161, 57, 6, Utils.RandomRangeI(8,12)+TimeCount2, 5+TimeCount2/5);
+      Actions.GroupOrderLink(Group1,Group2);
+      Actions.GroupOrderLink(Group3,Group4);
+      Actions.GroupOrderLink(Group5,Group6);
+      Actions.GroupOrderLink(Group7,Group8);
+      Flag5:= Flag5 + 1;
+      DiedUnits2 := 0;
+
+  end;
+
+  if States.UnitType(aUnitID) = 15 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive:= unitToGive + 1;
+  if States.UnitType(aUnitID) = 16 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive:= unitToGive + 1;
+  if States.UnitType(aUnitID) = 17 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+  if States.UnitType(aUnitID) = 18 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+  if States.UnitType(aUnitID) = 21 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+  if States.UnitType(aUnitID) = 22 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+  if States.UnitType(aUnitID) = 19 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+  if States.UnitType(aUnitID) = 20 then
+    if (aKillerOwner = 0) or (aKillerOwner = 1) then
+     if States.UnitOwner(aUnitID) = 13 then
+       unitToGive := unitToGive + 1;
+
+  POSx:= positionx;
+  POSy:= positiony;
+  if (unitToGive >= 1) and (POSx = 197)  then
+  begin
+      r := Actions.GiveUnit(13, 13, POSx, 134, 5);
+      unitToGive := 0;
+  end else
+  if (unitToGive >= 1) and (POSx = 175)  then
+  begin
+      r := Actions.GiveUnit(13, 13, POSx, 185, 5);
+      unitToGive := 0;
+  end else
+  if (unitToGive >= 1) and (POSx = 151)  then
+  begin
+      r := Actions.GiveUnit(13, 13, POSx, 212, 5);
+      unitToGive := 0;
+  end;
+
+end;
+
+procedure UpdateAIEquipRates;
+begin
+
+  Pos.X := 0;
+  Pos.Y := 0;
+
+
+end;
+procedure OnUnitAttacked(Army: Integer; ArmyAttacker: Integer);
+begin
+if ((States.UnitType(Army) = 15) or (States.UnitType(Army) = 16) or (States.UnitType(Army) = 17) or (States.UnitType(Army) = 18) or (States.UnitType(Army) = 19) or (States.UnitType(Army) = 20) or (States.UnitType(Army) = 21) or (States.UnitType(Army) = 22)) and (States.UnitOwner(Army) = 13) and (Flag0 = 0) and ((States.UnitOwner(ArmyAttacker) = 0) or (States.UnitOwner(ArmyAttacker) = 1)) then
+begin
+Actions.AIAttackAdd(13, true, 10, 1, 0, 0, 0, 0, true, attClosestUnit, Pos);
+Flag0:= Flag0 + 1;
+end;
+end;
