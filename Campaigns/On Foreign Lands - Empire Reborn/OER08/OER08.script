@@ -174,4 +174,6 @@ begin
 	CampaignData.Mission8.AxeFighter := States.StatUnitTypeCount(0, 15);
 	CampaignData.Mission8.Knight := States.StatUnitTypeCount(0, 22);
 	CampaignData.Mission8.Pikeman := States.StatUnitTypeCount(0, 20);
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 
