@@ -475,4 +475,6 @@ procedure OnPlayerVictory(aPlayer:integer);
 begin
 	CampaignData.Mission4.VillageChosen := villageChosen;
 	CampaignData.Mission4.VillageEscaped := villageToChase;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

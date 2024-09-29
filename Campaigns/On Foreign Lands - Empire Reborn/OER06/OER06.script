@@ -239,4 +239,6 @@ begin
 	end;
 	
 	CampaignData.Mission6.Town := townMap;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

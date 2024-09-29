@@ -376,4 +376,6 @@ end;
 procedure OnUnitDied(aUnit: Integer; aAttacker: Integer);
 begin
 	SU_ExecuteSuperunitDie(aUnit, aAttacker);
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

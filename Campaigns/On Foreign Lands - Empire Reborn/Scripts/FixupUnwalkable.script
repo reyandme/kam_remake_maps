@@ -1,0 +1,75 @@
+///////////////////////////////////////////////////////////////////////////////
+// FIXUP UNWALKABLE
+// by Michaelis
+//
+// Detects erroneous unwalkable tiles and makes them walkable.
+// To be used on legacy maps for which manual fixing is impractical.
+//
+// Technical details:
+//		Objects 249, 250, 251, 252, 253 block movement, but look identical to 
+//		their counterparts with ids 23, 24, 18, which don't. This is 
+//		inconsistent experience that throws the player off-blanace.
+//
+//		To fix this, blocking objects that are not surrounded with any other 
+//		impassable tiles are replaced with their non-blocking versions.
+//		Those that do have impassable tiles adjacent to them, are replaced with
+//		boulders, to make their impassability clear.
+//
+//		Also replaces unchoppable tree 172 with choppable tree 170.
+//
+//		Performance-friendly.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+{$EVENT evtTick:fxuwOnTick}
+
+var fxuwFixes: Integer;
+
+function CanWalk(X,Y: Integer): Boolean;
+begin 
+	if (X > 0) and (X < S.MapWidth) and 
+	   (Y > 0) and (Y < S.MapHeight) then
+		Result := S.ConnectedByWalking(X,Y,X,Y);
+end;
+
+procedure fxuwOnTick();
+var 
+X,Y,T: Integer;
+begin
+	T := S.GameTime;
+	if T > S.MapHeight then exit 
+	else if (T = S.MapHeight) then begin 
+		if (fxuwFixes > 0) then
+			A.Log(U.Format('Level %d/%d: %d fixes on %dx%d map', 
+			[S.CampaignMissionID, S.CampaignMissionsCount, fxuwFixes, 
+			S.MapWidth, S.MapHeight]))
+		else
+			A.Log(U.Format('Level %d/%d: all good on %dx%d map', 
+			[S.CampaignMissionID, S.CampaignMissionsCount,
+			S.MapWidth, S.MapHeight]));
+		exit;
+	end;
+	
+	Y := T;
+	
+	for X := 1 to S.MapWidth-1 do 
+	begin 
+		case S.MapTileObject(X,Y) of 
+			172: A.MapTileObjectSet(X,Y,170);
+			249..253: begin 
+			if 	CanWalk(X-1,Y-1) and CanWalk(X,Y-1) and CanWalk(X+1,Y-1) and 
+				CanWalk(X-1,Y  ) and                    CanWalk(X+1,Y  ) and 
+				CanWalk(X-1,Y+1) and CanWalk(X,Y+1) and CanWalk(X+1,Y+1) then
+				case S.MapTileObject(X,Y) of 
+				251:      A.MapTileObjectSet(X,Y,18);
+				249, 253: A.MapTileObjectSet(X,Y,23);
+				250, 252: A.MapTileObjectSet(X,Y,24);
+				end
+			else
+				A.MapTileObjectSet(X,Y,8 + S.KaMRandomI(1));
+			end;
+			else dec(fxuwFixes);
+		end;
+		inc(fxuwFixes);
+	end;
+end;

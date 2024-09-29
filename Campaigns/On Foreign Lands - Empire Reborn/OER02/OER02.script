@@ -6,4 +6,6 @@ end;
 procedure OnPlayerVictory(aPlayer:integer);
 begin
 	CampaignData.Mission2.LiteAlive := not States.PlayerDefeated(4);
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 
