@@ -1,25 +1,17 @@
-{$I improvestaticai.script}
+{$Include improvestaticai.script}
+
+var
+DifficultySetting: TKMMissionDifficulty;
 
 procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
 begin
-	if ((aHouseID = States.HouseAt(152, 121)) AND (States.HouseOwner(aHouseID) = 5)) then
-	    begin
-		     Actions.HouseAllow(0, 10, true);
-		     Actions.HouseAllow(0, 2, true);
-		     Actions.HouseAllow(1, 10, true);
-		     Actions.HouseAllow(1, 2, true);
-		     Actions.HouseAllow(2, 10, true);
-		     Actions.HouseAllow(2, 2, true);
-	         Actions.HouseUnlock(0, 10);
-		     Actions.HouseUnlock(0, 2);
-		     Actions.HouseUnlock(1, 10);
-		     Actions.HouseUnlock(1, 2);
-		     Actions.HouseUnlock(2, 10);
-		     Actions.HouseUnlock(2, 2);
-	    end;
+	if ((aHouseID = States.HouseAt(152, 123)) AND (States.HouseOwner(aHouseID) = 5)) then
+	begin
+		 Actions.HouseAllow(0, 1, True);
+		 Actions.HouseAllow(1, 1, True);
+		 Actions.HouseAllow(2, 1, True);
+	end;
 end;
-		
-
 
 procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
 var tempX : Integer;
@@ -85,12 +77,77 @@ begin
 	end;
 end;
 
-procedure OnTick;
+procedure OnMissionStart;
+begin
+    DifficultySetting:= States.MissionDifficulty();
+	//Disable the ability to build the iron smithy for all 3 players at the start.
+	Actions.HouseAllow(0, 1, False);
+	Actions.HouseAllow(1, 1, False);
+	Actions.HouseAllow(2, 1, False);
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		Actions.AIEquipRate(4, 1, 500);
+		Actions.AIEquipRate(4, 0, 500);
+		Actions.AIEquipRate(5, 1, 800);
+		Actions.AIEquipRate(5, 0, 800);
+		Actions.AIEquipRate(6, 0, 400);
+		Actions.AIEquipRate(7, 0, 400);
+		Actions.AIEquipRate(8, 1, 250);
+		Actions.AIEquipRate(9, 1, 200);
+		Actions.AIEquipRate(10, 1, 100);
+		Actions.AIEquipRate(11, 1, 100);
+		Actions.AIEquipRate(12, 1, 100);
+		Actions.AIEquipRate(13, 1, 150);
+		Actions.AIEquipRate(14, 1, 250);
+		Actions.AIEquipRate(15, 1, 200);
+		Actions.AIEquipRate(16, 1, 150);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.AIEquipRate(4, 1, 250);
+		Actions.AIEquipRate(4, 0, 250);
+		Actions.AIEquipRate(5, 1, 400);
+		Actions.AIEquipRate(5, 0, 400);
+		Actions.AIEquipRate(6, 0, 150);
+		Actions.AIEquipRate(7, 0, 150);
+		Actions.AIEquipRate(8, 1, 150);
+		Actions.AIEquipRate(9, 1, 100);
+		Actions.AIUnlimitedEquip(10, true);
+		Actions.AIUnlimitedEquip(11, true);
+		Actions.AIUnlimitedEquip(12, true);
+		Actions.AIEquipRate(13, 1, 100);
+		Actions.AIEquipRate(14, 1, 150);
+		Actions.AIEquipRate(15, 1, 100);
+		Actions.AIEquipRate(16, 1, 100);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIUnlimitedEquip(4, true);
+		Actions.AIEquipRate(5, 1, 250);
+		Actions.AIEquipRate(5, 0, 250);
+		Actions.AIEquipRate(6, 0, 100);
+		Actions.AIEquipRate(7, 0, 100);
+		Actions.AIEquipRate(8, 1, 100);
+		Actions.AIUnlimitedEquip(9, true);
+		Actions.AIUnlimitedEquip(10, true);
+		Actions.AIUnlimitedEquip(11, true);
+		Actions.AIUnlimitedEquip(12, true);
+		Actions.AIUnlimitedEquip(13, true);
+		Actions.AIEquipRate(14, 1, 100);
+		Actions.AIUnlimitedEquip(15, true);
+		Actions.AIUnlimitedEquip(16, true);
+        end;
+    end;	
+end;
 
+procedure OnTick;
 begin
   if States.GameTime = 6000 then
   begin
-    Actions.ShowMsg(-1, 'For the time being we are unable to build smithies because in this unwelcoming lands there is nobody who can prepare equipment necessary for our blacksmiths. Luckily our spies have located enemy garrison from where we can get what we are looking for. You should prepare an assault as soon as possible. ');
+    Actions.ShowMsg(-1, '<$2>');
 	Actions.FogRevealCircle(1, 152, 122, 4);
 	Actions.FogRevealCircle(2, 152, 122, 4);
 	Actions.FogRevealCircle(0, 152, 122, 4);
@@ -98,7 +155,7 @@ begin
   
   if States.GameTime = 114900 then
   begin
-    Actions.ShowMsg(-1, 'Emperor Fanstef had it enough. Armies are being mustered and cold factories roar to life. For the first time Empire Of Man will show us real strengh of its elite legions! ');
+    Actions.ShowMsg(-1, '<$3>');
 	Actions.FogRevealCircle(1, 120, 199, 6);
 	Actions.FogRevealCircle(2, 120, 199, 6);
 	Actions.FogRevealCircle(0, 120, 199, 6);
@@ -112,130 +169,412 @@ begin
   
   if States.GameTime = 3000 then
   begin
-    Actions.ShowMsg(-1, 'First flock of cursed spirits left the Netherworld and is heading towards our defences. Prepare for battle!');
-    Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+    Actions.ShowMsg(-1, '<$4>');
 	Actions.PlayOGG(-1,'filename',1);
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 5, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 5, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 5, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 10, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+        end;
+    end;	
   end;
   
   if States.GameTime = 9200 then
   begin
-    Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 27, 114, 4, 4, 9, 3);
-    Actions.GiveGroup(17, 24, 144, 4, 4, 15, 5);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 27, 114, 4, 4, 3, 3);
+        Actions.GiveGroup(17, 24, 144, 4, 4, 10, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 27, 114, 4, 4, 6, 3);
+        Actions.GiveGroup(17, 24, 144, 4, 4, 10, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 27, 114, 4, 4, 9, 3);
+        Actions.GiveGroup(17, 24, 144, 4, 4, 15, 5);
+        end;
+    end;
   end;
   
     if States.GameTime = 14560 then
   begin
-    Actions.GiveGroup(17, 14, 144, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 24, 129, 4, 4, 15, 5);
-    Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 27, 100, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 27, 119, 4, 4, 12, 4);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		Actions.GiveGroup(17, 14, 144, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 24, 129, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 10, 5);
+     	Actions.GiveGroup(17, 27, 100, 4, 4, 8, 4);
+	    Actions.GiveGroup(17, 27, 119, 4, 4, 8, 4);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 144, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 129, 4, 4, 10, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 27, 100, 4, 4, 12, 4);
+  	    Actions.GiveGroup(17, 27, 119, 4, 4, 12, 4);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 144, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 129, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+       	Actions.GiveGroup(17, 27, 100, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 27, 119, 4, 4, 12, 4);
+        end;
+    end;
   end;
   
     if States.GameTime = 21600 then
   begin
-    Actions.GiveGroup(17, 14, 100, 4, 4, 20, 5);
-    Actions.GiveGroup(17, 14, 129, 4, 4, 20, 5);
-    Actions.GiveGroup(17, 24, 114, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 25, 100, 4, 4, 8, 4);
-    Actions.GiveGroup(17, 25, 129, 4, 4, 8, 4);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 25, 100, 4, 4, 4, 4);
+        Actions.GiveGroup(17, 25, 129, 4, 4, 4, 4);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+        Actions.GiveGroup(17, 25, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 25, 129, 4, 4, 8, 4);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 20, 5);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 20, 5);
+        Actions.GiveGroup(17, 24, 114, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 25, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 25, 129, 4, 4, 8, 4);
+        end;
+    end;
   end;
   
     if States.GameTime = 31000 then
   begin
-    Actions.ShowMsg(-1, 'Stench of blood started to attract stronger damned spirits. From now on accursed forces might start to pose real threat.');
-    Actions.GiveGroup(17, 19, 100, 4, 4, 12, 4);
-    Actions.GiveGroup(17, 15, 129, 4, 4, 9, 3);
-    Actions.GiveGroup(17, 19, 144, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 14, 130, 4, 4, 15, 5);
+    Actions.ShowMsg(-1, '<$5>');
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 19, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 15, 129, 4, 4, 6, 3);
+        Actions.GiveGroup(17, 19, 144, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 24, 114, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 14, 130, 4, 4, 10, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 19, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 15, 129, 4, 4, 9, 3);
+        Actions.GiveGroup(17, 19, 144, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 14, 130, 4, 4, 15, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 19, 100, 4, 4, 12, 4);
+        Actions.GiveGroup(17, 15, 129, 4, 4, 9, 3);
+        Actions.GiveGroup(17, 19, 144, 4, 4, 12, 4);
+  	    Actions.GiveGroup(17, 24, 114, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 14, 130, 4, 4, 15, 5);
+        end;
+    end;
   end;
   
     if States.GameTime = 37100 then
   begin
-	Actions.GiveGroup(17, 27, 94, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 21, 146, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 21, 118, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 27, 130, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 27, 124, 4, 4, 20, 5);
-	Actions.GiveGroup(17, 27, 137, 4, 4, 20, 5);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 27, 94, 4, 4, 15, 5);
+     	Actions.GiveGroup(17, 21, 146, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 21, 118, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 27, 130, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 27, 124, 4, 4, 15, 5);
+	    Actions.GiveGroup(17, 27, 137, 4, 4, 15, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 27, 94, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 21, 146, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 21, 118, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 27, 130, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 27, 124, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 27, 137, 4, 4, 20, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 27, 94, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 21, 146, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 21, 118, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 27, 130, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 27, 124, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 27, 137, 4, 4, 20, 5);
+        end;
+	end;	
   end;
   
     if States.GameTime = 41890 then
   begin
-	Actions.GiveGroup(17, 14, 100, 4, 4, 8, 4);
-    Actions.GiveGroup(17, 14, 129, 4, 4, 8, 4);
-	Actions.GiveGroup(17, 15, 144, 4, 4, 12, 3);
-	Actions.GiveGroup(17, 15, 130, 4, 4, 12, 3);
-	Actions.GiveGroup(17, 15, 114, 4, 4, 12, 3);
-	Actions.GiveGroup(17, 24, 121, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 24, 89, 8, 4, 15, 5);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 14, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 15, 144, 4, 4, 6, 3);
+    	Actions.GiveGroup(17, 15, 130, 4, 4, 6, 3);
+    	Actions.GiveGroup(17, 15, 114, 4, 4, 6, 3);
+    	Actions.GiveGroup(17, 24, 121, 4, 4, 10, 5);
+	    Actions.GiveGroup(17, 24, 89, 8, 4, 10, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 8, 4);
+	    Actions.GiveGroup(17, 15, 144, 4, 4, 9, 3);
+    	Actions.GiveGroup(17, 15, 130, 4, 4, 9, 3);
+    	Actions.GiveGroup(17, 15, 114, 4, 4, 9, 3);
+    	Actions.GiveGroup(17, 24, 121, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 24, 89, 8, 4, 10, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 100, 4, 4, 8, 4);
+        Actions.GiveGroup(17, 14, 129, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 15, 144, 4, 4, 12, 3);
+        Actions.GiveGroup(17, 15, 130, 4, 4, 12, 3);
+    	Actions.GiveGroup(17, 15, 114, 4, 4, 12, 3);
+    	Actions.GiveGroup(17, 24, 121, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 24, 89, 8, 4, 15, 5);
+        end;
+    end;	
   end;
   
       if States.GameTime = 46700 then
   begin
-	Actions.GiveGroup(17, 14, 94, 4, 4, 30, 5);
-	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
-	Actions.GiveGroup(17, 15, 118, 4, 4, 16, 4);
-	Actions.GiveGroup(17, 15, 94, 4, 4, 16, 4);
-	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
-	Actions.GiveGroup(17, 23, 118, 4, 4, 6, 3);
-	Actions.GiveGroup(17, 24, 94, 4, 4, 30, 5);
 	Actions.PlayOGG(-1,'filename',1);
-
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 14, 94, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 19, 146, 4, 4, 12, 4);
+     	Actions.GiveGroup(17, 15, 118, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 15, 94, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 19, 146, 4, 4, 12, 4);
+     	Actions.GiveGroup(17, 23, 118, 4, 4, 3, 3);
+	    Actions.GiveGroup(17, 24, 94, 4, 4, 20, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 94, 4, 4, 25, 5);
+	    Actions.GiveGroup(17, 19, 146, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 15, 118, 4, 4, 16, 4);
+	    Actions.GiveGroup(17, 15, 94, 4, 4, 16, 4);
+	    Actions.GiveGroup(17, 19, 146, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 23, 118, 4, 4, 6, 3);
+	    Actions.GiveGroup(17, 24, 94, 4, 4, 25, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 94, 4, 4, 30, 5);
+    	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 15, 118, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 15, 94, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 19, 146, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 23, 118, 4, 4, 6, 3);
+    	Actions.GiveGroup(17, 24, 94, 4, 4, 30, 5);
+        end;
+    end;
   end;
   
       if States.GameTime = 51300 then
   begin
-	Actions.GiveGroup(17, 14, 94, 4, 4, 25, 5);
-	Actions.GiveGroup(17, 19, 130, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 15, 108, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 17, 118, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 27, 146, 4, 4, 20, 4);
-	Actions.GiveGroup(17, 23, 135, 4, 4, 9, 3);
-	Actions.GiveGroup(17, 20, 128, 4, 4, 6, 3);
 	Actions.PlayOGG(-1,'filename',1);
-	
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 14, 94, 4, 4, 20, 5);
+     	Actions.GiveGroup(17, 19, 130, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 15, 108, 4, 4, 10, 5);
+	    Actions.GiveGroup(17, 17, 118, 4, 4, 10, 5);
+	    Actions.GiveGroup(17, 27, 146, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 23, 135, 4, 4, 6, 3);
+	    Actions.GiveGroup(17, 20, 128, 4, 4, 6, 3);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 14, 94, 4, 4, 25, 5);
+	    Actions.GiveGroup(17, 19, 130, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 15, 108, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 17, 118, 4, 4, 10, 5);
+    	Actions.GiveGroup(17, 27, 146, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 23, 135, 4, 4, 9, 3);
+    	Actions.GiveGroup(17, 20, 128, 4, 4, 6, 3);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 14, 94, 4, 4, 25, 5);
+	    Actions.GiveGroup(17, 19, 130, 4, 4, 12, 4);
+     	Actions.GiveGroup(17, 15, 108, 4, 4, 15, 5);
+     	Actions.GiveGroup(17, 17, 118, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 27, 146, 4, 4, 20, 4);
+    	Actions.GiveGroup(17, 23, 135, 4, 4, 9, 3);
+	    Actions.GiveGroup(17, 20, 128, 4, 4, 6, 3);
+        end;
+    end;
   end;
   
       if States.GameTime = 55200 then
   begin
-	Actions.GiveGroup(17, 27, 118, 4, 4, 45, 5);
-	Actions.GiveGroup(17, 23, 146, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 23, 94, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 20, 131, 4, 4, 12, 4);
-	Actions.GiveGroup(17, 20, 102, 4, 4, 12, 4);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 27, 118, 4, 4, 25, 5);
+	    Actions.GiveGroup(17, 23, 146, 4, 4, 8, 4);
+     	Actions.GiveGroup(17, 23, 94, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 20, 131, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 20, 102, 4, 4, 8, 4);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 27, 118, 4, 4, 35, 5);
+    	Actions.GiveGroup(17, 23, 146, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 23, 94, 4, 4, 8, 4);
+    	Actions.GiveGroup(17, 20, 131, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 20, 102, 4, 4, 12, 4);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 27, 118, 4, 4, 45, 5);
+    	Actions.GiveGroup(17, 23, 146, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 23, 94, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 20, 131, 4, 4, 12, 4);
+    	Actions.GiveGroup(17, 20, 102, 4, 4, 12, 4);
+        end;
+    end;
   end;
   
       if States.GameTime = 61000 then
   begin
-	Actions.GiveGroup(17, 27, 144, 4, 4, 45, 5);
-	Actions.GiveGroup(17, 27, 94, 4, 4, 45, 5);
-	Actions.GiveGroup(17, 21, 144, 4, 4, 30, 5);
-	Actions.GiveGroup(17, 21, 94, 4, 4, 30, 5);
-	Actions.GiveGroup(17, 22, 118, 4, 4, 20, 5);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 27, 144, 4, 4, 25, 5);
+	    Actions.GiveGroup(17, 27, 94, 4, 4, 25, 5);
+    	Actions.GiveGroup(17, 21, 144, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 21, 94, 4, 4, 20, 5);
+    	Actions.GiveGroup(17, 22, 118, 4, 4, 10, 5);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 27, 144, 4, 4, 35, 5);
+	    Actions.GiveGroup(17, 27, 94, 4, 4, 35, 5);
+    	Actions.GiveGroup(17, 21, 144, 4, 4, 25, 5);
+    	Actions.GiveGroup(17, 21, 94, 4, 4, 25, 5);
+    	Actions.GiveGroup(17, 22, 118, 4, 4, 15, 5);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 27, 144, 4, 4, 45, 5);
+	    Actions.GiveGroup(17, 27, 94, 4, 4, 45, 5);
+    	Actions.GiveGroup(17, 21, 144, 4, 4, 30, 5);
+    	Actions.GiveGroup(17, 21, 94, 4, 4, 30, 5);
+    	Actions.GiveGroup(17, 22, 118, 4, 4, 20, 5);
+        end;
+    end;
   end;
   
       if States.GameTime = 69000 then
   begin
-	Actions.GiveGroup(17, 25, 94, 4, 4, 20, 4);
-	Actions.GiveGroup(17, 17, 102, 4, 4, 20, 4);
-	Actions.GiveGroup(17, 18, 118, 4, 4, 15, 5);
-	Actions.GiveGroup(17, 25, 146, 4, 4, 20, 4);
-	Actions.GiveGroup(17, 17, 130, 4, 4, 20, 4);
 	Actions.PlayOGG(-1,'filename',1);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+  		Actions.GiveGroup(17, 25, 94, 4, 4, 16, 4);
+	    Actions.GiveGroup(17, 17, 102, 4, 4, 16, 4);
+    	Actions.GiveGroup(17, 18, 118, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 25, 146, 4, 4, 12, 4);
+	    Actions.GiveGroup(17, 17, 130, 4, 4, 12, 4);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.GiveGroup(17, 25, 94, 4, 4, 20, 4);
+	    Actions.GiveGroup(17, 17, 102, 4, 4, 20, 4);
+    	Actions.GiveGroup(17, 18, 118, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 25, 146, 4, 4, 16, 4);
+	    Actions.GiveGroup(17, 17, 130, 4, 4, 16, 4);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveGroup(17, 25, 94, 4, 4, 20, 4);
+	    Actions.GiveGroup(17, 17, 102, 4, 4, 20, 4);
+    	Actions.GiveGroup(17, 18, 118, 4, 4, 15, 5);
+    	Actions.GiveGroup(17, 25, 146, 4, 4, 20, 4);
+	    Actions.GiveGroup(17, 17, 130, 4, 4, 20, 4);
+        end;
+    end;	
   end;
       
       if States.GameTime = 77200 then
@@ -387,7 +726,5 @@ begin
 	Actions.GiveGroup(17, 27, 126, 4, 4, 60, 6);
 	Actions.GiveGroup(17, 21, 110, 4, 4, 30, 6);
     end;
-
   end;
-   
 end;
