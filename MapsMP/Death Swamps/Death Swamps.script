@@ -1,0 +1,15 @@
+procedure OnMissionStart;
+begin
+  Actions.PlayWavAtLocationLooped(-1, 'lava', 1, 28, 202, 146);
+  Actions.PlayWavAtLocationLooped(-1, 'lava', 1, 28, 104, 194);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 57, 156);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 232, 84);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 178, 105);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 17, 163);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 24, 125);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 67, 161);
+  Actions.PlayWavAtLocationLooped(-1, 'swamp', 1, 28, 95, 151);
+  Actions.PlayWavAtLocationLooped(-1, 'waterfall', 3, 28, 68, 110);
+  Actions.PlayWavAtLocationLooped(-1, 'waterfall', 3, 28, 252, 133);
+  Actions.PlayWavAtLocationLooped(-1, 'waterfall', 3, 28, 242, 16);
+end;
