@@ -48,3 +48,18 @@ v0.7.1b (29.10.2022):
 0.7.1d (06.04.2023)
 - Updated improvestaticai.script to newest version
 - Added newest version of difficulty.script and set MAX_HANDS to 28
+
+0.7.3 (09.10.2024)
+- Updated improvestaticai.script to newest version
+- Added Mission Objective Overlay and Bonus Objectives
+
+1.0 (16.10.2024)
+- Fixed a bug, where one of the Towers would not be able to receive stone. as new armory workshop blocked the road (on normal only)
+- Fixed typos in libx file (Thanks to DDDestroyer)
+- Fixed a bug with new bonus missions
+- Added a hidden bonus treasure
+- Named Enemies
+- Changed color of 1 AI player so they show up seperatly in the statistic
+- Fixed a bug in newest version of improvestaticai.script
+- Main Mission Objectives now work as intended
+- Refactoring and improvements of the main script

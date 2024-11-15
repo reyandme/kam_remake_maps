@@ -1,8 +1,9 @@
 //-- Sands of Z'ha'dum --//
 //By Strangelove
-//v0.7.1c
-//16.03.2023
+//v1.0
+//16.10.2024
 //Developed for KaM Remake r12945
+//Last modified on KaM Remake r15122
 
 
 {$I difficulty.script}
@@ -12,12 +13,19 @@
 {$I player4.script}
 
 
+const
+	HUMAN_PLAYER = 0;
+	MINING_CAMP = 4;
+
+
 var
 	DifficultySetting: TKMMissionDifficulty;
+	bShowBonusObjectives, bHiddenSupplies: Boolean;
+	EnemyHousesDestroyed, EnemyUnitsDestroyed, MiningCampDestroyed, GoldMineBuilt: Integer;
 
 
 
-function MinToTick(Minutes: Word): Word;
+function MinToTick(Minutes: Integer): Integer;
 begin
 	Result := Minutes *600;
 end;
@@ -29,10 +37,64 @@ begin
 end;
 
 
-procedure ShowMsgGoToAndReveal(Player: Byte; X, Y: Word; Radius: Byte; Text: AnsiString);
+function IsImportantBuilding(aHouseType: TKMHouseType): Boolean;
+begin
+	case aHouseType of
+		htStore: Result := true;
+		htSchool: Result := true;
+		htBarracks: Result := true;
+		htTownhall: Result := true;
+		else
+			Result := false;
+	end;
+end;
+
+
+function IsWarrior(aUnitType: TKMUnitType): Boolean;
+begin
+	case aUnitType of
+		utMilitia: Result := true;
+		utAxeFighter: Result := true;
+		utSwordFighter: Result := true;
+		utBowman: Result := true;
+		utCrossbowman: Result := true;
+		utLanceCarrier: Result := true;
+		utPikeman: Result := true;
+		utScout: Result := true;
+		utKnight: Result := true;
+		utBarbarian: Result := true;
+		utRebel: Result := true;
+		utRogue: Result := true;
+		utWarrior: Result := true;
+		utVagabond: Result := true;
+		else
+			Result := false;
+	end;
+end;
+
+
+
+procedure SetEqualEquipRate(Player, Rate: Integer);
+begin
+	Actions.AIEquipRate(Player, 0, Rate);
+	Actions.AIEquipRate(Player, 1, Rate);
+end;
+
+
+procedure ShowMsgGoToAndReveal(Player, X, Y, Radius: Integer; Text: AnsiString);
 begin
 	Actions.ShowMsgGoto(Player, X, Y, Text);
 	Actions.FogRevealCircle(Player, X, Y, Radius);	
+end;
+
+
+procedure DisplayGoals(Player: Integer; GoalStatus: Byte; sStringToDisplay: ANSIString);
+begin
+	case GoalStatus of
+		0: Actions.OverlayTextAppend(Player, '[$FFFFFF]|  o ' + sStringToDisplay); //Pending
+		1: Actions.OverlayTextAppend(Player, '[$00FF00]|  v ' + sStringToDisplay); //Successfull
+		2: Actions.OverlayTextAppend(Player, '[$0000FF]|  x ' + sStringToDisplay); //Failed
+	end;
 end;
 
 
@@ -51,7 +113,7 @@ begin
 			Actions.AIWorkerLimit(1, 6);
 			Actions.AIRecruitLimit(1, 10);
 			Actions.AIRecruitDelay(1, MinToTick(55));
-			Actions.AIEquipRate(1, 0, Randomize(640, 1));
+			SetEqualEquipRate(1, Randomize(640, 1));
 			//Defence Positions
 			AddDefencePositionAndGroup(1, 15, 8, 46, 4, 20); //DefencePosition #0
 			AddDefencePositionAndGroup(1, 15, 28, 37, 3, 20); //DefencePosition #1
@@ -79,7 +141,7 @@ begin
 			Actions.AIWorkerLimit(2, 6);
 			Actions.AIRecruitLimit(2, 10);
 			Actions.AIRecruitDelay(2, MinToTick(69));
-			Actions.AIEquipRate(2, 0, Randomize(600, 1));
+			SetEqualEquipRate(2, Randomize(600, 1));
 			//Defence Positions
 			AddDefencePositionAndGroup(2, 15, 86, 19, 6, 22); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 15, 85, 26, 6, 22); //DefencePosition #1
@@ -106,7 +168,7 @@ begin
 			Actions.AIWorkerLimit(3, 6);
 			Actions.AIRecruitLimit(3, 10);
 			Actions.AIRecruitDelay(3, MinToTick(86));
-			Actions.AIEquipRate(3, 1, Randomize(575, 1));
+			SetEqualEquipRate(3, Randomize(575, 1));
 			//Defence Positions
 			AddDefencePositionAndGroup(3, 16, 100, 39, 0, 24); //DefencePosition #0
 			AddDefencePositionAndGroup(3, 16, 91, 42, 0, 24); //DefencePosition #1
@@ -128,11 +190,11 @@ begin
 			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //35
 			AddAIAttack(3, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //47
 			
-			//South-East
+			//South-East (Mining Camp)
 			Actions.AIWorkerLimit(4, 6);
 			Actions.AIRecruitLimit(4, 10);
 			//No Recruit Delay; Attack Positions added OnTick
-			Actions.AIEquipRate(4, 0, Randomize(515, 1));
+			SetEqualEquipRate(4, Randomize(515, 1));
 			//Soldier Formations
 			Actions.AIGroupsFormationSet(4, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(4, 1, 6, 3); //Antihorse
@@ -157,7 +219,7 @@ begin
 			Actions.AIWorkerLimit(1, 6);
 			Actions.AIRecruitLimit(1, 15);
 			Actions.AIRecruitDelay(1, MinToTick(41));
-			Actions.AIEquipRate(1, 0, Randomize(480, 2));
+			SetEqualEquipRate(1, Randomize(480, 2));
 			//Defence Positions
 			AddDefencePositionAndGroup(1, 15, 8, 46, 4, 22); //DefencePosition #0
 			AddDefencePositionAndGroup(1, 15, 28, 37, 3, 22); //DefencePosition #1
@@ -187,7 +249,7 @@ begin
 			Actions.AIWorkerLimit(2, 6);
 			Actions.AIRecruitLimit(2, 15);
 			Actions.AIRecruitDelay(2, MinToTick(46));
-			Actions.AIEquipRate(2, 0, Randomize(500, 2));
+			SetEqualEquipRate(2, Randomize(500, 2));
 			//Defence Positions
 			AddDefencePositionAndGroup(2, 15, 89, 19, 6, 24); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 15, 85, 26, 6, 24); //DefencePosition #1
@@ -214,7 +276,7 @@ begin
 			Actions.AIWorkerLimit(3, 6);
 			Actions.AIRecruitLimit(3, 15);
 			Actions.AIRecruitDelay(3, MinToTick(67));
-			Actions.AIEquipRate(3, 1, Randomize(460, 2));
+			SetEqualEquipRate(3, Randomize(460, 2));
 			//Defence Positions
 			AddDefencePositionAndGroup(3, 16, 100, 39, 0, 24); //DefencePosition #0
 			AddDefencePositionAndGroup(3, 16, 91, 42, 0, 24); //DefencePosition #1
@@ -239,11 +301,11 @@ begin
 			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //35
 			AddAIAttack(3, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //47
 			
-			//South-East
+			//South-East (Mining Camp)
 			Actions.AIWorkerLimit(4, 6);
 			Actions.AIRecruitLimit(4, 15);
 			//No Recruit Delay; Attack Positions added OnTick
-			Actions.AIEquipRate(4, 0, Randomize(350, 2));
+			SetEqualEquipRate(4, Randomize(350, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 9
 			//Defence Positions (Add Soldiers manually since not all are completly filled)
 			Actions.AIDefencePositionAdd(4, 76, 112, 7, 0, 22, 0); //Melee
@@ -276,7 +338,7 @@ begin
 			Actions.AIWorkerLimit(1, 6);
 			Actions.AIRecruitLimit(1, 20);
 			Actions.AIRecruitDelay(1, MinToTick(28));
-			Actions.AIEquipRate(1, 0, Randomize(360, 3));
+			SetEqualEquipRate(1, Randomize(360, 3));
 			//Defence Positions
 			AddDefencePositionAndGroup(1, 15, 8, 46, 4, 24); //DefencePosition #0
 			AddDefencePositionAndGroup(1, 15, 28, 37, 3, 24); //DefencePosition #1
@@ -307,7 +369,7 @@ begin
 			Actions.AIWorkerLimit(2, 6);
 			Actions.AIRecruitLimit(2, 20);
 			Actions.AIRecruitDelay(2, MinToTick(37));
-			Actions.AIEquipRate(2, 0, Randomize(350, 3));
+			SetEqualEquipRate(2, Randomize(350, 3));
 			//Defence Positions
 			AddDefencePositionAndGroup(2, 15, 89, 19, 6, 26); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 15, 85, 26, 6, 26); //DefencePosition #1
@@ -344,7 +406,7 @@ begin
 			Actions.AIRecruitLimit(3, 20);
 			Actions.AIDefendAllies(3, true);
 			Actions.AIRecruitDelay(3, MinToTick(46));
-			Actions.AIEquipRate(3, 1, Randomize(360, 3));
+			SetEqualEquipRate(3, Randomize(360, 3));
 			//Soldier Formations
 			Actions.AIGroupsFormationSet(3, 0, 12, 4); //Swordmen
 			Actions.AIGroupsFormationSet(3, 1, 9, 3); //Pikes
@@ -371,11 +433,11 @@ begin
 			//Attacks
 			AddAIAttack(3, true, 0, 2, 1, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //45
 			
-			//South-East
+			//South-East (Mining Camp)
 			Actions.AIWorkerLimit(4, 6);
 			Actions.AIRecruitLimit(4, 20);
 			//No Recruit Delay; Attack Positions added OnTick
-			Actions.AIEquipRate(4, 0, Randomize(220, 3));
+			SetEqualEquipRate(4, Randomize(220, 3));
 			//Soldier Formations
 			Actions.AIGroupsFormationSet(4, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(4, 1, 9, 3); //Antihorse
@@ -403,9 +465,114 @@ begin
 end;
 
 
+procedure OnPlayerDefeated(aPlayer: Integer);
+begin
+	if aPlayer = MINING_CAMP then
+	begin
+		if MiningCampDestroyed <> 2 then
+			MiningCampDestroyed := 1;
+		Actions.ShowMsg(HUMAN_PLAYER, '<$3>');
+	end;
+end;
+
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+	if States.UnitOwner(aUnit) = HUMAN_PLAYER then
+		if MiningCampDestroyed <> 1 then
+			MiningCampDestroyed := 2;
+			
+	if States.PlayerIsAI(States.UnitOwner(aUnit)) then
+		EnemyUnitsDestroyed := 0;
+end;
+
+
+procedure OnHouseBuilt(aHouse: Integer);
+var
+	HouseOwner: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+	
+	if HouseOwner = HUMAN_PLAYER then
+		if States.HouseTypeEx(aHouse) = htGoldmine then
+			if ((States.HousePositionX(aHouse) > 91) and (States.HousePositionY(aHouse) > 89)) then
+			begin
+				GoldMineBuilt := 1;
+				if not bHiddenSupplies then
+					if Utils.RandomRangeI(0, 3) = 0 then
+					begin
+						if States.StatHouseTypeCountEx(HUMAN_PLAYER, htBarracks) > 0 then
+						begin
+							Actions.ShowMsgGoto(HUMAN_PLAYER, States.HousePositionX(aHouse), States.HousePositionY(aHouse), '<$4>');
+							Actions.GiveWeaponsEx(HUMAN_PLAYER, wtPike, Utils.RandomRangeI(4, 6));
+							Actions.GiveWeaponsEx(HUMAN_PLAYER, wtCrossbow, Utils.RandomRangeI(4, 6));
+							Actions.GiveWeaponsEx(HUMAN_PLAYER, wtIronArmor, Utils.RandomRangeI(8, 12));
+						end else
+						//Add to Storehouse in the unlikely case, where there is no Barracks
+						begin	
+							Actions.ShowMsgGoto(HUMAN_PLAYER, States.HousePositionX(aHouse), States.HousePositionY(aHouse), '<$5>');
+							Actions.GiveWaresEx(HUMAN_PLAYER, wtPike, Utils.RandomRangeI(4, 6));
+							Actions.GiveWaresEx(HUMAN_PLAYER, wtCrossbow, Utils.RandomRangeI(4, 6));
+							Actions.GiveWaresEx(HUMAN_PLAYER, wtIronArmor, Utils.RandomRangeI(8, 12));
+						end;
+						bHiddenSupplies := true;
+					end;
+			end;
+			
+	if IsImportantBuilding(States.HouseTypeEx(aHouse)) then
+		if States.PlayerIsAI(HouseOwner) then
+			EnemyHousesDestroyed := 0;
+end;
+
+
+procedure OnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, aX, aY: Integer);
+var
+	p, h: Integer;
+	aHouses: array of Integer;
+begin
+	if IsImportantBuilding(aHouseType) then
+		if States.PlayerIsAI(aOwner) then
+		begin
+			EnemyHousesDestroyed := 1;
+			for p := 1 to 4 do
+			begin
+				aHouses := States.PlayerGetAllHouses(p);
+				for h := 0 to High(aHouses) do
+					if IsImportantBuilding(States.HouseTypeEx(aHouses[h])) then
+					begin
+						EnemyHousesDestroyed := 0;
+						break;
+					end;
+			end;
+		end;
+end;
+
+
+procedure OnUnitAfterDiedEx(aUnitType: TKMUnitType; aOwner, aX, aY: Integer);
+var
+	p: Integer;
+	aGroups: array of Integer;
+begin
+	if States.PlayerIsAI(aOwner) then
+		if IsWarrior(aUnitType) then
+		begin
+			EnemyUnitsDestroyed := 1;
+			for p := 1 to 4 do
+			begin
+				aGroups := States.PlayerGetAllGroups(p);
+				if Length(aGroups) > 0 then
+				begin
+					EnemyUnitsDestroyed := 0;
+					break;
+				end;
+			end;
+		end;
+end;
+
+
 procedure OnTick();
 var
-	GameTime: Cardinal;
+	GameTime: Integer;
 begin 
 	GameTime := States.GameTime();
 	
@@ -416,11 +583,11 @@ begin
 	if GameTime = 60 then
 	begin
 		case DifficultySetting of
-			mdEasy1: ShowMsgGoToAndReveal(0, 74, 109, 5, '<$0>');
-			mdNormal: ShowMsgGoToAndReveal(0, 73, 110, 5, '<$1>');
-			mdHard1: ShowMsgGoToAndReveal(0, 73, 110, 5, '<$2>');
+			mdEasy1: ShowMsgGoToAndReveal(HUMAN_PLAYER, 74, 109, 5, '<$0>');
+			mdNormal: ShowMsgGoToAndReveal(HUMAN_PLAYER, 73, 110, 5, '<$1>');
+			mdHard1: ShowMsgGoToAndReveal(HUMAN_PLAYER, 73, 110, 5, '<$2>');
 		end;
-		
+		bShowBonusObjectives := true;
 	end;
 	
 	//Add Attack Positions for Player4 here
@@ -428,27 +595,39 @@ begin
 		mdEasy1: 
 			if GameTime = MinToTick(97) then
 			begin
-				Actions.AIDefencePositionAdd(4, 80, 123, 0, 0, 20, 1); //Melee
-				Actions.AIDefencePositionAdd(4, 88, 103, 6, 1, 20, 1); //Antihorse
-				Actions.AIDefencePositionAdd(4, 85, 106, 6, 2, 20, 1); //Ranged
-				Actions.AIDefencePositionAdd(4, 74, 124, 0, 3, 20, 1); //Mounted
+				Actions.AIDefencePositionAdd(MINING_CAMP, 80, 123, 0, 0, 20, 1); //Melee
+				Actions.AIDefencePositionAdd(MINING_CAMP, 88, 103, 6, 1, 20, 1); //Antihorse
+				Actions.AIDefencePositionAdd(MINING_CAMP, 85, 106, 6, 2, 20, 1); //Ranged
+				Actions.AIDefencePositionAdd(MINING_CAMP, 74, 124, 0, 3, 20, 1); //Mounted
 			end;
 		mdNormal: 
 			if GameTime = MinToTick(64) then
 			begin
-				Actions.AIDefencePositionAdd(4, 91, 97, 5, 0, 22, 1); //Melee
-				Actions.AIDefencePositionAdd(4, 103, 98, 6, 0, 22, 1);
-				Actions.AIDefencePositionAdd(4, 98, 99, 6, 1, 22, 1); //Antihorse
-				Actions.AIDefencePositionAdd(4, 96, 94, 5, 2, 22, 1); //Ranged
+				Actions.AIDefencePositionAdd(MINING_CAMP, 91, 97, 5, 0, 22, 1); //Melee
+				Actions.AIDefencePositionAdd(MINING_CAMP, 103, 98, 6, 0, 22, 1);
+				Actions.AIDefencePositionAdd(MINING_CAMP, 98, 99, 6, 1, 22, 1); //Antihorse
+				Actions.AIDefencePositionAdd(MINING_CAMP, 96, 94, 5, 2, 22, 1); //Ranged
 			end;
 		mdHard1:
 			if GameTime = MinToTick(45) then 
 			begin
-				Actions.AIDefencePositionAdd(4, 93, 96, 6, 0, 24, 1); //Melee
-				Actions.AIDefencePositionAdd(4, 105, 98, 6, 0, 24, 1);
-				Actions.AIDefencePositionAdd(4, 94, 91, 6, 1, 24, 1); //Antihorse
-				Actions.AIDefencePositionAdd(4, 97, 96, 6, 2, 24, 1); //Ranged
-				Actions.AIDefencePositionAdd(4, 101, 98, 6, 3, 24, 1); //Mounted
+				Actions.AIDefencePositionAdd(MINING_CAMP, 93, 96, 6, 0, 24, 1); //Melee
+				Actions.AIDefencePositionAdd(MINING_CAMP, 105, 98, 6, 0, 24, 1);
+				Actions.AIDefencePositionAdd(MINING_CAMP, 94, 91, 6, 1, 24, 1); //Antihorse
+				Actions.AIDefencePositionAdd(MINING_CAMP, 97, 96, 6, 2, 24, 1); //Ranged
+				Actions.AIDefencePositionAdd(MINING_CAMP, 101, 98, 6, 3, 24, 1); //Mounted
 			end;
-	end;		
+	end;
+
+	//Display Goals
+	Actions.OverlayTextSet(HUMAN_PLAYER, '<$10>');
+	DisplayGoals(HUMAN_PLAYER, EnemyHousesDestroyed, '<$11>');
+	DisplayGoals(HUMAN_PLAYER, EnemyUnitsDestroyed, '<$12>');
+	
+	if bShowBonusObjectives then
+	begin
+		Actions.OverlayTextAppend(HUMAN_PLAYER, '|[$FFFFFF]|<$13>');
+		DisplayGoals(HUMAN_PLAYER, MiningCampDestroyed, '<$14>');
+		DisplayGoals(HUMAN_PLAYER, GoldMineBuilt, '<$15>');
+	end;
 end;
