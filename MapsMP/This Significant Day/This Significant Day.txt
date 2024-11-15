@@ -1,0 +1,19 @@
+Version
+0.94 Beta
+
+SmallDesc
+Created by KaMrat
+
+BigDescLIBX
+0
+
+SetCoop
+
+PlayableAsSP
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockFullMapPreview
+

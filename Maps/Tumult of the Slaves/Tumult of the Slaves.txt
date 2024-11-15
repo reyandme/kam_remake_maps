@@ -1,0 +1,18 @@
+Version
+0.995 Cosmetic Changes
+
+SmallDesc
+A mission by KaMrat
+
+BigDescLIBX
+0
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

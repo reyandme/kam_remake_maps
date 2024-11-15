@@ -1,0 +1,213 @@
+var 
+	DifficultySetting: TKMMissionDifficulty;
+	Rebel, Rebel2, Rebel3, Rebel4, Rebel5, Scout, Pikemans, Pikemans2, Pikemans3, Pikemans5, Pikemans6, Bowmens, Bowmens3, StorageAlliance, Axes, Axes2, Axes3, StoragePlayer10, Townhall: Integer;
+
+Var RemovingTheShackles, Build: Boolean;
+
+Procedure OnMissionStart;
+begin
+DifficultySetting := States.MissionDifficulty();
+	A.CinematicStart(0);
+	A.ShowMsg(0, '<$1>');
+	Rebel:= S.GroupAt(52, 117);
+	Rebel2:= S.GroupAt(49, 116);
+	Rebel3:= S.GroupAt(50, 113);
+	Rebel4:= S.GroupAt(52, 111);
+	Rebel5:= S.GroupAt(51, 115);
+	Scout:= S.GroupAt(58, 114);
+	Pikemans:= S.GroupAt(55, 70);
+	Pikemans2:= S.GroupAt(51, 61);
+	Pikemans3:= S.GroupAt(41, 72);
+	Pikemans5:= S.GroupAt(61, 50);
+	Pikemans6:= S.GroupAt(75, 43);
+	Bowmens:= S.GroupAt(59, 52);
+	Bowmens3:= S.GroupAt(71, 48);
+	StorageAlliance:= S.HouseAt(43, 62);
+	Axes:= S.HouseAt(50, 67);
+	Axes2:= S.HouseAt(46, 70);
+	Axes3:= S.HouseAt(15, 44);
+	StoragePlayer10:= S.HouseAt(7, 37);
+	
+//Difficulty Setting
+	
+	case DifficultySetting of
+		mdEasy1:
+			begin
+				A.AIAttackAdd(9, true, 50, 24, 0, 0, 0, 4, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 10
+				A.AIDefencePositionRemove(8, 137, 33);
+				A.AIDefencePositionRemove(8, 138, 37);
+				A.AIDefencePositionRemove(8, 129, 29);
+				A.AIDefencePositionRemove(8, 125, 27);
+				A.AIAttackAdd(8, true, 48470, 18, 0, 0, 0, 2, false, attClosestBuildingFromStartPos, U.	KMPoint(0, 0)); //player 9
+				A.AIDefencePositionRemove(7, 159, 60);
+				A.AIDefencePositionRemove(7, 161, 59);
+				A.AIDefencePositionRemove(7, 164, 57);
+				A.AIDefencePositionRemove(7, 162, 53);
+				A.AIAttackAdd(7, true, 44630, 52, 2, 2, 2, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 8
+				A.AIDefencePositionRemove(6, 115, 137)
+				A.AIDefencePositionRemove(6, 111, 127)
+				A.AIAttackAdd(6, true, 24500, 40, 2, 2, 3, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 7
+				A.AIAttackAdd(5, true, 50, 45, 3, 1, 2, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 6
+				A.AIAttackAdd(1, true, 50, 72, 6, 0, 0, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 2
+			end;
+        
+			mdNormal:
+			begin
+				A.AIDefencePositionRemove(8, 129, 29);
+				A.AIDefencePositionRemove(8, 125, 27);
+				A.AIAttackAdd(1, true, 50, 72, 6, 0, 0, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 2
+				A.AIAttackAdd(5, true, 50, 45, 3, 1, 2, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 6
+				A.AIAttackAdd(6, true, 25500, 50, 2, 3, 4, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 7
+				A.AIAttackAdd(7, true, 45630, 84, 3, 3, 4, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 8
+				A.AIAttackAdd(8, true, 49470, 36, 0, 0, 0, 4, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 9
+				A.AIAttackAdd(9, true, 50, 24, 0, 0, 0, 4, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 10
+			end;
+        
+			mdHard1:
+			begin
+				A.AIAttackAdd(1, true, 50, 72, 6, 0, 0, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 2
+				A.AIAttackAdd(5, true, 50, 45, 3, 1, 2, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 6
+				A.AIAttackAdd(6, true, 25500, 50, 2, 3, 4, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 7
+				A.AIAttackAdd(7, true, 45630, 84, 3, 3, 4, 0, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 8
+				A.AIAttackAdd(8, true, 45470, 54, 0, 0, 0, 6, false, attClosestBuildingFromStartPos, U.	KMPoint(0, 0)); //player 9
+				A.AIAttackAdd(9, true, 50, 24, 0, 0, 0, 4, false, attClosestBuildingFromStartPos, U.KMPoint(0, 0)); //player 10
+				A.GiveWeapons(6, 16, 9000);
+				A.GiveWeapons(6, 18, 9000);
+				A.GiveWeapons(6, 19, 9000);
+				A.GiveWeapons(6, 20, 9000);
+				A.GiveWeapons(6, 22, 9000);
+				A.GiveWeapons(6, 25, 9000);
+				A.GiveWeapons(6, 26, 9000);
+				A.GiveWeapons(7, 17, 9000);
+				A.GiveWeapons(7, 18, 9000);
+				A.GiveWeapons(7, 19, 9000);
+				A.GiveWeapons(7, 21, 9000);
+				A.GiveWeapons(7, 22, 9000);
+				A.GiveWeapons(7, 23, 9000);
+				A.GiveWeapons(7, 25, 9000);
+				A.GiveWeapons(8, 17, 9000);
+				A.GiveWeapons(8, 18, 9000);
+				A.GiveWeapons(8, 19, 9000);
+				A.GiveWeapons(8, 21, 9000);
+				A.GiveWeapons(8, 22, 9000);
+				A.GiveWeapons(8, 23, 9000);
+				A.GiveWeapons(8, 25, 9000);
+			end;
+			end;
+end;
+
+Procedure OnTick;
+begin
+	If States.GameTime = 100 then
+	begin
+		A.CinematicEnd(0);
+		A.PlayerAllianceChange(2, 0, false, false);
+		A.PlayerAllianceChange(0, 2, false, false);
+		A.GiveGroup(0, 24, 42, 120, 1, 6, 3);
+		A.GiveGroup(0, 14, 42, 111, 2, 4, 2);
+		A.GroupOrderWalk(Rebel, 53, 116, 2)
+		A.GroupOrderWalk(Rebel2, 53, 115, 2)
+		A.GroupOrderWalk(Rebel3, 53, 115, 2)
+		A.GroupOrderWalk(Rebel4, 53, 114, 2)
+		A.GroupOrderWalk(Rebel5, 52, 115, 2)
+		A.GroupOrderWalk(Scout, 145, 148, 2)
+		A.GiveHouseSite(5, 21, 23, 15, false);
+		A.GiveHouseSite(5, 20, 17, 26, false);
+		A.GiveHouseSite(5, 20, 11, 24, false);
+		A.GiveHouseSite(5, 19, 31, 14, false);
+		A.GiveHouseSite(5, 19, 10, 29, false);
+		Townhall:= A.GiveHouseSite(9, 18, 11, 40, false);
+		end;
+	
+	If States.GameTime = 250 then
+	begin
+		A.ShowMsg(0, '<$2>');
+		A.GroupOrderLink(Rebel, Rebel2);
+		A.GroupOrderLink(Rebel3, Rebel2);
+		A.GroupOrderLink(Rebel4, Rebel2);
+		A.GroupOrderLink(Rebel5, Rebel2);
+		end;
+		
+	If States.GameTime = 500 then
+	begin
+		A.GroupKillAll(Scout, true);
+		end;
+		
+	If States.GameTime mod 600 = 0 then
+	begin
+		A.GroupHungerSet(Pikemans, 27000);
+		A.GroupHungerSet(Pikemans2, 27000);
+		A.GroupHungerSet(Pikemans3, 27000);
+		end;
+		
+	If States.GameTime mod 400 = 0 then
+	begin
+		A.GroupOrderWalk(Pikemans, 37, 77, 4);
+		end;
+		
+	If States.GameTime mod 800 = 0 then
+	begin
+		A.GroupOrderWalk(Pikemans, 55, 70, 4);
+		end;
+		
+	If RemovingTheShackles = false then
+	If (States.GroupDead(Pikemans) and States.GroupDead(Pikemans2) and States.GroupDead(Pikemans3) and States.GroupDead(Pikemans5) and States.GroupDead(Pikemans6) and States.GroupDead(Bowmens) and States.GroupDead(Bowmens3)) then
+	begin
+	RemovingTheShackles:= true;
+		A.ShowMsg(0, '<$3>');
+		end;
+	
+	If RemovingTheShackles = true then
+	If Build = false then
+	begin
+	Build:= true;
+		A.GiveWares(0, 2, 110);
+		A.GiveWares(0, 27, 60);
+		A.GiveWares(0, 7, 20);
+		A.GiveWares(0, 12, 40);
+		A.GiveHouseSite(1, 21, 55, 69, false);
+		A.GiveHouseSite(1, 20, 49, 59, false);
+		A.GiveHouseSite(1, 20, 44, 74, false);
+		A.GiveHouseSite(1, 20, 34, 77, false);
+		A.GiveRoad(1, 37, 75);
+		A.GiveRoad(1, 37, 76);
+		A.GiveRoad(1, 37, 77);
+		A.GiveRoad(1, 37, 78);
+		A.GiveRoad(1, 36, 78);
+		A.GiveRoad(1, 35, 78);
+		A.GiveRoad(1, 34, 78); 
+		//first building
+		A.GiveRoad(1, 43, 72);
+		A.GiveRoad(1, 43, 73);
+		A.GiveRoad(1, 43, 74);
+		A.GiveRoad(1, 43, 75);
+		A.GiveRoad(1, 44, 75);
+		//second building
+		A.GiveRoad(1, 51, 68);
+		A.GiveRoad(1, 51, 69);
+		A.GiveRoad(1, 52, 69);
+		A.GiveRoad(1, 52, 70);
+		A.GiveRoad(1, 53, 70);
+		A.GiveRoad(1, 54, 70);
+		A.GiveRoad(1, 55, 70);
+		//keep
+		end;
+		
+	If (States.HouseResourceAmount(StoragePlayer10, 20)>20) then
+	begin
+		A.GiveGroup(0, 15, 15, 14, 4, 20, 5);
+		A.HouseTakeWaresFrom(StoragePlayer10, 20, 20);
+		A.ShowMsgGoto(0, 16, 13, '<$4>');
+		end;
+		
+	If ((States.GameTime mod 300 = 0) and (States.StatArmyCount(9)<24)) then
+	begin
+		Actions.HouseTownHallEquip(TownHall, 27, 3)
+	end;
+		
+	If States.GameTime mod 7500 = 0 then
+	begin
+		A.GiveFish(32, 61, 20);
+		A.GiveFish(38, 57, 20);
+		end;
+end;

@@ -1,0 +1,396 @@
+var FriendStorage, Caspar, Harald, Storage, GoldMine, GoldMine2, Mint, Mint2, CoalMine, CoalMine2, Storage2, Pikeman, Axeman, Axeman2, Axeman3, Bowman, Bowman2, Scout, Scout2, People, People2, People3, People4, People5, People6, People7, People8, People9, People10, People11, People12, Crossbowman, Crossbowman2, Crossbowman3, Crossbowman4, Crossbowman5, Crossbowman6, Crossbowman7, Crossbowman8, Warriors, Warriors2, Guard, Guard2, Guard3, Guard4, Guard5, Guard6, Fisherman, Achim, Ghost, Ghost2, Spichrz, Spichrz2, Serf, Serf2, Serf3, Serf4, Serf5, Serf6, Serf7, Serf8, Serf9, Serf10, Serf11, Serf12: Integer;
+
+Var ScareMoment, EnemyCountry, StorageDestroyed, FriendCountry, GoldThievesDead, PeopleFinded, AchimDead, Win, FishermanProblem, HelpFisherman, GhostReturn, GhostMessage, SpichrzBuilt, SpichrzBuilt2: Boolean;
+
+Procedure OnMissionStart;
+begin
+	FriendStorage:= S.HouseAt(20, 32);
+	Storage:= S.HouseAt(122, 136);
+	Storage2:= S.HouseAt(121, 204);
+	GoldMine:= S.HouseAt(133, 152);
+	GoldMine2:= S.HouseAt(105, 162);
+	CoalMine:= S.HouseAt(118, 151);
+	CoalMine2:= S.HouseAt(113, 150);
+	Mint:= S.HouseAt(107, 158);
+	Mint2:= S.HouseAt(116, 147);
+	A.CinematicStart(0);
+	A.CinematicStart(1);
+	Warriors:= S.GroupAt(120, 55);
+	Warriors2:= S.GroupAt(133, 53);
+	Crossbowman:= S.GroupAt(120, 59);
+	Crossbowman2:= S.GroupAt(117, 57);
+	Crossbowman3:= S.GroupAt(119, 52);
+	Crossbowman4:= S.GroupAt(125, 49);
+	Crossbowman5:= S.GroupAt(131, 50);
+	Crossbowman6:= S.GroupAt(135, 56);
+	Crossbowman7:= S.GroupAt(129, 56);
+	Crossbowman8:= S.GroupAt(126, 57);
+	Pikeman:= S.GroupAt(109, 152);
+	Axeman:= S.GroupAt(109, 152);
+	Axeman2:= S.GroupAt(123, 158);
+	Axeman3:= S.GroupAt(134, 155);
+	Bowman:= S.GroupAt(111, 159);
+	Bowman2:= S.GroupAt(136, 157);
+	Scout:= S.GroupAt(123, 159);
+	Scout2:= S.GroupAt(117, 161);
+	Fisherman:= S.UnitAt(12, 83);
+	People:= S.UnitAt(191, 9);
+	People2:= S.UnitAt(192, 10);
+	People3:= S.UnitAt(194, 10);
+	People4:= S.UnitAt(191, 11);
+	People5:= S.UnitAt(194, 11);
+	People6:= S.UnitAt(192, 12);
+	People7:= S.UnitAt(193, 12);
+	People8:= S.UnitAt(196, 12);
+	People9:= S.UnitAt(195, 13);
+	People10:= S.UnitAt(194, 14);
+	People11:= S.UnitAt(197, 14);
+	People12:= S.UnitAt(196, 15);
+	Guard:= S.GroupAt(122, 12);
+	Guard2:= S.GroupAt(120, 10);
+	Guard3:= S.GroupAt(120, 8);
+	Guard4:= S.GroupAt(125, 6);
+	Guard5:= S.GroupAt(126, 8);
+	Guard6:= S.GroupAt(125, 9);
+	Achim:= S.GroupAt(123, 10);
+	Harald:= S.GroupAt(204, 204);
+	Caspar:= S.GroupAt(49, 210);
+	end;
+
+
+Procedure OnTick;
+begin
+	If FishermanProblem = true then
+	If HelpFisherman = false then
+	If (States.FogRevealed(0, 5, 3)) then
+	begin
+	HelpFisherman:= true;
+		Actions.MapTileSet(20, 68, 350, 0);
+		Actions.MapTileSet(21, 68, 350, 0);
+		Actions.MapTileSet(20, 69, 194, 0);
+		Actions.MapTileSet(21, 69, 194, 0);
+		Actions.MapTileSet(5, 2, 192, 0);
+		Actions.MapTileSet(5, 3, 192, 0);
+		Actions.MapTileSet(5, 4, 192, 0);
+		Actions.GiveUnit(9, 8, 20, 68, 0);
+		Actions.UnitKill(Fisherman, true);
+		Actions.ShowMsg(0, '<$11>');
+		Actions.ShowMsg(1, '<$11>');
+		Actions.GiveWares(0, 27, 50);
+		Actions.GiveWares(1, 27, 50);
+		Actions.FogRevealCircle(0, 20, 68, 3);
+		Actions.FogRevealCircle(1, 20, 68, 3);
+		end;
+
+	If GhostReturn = true then
+	If GhostMessage = false then
+	If (States.GroupInFight(Ghost2, false)) then
+	begin
+	GhostMessage:= true;
+		A.GroupKillAll(Ghost2, true);
+		A.ShowMsg(0, '<$10>');
+		A.ShowMsg(1, '<$10>');
+		A.GiveGroup(6, 14, 131, 213, 0, 21, 7);
+		end;
+		
+	
+	If ScareMoment = true then
+	If GhostReturn = false then
+	begin
+	GhostReturn:= true;
+		Ghost2:= A.GiveGroup(11, 14, 85, 2, 3, 1, 1);
+		end;
+
+	If ScareMoment = false then
+	If (States.GroupInFight(Ghost, false)) then
+	begin
+	ScareMoment:= true;
+		A.GroupKillAll(Ghost, true);
+		end;
+
+	//If Win = false then
+	//If (States.GroupDead(Achim)) and (States.PlayerDefeated(3)) and (States.PlayerDefeated(17)) and (States.PlayerDefeated(16)) and (States.PlayerDefeated(15)) and (States.PlayerDefeated(5)) then
+	//begin
+	//Win:= true;
+	//	A.PlayerWin([0], true);
+	//	A.PlayerWin([1], true);
+	//	end;
+
+	If EnemyCountry = false then
+	If (States.FogRevealed(0, 209, 41)) then
+	begin
+	EnemyCountry:= true;
+		A.ShowMsg(0,'<$9>');
+		A.ShowMsg(1,'<$9>');
+		A.GiveGroup(7, 27, 209, 33, 4, 12, 5);
+		A.GiveGroup(7, 14, 217, 41, 5, 10, 6);
+		A.GiveGroup(7, 25, 218, 46, 3, 9, 6);
+		end;
+		
+	If FishermanProblem = false then
+	If (States.FogRevealed(0, 12, 83)) then
+	begin
+	FishermanProblem:= true;
+		A.PlayerAllianceChange(9, 0, true, true);
+		A.PlayerAllianceChange(9, 1, true, true);
+		A.FogCoverCircle(0, 5, 3, 11);
+		A.FogCoverCircle(1, 5, 3, 11);
+		A.ShowMsg(0, '<$8>');
+		A.ShowMsg(1, '<$8>');
+		Fisherman:= A.GiveUnit(9, 8, 12, 83, 0);
+		end;
+
+	If AchimDead = false then
+	If (States.GroupDead(Achim)) then
+	begin
+	AchimDead:= true;
+		A.ShowMsg(0, '<$7>');
+		A.ShowMsg(1, '<$7>');
+		end;
+
+	If FriendCountry = true then
+	If PeopleFinded = false then
+	If (States.FogRevealed(0, 193, 12)) then
+	begin
+	PeopleFinded:= true;
+		A.UnitKill(People, true);
+		A.UnitKill(People2, true);
+		A.UnitKill(People3, true);
+		A.UnitKill(People4, true);
+		A.UnitKill(People5, true);
+		A.UnitKill(People6, true);
+		A.UnitKill(People7, true);
+		A.UnitKill(People8, true);
+		A.UnitKill(People9, true);
+		A.UnitKill(People10, true);
+		A.UnitKill(People11, true);
+		A.UnitKill(People12, true);
+		A.GiveGroup(2, 15, 192, 12, 4, 12, 4);
+		A.GiveGroup(2, 17, 195, 15, 4, 10, 5);
+		A.ShowMsg(0, '<$6>');
+		A.ShowMsg(1, '<$6>');
+		end;
+		
+	If FriendCountry = false then
+	If (States.FogRevealed(0, 20, 33)) then
+	begin
+	FriendCountry:= true;
+		A.PlayerAllianceChange(2, 0, true, true);
+		A.PlayerAllianceChange(2, 1, true, true);
+		A.PlayerAllianceChange(9, 0, true, true);
+		A.PlayerAllianceChange(9, 1, true, true);
+		A.ShowMsg(0, '<$5>');
+		A.ShowMsg(1, '<$5>');
+		A.GiveWares(0, 16, 30);
+		A.GiveWares(0, 18, 30);
+		A.GiveWares(0, 20, 30);
+		A.GiveWares(1, 16, 30);
+		A.GiveWares(1, 18, 30);
+		A.GiveWares(1, 20, 30);
+		end;
+
+	If GoldThievesDead = false then
+	If (States.GroupDead(Pikeman)) and (States.GroupDead(Axeman)) and (States.GroupDead(Axeman2)) and (States.GroupDead(Axeman3)) and (States.GroupDead(Bowman)) and (States.GroupDead(Bowman2)) and (States.GroupDead(Scout)) and (States.GroupDead(Scout2)) then
+	begin
+	GoldThievesDead:= true;
+		A.HouseDestroy(GoldMine, true);
+		A.HouseDestroy(GoldMine2, true);
+		A.HouseDestroy(CoalMine, true);
+		A.HouseDestroy(CoalMine2, true);
+		A.HouseDestroy(Mint, true);
+		A.HouseDestroy(Mint2, true);
+		A.GiveHouse(0, 3, 113, 150);
+		A.GiveHouse(1, 3, 118, 151);
+		A.GiveHouse(0, 5, 105, 162);
+		A.GiveHouse(1, 5, 133, 152);
+		A.GiveHouse(0, 15, 107, 158);
+		A.GiveHouse(1, 15, 116, 147);
+		A.HouseUnlock(0, 1)
+		A.HouseUnlock(0, 2)
+		A.HouseUnlock(0, 10)
+		A.HouseUnlock(1, 1)
+		A.HouseUnlock(1, 2)
+		A.HouseUnlock(1, 10)
+		end;
+		
+	If StorageDestroyed = false then
+	If (States.HouseDestroyed(Storage)) then
+	begin
+	StorageDestroyed:= true;
+		A.GiveWares(0, 3, 100);
+		A.GiveWares(0, 7, 100);
+		A.GiveGroup(0, 19, 119, 136, 4, 9, 3);
+		A.ShowMsg(0, '<$3>');
+		A.GiveWares(1, 3, 100);
+		A.GiveWares(1, 7, 100);
+		A.GiveGroup(1, 19, 125, 142, 4, 9, 3);
+		A.ShowMsg(1, '<$3>');
+		end;
+		
+	If S.GroupDead(Caspar) or S.GroupDead(Harald) = true then
+	begin
+		A.PlayerDefeat(0);
+		A.PlayerDefeat(1);
+		end;
+		
+		
+	If S.GameTime = 46850 then
+	begin
+		A.GiveGroup(0, 26, 215, 119, 5, 20, 5);
+		A.GiveGroup(1, 23, 218, 114, 5, 20, 5);
+		A.GiveGroup(0, 16, 214, 106, 5, 20, 5);
+		A.GiveGroup(1, 15, 219, 105, 5, 20, 5);
+		A.ShowMsgGoTo(0, 215, 119, '<$12>');
+		A.ShowMsgGoTo(1, 218, 114, '<$12>');
+		end;
+		
+	If S.GameTime = 11 then
+	begin
+		Ghost:= A.GiveGroup(10, 14, 77, 23, 3, 1, 1);
+		end;
+		
+	If S.GameTime = 150 then
+	begin
+	Spichrz:= A.GiveHouseSite(0, 11, 48, 162, true);
+	A.FogRevealCircle(0, 48, 162, 8);
+	A.GiveRoad(0, 48, 163);
+	Spichrz2:= A.GiveHouseSite(1, 11, 190, 162, true);
+	A.FogRevealCircle(1, 190, 162, 8);
+	A.GiveRoad(1, 190, 163);
+	A.UnitOrderWalk(Serf, 42, 168);
+	A.UnitOrderWalk(Serf2, 41, 168);
+	A.UnitOrderWalk(Serf3, 45, 169);
+	A.UnitOrderWalk(Serf4, 42, 170);
+	A.UnitOrderWalk(Serf5, 38, 169);
+	A.UnitOrderWalk(Serf6, 52, 168);
+	//second player
+	A.UnitOrderWalk(Serf7, 193, 166);
+	A.UnitOrderWalk(Serf8, 197, 166);
+	A.UnitOrderWalk(Serf9, 189, 167);
+	A.UnitOrderWalk(Serf10, 193, 170);
+	A.UnitOrderWalk(Serf11, 199, 168);
+	A.UnitOrderWalk(Serf12, 195, 168);
+	end;
+	
+	begin
+	If S.GameTime = 1 then
+		begin
+		Serf:= A.GiveUnit(0, 0, 50, 208, 0);
+		Serf2:= A.GiveUnit(0, 0, 52, 208, 0);
+		Serf3:= A.GiveUnit(0, 0, 54, 208, 0);
+		Serf4:= A.GiveUnit(0, 0, 50, 212, 4);
+		Serf5:= A.GiveUnit(0, 0, 52, 212, 4);
+		Serf6:= A.GiveUnit(0, 0, 54, 212, 4);
+		A.GiveUnit(0, 9, 58, 209, 2);
+		A.GiveUnit(0, 9, 58, 210, 2);
+		A.GiveUnit(0, 9, 58, 211, 2);
+		// for player 2
+		Serf7:= A.GiveUnit(1, 0, 203, 202, 0);
+		Serf8:= A.GiveUnit(1, 0, 201, 202, 0);
+		Serf9:= A.GiveUnit(1, 0, 199, 202, 0);
+		Serf10:= A.GiveUnit(1, 0, 203, 206, 4);
+		Serf11:= A.GiveUnit(1, 0, 201, 206, 4);
+		Serf12:= A.GiveUnit(1, 0, 199, 206, 4);
+		A.GiveUnit(1, 9, 195, 203, 2);
+		A.GiveUnit(1, 9, 195, 204, 2);
+		A.GiveUnit(1, 9, 195, 205, 2);
+	//	A.CinematicStart(0);
+	//	A.CinematicStart(1);
+		end;
+		
+	If SpichrzBuilt = false then
+	If S.HouseIsComplete(Spichrz) then
+	begin
+	SpichrzBuilt:= true;
+		A.OverlayTextAppendFormatted(0, '<$4>', []);
+		A.ShowMsg(0, '<$2>');
+		A.GiveWares(0, 1, 90);
+		A.GiveWares(0, 2, 100);
+		A.GiveWares(0, 7, 120);
+		A.GiveWares(0, 8, 110);
+		A.GiveWares(0, 9, 40);
+		A.GiveWares(0, 10, 80);
+		A.GiveWares(0, 13, 65);
+		A.GiveWares(0, 17, 20);
+		A.GiveWares(0, 19, 20);
+		A.GiveWares(0, 21, 20);
+		A.GiveWares(0, 27, 50);
+		end;
+		
+	If SpichrzBuilt2 = false then
+	If S.HouseIsComplete(Spichrz2) then
+	begin
+	SpichrzBuilt2:= true;
+		// for player 2
+		A.GiveWares(1, 1, 90);
+		A.GiveWares(1, 2, 100);
+		A.GiveWares(1, 7, 120);
+		A.GiveWares(1, 8, 110);
+		A.GiveWares(1, 9, 40);
+		A.GiveWares(1, 10, 80);
+		A.GiveWares(1, 13, 65);
+		A.GiveWares(1, 17, 20);
+		A.GiveWares(1, 19, 20);
+		A.GiveWares(1, 21, 20);
+		A.GiveWares(1, 27, 50);
+		A.ShowMsg(1, '<$2>');
+		A.OverlayTextAppendFormatted(1, '<$4>', []);
+		end;
+		
+	If States.GameTime = 10 then 
+	begin
+		A.ShowMsg(0, '<$1>');
+		A.ShowMsg(1, '<$1>');
+		end;
+	
+	If States.GameTime mod 600 = 0 then
+	begin
+		A.UnitHungerSet(Fisherman, 27000);
+		A.UnitHungerSet(People, 27000);
+		A.UnitHungerSet(People2, 27000);
+		A.UnitHungerSet(People3, 27000);
+		A.UnitHungerSet(People4, 27000);
+		A.UnitHungerSet(People5, 27000);
+		A.UnitHungerSet(People6, 27000);
+		A.UnitHungerSet(People7, 27000);
+		A.UnitHungerSet(People8, 27000);
+		A.UnitHungerSet(People9, 27000);
+		A.UnitHungerSet(People10, 27000);
+		A.UnitHungerSet(People11, 27000);
+		A.UnitHungerSet(People12, 27000);
+		A.GroupHungerSet(Warriors, 27000);
+		A.GroupHungerSet(Warriors2, 27000);
+		A.GroupHungerSet(Crossbowman, 27000);
+		A.GroupHungerSet(Crossbowman2, 27000);
+		A.GroupHungerSet(Crossbowman3, 27000);
+		A.GroupHungerSet(Crossbowman4, 27000);
+		A.GroupHungerSet(Crossbowman5, 27000);
+		A.GroupHungerSet(Crossbowman6, 27000);
+		A.GroupHungerSet(Crossbowman7, 27000);
+		A.GroupHungerSet(Crossbowman8, 27000);
+		A.GroupHungerSet(Achim, 27000);
+		A.GroupHungerSet(Guard, 27000);
+		A.GroupHungerSet(Guard2, 27000);
+		A.GroupHungerSet(Guard3, 27000);
+		A.GroupHungerSet(Guard4, 27000);
+		A.GroupHungerSet(Guard5, 27000);
+		A.GroupHungerSet(Guard6, 27000);
+		A.GroupHungerSet(Caspar, 27000);
+		A.GroupHungerSet(Harald, 27000);
+		A.GroupHungerSet(Ghost, 27000);
+		A.GroupHungerSet(Ghost2, 27000);
+		end;
+		
+	If States.GroupDead(Caspar) or States.GroupDead(Harald) then
+	begin
+		A.PlayerDefeat(0);
+		A.PlayerDefeat(1);
+		end;
+	
+	If S.GameTime = 150 then
+	begin
+		A.CinematicEnd(0);
+		A.CinematicEnd(1);
+		end;
+	end;
+end;
