@@ -1,7 +1,7 @@
 //-- Shores in Flames --//
 //By Strangelove
-//v0.7.2
-//20.01.2023
+//v0.7.3
+//04.09.2024
 
 {$I difficulty.script}
 {$I improvestaticai.script}
@@ -23,7 +23,8 @@ var
 	StorehouseID: Integer;
 	
 	iTicks: Integer;
-	bMarketMsg: Boolean;
+	MaxRandomRange: Byte;
+	bMarketMsg, bFirstAttackMsg, bFirstWaveMsg: Boolean;
 	
 
 
@@ -76,6 +77,8 @@ begin
 	//Set high defaults
 	BaseTiming := MinToTick(60);
 	StorehouseDiggedTiming := MinToTick(60);
+	
+	MaxRandomRange := 1;
 	
 	case DifficultySetting of
 		mdEasy1: begin
@@ -364,11 +367,20 @@ begin
 			//Reset timer!
 			iTicks := SpawnTimer;
 			
-			//Random landing Positions (Clockwise)
+			//Warn Player of first set of landing troops
+			if not bFirstAttackMsg then
+			begin
+				Actions.ShowMsg(HUMAN_PLAYER, '<$5>');
+				bFirstAttackMsg := true;
+			end else
+				//Play Beacon Sound when reinforcements arrive
+				Actions.PlaySound(HUMAN_PLAYER, 'Beacon', afWav, 1.0, false, false);
+
+			//Random landing Positions
 			case DifficultySetting of
 				mdEasy1: 
 				begin
-					case Utils.RandomRangeI(0, 1) of
+					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
 							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
@@ -388,11 +400,33 @@ begin
 							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 71, 17, dirSW, 8, 4);
 							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 74, 15, dirSW, 8, 4);
 						end;
+						2: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 76, 68); //Across the Bridge
+							//Add Groups (48 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 132, 48, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 132, 45, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 129, 42, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 129, 40, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 134, 42, dirS, 12, 4);
+						end;
+						3: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 76, 68); //Across the Bridge
+							//Add Groups (42 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 132, 48, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 132, 45, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 129, 42, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 134, 42, dirS, 9, 3);
+						end;
 					end;
+					
+					//After first Enemy Spawn, enable more possible Spawn Positions
+					MaxRandomRange := 3;
 				end;
 				mdNormal: 
 				begin
-					case Utils.RandomRangeI(0, 1) of
+					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
 							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
@@ -413,11 +447,24 @@ begin
 							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 72, 18, dirSW, 9, 3);
 							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 77, 16, dirSW, 6, 3);
 						end;
+						2: begin
+							//Set Attack Position
+							Actions.AIStartPosition(HARBOUR_PLAYER, 76, 68); //Across the Bridge
+							//Add Groups (48 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 132, 48, dirS, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 132, 45, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 129, 42, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 129, 40, dirS, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 134, 42, dirS, 12, 4);
+						end;
 					end;
+					
+					//After first Enemy Spawn, enable more possible Spawn Positions
+					MaxRandomRange := 2;
 				end;
 				mdHard1:
 				begin
-					case Utils.RandomRangeI(0, 1) of
+					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
 							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
@@ -507,6 +554,16 @@ begin
 	if EventScheduler < 3 then
 		if States.StatUnitCount(HUMAN_PLAYER) = 0 then
 			Actions.PlayerDefeat(HUMAN_PLAYER);
+	
+	//Display Message to player after first Enemy reinforcement Wave has been destroyed
+	if not bFirstWaveMsg then
+		if States.UnitOwner(aUnit) = HARBOUR_PLAYER then
+			if EventScheduler > 2 then
+				if States.StatUnitCount(HARBOUR_PLAYER) = 0 then
+				begin
+					Actions.ShowMsg(HUMAN_PLAYER, '<$6>');
+					bFirstWaveMsg := true;
+				end;
 end;
 
 

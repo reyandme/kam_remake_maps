@@ -1,0 +1,412 @@
+{$EVENT evtMissionStart:Player1OnMissionStart}
+{$EVENT evtTick:Player1OnTick}
+{$EVENT evtHouseBuilt:Player1OnHouseBuilt}
+
+
+const
+	PLAYER = 1;
+
+var
+	ConstructionIndex: Byte;
+	SchoolID: Integer;
+
+
+procedure ConstructCity(Player, Index: Byte);
+begin
+	case Index of
+		0: begin
+			Actions.PlanAddHouse(Player, 9, 23, 30); //Woodcutter
+			Actions.PlanAddRoad(Player, 23, 31);
+			Actions.PlanAddRoad(Player, 24, 31);
+			Actions.PlanAddRoad(Player, 24, 30);
+			Actions.PlanAddRoad(Player, 24, 29);
+			Actions.PlanAddRoad(Player, 24, 28);
+			Actions.AIWorkerLimit(Player, 4);
+		end;
+		1: begin
+			Actions.PlanAddHouse(Player, 0, 28, 29); //Sawmill
+			Actions.PlanAddRoad(Player, 28, 30);
+			Actions.PlanAddRoad(Player, 27, 30);
+			Actions.PlanAddRoad(Player, 26, 30);
+			Actions.PlanAddRoad(Player, 25, 30);
+			Actions.AIWorkerLimit(Player, 5);
+		end;
+		2: begin
+			Actions.PlanAddHouse(Player, 14, 15, 19); //Quarry #2
+			Actions.PlanAddRoad(Player, 15, 20);
+			Actions.PlanAddRoad(Player, 16, 20);
+			Actions.PlanAddRoad(Player, 17, 20);
+			Actions.PlanAddRoad(Player, 17, 21);
+			Actions.PlanAddRoad(Player, 18, 21);
+			Actions.AIWorkerLimit(Player, 6);
+
+		end;
+		3: begin
+			Actions.PlanAddField(Player, 21, 22); //Add back destroyed Farmland
+			Actions.PlanAddField(Player, 21, 23);
+			Actions.PlanAddField(Player, 20, 24);
+			Actions.PlanAddHouse(Player, 14, 10, 17); //Quarry #3
+			Actions.PlanAddRoad(Player, 10, 18);
+			Actions.PlanAddRoad(Player, 11, 18);
+			Actions.PlanAddRoad(Player, 12, 18);
+			Actions.PlanAddRoad(Player, 12, 19);
+			Actions.PlanAddRoad(Player, 13, 19);
+			Actions.PlanAddRoad(Player, 13, 20);
+			Actions.PlanAddRoad(Player, 14, 20);
+			Actions.AIWorkerLimit(Player, 7);
+		end;
+		4: begin
+			Actions.PlanAddHouse(Player, 8, 11, 24); //Farm #2
+			Actions.PlanAddRoad(Player, 11, 25);
+			Actions.PlanAddRoad(Player, 12, 25);
+			Actions.PlanAddRoad(Player, 13, 25);
+			Actions.PlanAddRoad(Player, 14, 25);
+			Actions.PlanAddRoad(Player, 14, 24);
+			Actions.PlanAddRoad(Player, 14, 23);
+			Actions.PlanAddRoad(Player, 14, 22);
+			Actions.PlanAddRoad(Player, 14, 21);
+			Actions.PlanAddField(Player, 15, 23); //Farmland for Farm #2
+			Actions.PlanAddField(Player, 15, 24);
+			Actions.PlanAddField(Player, 16, 24);
+			Actions.PlanAddField(Player, 15, 25);
+			Actions.PlanAddField(Player, 16, 25);
+			Actions.PlanAddField(Player, 17, 25);
+			Actions.PlanAddField(Player, 18, 25);
+			Actions.PlanAddField(Player, 12, 26);
+			Actions.PlanAddField(Player, 13, 26);
+			Actions.PlanAddField(Player, 14, 26);
+			Actions.PlanAddField(Player, 15, 26);
+			Actions.PlanAddField(Player, 16, 26);
+			Actions.PlanAddField(Player, 17, 26);
+			Actions.PlanAddField(Player, 12, 27);
+			Actions.PlanAddField(Player, 13, 27);
+			Actions.PlanAddField(Player, 14, 27);
+			Actions.PlanAddField(Player, 15, 27);
+			Actions.PlanAddField(Player, 16, 27);
+			Actions.PlanAddField(Player, 17, 27);
+			Actions.AIWorkerLimit(Player, 8);			
+		end;
+		5: begin
+			Actions.PlanAddHouse(Player, 16, 7, 23); //Swinefarm #1
+			Actions.PlanAddRoad(Player, 7, 24);
+			Actions.PlanAddRoad(Player, 8, 24);
+			Actions.PlanAddRoad(Player, 9, 24);
+			Actions.PlanAddRoad(Player, 9, 25);
+			Actions.PlanAddRoad(Player, 10, 25);
+			Actions.HouseDestroy(States.HouseAt(23, 30), false); //Destroy Woodcutter
+		end;
+		6: begin
+			Actions.PlanAddHouse(Player, 8, 21, 30); //Farm #3 (Place of Destroyed Woodcutter)
+			Actions.PlanAddRoad(Player, 22, 31);
+			Actions.PlanAddRoad(Player, 21, 31);
+			Actions.PlanAddField(Player, 19, 25); //Farmland for Farm #3
+			Actions.PlanAddField(Player, 20, 25);
+			Actions.PlanAddField(Player, 18, 26);
+			Actions.PlanAddField(Player, 19, 26);
+			Actions.PlanAddField(Player, 20, 26);
+			Actions.PlanAddField(Player, 17, 27);
+			Actions.PlanAddField(Player, 18, 27);
+			Actions.PlanAddField(Player, 19, 27);
+			Actions.PlanAddField(Player, 20, 27);
+			Actions.PlanAddField(Player, 16, 28);
+			Actions.PlanAddField(Player, 17, 28);
+			Actions.PlanAddField(Player, 18, 28);
+			Actions.PlanAddField(Player, 19, 28);
+			Actions.PlanAddField(Player, 18, 29);
+			Actions.PlanAddField(Player, 19, 29);
+			Actions.PlayerWareDistributionEx(Player, wtCorn, htMill, 2);
+		end;
+		7: begin
+			Actions.PlanAddHouse(Player, 5, 40, 20); //Gold Mine	
+			Actions.PlanAddRoad(Player, 40, 21);
+			Actions.PlanAddRoad(Player, 39, 21);
+			Actions.PlanAddRoad(Player, 38, 21);
+			Actions.PlanAddRoad(Player, 38, 22);
+			Actions.PlanAddRoad(Player, 37, 22);
+			Actions.PlanAddRoad(Player, 36, 22);
+			Actions.PlanAddRoad(Player, 35, 22);
+			Actions.PlanAddHouse(Player, 3, 34, 21); //Coal Mine
+			Actions.PlanAddRoad(Player, 34, 22);
+			Actions.PlanAddRoad(Player, 33, 22);
+			Actions.PlanAddRoad(Player, 32, 22);
+			Actions.PlanAddRoad(Player, 32, 21);
+			Actions.PlanAddRoad(Player, 31, 21);
+			Actions.PlanAddRoad(Player, 30, 21);
+		end;
+		8: begin
+			Actions.PlanAddHouse(Player, 15, 31, 26); //Gold Smelter
+			Actions.PlanAddRoad(Player, 31, 27);
+			Actions.PlanAddRoad(Player, 32, 27);
+			Actions.PlanAddRoad(Player, 33, 27);
+			Actions.PlanAddRoad(Player, 33, 26);
+			Actions.PlanAddRoad(Player, 33, 25);
+			Actions.PlanAddRoad(Player, 33, 24);
+			Actions.PlanAddRoad(Player, 33, 23);
+		end;
+		9: begin
+			Actions.PlanAddRoad(Player, 30, 27); //Connect Smelter to Windmill
+			Actions.PlanAddRoad(Player, 29, 27);
+			Actions.PlanAddRoad(Player, 28, 27);
+			Actions.PlanAddRoad(Player, 28, 26);
+			Actions.PlanAddHouse(Player, 19, 27, 33); //Weapons Workshop
+			Actions.PlanAddRoad(Player, 27, 34);
+			Actions.PlanAddRoad(Player, 26, 34);
+			Actions.PlanAddRoad(Player, 25, 34);
+			Actions.PlanAddRoad(Player, 25, 33);
+			Actions.PlanAddRoad(Player, 25, 32);
+			Actions.PlanAddRoad(Player, 24, 32);
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htWeaponWorkshop, 2);
+		end;
+		10: begin
+			PlanAddHouseAndConnect(Player, 9, 25, 40); //Woodcutter
+			PlanAddHouseAndConnect(Player, 9, 32, 43); //Woodcutter
+		end;
+		11: begin
+			Actions.PlanAddHouse(Player, 24, 25, 10); //Butcher
+			Actions.PlanAddRoad(Player, 25, 11);
+			Actions.PlanAddRoad(Player, 25, 12);
+			Actions.PlanAddRoad(Player, 25, 13);
+			Actions.PlanAddRoad(Player, 24, 13);
+			Actions.PlanAddRoad(Player, 24, 14);
+			Actions.PlanAddRoad(Player, 24, 15);
+			Actions.PlanAddRoad(Player, 24, 16);
+			Actions.PlanAddHouse(Player, 25, 5, 18); //Tannery
+			Actions.PlanAddRoad(Player, 5, 19);
+			Actions.PlanAddRoad(Player, 6, 19);
+			Actions.PlanAddRoad(Player, 7, 19);
+			Actions.PlanAddRoad(Player, 8, 19);
+			Actions.PlanAddRoad(Player, 8, 18);
+			Actions.PlanAddRoad(Player, 9, 18);
+		end;
+		12: begin
+			PlanAddHouseAndConnect(Player, 9, 6, 11); //Woodcutter
+			Actions.PlanAddRoad(Player, 8, 20); //Connect Tannery to Swinfarm
+			Actions.PlanAddRoad(Player, 8, 21);
+			Actions.PlanAddRoad(Player, 9, 21);
+			Actions.PlanAddRoad(Player, 9, 22);
+			Actions.PlanAddRoad(Player, 9, 23);
+		end;
+		13: begin
+			Actions.PlanAddHouse(Player, 20, 7, 28); //Armory Workshop
+			Actions.PlanAddRoad(Player, 7, 29);
+			Actions.PlanAddRoad(Player, 8, 29);
+			Actions.PlanAddRoad(Player, 9, 29);
+			Actions.PlanAddRoad(Player, 10, 29);
+			Actions.PlanAddRoad(Player, 11, 29);
+			Actions.PlanAddRoad(Player, 11, 28);
+			Actions.PlanAddRoad(Player, 11, 27);
+			Actions.PlanAddRoad(Player, 11, 26);
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htArmorWorkshop, 1);
+		end;
+		14: begin
+			Actions.PlanAddHouse(Player, 20, 2, 27); //Armory Workshop #2
+			Actions.PlanAddRoad(Player, 2, 28);
+			Actions.PlanAddRoad(Player, 3, 28);
+			Actions.PlanAddRoad(Player, 4, 28);
+			Actions.PlanAddRoad(Player, 5, 28);
+			Actions.PlanAddRoad(Player, 5, 29);
+			Actions.PlanAddRoad(Player, 6, 29);
+		end;
+		15: begin
+			Actions.PlanAddHouse(Player, 21, 34, 32);//Barracks
+			Actions.PlanAddRoad(Player, 34, 33);
+			Actions.PlanAddRoad(Player, 33, 33);
+			Actions.PlanAddRoad(Player, 32, 33);
+			Actions.PlanAddRoad(Player, 31, 33);
+			Actions.PlanAddRoad(Player, 30, 33);
+			Actions.PlanAddRoad(Player, 30, 34);
+			Actions.PlanAddRoad(Player, 29, 34);
+			Actions.PlanAddRoad(Player, 28, 34);
+		end;
+		16: begin
+			Actions.PlanAddHouse(Player, 8, 14, 31); //Farm #4
+			Actions.PlanAddRoad(Player, 14, 32);
+			Actions.PlanAddRoad(Player, 13, 32);
+			Actions.PlanAddRoad(Player, 12, 32);
+			Actions.PlanAddRoad(Player, 12, 31);
+			Actions.PlanAddRoad(Player, 12, 30);
+			Actions.PlanAddRoad(Player, 11, 30);
+			Actions.PlanAddField(Player, 12, 28); //Farmland for Farm #4
+			Actions.PlanAddField(Player, 13, 28);
+			Actions.PlanAddField(Player, 14, 28);
+			Actions.PlanAddField(Player, 15, 28);
+			Actions.PlanAddField(Player, 15, 28);
+			Actions.PlanAddField(Player, 17, 29);
+			Actions.PlanAddField(Player, 17, 30);
+			Actions.PlanAddField(Player, 18, 30);
+			Actions.PlanAddField(Player, 19, 30);
+			Actions.PlanAddField(Player, 13, 33); //More Farmland under Farm #4
+			Actions.PlanAddField(Player, 14, 33);
+			Actions.PlanAddField(Player, 15, 33);
+			Actions.PlanAddField(Player, 16, 33);
+			Actions.PlanAddField(Player, 13, 34);
+			Actions.PlanAddField(Player, 14, 34);
+			Actions.PlanAddField(Player, 15, 34);
+			Actions.PlanAddField(Player, 16, 34);
+			Actions.PlanAddField(Player, 17, 34);
+			Actions.PlanAddField(Player, 14, 35);
+			Actions.PlanAddField(Player, 15, 35);
+			Actions.PlanAddField(Player, 16, 35);
+			Actions.PlanAddField(Player, 17, 35);
+		end;
+		17: begin
+			Actions.PlanAddHouse(Player, 16, 10, 33); //Swinefarm #2
+			Actions.PlanAddRoad(Player, 10, 34);
+			Actions.PlanAddRoad(Player, 11, 34);
+			Actions.PlanAddRoad(Player, 12, 34);
+			Actions.PlanAddRoad(Player, 12, 33);
+			Actions.PlanAddRoad(Player, 15, 32); //Connect Farm #4 to Farm #3
+			Actions.PlanAddRoad(Player, 16, 32); 
+			Actions.PlanAddRoad(Player, 17, 32);
+			Actions.PlanAddRoad(Player, 17, 31);
+			Actions.PlanAddRoad(Player, 18, 31);
+			Actions.PlanAddRoad(Player, 19, 31);
+			Actions.PlanAddRoad(Player, 20, 31);
+		end;
+		18: begin
+			PlanAddHouseAndConnect(Player, 9, 14, 39); //Woodcutter
+		end;
+		19: begin
+			PlanAddHouseAndConnect(Player, 0, 21, 34); //Sawmill #2
+			Actions.PlanAddRoad(Player, 32, 32); //Connect Barracks to Metallurgist
+			Actions.PlanAddRoad(Player, 32, 31);
+			Actions.PlanAddRoad(Player, 32, 30);
+			Actions.PlanAddRoad(Player, 31, 30);
+			Actions.PlanAddRoad(Player, 31, 29);
+			Actions.PlanAddRoad(Player, 31, 28);
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htWeaponWorkshop, 3);
+		end;
+		20: begin
+			//Vineyards
+			Actions.PlanAddHouse(Player, 28, 5, 32); //Vineyard
+			Actions.PlanAddRoad(Player, 5, 33);
+			Actions.PlanAddRoad(Player, 6, 33);
+			Actions.PlanAddRoad(Player, 6, 34);
+			Actions.PlanAddRoad(Player, 7, 34);
+			Actions.PlanAddRoad(Player, 8, 34);
+			Actions.PlanAddRoad(Player, 9, 34);
+			Actions.PlanAddWinefield(Player, 2, 33); //Winefields for Vineyard #1
+			Actions.PlanAddWinefield(Player, 3, 33);
+			Actions.PlanAddWinefield(Player, 4, 33);
+			Actions.PlanAddWinefield(Player, 2, 34);
+			Actions.PlanAddWinefield(Player, 3, 34);
+			Actions.PlanAddWinefield(Player, 4, 34);
+			Actions.PlanAddWinefield(Player, 5, 34);
+			Actions.PlanAddWinefield(Player, 3, 35);
+			Actions.PlanAddWinefield(Player, 4, 35);
+		end;
+		21: begin
+			PlanAddHouseAndConnect(Player, 0, 6, 37); //Sawmill #3
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htWeaponWorkshop, 4);
+		end;
+		22: begin
+			Actions.PlanAddHouse(Player, 19, 40, 31); //Weapons Workshop #2
+			Actions.PlanAddRoad(Player, 40, 32);
+			Actions.PlanAddRoad(Player, 39, 32);
+			Actions.PlanAddRoad(Player, 38, 32);
+			Actions.PlanAddRoad(Player, 37, 32);
+			Actions.PlanAddRoad(Player, 37, 33);
+			Actions.PlanAddRoad(Player, 36, 33);
+			Actions.PlanAddRoad(Player, 35, 33);
+		end;
+		23: begin
+			PlanAddHouseAndConnect(Player, 9, 42, 37); //Woodcutter
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htWeaponWorkshop, 5);
+		end;
+		24: begin
+			PlanAddHouseAndConnect(Player, 20, 16, 15); //Armory Workshop #3
+		end;
+		25: begin
+			PlanAddHouseAndConnect(Player, 3, 46, 30); //Coal Mine #2\
+		end;
+		26: begin
+			PlanAddHouseAndConnect(Player, 5, 53, 26); //Gold Mine #2
+		end;
+		27: begin
+			PlanAddHouseAndConnect(Player, 6, 55, 31); //Fisherman
+			Actions.PlayerWareDistributionEx(Player, wtTimber, htArmorWorkshop, 2);
+		end;
+		28: begin
+			Actions.PlanAddHouse(Player, 3, 36, 25); //Coal Mine #3
+			Actions.PlanAddRoad(Player, 36, 26);
+			Actions.PlanAddRoad(Player, 35, 26);
+			Actions.PlanAddRoad(Player, 34, 26);
+			Actions.PlanAddRoad(Player, 23, 23);
+			Actions.PlanAddRoad(Player, 24, 23);
+			Actions.PlanAddRoad(Player, 24, 24);
+		end;
+		29: begin
+			Actions.PlanAddRoad(Player, 36, 27);
+			Actions.PlanAddRoad(Player, 37, 27);
+			Actions.PlanAddRoad(Player, 37, 28);
+			Actions.PlanAddRoad(Player, 38, 28);
+			Actions.PlanAddRoad(Player, 38, 29);
+			Actions.PlanAddRoad(Player, 38, 30);
+			Actions.PlanAddRoad(Player, 38, 31);
+		end;
+	end;
+	if ConstructionIndex < 255 then
+		Inc(ConstructionIndex);
+end;
+
+
+procedure Construction(Player: Byte);
+var
+	aHouses: array of Integer;
+	h, u: Integer;
+begin	
+	aHouses := States.PlayerGetAllHouses(Player);
+			
+	for h := 0 to High(aHouses) do
+	begin
+		if not States.HouseIsComplete(aHouses[h]) then
+		begin
+			//Only 1 Building unfinished and has to be at least 50% done
+			if States.HouseBuildingProgress(aHouses[h]) < (States.HouseTypeMaxHealth(States.HouseType(aHouses[h])) /2) then
+			begin
+				exit;
+			end else
+				Inc(u);
+			if u > 1 then
+				exit;
+		end;
+	end;
+	
+	if u < 2 then
+		ConstructCity(Player, ConstructionIndex);
+end;
+
+
+procedure Player1OnMissionStart();
+begin
+	SchoolID := Actions.GiveHouseSiteEx(PLAYER, htSchool, 29, 20, 6, 4);
+end;
+
+
+procedure Player1OnTick();
+{var
+	aHouses: array of Integer;
+	h: Integer;}
+begin
+	if States.GameTime() = 1 then
+	begin
+		Actions.HouseAddBuildingProgressEx(SchoolID, 75);
+	end;
+
+	if States.GameTime() mod 351 = 0 then
+	begin
+		if not States.PlayerDefeated(PLAYER) then
+			Construction(PLAYER);
+	end;
+end;
+
+
+
+procedure Player1OnHouseBuilt(aHouse: Integer);
+begin
+	if States.HouseAt(23, 30) = aHouse then
+	begin
+		Actions.HouseWoodcutterChopOnly(aHouse, true);	
+	end;
+end;
+

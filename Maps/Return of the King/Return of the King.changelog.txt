@@ -1,0 +1,41 @@
+Return of the King
+******************
+
+v0.7 (24.10.2023)
+- First limited release on "The Barbarian" Discord Server
+
+v0.7.1 (06.11.2023)
+- Minor Changes to main script
+- Fixed initial message to player (wrongly pointed to AI ally's base before)
+- Connect Player4 and Player5's Villages on hard only
+- Increased Player4 defence radius of all groups to 30 on hard only
+- Increased Player5 defence radius of all groups
+- Increased Defence Position of Swordman group on "Final Stage" from 24 to 30
+- Fixed a bug where bowmen AI reinforcements didnt spawn correctly
+- Bowman AI reinforcements reduced from 10 to 6
+- Remodelled Iron Mountain on Human Players Location to make the map more open
+- Moved 6th Iron Mining spot closer to 5th one; Total Iron resources reduced by 23; AI Starting Positions adjusted
+- Slightly changed Stone Mountain on Human Player Loaction; Reduced stone supply by a minor value
+- On Normal: First Attack of Player4 is now harder (49 instead of 41 soldiers); Timings unchanged
+- On Hard: First Attack of Player2 is now harder (50 instead of 41); Timings unchanged
+
+v0.7.1b (27.11.2023)
+- Diversified Water Tiles
+- Recuded Auto Attack Range of AI Enemies from 4 to 3 or 2
+- Changed AI colors
+
+v0.7.1c (21.12.2023)
+- Change King Player colour
+
+v0.7.2 (20.03.2024)
+- Changed Ally Colour from Brown to Orange
+- Coal Field of Human Player increased from 402 to 491 (next to Gold) 
+- Coal Field of Human Player increased from 636 to 669 (next to Iron)
+- Total minable Iron at Human Player Location increased by 23 (Reverted to pre v0.7.1)
+- Moved unminable Iron to another mining spot
+- Increased starting Food in Human Player's storehouse: Sausages from 25 to 30; Fish from 20 to 25
+- Coal removed from Human Player's storehouse
+- Fixed broken tiles
+- Rephrased confusing ingame Messages
+- Fixed Recruitment Rate of AI Player 5; AI was recruiting too fast on 'normal' and too slow on 'hard'
+- Changed trigger for Message4

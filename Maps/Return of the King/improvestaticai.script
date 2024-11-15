@@ -1,9 +1,9 @@
 //-- Improve Static AI --//
 //By Strangelove
-//v0.6.1
-//16.10.2024
+//v0.5.3
+//20.10.2023
 //Developed for r8754
-//Last modified on r15122
+//Last modified on r14787
 //Requires r14281+ to work
 
 
@@ -12,21 +12,16 @@
 // Do not use this script without permission from its author!
 
 {$EVENT evtMissionStart:ImproveStaticAIOnMissionStart}
-{$EVENT evtMissionStart:ImproveStaticAI2OnMissionStart}
 {$EVENT evtHouseDamaged:ImproveStaticAIOnHouseDamaged}
 {$EVENT evtHouseRepaired:ImproveStaticAIOnHouseRepaired}
 {$EVENT evtHouseDestroyed:ImproveStaticAIOnHouseDestroyed}
-{$EVENT evtHouseAfterDestroyedEx:ImproveStaticAI2OnHouseAfterDestroyedEx}
 {$EVENT evtTick:ImproveStaticAIOnTick}
 {$EVENT evtTick:ImproveStaticAI2OnTick}
 {$EVENT evtTick:ImproveStaticAI3OnTick}
 {$EVENT evtTick:ImproveStaticAI4OnTick}
-{$EVENT evtTick:ImproveStaticAI5OnTick}
 {$EVENT evtPlayerDefeated:ImproveStaticAIOnPlayerDefeated}
 {$EVENT evtHouseBuilt:ImproveStaticAIOnHouseBuilt}
-{$EVENT evtHouseBuilt:ImproveStaticAI2OnHouseBuilt}
-{$EVENT evtHouseAfterDestroyedEx:ImproveStaticAIOnHouseAfterDestroyedEx}
-{$EVENT evtUnitDied:ImproveStaticAIOnUnitDied}
+{$EVENT evtHouseAfterDestroyed:ImproveStaticAIOnHouseAfterDestroyed}
 
 
 {$DEFINE DEBUG}
@@ -46,8 +41,6 @@
 //{$UNDEF RETIRE}
 {$DEFINE DESTROY} //Destroy Houses that cant reach resources
 {$UNDEF DESTROY}
-{$DEFINE REPLENISH} //Replenish Soldiers that are killed before Recruit Delay is up
-//{$UNDEF REPLENISH}
 
 
 const
@@ -63,8 +56,7 @@ const
 	
 	//Destroy
 	DESTROY_DELAY = 1199;
-
-
+	
 	
 {$IFDEF REBUILD}
 Type
@@ -536,23 +528,12 @@ begin
 	ResetWareBlock(HouseOwner);
 end;
 
-procedure ImproveStaticAIOnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, X, Y: Integer);
+procedure ImproveStaticAIOnHouseAfterDestroyed(aHouseType, aOwner, aX, aY: Integer);
 begin
 	ResetWareBlock(aOwner);
 end;
-{$ELSE}
-
-
-procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
-begin
-
-end;
-
-procedure ImproveStaticAIOnHouseAfterDestroyed(aHouseType, aOwner, aX, aY: Integer);
-begin
-
-end;
 {$ENDIF}
+
 
 {$IFDEF REPAIR}
 procedure ImproveStaticAIOnHouseDamaged(aHouse: Integer; aAttacker: Integer);
@@ -654,7 +635,7 @@ end;
 //Make AI rebuild destroyed Houses
 procedure ImproveStaticAIOnTick();
 var 
-	GameTime: Integer;
+	GameTime: Cardinal;
 	j: Integer;
 begin
 	GameTime := States.GameTime();
@@ -780,176 +761,6 @@ end;
 {$ENDIF}
 
 
-
-{$IFDEF REPLENISH}
-var
-	ReplenishingCount: array of Integer;
-	bHasBarracks: array of Boolean;
-	ReplenishRate: Integer;
-
-
-
-function PlayerHasBarracks(Player: Integer): Boolean;
-var
-	aHouses: array of Integer;
-	h: Integer;
-begin
-	aHouses := States.PlayerGetAllHouses(Player);
-	for h := 0 to High(aHouses) do
-		if States.HouseTypeEx(aHouses[h]) = htBarracks then
-			if States.HouseIsComplete(aHouses[h]) then //Check if Barracks is complete
-			begin
-				Result := true;
-				exit;
-			end;
-	Result := false;
-end;
-
-
-function TrainRecruit(Player: Integer): Integer;
-var
-	aHouses: array of Integer;
-	h: Integer;
-begin
-	aHouses := States.PlayerGetAllHouses(Player);
-	for h := 0 to High(aHouses) do
-		if States.HouseTypeEx(aHouses[h]) = htSchool then
-			if States.HouseSchoolQueue(aHouses[h], 5) = -1 then //Check if there is space in queue
-			begin
-				Result := Actions.HouseSchoolQueueAddEx(aHouses[h], utRecruit, 1);
-				break;
-			end;
-end;
-
-
-
-procedure ImproveStaticAI2OnMissionStart();
-var
-	p, t, RecruitRate: Integer;
-begin
-	SetLength(ReplenishingCount, States.StatPlayerCount());
-	SetLength(bHasBarracks, States.StatPlayerCount());
-	ReplenishRate := 3000; //Upper limit in MapEd: 3000
-	
-	for p := 0 to States.StatPlayerCount() -1 do
-		if States.PlayerIsAI(p) then
-		begin
-			bHasBarracks[p] := PlayerHasBarracks(p);
-			
-			if States.AIUnlimitedEquip(p) then //Never use UnlimitedEquip, but just in case...
-				RecruitRate := 100;	
-				
-			//Dynamic Replenish Rate (Scales with Equip Rate)
-			for t := 0 to 1 do
-			begin	
-				RecruitRate := States.AIEquipRate(p, t);
-				if ReplenishRate > RecruitRate then
-					ReplenishRate := RecruitRate;
-			end;
-		end;
-		
-	//Enforce lower limit
-	if ReplenishRate < 100 then
-		ReplenishRate := 100; //Lower limit in MapEd: 100
-end;
-
-
-procedure ImproveStaticAI2OnHouseBuilt(aHouse: Integer);
-begin
-	if States.HouseTypeEx(aHouse) = htBarracks then
-		bHasBarracks[States.HouseOwner(aHouse)] := true;
-end;
-
-
-procedure ImproveStaticAI2OnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, X, Y: Integer);
-var
-	h, q: Integer;
-	aHouses: array of Integer;
-begin
-	if aHouseType = htBarracks then
-	begin
-		bHasBarracks[aOwner] := PlayerHasBarracks(aOwner); //Check for 2nd Barracks
-		
-		if not bHasBarracks[aOwner] then
-		begin
-			aHouses := States.PlayerGetAllHouses(aOwner);
-			for h := 0 to High(aHouses) do
-				if States.HouseTypeEx(aHouses[h]) = htSchool then
-					for q := 5 downto 0 do
-						if States.HouseSchoolQueue(aHouses[h], q) = 13 then //Delete all Recruits from Queue (no standing around to cause traffic jam)
-						begin
-							Actions.HouseSchoolQueueRemove(aHouses[h], q);
-							Inc(ReplenishingCount[aOwner]); //Back to the array
-						end;
-		end;
-	end;
-end;
-
-
-procedure ImproveStaticAIOnUnitDied(aUnit: Integer; aKillerOwner: Integer);
-var
-	GroupID, Owner: Integer;
-begin
-	GroupID := States.UnitsGroup(aUnit);
-	if GroupID <> -1 then //Exclude civilians
-	begin
-		Owner := States.UnitOwner(aUnit);
-		if States.PlayerIsAI(Owner) then
-			if States.AIRecruitDelay(Owner) > 0 then
-				if States.GroupAssignedToDefencePosition(GroupID, -1, -1) then //Ignore units that have no defense positions (f.e. initial attack groups)
-					if bHasBarracks[Owner] then
-					begin
-						if TrainRecruit(Owner) <> 1 then //If all schools queues are full, store in array
-							Inc(ReplenishingCount[Owner]);
-					end else
-						Inc(ReplenishingCount[Owner]); //No Barracks? Store in array
-	end;
-end;
-
-
-procedure ImproveStaticAI5OnTick();
-var 
-	p: Integer;
-begin
-	if States.GameTime() mod ReplenishRate = 0 then
-		for p := 0 to States.StatPlayerCount() -1 do
-			if States.PlayerIsAI(p) then
-				if bHasBarracks[p] then	//Check if there is a barracks
-					if ReplenishingCount[p] > 0 then
-						if TrainRecruit(p) = 1 then //Check if recruit was really added to queue
-							Dec(ReplenishingCount[p]);
-end;
-
-
-{$ELSE}
-procedure ImproveStaticAI2OnMissionStart();
-begin
-
-end;
-
-procedure ImproveStaticAI2OnHouseBuilt(aHouse: Integer);
-begin
-
-end;
-
-procedure ImproveStaticAI2OnHouseAfterDestroyedEx(aHouse, aDestroyerIndex: Integer);
-begin
-
-end;
-
-procedure ImproveStaticAIOnUnitDied(aUnit: Integer; aKillerOwner: Integer);
-begin
-
-end;
-
-procedure ImproveStaticAI5OnTick();
-begin
-
-end;
-{$ENDIF}
-
-
-
 {Changelog v0.5.1 01.04.2022}
 {- Instead of fixed array sice for destroyed houses, array will now increase if necessary
 - HouseData will not be removed from array if it cant be placed
@@ -969,14 +780,3 @@ end;
 - Houses that cant reach resources will not be repaired while damaged
 - Retire Units that do not have a home before they get hungry
 - Throw Workers out of Houses when resources are exhausted and destroy building after last ware has been taken from it (Turned off by default)}
-
-{Changelog v0.6.0 28.09.2024
-- Fixed a bug where the script broke when disabeling WareBlock function
-- AI is now replenishing its killed soldiers even during their recruit delay (only affects dead soldiers that were assigned to non-attacking defense positions)}
-
-{Changelog v0.6.1 16.10.2024
-- Fixed a bug with new replenishing script, where AI kept making recruits even though they had no barracks
-- All queued up recruits in schoolhouse will be deleted when barracks are destroyed (no recruits standing around, causing traffic jam)
-- Replenish Rate is now dynamic and depends on Recruit Rate of AIs
-- Refactoring code of new features
-- Switched OnHouseAfterDestroyed to OnHouseAfterDestroyedEx version}

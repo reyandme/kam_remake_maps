@@ -35,3 +35,9 @@ Shores in Flames
 
 0.7.2b (06.04.2023)
 - Set MAX_HANDS to 28
+
+0.7.3 (04.09.2024)
+- Its now possible for EnemyAI Landing troops to spawn across the bridge (50% on easy; 33% on normal; 0% on hard) instead of on Player side; First attack always happens on player side
+- After 1st attack, the "Beacon"-Sound will be played to alert the player whenever troops have landed
+- Added Message to player for first AI reinforcements (No messages will be sent for future attacks)
+- Changed AI Player Colors
