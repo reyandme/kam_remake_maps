@@ -2,3 +2,10 @@ Version 0.6.0b (06.04.2023)
 - Updated improvestaticai.script to newest version
 - Added newest version of difficulty.script and set MAX_HANDS to 28
 - Made changes to Player1s Stone Mountain to make it more easily minable
+
+Version 0.7 (20.11.2024)
+- Updatged improvestaticai.script to newest version
+- difficulty.script replaced by tools.script
+- Changes to main script
+- Enabled and setup easy3, easy2 and easy1 difficulties
+- Changes to libx file and naming of AI enemies
