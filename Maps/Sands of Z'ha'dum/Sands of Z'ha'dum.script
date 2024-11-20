@@ -1,15 +1,13 @@
 //-- Sands of Z'ha'dum --//
 //By Strangelove
-//v1.0
-//16.10.2024
+//v1.1
+//18.11.2024
 //Developed for KaM Remake r12945
 //Last modified on KaM Remake r15122
 
-
-{$I difficulty.script}
+{$I tools.script}
 {$I addplayer4.script}
 {$I improvestaticai.script}
-{$I dynamicmap.script}
 {$I player4.script}
 
 
@@ -25,78 +23,11 @@ var
 
 
 
-function MinToTick(Minutes: Integer): Integer;
-begin
-	Result := Minutes *600;
-end;
-
-
-function Randomize(Value: Integer; Percentage: Single): Integer;
-begin
-	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
-end;
-
-
-function IsImportantBuilding(aHouseType: TKMHouseType): Boolean;
-begin
-	case aHouseType of
-		htStore: Result := true;
-		htSchool: Result := true;
-		htBarracks: Result := true;
-		htTownhall: Result := true;
-		else
-			Result := false;
-	end;
-end;
-
-
-function IsWarrior(aUnitType: TKMUnitType): Boolean;
-begin
-	case aUnitType of
-		utMilitia: Result := true;
-		utAxeFighter: Result := true;
-		utSwordFighter: Result := true;
-		utBowman: Result := true;
-		utCrossbowman: Result := true;
-		utLanceCarrier: Result := true;
-		utPikeman: Result := true;
-		utScout: Result := true;
-		utKnight: Result := true;
-		utBarbarian: Result := true;
-		utRebel: Result := true;
-		utRogue: Result := true;
-		utWarrior: Result := true;
-		utVagabond: Result := true;
-		else
-			Result := false;
-	end;
-end;
-
-
-
-procedure SetEqualEquipRate(Player, Rate: Integer);
-begin
-	Actions.AIEquipRate(Player, 0, Rate);
-	Actions.AIEquipRate(Player, 1, Rate);
-end;
-
-
 procedure ShowMsgGoToAndReveal(Player, X, Y, Radius: Integer; Text: AnsiString);
 begin
 	Actions.ShowMsgGoto(Player, X, Y, Text);
 	Actions.FogRevealCircle(Player, X, Y, Radius);	
 end;
-
-
-procedure DisplayGoals(Player: Integer; GoalStatus: Byte; sStringToDisplay: ANSIString);
-begin
-	case GoalStatus of
-		0: Actions.OverlayTextAppend(Player, '[$FFFFFF]|  o ' + sStringToDisplay); //Pending
-		1: Actions.OverlayTextAppend(Player, '[$00FF00]|  v ' + sStringToDisplay); //Successfull
-		2: Actions.OverlayTextAppend(Player, '[$0000FF]|  x ' + sStringToDisplay); //Failed
-	end;
-end;
-
 
 
 procedure OnMissionStart();
@@ -620,13 +551,13 @@ begin
 	end;
 
 	//Display Goals
-	Actions.OverlayTextSet(HUMAN_PLAYER, '<$10>');
+	Actions.OverlayTextSet(HUMAN_PLAYER, '[$33FFF3]<$10>:[$FFFFFF]');
 	DisplayGoals(HUMAN_PLAYER, EnemyHousesDestroyed, '<$11>');
 	DisplayGoals(HUMAN_PLAYER, EnemyUnitsDestroyed, '<$12>');
 	
 	if bShowBonusObjectives then
 	begin
-		Actions.OverlayTextAppend(HUMAN_PLAYER, '|[$FFFFFF]|<$13>');
+		Actions.OverlayTextAppend(HUMAN_PLAYER, '|[$33FFF3]|<$13>:[$FFFFFF]');
 		DisplayGoals(HUMAN_PLAYER, MiningCampDestroyed, '<$14>');
 		DisplayGoals(HUMAN_PLAYER, GoldMineBuilt, '<$15>');
 	end;
