@@ -1,11 +1,12 @@
 //-- Hammerheart --//
 //By Strangelove
-//v0.5c
-//03.06.2022
+//v0.7
+//20.11.2024
 //Developed for KaM Remake r12945
+//Last edited and tested on KMR r15122
 
 
-{$I difficulty.script}
+{$I tools.script}
 {$I improvestaticai.script}
 
 
@@ -15,7 +16,7 @@
 
 
 var
-	bGoldMsg: array[0..16] of Boolean;
+	bGoldMsg: array[0..2] of Boolean;
 
 
 
@@ -27,40 +28,21 @@ end;
 
 procedure KillPlayerGroups(P: Integer);
 var
-	g: ShortInt;
+	g: Integer;
 	iGroups: array of Integer;
 begin
 	iGroups := States.PlayerGetAllGroups(P);
-	for g := 0 to Length(iGroups) -1 do
+	for g := 0 to High(iGroups) do
 		Actions.GroupKillAll(iGroups[g], false);
 end;
 
 
 procedure SkipInitialFightSequence(P: Integer); //Kill all Groups involved in initial Attack
 var
-	g: Byte;
+	g: Integer;
 begin
 	for g := 13 to 15 do
 		KillPlayerGroups(g);
-end;
-
-
-function MinToTick(Minutes: Word): Word;
-begin
-	Result := Minutes *600;
-end;
-
-
-function Randomize(Value: Integer; Percentage: Single): Integer;
-begin
-	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
-end;
-
-
-procedure IronEquipRate(Player: Byte; Rate: Word);
-begin
-	Actions.AIEquipRate(Player, 1, Rate);
-	Actions.AIEquipRate(Player, 0, Rate *2); //Leather Equip Rate = Iron Equip Rate *2
 end;
 
 
@@ -69,6 +51,1078 @@ var
 	aCustomPosition: TKMPoint;
 begin
 	case States.MissionDifficulty() of
+	    mdEasy3:
+    	    begin
+            //Initial Attack on Player0
+			Actions.GiveGroup(13, 22, 62, 46, 4, 6, 3); //Knights
+			Actions.GiveGroup(13, 22, 66, 47, 4, 8, 4);
+			Actions.GiveGroup(13, 22, 71, 46, 4, 6, 3);
+			Actions.GiveGroup(13, 16, 5, 102, 2, 12, 4); //Swordman
+			Actions.GiveGroup(13, 20, 4, 97, 2, 6, 3); //Pikeman
+			Actions.GiveGroup(13, 20, 4, 106, 2, 6, 3);
+			Actions.GiveGroup(13, 18, 1, 99, 2, 3, 3); //Xbows
+			Actions.GiveGroup(13, 18, 1, 104, 2, 3, 3);
+			//Initial Attack on Player1
+			Actions.GiveGroup(14, 22, 137, 102, 5, 8, 4); //Knights
+			Actions.GiveGroup(14, 22, 134, 106, 5, 8, 4);
+			Actions.GiveGroup(14, 22, 111, 192, 6, 6, 3);
+			Actions.GiveGroup(14, 22, 114, 193, 6, 8, 4);
+			//Initial Attack on Player2
+			Actions.GiveGroup(15, 16, 181, 179, 5, 8, 4); //Swordman
+			Actions.GiveGroup(15, 20, 186, 184, 5, 9, 3); //Pikeman
+			Actions.GiveGroup(15, 18, 188, 179, 5, 8, 4); //Xbow
+			Actions.GiveGroup(15, 22, 217, 245, 6, 6, 3); //Knights
+			Actions.GiveGroup(15, 22, 216, 249, 6, 9, 3);
+			Actions.GiveGroup(15, 22, 215, 253, 6, 6, 3);
+
+
+			//-- Setup AI --//
+			// From top left to bottom right
+
+			//AI Player 3 (Top-Left)
+			//Basic
+			Actions.AIWorkerLimit(3, 3);
+			Actions.AIRecruitLimit(3, 12);
+			Actions.AIRecruitDelay(3, MinToTick(80));
+			SetEqualEquipRate(3, Randomize(870, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 24); //DefencePosition #0
+            AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(3, 16, 40, 14, 2, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(3, 16, 4, 52, 4, 26); //DefencePosition #3
+            AddDefencePositionAndGroup(3, 16, 33, 14, 2, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(3, 20, 3, 58, 4, 26); //DefencePosition #5
+            AddDefencePositionAndGroup(3, 20, 34, 19, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(3, 20, 19, 45, 3, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(3, 18, 9, 56, 4, 26); //DefencePosition #8
+            AddDefencePositionAndGroup(3, 18, 24, 46, 3, 24); //DefencePosition #9
+            AddDefencePositionAndGroup(3, 18, 37, 14, 2, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(3, 22, 19, 55, 3, 24); //DefencePosition #11
+            AddDefencePositionAndGroup(3, 22, 40, 8, 3, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(3, 22, 29, 42, 4, 26); //DefencePosition #13
+            Actions.AIDefencePositionAdd(3, 14, 50, 3, 0, 26, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(3, 34, 7, 2, 1, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(3, 11, 47, 3, 2, 26, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(3, 30, 14, 2, 2, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(3, 29, 21, 2, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 224
+
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 3);
+			Actions.AIRecruitLimit(4, 12);
+			Actions.AIRecruitDelay(4, MinToTick(78));
+			SetEqualEquipRate(4, Randomize(785, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player4
+            AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(4, 16, 86, 9, 2, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(4, 16, 60, 38, 4, 20); //DefencePosition #2
+            AddDefencePositionAndGroup(4, 16, 76, 10, 2, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(4, 16, 41, 14, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(4, 20, 44, 42, 4, 20); //DefencePosition #5
+            AddDefencePositionAndGroup(4, 20, 80, 13, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(4, 20, 79, 3, 2, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(4, 18, 54, 40, 4, 20); //DefencePosition #8
+            AddDefencePositionAndGroup(4, 18, 83, 9, 2, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(4, 18, 60, 35, 4, 20); //DefencePosition #10
+            AddDefencePositionAndGroup(4, 18, 44, 14, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(4, 22, 48, 41, 4, 20); //DefencePosition #12
+            AddDefencePositionAndGroup(4, 22, 65, 35, 4, 20); //DefencePosition #13
+            AddDefencePositionAndGroup(4, 22, 84, 4, 2, 30); //DefencePosition #14
+            AddDefencePositionAndGroup(4, 22, 40, 20, 6, 30); //DefencePosition #15
+            Actions.AIDefencePositionAdd(4, 53, 37, 4, 0, 20, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(4, 38, 27, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(4, 47, 16, 6, 1, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(4, 73, 10, 2, 2, 30, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(4, 80, 9, 2, 3, 30, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 245
+
+			//AI Player 5 (Top-Middle)
+			//Basic
+			Actions.AIWorkerLimit(5, 3);
+			Actions.AIRecruitLimit(5, 12);
+			Actions.AIRecruitDelay(5, MinToTick(48));
+			SetEqualEquipRate(5, Randomize(940, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			//Defence Positions of Player5
+            AddDefencePositionAndGroup(5, 16, 142, 14, 6, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(5, 16, 213, 8, 2, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(5, 16, 143, 6, 6, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(5, 16, 207, 14, 2, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(5, 16, 149, 5, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(5, 20, 149, 17, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(5, 20, 212, 3, 2, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(5, 18, 145, 14, 6, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(5, 18, 210, 8, 2, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(5, 18, 146, 6, 6, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(5, 18, 204, 14, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(5, 22, 144, 21, 5, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(5, 22, 211, 14, 2, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(5, 22, 148, 11, 6, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(5, 22, 154, 3, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(5, 154, 18, 6, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(5, 153, 8, 6, 1, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(5, 169, 17, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(5, 157, 18, 6, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(5, 206, 21, 2, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 236
+
+			//AI Player 6 (Top-Right: Walled City)
+			//Basic
+			Actions.AIWorkerLimit(6, 3);
+			Actions.AIRecruitLimit(6, 12);
+			Actions.AIRecruitDelay(6, MinToTick(96));
+			SetEqualEquipRate(6, Randomize(785, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(6, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+            //Defence Positions of Player6
+            AddDefencePositionAndGroup(6, 16, 215, 8, 6, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(6, 16, 249, 51, 3, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(6, 16, 220, 17, 6, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(6, 16, 251, 41, 4, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(6, 16, 222, 4, 6, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(6, 16, 237, 51, 2, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(6, 20, 218, 3, 6, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(6, 20, 241, 48, 2, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(6, 20, 252, 46, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(6, 22, 216, 13, 6, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(6, 22, 242, 53, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(6, 22, 245, 43, 3, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(6, 18, 218, 8, 6, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(6, 18, 246, 48, 3, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(6, 18, 223, 17, 6, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(6, 18, 234, 51, 2, 35); //DefencePosition #15
+            AddDefencePositionAndGroup(6, 18, 225, 4, 6, 35); //DefencePosition #16
+            Actions.AIDefencePositionAdd(6, 221, 11, 6, 0, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(6, 226, 16, 6, 1, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(6, 227, 10, 6, 1, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(6, 224, 11, 6, 2, 35, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(6, 223, 23, 6, 3, 35, 1); //DefencePosition #21
+            //Amount of Army Units assigned to DefencePositions: 258
+
+			//AI Player 7 (Middle-Right: Bridge)
+			//Basic
+			Actions.AIWorkerLimit(7, 3);
+			Actions.AIRecruitLimit(7, 12);
+			Actions.AIRecruitDelay(7, MinToTick(102));
+			SetEqualEquipRate(7, Randomize(785, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
+			//Attacks
+			AddAIAttack(7, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(7, true, GetEffectiveEquipRate(8) -1, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player7
+            AddDefencePositionAndGroup(7, 16, 246, 110, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(7, 16, 252, 53, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(7, 16, 252, 107, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(7, 16, 246, 60, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(7, 20, 236, 108, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(7, 20, 252, 60, 0, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(7, 20, 252, 103, 4, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(7, 20, 248, 67, 0, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(7, 18, 246, 107, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(7, 18, 252, 56, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(7, 18, 237, 111, 4, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(7, 18, 246, 63, 0, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(7, 22, 241, 108, 4, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(7, 22, 247, 56, 0, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(7, 22, 232, 110, 4, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(7, 22, 234, 104, 4, 35); //DefencePosition #15
+            Actions.AIDefencePositionAdd(7, 246, 104, 4, 0, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(7, 239, 103, 4, 1, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(7, 246, 101, 4, 2, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(7, 243, 68, 0, 3, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(7, 252, 65, 0, 3, 35, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 239
+
+			//AI Player 8 (Middle: Island)
+			//Basic
+			Actions.AIWorkerLimit(8, 3);
+			Actions.AIRecruitLimit(8, 12);
+			Actions.AIRecruitDelay(8, MinToTick(120));
+			SetEqualEquipRate(8, Randomize(900, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(8, false, 0, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //36 Knights
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 4, attClosestBuildingFromStartPos, aCustomPosition); //48 Knights
+			//Defence Positions of Player8
+            AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #0
+            AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #1
+            AddDefencePositionAndGroup(8, 16, 208, 87, 2, 40); //DefencePosition #2
+            AddDefencePositionAndGroup(8, 16, 204, 105, 2, 40); //DefencePosition #3
+            AddDefencePositionAndGroup(8, 20, 205, 82, 2, 40); //DefencePosition #4
+            AddDefencePositionAndGroup(8, 20, 203, 99, 2, 40); //DefencePosition #5
+            AddDefencePositionAndGroup(8, 20, 200, 90, 2, 40); //DefencePosition #6
+            AddDefencePositionAndGroup(8, 20, 203, 110, 2, 40); //DefencePosition #7
+            AddDefencePositionAndGroup(8, 20, 193, 106, 2, 40); //DefencePosition #8
+            AddDefencePositionAndGroup(8, 18, 207, 93, 2, 40); //DefencePosition #9
+            AddDefencePositionAndGroup(8, 18, 205, 87, 2, 40); //DefencePosition #10
+            AddDefencePositionAndGroup(8, 18, 201, 105, 2, 40); //DefencePosition #11
+            AddDefencePositionAndGroup(8, 18, 195, 88, 2, 40); //DefencePosition #12
+            AddDefencePositionAndGroup(8, 18, 196, 111, 2, 40); //DefencePosition #13
+            AddDefencePositionAndGroup(8, 22, 208, 100, 2, 40); //DefencePosition #14
+            AddDefencePositionAndGroup(8, 22, 212, 85, 2, 40); //DefencePosition #15
+            AddDefencePositionAndGroup(8, 22, 201, 86, 2, 40); //DefencePosition #16
+            AddDefencePositionAndGroup(8, 22, 198, 106, 2, 40); //DefencePosition #17
+            AddDefencePositionAndGroup(8, 22, 199, 100, 2, 40); //DefencePosition #18
+            Actions.AIDefencePositionAdd(8, 191, 80, 2, 3, 40, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(8, 197, 74, 2, 3, 40, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(8, 203, 71, 2, 3, 40, 1); //DefencePosition #21
+            Actions.AIDefencePositionAdd(8, 196, 64, 2, 3, 36, 1); //DefencePosition #22
+            //Amount of Army Units assigned to DefencePositions: 263
+
+			//AI Player 9 (Middle-Right: Small Gold Mountain)
+			//Basic
+			Actions.AIWorkerLimit(9, 3);
+			Actions.AIRecruitLimit(9, 12);
+			Actions.AIRecruitDelay(9, MinToTick(81));
+			SetEqualEquipRate(9, Randomize(760, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
+			//Attacks
+			AddAIAttack(9, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //45
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
+            //Defence Positions of Player9
+            AddDefencePositionAndGroup(9, 16, 246, 148, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(9, 16, 247, 111, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(9, 16, 236, 144, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(9, 16, 252, 112, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(9, 20, 241, 141, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(9, 20, 252, 140, 4, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(9, 20, 247, 118, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(9, 18, 246, 145, 4, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(9, 18, 247, 114, 0, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(9, 18, 236, 147, 4, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(9, 18, 252, 115, 0, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(9, 22, 241, 146, 4, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(9, 22, 242, 114, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(9, 22, 251, 144, 4, 35); //DefencePosition #13
+            Actions.AIDefencePositionAdd(9, 246, 141, 4, 0, 35, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(9, 229, 154, 3, 0, 28, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(9, 232, 149, 4, 1, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(9, 246, 138, 4, 2, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(9, 251, 135, 4, 3, 35, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 216
+
+			//AI Player 10 (Bottom-Right: Bottom-Right: On top of empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(10, 3);
+			Actions.AIRecruitLimit(10, 12);
+			Actions.AIRecruitDelay(10, MinToTick(100));
+			SetEqualEquipRate(10, Randomize(815, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(10, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+            //Defence Positions of Player10
+            AddDefencePositionAndGroup(10, 16, 229, 204, 5, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(10, 16, 247, 150, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(10, 16, 232, 195, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(10, 16, 252, 149, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(10, 16, 243, 205, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(10, 20, 239, 205, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(10, 20, 242, 152, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(10, 20, 227, 198, 5, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(10, 18, 232, 201, 5, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(10, 18, 247, 153, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(10, 18, 238, 194, 5, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(10, 22, 235, 207, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(10, 22, 252, 154, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(10, 22, 237, 200, 5, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(10, 22, 245, 211, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(10, 225, 184, 4, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(10, 251, 213, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(10, 250, 208, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(10, 227, 187, 4, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(10, 245, 157, 0, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 212
+
+			//AI Player 11 (Bottom-Right: under empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(11, 3);
+			Actions.AIRecruitLimit(11, 12);
+			Actions.AIRecruitDelay(11, MinToTick(48));
+			SetEqualEquipRate(11, Randomize(1050, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			//Defence Positions of Player11
+            AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(11, 16, 227, 234, 7, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(11, 16, 227, 243, 6, 26); //DefencePosition #2
+            AddDefencePositionAndGroup(11, 16, 225, 252, 6, 24); //DefencePosition #3
+            AddDefencePositionAndGroup(11, 20, 221, 253, 6, 20); //DefencePosition #4
+            AddDefencePositionAndGroup(11, 20, 226, 248, 6, 24); //DefencePosition #5
+            AddDefencePositionAndGroup(11, 18, 223, 248, 6, 22); //DefencePosition #6
+            AddDefencePositionAndGroup(11, 18, 230, 237, 7, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(11, 22, 223, 241, 6, 24); //DefencePosition #8
+            AddDefencePositionAndGroup(11, 22, 234, 237, 6, 26); //DefencePosition #9
+            Actions.AIDefencePositionAdd(11, 235, 250, 6, 0, 26, 1); //DefencePosition #10
+            Actions.AIDefencePositionAdd(11, 230, 253, 6, 1, 26, 1); //DefencePosition #11
+            Actions.AIDefencePositionAdd(11, 241, 230, 6, 1, 26, 1); //DefencePosition #12
+            Actions.AIDefencePositionAdd(11, 230, 243, 6, 2, 26, 1); //DefencePosition #13
+            Actions.AIDefencePositionAdd(11, 231, 248, 6, 3, 26, 1); //DefencePosition #14
+            //Amount of Army Units assigned to DefencePositions: 156
+
+			//AI Player 12 (Middle: Snow Island Outpost)
+			//Basic
+			Actions.AIWorkerLimit(12, 3);
+			Actions.AIRecruitLimit(12, 12);
+			Actions.AIRecruitDelay(12, MinToTick(39));
+			SetEqualEquipRate(12, Randomize(1105, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 8, 9
+			Actions.AIGroupsFormationSetEx(12, gtRanged, 8, 4); //Only change Ranged formation from 12x4 to 8x4
+			//Attacks
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //44
+			//Defence Positions of Player12
+            AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(12, 16, 166, 133, 0, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(12, 16, 158, 161, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(12, 16, 184, 157, 3, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(12, 18, 161, 157, 5, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(12, 18, 169, 137, 0, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(12, 18, 180, 154, 3, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(12, 20, 165, 164, 4, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(12, 20, 156, 143, 6, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(12, 22, 161, 137, 7, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(12, 22, 157, 151, 6, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(12, 20, 175, 136, 1, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(12, 22, 178, 147, 2, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(12, 18, 159, 143, 6, 30); //DefencePosition #13
+            Actions.AIDefencePositionAdd(12, 161, 149, 6, 0, 30, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(12, 169, 159, 4, 2, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(12, 164, 144, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(12, 177, 143, 2, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(12, 175, 158, 4, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 211
+        end;
+
+        mdEasy2:
+	    begin
+            //Initial Attack on Player0
+			Actions.GiveGroup(13, 22, 62, 46, 4, 8, 4); //Knights
+			Actions.GiveGroup(13, 22, 67, 47, 4, 6, 3);
+			Actions.GiveGroup(13, 22, 71, 46, 4, 8, 4);
+			Actions.GiveGroup(13, 16, 5, 102, 2, 12, 4); //Swordman
+			Actions.GiveGroup(13, 20, 4, 97, 2, 6, 3); //Pikeman
+			Actions.GiveGroup(13, 20, 4, 106, 2, 6, 3);
+			Actions.GiveGroup(13, 18, 2, 99, 2, 4, 2); //Xbows
+			Actions.GiveGroup(13, 18, 2, 105, 2, 4, 2);
+			//Initial Attack on Player1
+			Actions.GiveGroup(14, 22, 137, 102, 5, 8, 4); //Knights
+			Actions.GiveGroup(14, 22, 134, 106, 5, 10, 5);
+			Actions.GiveGroup(14, 22, 111, 192, 6, 6, 3);
+			Actions.GiveGroup(14, 22, 114, 193, 6, 8, 4);
+			//Initial Attack on Player2
+			Actions.GiveGroup(15, 16, 181, 179, 5, 10, 5); //Swordman
+			Actions.GiveGroup(15, 20, 186, 184, 5, 9, 3); //Pikeman
+			Actions.GiveGroup(15, 18, 188, 179, 5, 8, 4); //Xbow
+			Actions.GiveGroup(15, 22, 217, 244, 6, 6, 3); //Knights
+			Actions.GiveGroup(15, 22, 216, 248, 6, 9, 3);
+			Actions.GiveGroup(15, 22, 215, 252, 6, 8, 4);
+
+
+			//-- Setup AI --//
+			// From top left to bottom right
+
+			//AI Player 3 (Top-Left)
+			//Basic
+			Actions.AIWorkerLimit(3, 4);
+			Actions.AIRecruitLimit(3, 12);
+			Actions.AIRecruitDelay(3, MinToTick(65));
+			SetEqualEquipRate(3, Randomize(770, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 24); //DefencePosition #0
+            AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(3, 16, 40, 14, 2, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(3, 16, 4, 52, 4, 26); //DefencePosition #3
+            AddDefencePositionAndGroup(3, 16, 33, 14, 2, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(3, 20, 3, 58, 4, 26); //DefencePosition #5
+            AddDefencePositionAndGroup(3, 20, 34, 19, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(3, 20, 19, 45, 3, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(3, 18, 9, 56, 4, 26); //DefencePosition #8
+            AddDefencePositionAndGroup(3, 18, 24, 46, 3, 24); //DefencePosition #9
+            AddDefencePositionAndGroup(3, 18, 37, 14, 2, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(3, 22, 19, 55, 3, 24); //DefencePosition #11
+            AddDefencePositionAndGroup(3, 22, 40, 8, 3, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(3, 22, 29, 42, 4, 26); //DefencePosition #13
+            Actions.AIDefencePositionAdd(3, 14, 50, 3, 0, 26, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(3, 34, 7, 2, 1, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(3, 11, 47, 3, 2, 26, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(3, 30, 14, 2, 2, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(3, 29, 21, 2, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 224
+
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 4);
+			Actions.AIRecruitLimit(4, 12);
+			Actions.AIRecruitDelay(4, MinToTick(62));
+			SetEqualEquipRate(4, Randomize(700, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player4
+            AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(4, 16, 86, 9, 2, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(4, 16, 60, 38, 4, 20); //DefencePosition #2
+            AddDefencePositionAndGroup(4, 16, 76, 10, 2, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(4, 16, 41, 14, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(4, 20, 44, 42, 4, 20); //DefencePosition #5
+            AddDefencePositionAndGroup(4, 20, 80, 13, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(4, 20, 79, 3, 2, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(4, 18, 54, 40, 4, 20); //DefencePosition #8
+            AddDefencePositionAndGroup(4, 18, 83, 9, 2, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(4, 18, 60, 35, 4, 20); //DefencePosition #10
+            AddDefencePositionAndGroup(4, 18, 44, 14, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(4, 22, 48, 41, 4, 20); //DefencePosition #12
+            AddDefencePositionAndGroup(4, 22, 65, 35, 4, 20); //DefencePosition #13
+            AddDefencePositionAndGroup(4, 22, 84, 4, 2, 30); //DefencePosition #14
+            AddDefencePositionAndGroup(4, 22, 40, 20, 6, 30); //DefencePosition #15
+            Actions.AIDefencePositionAdd(4, 53, 37, 4, 0, 20, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(4, 38, 27, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(4, 47, 16, 6, 1, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(4, 73, 10, 2, 2, 30, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(4, 80, 9, 2, 3, 30, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 245
+
+			//AI Player 5 (Top-Middle)
+			//Basic
+			Actions.AIWorkerLimit(5, 4);
+			Actions.AIRecruitLimit(5, 12);
+			Actions.AIRecruitDelay(5, MinToTick(46));
+			SetEqualEquipRate(5, Randomize(700, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player5
+            AddDefencePositionAndGroup(5, 16, 142, 14, 6, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(5, 16, 213, 8, 2, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(5, 16, 143, 6, 6, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(5, 16, 207, 14, 2, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(5, 16, 149, 5, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(5, 20, 149, 17, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(5, 20, 212, 3, 2, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(5, 18, 145, 14, 6, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(5, 18, 210, 8, 2, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(5, 18, 146, 6, 6, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(5, 18, 204, 14, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(5, 22, 144, 21, 5, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(5, 22, 211, 14, 2, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(5, 22, 148, 11, 6, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(5, 22, 154, 3, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(5, 154, 18, 6, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(5, 153, 8, 6, 1, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(5, 169, 17, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(5, 157, 18, 6, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(5, 206, 21, 2, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 236
+
+			//AI Player 6 (Top-Right: Walled City)
+			//Basic
+			Actions.AIWorkerLimit(6, 4);
+			Actions.AIRecruitLimit(6, 12);
+			Actions.AIRecruitDelay(6, MinToTick(78));
+			SetEqualEquipRate(6, Randomize(700, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(6, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+            //Defence Positions of Player6
+            AddDefencePositionAndGroup(6, 16, 215, 8, 6, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(6, 16, 249, 51, 3, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(6, 16, 220, 17, 6, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(6, 16, 251, 41, 4, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(6, 16, 222, 4, 6, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(6, 16, 237, 51, 2, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(6, 20, 218, 3, 6, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(6, 20, 241, 48, 2, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(6, 20, 252, 46, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(6, 22, 216, 13, 6, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(6, 22, 242, 53, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(6, 22, 245, 43, 3, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(6, 18, 218, 8, 6, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(6, 18, 246, 48, 3, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(6, 18, 223, 17, 6, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(6, 18, 234, 51, 2, 35); //DefencePosition #15
+            AddDefencePositionAndGroup(6, 18, 225, 4, 6, 35); //DefencePosition #16
+            Actions.AIDefencePositionAdd(6, 221, 11, 6, 0, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(6, 226, 16, 6, 1, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(6, 227, 10, 6, 1, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(6, 224, 11, 6, 2, 35, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(6, 223, 23, 6, 3, 35, 1); //DefencePosition #21
+            //Amount of Army Units assigned to DefencePositions: 258
+
+			//AI Player 7 (Middle-Right: Bridge)
+			//Basic
+			Actions.AIWorkerLimit(7, 4);
+			Actions.AIRecruitLimit(7, 12);
+			Actions.AIRecruitDelay(7, MinToTick(84));
+			SetEqualEquipRate(7, Randomize(700, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
+			//Attacks
+			AddAIAttack(7, true, GetEffectiveEquipRate(7) -1, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player7
+            AddDefencePositionAndGroup(7, 16, 246, 110, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(7, 16, 252, 53, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(7, 16, 252, 107, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(7, 16, 246, 60, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(7, 20, 236, 108, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(7, 20, 252, 60, 0, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(7, 20, 252, 103, 4, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(7, 20, 248, 67, 0, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(7, 18, 246, 107, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(7, 18, 252, 56, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(7, 18, 237, 111, 4, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(7, 18, 246, 63, 0, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(7, 22, 241, 108, 4, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(7, 22, 247, 56, 0, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(7, 22, 232, 110, 4, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(7, 22, 234, 104, 4, 35); //DefencePosition #15
+            Actions.AIDefencePositionAdd(7, 246, 104, 4, 0, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(7, 239, 103, 4, 1, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(7, 246, 101, 4, 2, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(7, 243, 68, 0, 3, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(7, 252, 65, 0, 3, 35, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 239
+
+			//AI Player 8 (Middle: Island)
+			//Basic
+			Actions.AIWorkerLimit(8, 4);
+			Actions.AIRecruitLimit(8, 12);
+			Actions.AIRecruitDelay(8, MinToTick(83));
+			SetEqualEquipRate(8, Randomize(800, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 4, attClosestBuildingFromStartPos, aCustomPosition); //48 Knights
+			//Defence Positions of Player8
+            AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #0
+            AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #1
+            AddDefencePositionAndGroup(8, 16, 208, 87, 2, 40); //DefencePosition #2
+            AddDefencePositionAndGroup(8, 16, 204, 105, 2, 40); //DefencePosition #3
+            AddDefencePositionAndGroup(8, 20, 205, 82, 2, 40); //DefencePosition #4
+            AddDefencePositionAndGroup(8, 20, 203, 99, 2, 40); //DefencePosition #5
+            AddDefencePositionAndGroup(8, 20, 200, 90, 2, 40); //DefencePosition #6
+            AddDefencePositionAndGroup(8, 20, 203, 110, 2, 40); //DefencePosition #7
+            AddDefencePositionAndGroup(8, 20, 193, 106, 2, 40); //DefencePosition #8
+            AddDefencePositionAndGroup(8, 18, 207, 93, 2, 40); //DefencePosition #9
+            AddDefencePositionAndGroup(8, 18, 205, 87, 2, 40); //DefencePosition #10
+            AddDefencePositionAndGroup(8, 18, 201, 105, 2, 40); //DefencePosition #11
+            AddDefencePositionAndGroup(8, 18, 195, 88, 2, 40); //DefencePosition #12
+            AddDefencePositionAndGroup(8, 18, 196, 111, 2, 40); //DefencePosition #13
+            AddDefencePositionAndGroup(8, 22, 208, 100, 2, 40); //DefencePosition #14
+            AddDefencePositionAndGroup(8, 22, 212, 85, 2, 40); //DefencePosition #15
+            AddDefencePositionAndGroup(8, 22, 201, 86, 2, 40); //DefencePosition #16
+            AddDefencePositionAndGroup(8, 22, 198, 106, 2, 40); //DefencePosition #17
+            AddDefencePositionAndGroup(8, 22, 199, 100, 2, 40); //DefencePosition #18
+            Actions.AIDefencePositionAdd(8, 191, 80, 2, 3, 40, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(8, 197, 74, 2, 3, 40, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(8, 203, 71, 2, 3, 40, 1); //DefencePosition #21
+            Actions.AIDefencePositionAdd(8, 196, 64, 2, 3, 36, 1); //DefencePosition #22
+            //Amount of Army Units assigned to DefencePositions: 263
+
+			//AI Player 9 (Middle-Right: Small Gold Mountain)
+			//Basic
+			Actions.AIWorkerLimit(9, 4);
+			Actions.AIRecruitLimit(9, 12);
+			Actions.AIRecruitDelay(9, MinToTick(65));
+			SetEqualEquipRate(9, Randomize(675, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
+			//Attacks
+			AddAIAttack(9, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //45
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
+            //Defence Positions of Player9
+            AddDefencePositionAndGroup(9, 16, 246, 148, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(9, 16, 247, 111, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(9, 16, 236, 144, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(9, 16, 252, 112, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(9, 20, 241, 141, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(9, 20, 252, 140, 4, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(9, 20, 247, 118, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(9, 18, 246, 145, 4, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(9, 18, 247, 114, 0, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(9, 18, 236, 147, 4, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(9, 18, 252, 115, 0, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(9, 22, 241, 146, 4, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(9, 22, 242, 114, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(9, 22, 251, 144, 4, 35); //DefencePosition #13
+            Actions.AIDefencePositionAdd(9, 246, 141, 4, 0, 35, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(9, 229, 154, 3, 0, 28, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(9, 232, 149, 4, 1, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(9, 246, 138, 4, 2, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(9, 251, 135, 4, 3, 35, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 216
+
+			//AI Player 10 (Bottom-Right: Bottom-Right: On top of empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(10, 4);
+			Actions.AIRecruitLimit(10, 12);
+			Actions.AIRecruitDelay(10, MinToTick(82));
+			SetEqualEquipRate(10, Randomize(725, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(10, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+            //Defence Positions of Player10
+            AddDefencePositionAndGroup(10, 16, 229, 204, 5, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(10, 16, 247, 150, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(10, 16, 232, 195, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(10, 16, 252, 149, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(10, 16, 243, 205, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(10, 20, 239, 205, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(10, 20, 242, 152, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(10, 20, 227, 198, 5, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(10, 18, 232, 201, 5, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(10, 18, 247, 153, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(10, 18, 238, 194, 5, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(10, 22, 235, 207, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(10, 22, 252, 154, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(10, 22, 237, 200, 5, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(10, 22, 245, 211, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(10, 225, 184, 4, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(10, 251, 213, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(10, 250, 208, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(10, 227, 187, 4, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(10, 245, 157, 0, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 212
+
+			//AI Player 11 (Bottom-Right: under empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(11, 4);
+			Actions.AIRecruitLimit(11, 12);
+			Actions.AIRecruitDelay(11, MinToTick(47));
+			SetEqualEquipRate(11, Randomize(770, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(11, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+			//Defence Positions of Player11
+            AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(11, 16, 227, 234, 7, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(11, 16, 227, 243, 6, 26); //DefencePosition #2
+            AddDefencePositionAndGroup(11, 16, 225, 252, 6, 24); //DefencePosition #3
+            AddDefencePositionAndGroup(11, 20, 221, 253, 6, 20); //DefencePosition #4
+            AddDefencePositionAndGroup(11, 20, 226, 248, 6, 24); //DefencePosition #5
+            AddDefencePositionAndGroup(11, 18, 223, 248, 6, 22); //DefencePosition #6
+            AddDefencePositionAndGroup(11, 18, 230, 237, 7, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(11, 22, 223, 241, 6, 24); //DefencePosition #8
+            AddDefencePositionAndGroup(11, 22, 234, 237, 6, 26); //DefencePosition #9
+            Actions.AIDefencePositionAdd(11, 235, 250, 6, 0, 26, 1); //DefencePosition #10
+            Actions.AIDefencePositionAdd(11, 230, 253, 6, 1, 26, 1); //DefencePosition #11
+            Actions.AIDefencePositionAdd(11, 241, 230, 6, 1, 26, 1); //DefencePosition #12
+            Actions.AIDefencePositionAdd(11, 230, 243, 6, 2, 26, 1); //DefencePosition #13
+            Actions.AIDefencePositionAdd(11, 231, 248, 6, 3, 26, 1); //DefencePosition #14
+            //Amount of Army Units assigned to DefencePositions: 156
+
+			//AI Player 12 (Middle: Snow Island Outpost)
+			//Basic
+			Actions.AIWorkerLimit(12, 4);
+			Actions.AIRecruitLimit(12, 12);
+			Actions.AIRecruitDelay(12, MinToTick(46));
+			SetEqualEquipRate(12, Randomize(730, 1));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 8, 9
+			Actions.AIGroupsFormationSetEx(12, gtRanged, 8, 4); //Only change Ranged formation from 12x4 to 8x4
+			//Attacks
+			AddAIAttack(12, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //44
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //59
+			//Defence Positions of Player12
+            AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(12, 16, 166, 133, 0, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(12, 16, 158, 161, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(12, 16, 184, 157, 3, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(12, 18, 161, 157, 5, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(12, 18, 169, 137, 0, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(12, 18, 180, 154, 3, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(12, 20, 165, 164, 4, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(12, 20, 156, 143, 6, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(12, 22, 161, 137, 7, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(12, 22, 157, 151, 6, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(12, 20, 175, 136, 1, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(12, 22, 178, 147, 2, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(12, 18, 159, 143, 6, 30); //DefencePosition #13
+            Actions.AIDefencePositionAdd(12, 161, 149, 6, 0, 30, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(12, 169, 159, 4, 2, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(12, 164, 144, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(12, 177, 143, 2, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(12, 175, 158, 4, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 211
+	    end;
+
+	    mdEasy1:
+	    begin
+            //Initial Attack on Player0
+			Actions.GiveGroup(13, 22, 61, 46, 4, 8, 4); //Knights
+			Actions.GiveGroup(13, 22, 66, 47, 4, 8, 4);
+			Actions.GiveGroup(13, 22, 71, 46, 4, 8, 4);
+			Actions.GiveGroup(13, 16, 5, 102, 2, 12, 4); //Swordman
+			Actions.GiveGroup(13, 20, 4, 97, 2, 6, 3); //Pikeman
+			Actions.GiveGroup(13, 20, 4, 106, 2, 6, 3);
+			Actions.GiveGroup(13, 18, 1, 99, 2, 5, 5); //Xbows
+			Actions.GiveGroup(13, 18, 1, 104, 2, 5, 5);
+			//Initial Attack on Player1
+			Actions.GiveGroup(14, 22, 137, 102, 5, 10, 5); //Knights
+			Actions.GiveGroup(14, 22, 134, 106, 5, 10, 5);
+			Actions.GiveGroup(14, 22, 111, 192, 6, 6, 3);
+			Actions.GiveGroup(14, 22, 114, 193, 6, 8, 4);
+			//Initial Attack on Player2
+			Actions.GiveGroup(15, 16, 181, 179, 5, 12, 4); //Swordman
+			Actions.GiveGroup(15, 20, 186, 183, 5, 8, 4); //Pikeman
+			Actions.GiveGroup(15, 18, 188, 179, 5, 8, 4); //Xbow
+			Actions.GiveGroup(15, 22, 217, 243, 6, 8, 4); //Knights
+			Actions.GiveGroup(15, 22, 216, 248, 6, 9, 3);
+			Actions.GiveGroup(15, 22, 215, 252, 6, 8, 4);
+
+
+			//-- Setup AI --//
+			// From top left to bottom right
+
+			//AI Player 3 (Top-Left)
+			//Basic
+			Actions.AIWorkerLimit(3, 5);
+			Actions.AIRecruitLimit(3, 12);
+			Actions.AIRecruitDelay(3, MinToTick(41));
+			SetEqualEquipRate(3, Randomize(675, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			//Defence Positions of Player3
+			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 24); //DefencePosition #0
+            AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(3, 16, 40, 14, 2, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(3, 16, 4, 52, 4, 26); //DefencePosition #3
+            AddDefencePositionAndGroup(3, 16, 33, 14, 2, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(3, 20, 3, 58, 4, 26); //DefencePosition #5
+            AddDefencePositionAndGroup(3, 20, 34, 19, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(3, 20, 19, 45, 3, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(3, 18, 9, 56, 4, 26); //DefencePosition #8
+            AddDefencePositionAndGroup(3, 18, 24, 46, 3, 24); //DefencePosition #9
+            AddDefencePositionAndGroup(3, 18, 37, 14, 2, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(3, 22, 19, 55, 3, 24); //DefencePosition #11
+            AddDefencePositionAndGroup(3, 22, 40, 8, 3, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(3, 22, 29, 42, 4, 26); //DefencePosition #13
+            Actions.AIDefencePositionAdd(3, 14, 50, 3, 0, 26, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(3, 34, 7, 2, 1, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(3, 11, 47, 3, 2, 26, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(3, 30, 14, 2, 2, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(3, 29, 21, 2, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 224
+
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 5);
+			Actions.AIRecruitLimit(4, 12);
+			Actions.AIRecruitDelay(4, MinToTick(50));
+			SetEqualEquipRate(4, Randomize(610, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player4
+            AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(4, 16, 86, 9, 2, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(4, 16, 60, 38, 4, 20); //DefencePosition #2
+            AddDefencePositionAndGroup(4, 16, 76, 10, 2, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(4, 16, 41, 14, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(4, 20, 44, 42, 4, 20); //DefencePosition #5
+            AddDefencePositionAndGroup(4, 20, 80, 13, 2, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(4, 20, 79, 3, 2, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(4, 18, 54, 40, 4, 20); //DefencePosition #8
+            AddDefencePositionAndGroup(4, 18, 83, 9, 2, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(4, 18, 60, 35, 4, 20); //DefencePosition #10
+            AddDefencePositionAndGroup(4, 18, 44, 14, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(4, 22, 48, 41, 4, 20); //DefencePosition #12
+            AddDefencePositionAndGroup(4, 22, 65, 35, 4, 20); //DefencePosition #13
+            AddDefencePositionAndGroup(4, 22, 84, 4, 2, 30); //DefencePosition #14
+            AddDefencePositionAndGroup(4, 22, 40, 20, 6, 30); //DefencePosition #15
+            Actions.AIDefencePositionAdd(4, 53, 37, 4, 0, 20, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(4, 38, 27, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(4, 47, 16, 6, 1, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(4, 73, 10, 2, 2, 30, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(4, 80, 9, 2, 3, 30, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 245
+
+			//AI Player 5 (Top-Middle)
+			//Basic
+			Actions.AIWorkerLimit(5, 5);
+			Actions.AIRecruitLimit(5, 12);
+			Actions.AIRecruitDelay(5, MinToTick(36));
+			SetEqualEquipRate(5, Randomize(610, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player5
+            AddDefencePositionAndGroup(5, 16, 142, 14, 6, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(5, 16, 213, 8, 2, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(5, 16, 143, 6, 6, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(5, 16, 207, 14, 2, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(5, 16, 149, 5, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(5, 20, 149, 17, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(5, 20, 212, 3, 2, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(5, 18, 145, 14, 6, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(5, 18, 210, 8, 2, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(5, 18, 146, 6, 6, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(5, 18, 204, 14, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(5, 22, 144, 21, 5, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(5, 22, 211, 14, 2, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(5, 22, 148, 11, 6, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(5, 22, 154, 3, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(5, 154, 18, 6, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(5, 153, 8, 6, 1, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(5, 169, 17, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(5, 157, 18, 6, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(5, 206, 21, 2, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 236
+
+			//AI Player 6 (Top-Right: Walled City)
+			//Basic
+			Actions.AIWorkerLimit(6, 5);
+			Actions.AIRecruitLimit(6, 12);
+			Actions.AIRecruitDelay(6, MinToTick(64));
+			SetEqualEquipRate(6, Randomize(610, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(6, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+            //Defence Positions of Player6
+            AddDefencePositionAndGroup(6, 16, 215, 8, 6, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(6, 16, 249, 51, 3, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(6, 16, 220, 17, 6, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(6, 16, 251, 41, 4, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(6, 16, 222, 4, 6, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(6, 16, 237, 51, 2, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(6, 20, 218, 3, 6, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(6, 20, 241, 48, 2, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(6, 20, 252, 46, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(6, 22, 216, 13, 6, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(6, 22, 242, 53, 2, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(6, 22, 245, 43, 3, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(6, 18, 218, 8, 6, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(6, 18, 246, 48, 3, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(6, 18, 223, 17, 6, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(6, 18, 234, 51, 2, 35); //DefencePosition #15
+            AddDefencePositionAndGroup(6, 18, 225, 4, 6, 35); //DefencePosition #16
+            Actions.AIDefencePositionAdd(6, 221, 11, 6, 0, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(6, 226, 16, 6, 1, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(6, 227, 10, 6, 1, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(6, 224, 11, 6, 2, 35, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(6, 223, 23, 6, 3, 35, 1); //DefencePosition #21
+            //Amount of Army Units assigned to DefencePositions: 258
+
+			//AI Player 7 (Middle-Right: Bridge)
+			//Basic
+			Actions.AIWorkerLimit(7, 5);
+			Actions.AIRecruitLimit(7, 12);
+			Actions.AIRecruitDelay(7, MinToTick(69));
+			SetEqualEquipRate(7, Randomize(610, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
+			//Attacks
+			AddAIAttack(7, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //55
+			//Defence Positions of Player7
+            AddDefencePositionAndGroup(7, 16, 246, 110, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(7, 16, 252, 53, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(7, 16, 252, 107, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(7, 16, 246, 60, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(7, 20, 236, 108, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(7, 20, 252, 60, 0, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(7, 20, 252, 103, 4, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(7, 20, 248, 67, 0, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(7, 18, 246, 107, 4, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(7, 18, 252, 56, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(7, 18, 237, 111, 4, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(7, 18, 246, 63, 0, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(7, 22, 241, 108, 4, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(7, 22, 247, 56, 0, 35); //DefencePosition #13
+            AddDefencePositionAndGroup(7, 22, 232, 110, 4, 35); //DefencePosition #14
+            AddDefencePositionAndGroup(7, 22, 234, 104, 4, 35); //DefencePosition #15
+            Actions.AIDefencePositionAdd(7, 246, 104, 4, 0, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(7, 239, 103, 4, 1, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(7, 246, 101, 4, 2, 35, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(7, 243, 68, 0, 3, 35, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(7, 252, 65, 0, 3, 35, 1); //DefencePosition #20
+            //Amount of Army Units assigned to DefencePositions: 239
+
+			//AI Player 8 (Middle: Island)
+			//Basic
+			Actions.AIWorkerLimit(8, 5);
+			Actions.AIRecruitLimit(8, 12);
+			Actions.AIRecruitDelay(8, MinToTick(69));
+			SetEqualEquipRate(8, Randomize(700, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks
+			AddAIAttack(8, true, 0, 0, 0, 0, 4, attClosestBuildingFromStartPos, aCustomPosition); //48 Knights
+			//Defence Positions of Player8
+            AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #0
+            AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #1
+            AddDefencePositionAndGroup(8, 16, 208, 87, 2, 40); //DefencePosition #2
+            AddDefencePositionAndGroup(8, 16, 204, 105, 2, 40); //DefencePosition #3
+            AddDefencePositionAndGroup(8, 20, 205, 82, 2, 40); //DefencePosition #4
+            AddDefencePositionAndGroup(8, 20, 203, 99, 2, 40); //DefencePosition #5
+            AddDefencePositionAndGroup(8, 20, 200, 90, 2, 40); //DefencePosition #6
+            AddDefencePositionAndGroup(8, 20, 203, 110, 2, 40); //DefencePosition #7
+            AddDefencePositionAndGroup(8, 20, 193, 106, 2, 40); //DefencePosition #8
+            AddDefencePositionAndGroup(8, 18, 207, 93, 2, 40); //DefencePosition #9
+            AddDefencePositionAndGroup(8, 18, 205, 87, 2, 40); //DefencePosition #10
+            AddDefencePositionAndGroup(8, 18, 201, 105, 2, 40); //DefencePosition #11
+            AddDefencePositionAndGroup(8, 18, 195, 88, 2, 40); //DefencePosition #12
+            AddDefencePositionAndGroup(8, 18, 196, 111, 2, 40); //DefencePosition #13
+            AddDefencePositionAndGroup(8, 22, 208, 100, 2, 40); //DefencePosition #14
+            AddDefencePositionAndGroup(8, 22, 212, 85, 2, 40); //DefencePosition #15
+            AddDefencePositionAndGroup(8, 22, 201, 86, 2, 40); //DefencePosition #16
+            AddDefencePositionAndGroup(8, 22, 198, 106, 2, 40); //DefencePosition #17
+            AddDefencePositionAndGroup(8, 22, 199, 100, 2, 40); //DefencePosition #18
+            Actions.AIDefencePositionAdd(8, 191, 80, 2, 3, 40, 1); //DefencePosition #19
+            Actions.AIDefencePositionAdd(8, 197, 74, 2, 3, 40, 1); //DefencePosition #20
+            Actions.AIDefencePositionAdd(8, 203, 71, 2, 3, 40, 1); //DefencePosition #21
+            Actions.AIDefencePositionAdd(8, 196, 64, 2, 3, 36, 1); //DefencePosition #22
+            //Amount of Army Units assigned to DefencePositions: 263
+
+			//AI Player 9 (Middle-Right: Small Gold Mountain)
+			//Basic
+			Actions.AIWorkerLimit(9, 5);
+			Actions.AIRecruitLimit(9, 12);
+			Actions.AIRecruitDelay(9, MinToTick(53));
+			SetEqualEquipRate(9, Randomize(590, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
+			//Attacks
+			AddAIAttack(9, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //45
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
+            //Defence Positions of Player9
+            AddDefencePositionAndGroup(9, 16, 246, 148, 4, 35); //DefencePosition #0
+            AddDefencePositionAndGroup(9, 16, 247, 111, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(9, 16, 236, 144, 4, 35); //DefencePosition #2
+            AddDefencePositionAndGroup(9, 16, 252, 112, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(9, 20, 241, 141, 4, 35); //DefencePosition #4
+            AddDefencePositionAndGroup(9, 20, 252, 140, 4, 35); //DefencePosition #5
+            AddDefencePositionAndGroup(9, 20, 247, 118, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(9, 18, 246, 145, 4, 35); //DefencePosition #7
+            AddDefencePositionAndGroup(9, 18, 247, 114, 0, 35); //DefencePosition #8
+            AddDefencePositionAndGroup(9, 18, 236, 147, 4, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(9, 18, 252, 115, 0, 35); //DefencePosition #10
+            AddDefencePositionAndGroup(9, 22, 241, 146, 4, 35); //DefencePosition #11
+            AddDefencePositionAndGroup(9, 22, 242, 114, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(9, 22, 251, 144, 4, 35); //DefencePosition #13
+            Actions.AIDefencePositionAdd(9, 246, 141, 4, 0, 35, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(9, 229, 154, 3, 0, 28, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(9, 232, 149, 4, 1, 35, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(9, 246, 138, 4, 2, 35, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(9, 251, 135, 4, 3, 35, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 216
+
+			//AI Player 10 (Bottom-Right: Bottom-Right: On top of empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(10, 5);
+			Actions.AIRecruitLimit(10, 12);
+			Actions.AIRecruitDelay(10, MinToTick(68));
+			SetEqualEquipRate(10, Randomize(635, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(10, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+            //Defence Positions of Player10
+            AddDefencePositionAndGroup(10, 16, 229, 204, 5, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(10, 16, 247, 150, 0, 35); //DefencePosition #1
+            AddDefencePositionAndGroup(10, 16, 232, 195, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(10, 16, 252, 149, 0, 35); //DefencePosition #3
+            AddDefencePositionAndGroup(10, 16, 243, 205, 6, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(10, 20, 239, 205, 6, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(10, 20, 242, 152, 0, 35); //DefencePosition #6
+            AddDefencePositionAndGroup(10, 20, 227, 198, 5, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(10, 18, 232, 201, 5, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(10, 18, 247, 153, 0, 35); //DefencePosition #9
+            AddDefencePositionAndGroup(10, 18, 238, 194, 5, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(10, 22, 235, 207, 6, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(10, 22, 252, 154, 0, 35); //DefencePosition #12
+            AddDefencePositionAndGroup(10, 22, 237, 200, 5, 30); //DefencePosition #13
+            AddDefencePositionAndGroup(10, 22, 245, 211, 6, 30); //DefencePosition #14
+            Actions.AIDefencePositionAdd(10, 225, 184, 4, 0, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(10, 251, 213, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(10, 250, 208, 6, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(10, 227, 187, 4, 2, 30, 1); //DefencePosition #18
+            Actions.AIDefencePositionAdd(10, 245, 157, 0, 3, 35, 1); //DefencePosition #19
+            //Amount of Army Units assigned to DefencePositions: 212
+
+			//AI Player 11 (Bottom-Right: under empty iron mountain)
+			//Basic
+			Actions.AIWorkerLimit(11, 5);
+			Actions.AIRecruitLimit(11, 12);
+			Actions.AIRecruitDelay(11, MinToTick(37));
+			SetEqualEquipRate(11, Randomize(670, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks
+			AddAIAttack(11, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+			//Defence Positions of Player11
+            AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #0
+            AddDefencePositionAndGroup(11, 16, 227, 234, 7, 24); //DefencePosition #1
+            AddDefencePositionAndGroup(11, 16, 227, 243, 6, 26); //DefencePosition #2
+            AddDefencePositionAndGroup(11, 16, 225, 252, 6, 24); //DefencePosition #3
+            AddDefencePositionAndGroup(11, 20, 221, 253, 6, 20); //DefencePosition #4
+            AddDefencePositionAndGroup(11, 20, 226, 248, 6, 24); //DefencePosition #5
+            AddDefencePositionAndGroup(11, 18, 223, 248, 6, 22); //DefencePosition #6
+            AddDefencePositionAndGroup(11, 18, 230, 237, 7, 26); //DefencePosition #7
+            AddDefencePositionAndGroup(11, 22, 223, 241, 6, 24); //DefencePosition #8
+            AddDefencePositionAndGroup(11, 22, 234, 237, 6, 26); //DefencePosition #9
+            Actions.AIDefencePositionAdd(11, 235, 250, 6, 0, 26, 1); //DefencePosition #10
+            Actions.AIDefencePositionAdd(11, 230, 253, 6, 1, 26, 1); //DefencePosition #11
+            Actions.AIDefencePositionAdd(11, 241, 230, 6, 1, 26, 1); //DefencePosition #12
+            Actions.AIDefencePositionAdd(11, 230, 243, 6, 2, 26, 1); //DefencePosition #13
+            Actions.AIDefencePositionAdd(11, 231, 248, 6, 3, 26, 1); //DefencePosition #14
+            //Amount of Army Units assigned to DefencePositions: 156
+
+			//AI Player 12 (Middle: Snow Island Outpost)
+			//Basic
+			Actions.AIWorkerLimit(12, 5);
+			Actions.AIRecruitLimit(12, 12);
+			Actions.AIRecruitDelay(12, MinToTick(36));
+			SetEqualEquipRate(12, Randomize(640, 2));
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 8, 9
+			Actions.AIGroupsFormationSetEx(12, gtRanged, 8, 4); //Only change Ranged formation from 12x4 to 8x4
+			//Attacks
+			AddAIAttack(12, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //44
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //59
+			//Defence Positions of Player12
+            AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #0
+            AddDefencePositionAndGroup(12, 16, 166, 133, 0, 30); //DefencePosition #1
+            AddDefencePositionAndGroup(12, 16, 158, 161, 5, 30); //DefencePosition #2
+            AddDefencePositionAndGroup(12, 16, 184, 157, 3, 30); //DefencePosition #3
+            AddDefencePositionAndGroup(12, 18, 161, 157, 5, 30); //DefencePosition #4
+            AddDefencePositionAndGroup(12, 18, 169, 137, 0, 30); //DefencePosition #5
+            AddDefencePositionAndGroup(12, 18, 180, 154, 3, 30); //DefencePosition #6
+            AddDefencePositionAndGroup(12, 20, 165, 164, 4, 30); //DefencePosition #7
+            AddDefencePositionAndGroup(12, 20, 156, 143, 6, 30); //DefencePosition #8
+            AddDefencePositionAndGroup(12, 22, 161, 137, 7, 30); //DefencePosition #9
+            AddDefencePositionAndGroup(12, 22, 157, 151, 6, 30); //DefencePosition #10
+            AddDefencePositionAndGroup(12, 20, 175, 136, 1, 30); //DefencePosition #11
+            AddDefencePositionAndGroup(12, 22, 178, 147, 2, 30); //DefencePosition #12
+            AddDefencePositionAndGroup(12, 18, 159, 143, 6, 30); //DefencePosition #13
+            Actions.AIDefencePositionAdd(12, 161, 149, 6, 0, 30, 1); //DefencePosition #14
+            Actions.AIDefencePositionAdd(12, 169, 159, 4, 2, 30, 1); //DefencePosition #15
+            Actions.AIDefencePositionAdd(12, 164, 144, 6, 0, 30, 1); //DefencePosition #16
+            Actions.AIDefencePositionAdd(12, 177, 143, 2, 1, 30, 1); //DefencePosition #17
+            Actions.AIDefencePositionAdd(12, 175, 158, 4, 3, 30, 1); //DefencePosition #18
+            //Amount of Army Units assigned to DefencePositions: 211
+	    end;
+
 		mdNormal:
 		begin
 			//Initial Attack on Player0
@@ -102,10 +1156,10 @@ begin
 			Actions.AIWorkerLimit(3, 6);
 			Actions.AIRecruitLimit(3, 15);
 			Actions.AIRecruitDelay(3, MinToTick(35));
-			IronEquipRate(3, Randomize(580, 2));
+			SetEqualEquipRate(3, Randomize(580, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(3, true, 300, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 24); //DefencePosition #1
 			AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #2
@@ -135,11 +1189,11 @@ begin
 			Actions.AIWorkerLimit(4, 6);
 			Actions.AIRecruitLimit(4, 15);
 			Actions.AIRecruitDelay(4, MinToTick(45));
-			IronEquipRate(4, Randomize(500, 2));
+			SetEqualEquipRate(4, Randomize(500, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
-			AddAIAttack(4, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
 			//Defence Positions of Player4
 			AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(4, 16, 86, 9, 2, 30); //DefencePosition #2
@@ -171,11 +1225,11 @@ begin
 			Actions.AIWorkerLimit(5, 6);
 			Actions.AIRecruitLimit(5, 15);
 			Actions.AIRecruitDelay(5, MinToTick(33));
-			IronEquipRate(5, Randomize(495, 2));
+			SetEqualEquipRate(5, Randomize(495, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
-			AddAIAttack(5, true, 300, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
 			//Defence Positions of Player5
 			AddDefencePositionAndGroup(5, 16, 142, 14, 6, 35); //DefencePosition #1
 			AddDefencePositionAndGroup(5, 16, 213, 8, 2, 40); //DefencePosition #2
@@ -207,11 +1261,11 @@ begin
 			Actions.AIWorkerLimit(6, 6);
 			Actions.AIRecruitLimit(6, 15);
 			Actions.AIRecruitDelay(6, MinToTick(57));
-			IronEquipRate(6, Randomize(410, 2));
+			SetEqualEquipRate(6, Randomize(410, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(6, false, 0, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
-			AddAIAttack(6, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player6
 			AddDefencePositionAndGroup(6, 16, 215, 8, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(6, 16, 249, 51, 3, 40); //DefencePosition #2
@@ -244,10 +1298,10 @@ begin
 			Actions.AIWorkerLimit(7, 6);
 			Actions.AIRecruitLimit(7, 15);
 			Actions.AIRecruitDelay(7, MinToTick(61));
-			IronEquipRate(7, Randomize(410, 2));
+			SetEqualEquipRate(7, Randomize(410, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
 			//Attacks
-			AddAIAttack(7, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(7, true, GetEffectiveEquipRate(7) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player7
 			AddDefencePositionAndGroup(7, 16, 246, 110, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(7, 16, 252, 53, 0, 40); //DefencePosition #2
@@ -280,10 +1334,10 @@ begin
 			Actions.AIWorkerLimit(8, 6);
 			Actions.AIRecruitLimit(8, 15);
 			Actions.AIRecruitDelay(8, MinToTick(61));
-			IronEquipRate(8, Randomize(410, 2));
+			SetEqualEquipRate(8, Randomize(410, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(8, true, 300, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
 			//Defence Positions of Player8
 			AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #2
@@ -317,11 +1371,11 @@ begin
 			Actions.AIWorkerLimit(9, 6);
 			Actions.AIRecruitLimit(9, 15);
 			Actions.AIRecruitDelay(9, MinToTick(47));
-			IronEquipRate(9, Randomize(485, 2));
+			SetEqualEquipRate(9, Randomize(485, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
 			//Attacks
 			AddAIAttack(9, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //45
-			AddAIAttack(9, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
 			//Defence Positions of Player9
 			AddDefencePositionAndGroup(9, 16, 246, 148, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(9, 16, 247, 111, 0, 40); //DefencePosition #2
@@ -351,11 +1405,11 @@ begin
 			Actions.AIWorkerLimit(10, 6);
 			Actions.AIRecruitLimit(10, 15);
 			Actions.AIRecruitDelay(10, MinToTick(58));
-			IronEquipRate(10, Randomize(450, 2));
+			SetEqualEquipRate(10, Randomize(450, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
 			AddAIAttack(10, false, 0, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //49
-			AddAIAttack(10, true, 300, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
 			//Defence Positions of Player10
 			AddDefencePositionAndGroup(10, 16, 229, 204, 5, 35); //DefencePosition #1
 			AddDefencePositionAndGroup(10, 16, 247, 150, 0, 35); //DefencePosition #2
@@ -386,11 +1440,11 @@ begin
 			Actions.AIWorkerLimit(11, 6);
 			Actions.AIRecruitLimit(11, 15);
 			Actions.AIRecruitDelay(11, MinToTick(33));
-			IronEquipRate(11, Randomize(550, 2));
+			SetEqualEquipRate(11, Randomize(550, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
 			AddAIAttack(11, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
-			AddAIAttack(11, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
 			//Defence Positions of Player11
 			AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(11, 16, 227, 234, 7, 24); //DefencePosition #2
@@ -416,11 +1470,11 @@ begin
 			Actions.AIWorkerLimit(12, 6);
 			Actions.AIRecruitLimit(12, 15);
 			Actions.AIRecruitDelay(12, MinToTick(30));
-			IronEquipRate(12, Randomize(515, 2));
+			SetEqualEquipRate(12, Randomize(515, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 12, 9
 			//Attacks
 			AddAIAttack(12, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //48
-			AddAIAttack(12, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
 			//Defence Positions of Player12
 			AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #1
 			AddDefencePositionAndGroup(12, 16, 166, 133, 0, 34); //DefencePosition #2
@@ -477,10 +1531,10 @@ begin
 			Actions.AIWorkerLimit(3, 7);
 			Actions.AIRecruitLimit(3, 18);
 			Actions.AIRecruitDelay(3, MinToTick(34));
-			IronEquipRate(3, Randomize(480, 2));
+			SetEqualEquipRate(3, Randomize(480, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(3, true, 300, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 24); //DefencePosition #1
 			AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #2
@@ -511,10 +1565,10 @@ begin
 			Actions.AIWorkerLimit(4, 7);
 			Actions.AIRecruitLimit(4, 18);
 			Actions.AIRecruitDelay(4, MinToTick(34));
-			IronEquipRate(4, Randomize(435, 2));
+			SetEqualEquipRate(4, Randomize(435, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(4, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
 			//Defence Positions of Player4
 			AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(4, 16, 86, 9, 2, 30); //DefencePosition #2
@@ -547,11 +1601,11 @@ begin
 			Actions.AIWorkerLimit(5, 7);
 			Actions.AIRecruitLimit(5, 18);
 			Actions.AIRecruitDelay(5, MinToTick(31));
-			IronEquipRate(5, Randomize(430, 2));
+			SetEqualEquipRate(5, Randomize(430, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
-			AddAIAttack(5, true, 300, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
 			//Defence Positions of Player5
 			AddDefencePositionAndGroup(5, 16, 142, 14, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(5, 16, 213, 8, 2, 40); //DefencePosition #2
@@ -584,10 +1638,10 @@ begin
 			Actions.AIWorkerLimit(6, 7);
 			Actions.AIRecruitLimit(6, 18);
 			Actions.AIRecruitDelay(6, MinToTick(44));
-			IronEquipRate(6, Randomize(360, 2));
+			SetEqualEquipRate(6, Randomize(360, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(6, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player6
 			AddDefencePositionAndGroup(6, 16, 215, 8, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(6, 16, 249, 51, 3, 40); //DefencePosition #2
@@ -620,10 +1674,10 @@ begin
 			Actions.AIWorkerLimit(7, 7);
 			Actions.AIRecruitLimit(7, 18);
 			Actions.AIRecruitDelay(7, MinToTick(54));
-			IronEquipRate(7, Randomize(360, 2));
+			SetEqualEquipRate(7, Randomize(360, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
 			//Attacks
-			AddAIAttack(7, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(7, true, GetEffectiveEquipRate(7) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player7
 			AddDefencePositionAndGroup(7, 16, 246, 110, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(7, 16, 252, 53, 0, 40); //DefencePosition #2
@@ -656,10 +1710,10 @@ begin
 			Actions.AIWorkerLimit(8, 7);
 			Actions.AIRecruitLimit(8, 18);
 			Actions.AIRecruitDelay(8, MinToTick(54));
-			IronEquipRate(8, Randomize(400, 2));
+			SetEqualEquipRate(8, Randomize(400, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(8, true, 300, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
 			//Defence Positions of Player8
 			AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #2
@@ -694,10 +1748,10 @@ begin
 			Actions.AIWorkerLimit(9, 7);
 			Actions.AIRecruitLimit(9, 18);
 			Actions.AIRecruitDelay(9, MinToTick(34));
-			IronEquipRate(9, Randomize(420, 2));
+			SetEqualEquipRate(9, Randomize(420, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
 			//Attacks
-			AddAIAttack(9, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //57
 			//Defence Positions of Player9
 			AddDefencePositionAndGroup(9, 16, 246, 148, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(9, 16, 247, 111, 0, 40); //DefencePosition #2
@@ -728,10 +1782,10 @@ begin
 			Actions.AIWorkerLimit(10, 7);
 			Actions.AIRecruitLimit(10, 18);
 			Actions.AIRecruitDelay(10, MinToTick(44));
-			IronEquipRate(10, Randomize(395, 2));
+			SetEqualEquipRate(10, Randomize(395, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
-			AddAIAttack(10, true, 300, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
 			//Defence Positions of Player10
 			AddDefencePositionAndGroup(10, 16, 229, 204, 5, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(10, 16, 247, 150, 0, 40); //DefencePosition #2
@@ -763,11 +1817,11 @@ begin
 			Actions.AIWorkerLimit(11, 7);
 			Actions.AIRecruitLimit(11, 18);
 			Actions.AIRecruitDelay(11, MinToTick(31));
-			IronEquipRate(11, Randomize(480, 2));
+			SetEqualEquipRate(11, Randomize(480, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
 			AddAIAttack(11, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
-			AddAIAttack(11, true, 300, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
 			//Defence Positions of Player11
 			AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(11, 16, 227, 234, 7, 24); //DefencePosition #2
@@ -794,11 +1848,11 @@ begin
 			Actions.AIWorkerLimit(12, 7);
 			Actions.AIRecruitLimit(12, 18);
 			Actions.AIRecruitDelay(12, MinToTick(30));
-			IronEquipRate(12, Randomize(430, 2));
+			SetEqualEquipRate(12, Randomize(430, 2));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 12, 9
 			//Attacks
 			AddAIAttack(12, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //48
-			AddAIAttack(12, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
 			//Defence Positions of Player12
 			AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #1
 			AddDefencePositionAndGroup(12, 16, 166, 133, 0, 34); //DefencePosition #2
@@ -855,10 +1909,10 @@ begin
 			Actions.AIWorkerLimit(3, 8);
 			Actions.AIRecruitLimit(3, 21);
 			Actions.AIRecruitDelay(3, MinToTick(33));
-			IronEquipRate(3, Randomize(330, 3));
+			SetEqualEquipRate(3, Randomize(330, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(3, true, 300, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 26); //DefencePosition #1
 			AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #2
@@ -891,11 +1945,11 @@ begin
 			Actions.AIWorkerLimit(4, 8);
 			Actions.AIRecruitLimit(4, 21);
 			Actions.AIRecruitDelay(4, MinToTick(40));
-			IronEquipRate(4, Randomize(275, 3));
+			SetEqualEquipRate(4, Randomize(275, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(4, false, 0, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
-			AddAIAttack(4, true, 300, 2, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //70
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 2, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //70
 			//Defence Positions of Player4
 			AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(4, 16, 86, 9, 2, 40); //DefencePosition #2
@@ -930,11 +1984,11 @@ begin
 			Actions.AIWorkerLimit(5, 8);
 			Actions.AIRecruitLimit(5, 21);
 			Actions.AIRecruitDelay(5, MinToTick(30));
-			IronEquipRate(5, Randomize(295, 3));
+			SetEqualEquipRate(5, Randomize(295, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
 			AddAIAttack(5, false, 0, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //55
-			AddAIAttack(5, true, 300, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
 			//Defence Positions of Player5
 			AddDefencePositionAndGroup(5, 16, 142, 14, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(5, 16, 213, 8, 2, 40); //DefencePosition #2
@@ -969,10 +2023,10 @@ begin
 			Actions.AIWorkerLimit(6, 8);
 			Actions.AIRecruitLimit(6, 21);
 			Actions.AIRecruitDelay(6, MinToTick(41));
-			IronEquipRate(6, Randomize(285, 3));
+			SetEqualEquipRate(6, Randomize(285, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(6, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player6
 			AddDefencePositionAndGroup(6, 16, 215, 8, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(6, 16, 249, 51, 3, 40); //DefencePosition #2
@@ -1007,10 +2061,10 @@ begin
 			Actions.AIWorkerLimit(7, 8);
 			Actions.AIRecruitLimit(7, 21);
 			Actions.AIRecruitDelay(7, MinToTick(49));
-			IronEquipRate(7, Randomize(285, 3));
+			SetEqualEquipRate(7, Randomize(285, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
 			//Attacks
-			AddAIAttack(7, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(7, true, GetEffectiveEquipRate(7) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player7
 			AddDefencePositionAndGroup(7, 16, 246, 110, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(7, 16, 252, 53, 0, 40); //DefencePosition #2
@@ -1045,10 +2099,10 @@ begin
 			Actions.AIWorkerLimit(8, 8);
 			Actions.AIRecruitLimit(8, 21);
 			Actions.AIRecruitDelay(8, MinToTick(49));
-			IronEquipRate(8, Randomize(320, 3));
+			SetEqualEquipRate(8, Randomize(320, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(8, true, 300, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
 			//Defence Positions of Player8
 			AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #2
@@ -1085,11 +2139,11 @@ begin
 			Actions.AIWorkerLimit(9, 8);
 			Actions.AIRecruitLimit(9, 21);
 			Actions.AIRecruitDelay(9, MinToTick(38));
-			IronEquipRate(9, Randomize(280, 3));
+			SetEqualEquipRate(9, Randomize(280, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
 			//Attacks
 			AddAIAttack(9, false, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //57
-			AddAIAttack(9, true, 300, 2, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //69
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //69
 			//Defence Positions of Player9
 			AddDefencePositionAndGroup(9, 16, 246, 148, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(9, 16, 247, 111, 0, 40); //DefencePosition #2
@@ -1123,10 +2177,10 @@ begin
 			Actions.AIWorkerLimit(10, 8);
 			Actions.AIRecruitLimit(10, 21);
 			Actions.AIRecruitDelay(10, MinToTick(41));
-			IronEquipRate(10, Randomize(315, 3));
+			SetEqualEquipRate(10, Randomize(315, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
-			AddAIAttack(10, true, 300, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
 			//Defence Positions of Player10
 			AddDefencePositionAndGroup(10, 16, 229, 204, 5, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(10, 16, 247, 150, 0, 40); //DefencePosition #2
@@ -1160,11 +2214,11 @@ begin
 			Actions.AIWorkerLimit(11, 8);
 			Actions.AIRecruitLimit(11, 21);
 			Actions.AIRecruitDelay(11, MinToTick(31));
-			IronEquipRate(11, Randomize(310, 3));
+			SetEqualEquipRate(11, Randomize(310, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
 			AddAIAttack(11, false, 0, 1, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //50
-			AddAIAttack(11, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //62
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //62
 			//Defence Positions of Player11
 			AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(11, 16, 227, 234, 7, 30); //DefencePosition #2
@@ -1192,11 +2246,11 @@ begin
 			Actions.AIWorkerLimit(12, 8);
 			Actions.AIRecruitLimit(12, 21);
 			Actions.AIRecruitDelay(12, MinToTick(29));
-			IronEquipRate(12, Randomize(345, 3));
+			SetEqualEquipRate(12, Randomize(345, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 12, 9
 			//Attacks
 			AddAIAttack(12, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //48
-			AddAIAttack(12, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
 			//Defence Positions of Player12
 			AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #1
 			AddDefencePositionAndGroup(12, 16, 166, 133, 0, 34); //DefencePosition #2
@@ -1253,10 +2307,10 @@ begin
 			Actions.AIWorkerLimit(3, 9);
 			Actions.AIRecruitLimit(3, 24);
 			Actions.AIRecruitDelay(3, MinToTick(32));
-			IronEquipRate(3, Randomize(250, 3));
+			SetEqualEquipRate(3, Randomize(250, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(3, true, 300, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
+			AddAIAttack(3, true, GetEffectiveEquipRate(3) -1, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 9, 59, 4, 26); //DefencePosition #1
 			AddDefencePositionAndGroup(3, 16, 27, 49, 3, 24); //DefencePosition #2
@@ -1289,10 +2343,10 @@ begin
 			Actions.AIWorkerLimit(4, 9);
 			Actions.AIRecruitLimit(4, 24);
 			Actions.AIRecruitDelay(4, MinToTick(32));
-			IronEquipRate(4, Randomize(205, 3));
+			SetEqualEquipRate(4, Randomize(205, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(4, true, 300, 2, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //70
+			AddAIAttack(4, true, GetEffectiveEquipRate(4) -1, 2, 2, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //70
 			//Defence Positions of Player4
 			AddDefencePositionAndGroup(4, 16, 54, 43, 4, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(4, 16, 86, 9, 2, 40); //DefencePosition #2
@@ -1327,10 +2381,10 @@ begin
 			Actions.AIWorkerLimit(5, 9);
 			Actions.AIRecruitLimit(5, 24);
 			Actions.AIRecruitDelay(5, MinToTick(26));
-			IronEquipRate(5, Randomize(220, 3));
+			SetEqualEquipRate(5, Randomize(220, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(5, true, 300, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
+			AddAIAttack(5, true, GetEffectiveEquipRate(5) -1, 1, 2, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //65
 			//Defence Positions of Player5
 			AddDefencePositionAndGroup(5, 16, 142, 14, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(5, 16, 213, 8, 2, 40); //DefencePosition #2
@@ -1365,10 +2419,10 @@ begin
 			Actions.AIWorkerLimit(6, 9);
 			Actions.AIRecruitLimit(6, 24);
 			Actions.AIRecruitDelay(6, MinToTick(38));
-			IronEquipRate(6, Randomize(215, 3));
+			SetEqualEquipRate(6, Randomize(215, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(6, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(6, true, GetEffectiveEquipRate(6) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player6
 			AddDefencePositionAndGroup(6, 16, 215, 8, 6, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(6, 16, 249, 51, 3, 40); //DefencePosition #2
@@ -1403,10 +2457,10 @@ begin
 			Actions.AIWorkerLimit(7, 9);
 			Actions.AIRecruitLimit(7, 24);
 			Actions.AIRecruitDelay(7, MinToTick(44));
-			IronEquipRate(7, Randomize(215, 3));
+			SetEqualEquipRate(7, Randomize(215, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 10, 9
 			//Attacks
-			AddAIAttack(7, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
+			AddAIAttack(7, true, GetEffectiveEquipRate(7) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //67
 			//Defence Positions of Player7
 			AddDefencePositionAndGroup(7, 16, 246, 110, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(7, 16, 252, 53, 0, 40); //DefencePosition #2
@@ -1441,10 +2495,10 @@ begin
 			Actions.AIWorkerLimit(8, 9);
 			Actions.AIRecruitLimit(8, 24);
 			Actions.AIRecruitDelay(8, MinToTick(44));
-			IronEquipRate(8, Randomize(240, 3));
+			SetEqualEquipRate(8, Randomize(240, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
 			//Attacks
-			AddAIAttack(8, true, 300, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
+			AddAIAttack(8, true, GetEffectiveEquipRate(8) -1, 0, 0, 0, 5, attClosestBuildingFromStartPos, aCustomPosition); //60 Knights
 			//Defence Positions of Player8
 			AddDefencePositionAndGroup(8, 16, 210, 93, 2, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(8, 16, 204, 93, 2, 40); //DefencePosition #2
@@ -1481,10 +2535,10 @@ begin
 			Actions.AIWorkerLimit(9, 9);
 			Actions.AIRecruitLimit(9, 24);
 			Actions.AIRecruitDelay(9, MinToTick(32));
-			IronEquipRate(9, Randomize(205, 3));
+			SetEqualEquipRate(9, Randomize(205, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 12, 12
 			//Attacks
-			AddAIAttack(9, true, 300, 2, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //69
+			AddAIAttack(9, true, GetEffectiveEquipRate(9) -1, 2, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //69
 			//Defence Positions of Player9
 			AddDefencePositionAndGroup(9, 16, 246, 148, 4, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(9, 16, 247, 111, 0, 40); //DefencePosition #2
@@ -1518,10 +2572,10 @@ begin
 			Actions.AIWorkerLimit(10, 9);
 			Actions.AIRecruitLimit(10, 24);
 			Actions.AIRecruitDelay(10, MinToTick(38));
-			IronEquipRate(10, Randomize(235, 3));
+			SetEqualEquipRate(10, Randomize(235, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
-			AddAIAttack(10, true, 300, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
+			AddAIAttack(10, true, GetEffectiveEquipRate(10) -1, 2, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //61
 			//Defence Positions of Player10
 			AddDefencePositionAndGroup(10, 16, 229, 204, 5, 40); //DefencePosition #1
 			AddDefencePositionAndGroup(10, 16, 247, 150, 0, 40); //DefencePosition #2
@@ -1555,10 +2609,10 @@ begin
 			Actions.AIWorkerLimit(11, 9);
 			Actions.AIRecruitLimit(11, 24);
 			Actions.AIRecruitDelay(11, MinToTick(26));
-			IronEquipRate(11, Randomize(230, 3));
+			SetEqualEquipRate(11, Randomize(230, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
 			//Attacks
-			AddAIAttack(11, true, 300, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //62
+			AddAIAttack(11, true, GetEffectiveEquipRate(11) -1, 1, 2, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //62
 			//Defence Positions of Player11
 			AddDefencePositionAndGroup(11, 16, 220, 248, 6, 20); //DefencePosition #1
 			AddDefencePositionAndGroup(11, 16, 227, 234, 7, 30); //DefencePosition #2
@@ -1586,10 +2640,10 @@ begin
 			Actions.AIWorkerLimit(12, 9);
 			Actions.AIRecruitLimit(12, 24);
 			Actions.AIRecruitDelay(12, MinToTick(23));
-			IronEquipRate(12, Randomize(255, 3));
+			SetEqualEquipRate(12, Randomize(255, 3));
 			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 12, 12, 9
 			//Attacks
-			AddAIAttack(12, true, 300, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
+			AddAIAttack(12, true, GetEffectiveEquipRate(12) -1, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //63
 			//Defence Positions of Player12
 			AddDefencePositionAndGroup(12, 16, 172, 163, 4, 30); //DefencePosition #1
 			AddDefencePositionAndGroup(12, 16, 166, 133, 0, 34); //DefencePosition #2
@@ -1625,29 +2679,30 @@ end;
 
 procedure OnHouseBuilt(aHouse: Integer);
 var
-	HouseOwner: Byte;
+	HouseOwner: Integer;
 begin
 	//Unlock Metallurgist's after Sawmill
-	if States.HouseType(aHouse) = 0 then
+	if States.HouseTypeEx(aHouse) = htMetallurgists then
 	begin
-		HouseOwner := States.HouseOwner(aHouse);
-		if not bGoldMsg[HouseOwner] then	
-		begin
-			Actions.HouseUnlock(HouseOwner, 15);
-			Actions.ShowMsg(HouseOwner, '<$1>'); //Message to Player
-			bGoldMsg[HouseOwner] := true;
-		end;
+	    HouseOwner := States.HouseOwner(aHouse);
+	    if not States.PlayerIsAI(HouseOwner) then
+            if not bGoldMsg[HouseOwner] then
+            begin
+                Actions.HouseUnlock(HouseOwner, 15);
+                Actions.ShowMsg(HouseOwner, '<$1>'); //Message to Player
+                bGoldMsg[HouseOwner] := true;
+            end;
 	end;
 end;
 
 
 procedure OnTick();
 var
-	GameTime: Cardinal;
+	GameTime: Integer;
 begin
 	GameTime := States.GameTime();
 	
 	//Initial Message
-	if GameTime = 30 then
+	if GameTime = 45 then
 		Actions.ShowMsg(-1, '<$0>');
 end;
