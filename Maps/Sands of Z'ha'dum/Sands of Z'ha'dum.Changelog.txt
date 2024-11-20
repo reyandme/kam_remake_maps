@@ -63,3 +63,9 @@ v0.7.1b (29.10.2022):
 - Fixed a bug in newest version of improvestaticai.script
 - Main Mission Objectives now work as intended
 - Refactoring and improvements of the main script
+
+1.1 (18.11.2024)
+- Removed "difficulty.script" and replaced it with "tools.script"
+- Removed "dynamicmap.script" as it's important procedures are now part of "tools.script"
+- Cleaned up main script
+- Visual changes to overlay
