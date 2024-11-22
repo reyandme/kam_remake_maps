@@ -1,0 +1,14 @@
+Version
+1.0.3
+
+SmallDesc
+New minigame by Dyron
+
+BigDescLIBX
+178
+
+SetSpecial
+
+DifficultyLevels
+mdEasy3,mdEasy1,mdNormal,mdHard1,mdHard3
+

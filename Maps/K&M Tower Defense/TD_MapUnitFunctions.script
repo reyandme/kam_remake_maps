@@ -1,0 +1,572 @@
+
+procedure ClearTowersArray;
+var I, J : Integer;
+	aEnUnits : array of TD_Tower;
+begin
+	With gMaps.CurrentSaveData do 
+	begin
+		If length(Towers) = 0 then 
+			Exit;
+			
+		for I := 0 to high(Towers) do 
+			If not Towers[I].aUnit.Deleted then 
+			begin
+				J := length(aEnUnits);
+				SetLength(aEnUnits, J + 1);
+				aEnUnits[J] := Towers[I];
+			end;
+		Towers := aEnUnits;
+	
+	end;
+end;
+function GetTowerID(aUnit : Integer) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	
+	With gMaps.CurrentSaveData do 
+	begin
+		If length(Towers) = 0 then 
+			Exit;
+		for I := 0 to high(Towers) do 
+			If aUnit = Towers[I].aUnit.ID then 
+			begin
+				Result := I;
+				//ACheck(IntToStr(I));
+				Break;
+			end;
+		
+	end;	
+end;
+
+function GetTowerIDFromPos(Pos : TKMPoint) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	//ACheck(IntToStr(Pos.X) + '  ' + IntToStr(Pos.Y) )
+	With gMaps.CurrentSaveData do 
+	begin
+		If length(Towers) = 0 then 
+			Exit;
+		for I := 0 to high(Towers) do 
+		begin
+			//ACheck(IntToStr(Towers[I].aUnit.Pos.X) + '  ' + IntToStr(Towers[I].aUnit.Pos.Y) )
+			If Pos = Towers[I].aUnit.Pos then 
+			begin
+				Result := I;
+				Break;
+			end;
+		end;
+		
+	end;	
+end;
+
+function GetTowerBonus(aType : Integer) : TDByteSet;
+begin
+	case aType of 
+		14, 15, 16, 23, 26 : Result := [1,2,5,13];
+		17, 18, 25 : Result := [10,12,11];//[3,4,6,13];
+		19, 20, 24 : Result := [3,4,6,13];
+		21, 22, 27 : Result := [7,8,11];
+		117 : Result := [11];
+	end;
+end;
+
+function GetUnitBonus(aType : Integer) : TDByteSet;
+begin
+	case aType of 
+		0 : result := [];
+		1, 2, 5 : result := [19, 20, 24];
+		9, 10, 12  : result := [21, 22, 27];
+		3, 4, 6 : result := [17, 18, 25];
+		7, 8 : result := [14, 15, 16, 23, 26];
+		11 : result := [14, 15, 16, 23, 26, 19, 20, 24];
+		13 : result := [17, 18, 25, 21, 22, 27];
+	end;
+end;
+
+function GetUnitBonusName(aType : integer) : String;
+begin
+	
+	case aType of 
+		0 : result := '<$134>';
+		1, 2, 5 : result := '<$15>';
+		9, 10, 12  : result := '<$18>';
+		3, 4, 6 : result := '<$17>';
+		7, 8 : result := '<$16>';
+		11 : result := '<$16> + <$15>';
+		13 : result := '<$17> + <$18>';
+	end;
+	
+end;
+
+function GetUnitWBonusName(aType : integer) : String;
+begin
+	
+	case aType of 
+		0 : result := '<$134>';
+		1, 2, 5 : result := '<$16>';
+		9, 10, 12  : result := '<$17>';
+		3, 4, 6 : result := '<$15>';
+		7, 8 : result := '<$18>';
+		11 : result := '<$17> + <$18>';
+		13 : result := '<$16> + <$15>';
+	end;
+	
+end;
+
+
+procedure MoveCamera(Pos : TKMPoint);
+begin
+	A.CinematicStart(PLAYER);
+	A.CinematicPanTo(PLAYER, Pos.X, Pos.Y, 0);
+	A.CinematicEnd(PLAYER);
+end;
+
+function KillInvulnerableUnit(aUnit : Integer; Silent : Boolean) : Boolean;
+begin
+	Result := true;;
+	If aUnit = -1 then 
+	begin
+		Result := false;
+		Exit;
+	end;
+	Actions.UnitHpSetInvulnerable(aUnit,false);
+	A.UnitKill(aUnit,Silent);
+end;
+
+procedure DoAround(aPos : TKMPoint; P : TProcAtLoc);
+var I, J : Integer;
+begin
+	for I := -1 to 1 do 
+		for J := -1 to 1 do 
+			If not ((I = 0) and (J = 0)) then 
+				P( U.KMPoint(aPos.X + I, aPos.Y + J) );
+end;
+
+procedure ResetSelectedTower;
+begin
+
+	with gTowerSelected do
+	begin
+		aUnit.UType := 0;
+		Attack := 0;
+		LVL := 0;
+		Cost := 0;
+		IsWatchTower := false;
+		IsHouse := false;
+	end;
+end;
+
+Function GetHouseSize(aType:Integer) : TD_RECT;
+var HouseData : TD_RECT;
+begin
+	With HouseData do 
+		case aType of 
+		3,14,22 : begin
+				Size := U.KMPoint(2, 1);
+				Pos := U.KMPoint(-1, -1);
+			end;
+		7 : begin
+				Size := U.KMPoint(2, 2);
+				Pos := U.KMPoint(-2, -2);
+			end;
+		29 : begin
+				Size := U.KMPoint(3, 2);
+				Pos := U.KMPoint(-3, -2);
+			end;
+		15 : begin
+				Size := U.KMPoint(2, 2);
+				Pos := U.KMPoint(-1, -2);
+			end;
+		18 : begin
+				Size := U.KMPoint(3, 2);
+				Pos := U.KMPoint(-1, -2);
+			end;
+		17 : begin
+				Size := U.KMPoint(1, 2);
+				Pos := U.KMPoint(-1, -1);
+			end;	
+		end;
+	Result := HouseData;
+end;
+
+function GetNextMedal(aMedal : TD_MedalType) : TD_MedalType;
+begin
+	Result := TD_MedalType(byte(aMedal) + 1);
+end;
+
+Function GetMedalName(aMedal: TD_MedalType) : String;
+begin
+	case aMedal of 
+		0:	Result:= '<$134>';
+		1:	Result:= '<$42>';
+		2:	Result:= '<$43>';
+		3:	Result:= '<$44>';
+		4:	Result:= '<$45>';
+		5:	Result:= '<$46>';
+	end;
+end;
+
+Function GetMedalWave(aMedal: TD_MedalType) : Integer;
+begin
+	case aMedal of 
+		0:	Result:= 30;
+		1:	Result:= 55;
+		2:	Result:= 75;
+		3:	Result:= 100;
+		4:	Result:= 130;
+		5:	Result:= -1;
+	end;
+end;
+
+Function GeMapName(ID: Integer) : String;
+begin
+	Result:= '<$' + IntToStr(ID + 110) +'>';
+end;
+function IsTowerRanged(aUnit : KD_WarriorStats) : Boolean;
+begin
+	Result := byte(aUnit.UType) in gRanged;
+end;
+
+function IsTypeRanged(aType : Integer) : Boolean;
+begin
+	Result := byte(aType) in gRanged;
+end;
+
+Function GetMapResources(aID:Integer) : array of Integer;
+var Multi : Integer;
+	arr: array[0..27] of Integer;
+begin
+	Case gMaps.Map[aID].Medal of 
+		aNone : Multi := 100;
+		aBronze : Multi := 150;
+		aSilver : Multi := 200;
+		aGold : Multi := 325;
+		aDiamond : Multi := 525;
+		aLegendary :begin
+						Result := arr;
+						Exit;
+					end;
+	end;
+
+	Case aID of 
+		0 : 
+			begin	
+				arr[0]:= (10 * Multi div 100);
+				arr[2]:= (3 * Multi div 100);
+				arr[10]:= (6 * Multi div 100);
+			end;
+		1 : 
+			begin	
+				arr[0]:= (10 * Multi div 100);
+				arr[1]:= (15 * Multi div 100);
+				arr[2]:= (5 * Multi div 100);
+				arr[7]:= (3 * Multi div 100);
+				arr[27]:= (4 * Multi div 100);
+			end;
+		2 : 
+			begin	
+				arr[0]:= (50 * Multi div 100);
+				arr[2]:= (5 * Multi div 100);
+				arr[6]:= (3 * Multi div 100);
+			end;
+		3 : 
+			begin	
+				arr[0]:= (5 * Multi div 100);
+				arr[2]:= (5 * Multi div 100);
+				arr[5]:= (15 * Multi div 100);
+				arr[27]:= (15 * Multi div 100);
+			end;
+		4 : 
+			begin	
+				arr[9]:= (20 * Multi div 100);
+				arr[10]:= (5 * Multi div 100);
+				arr[6]:= (3 * Multi div 100);
+			end;
+			
+		//Intermediate
+		5 : 
+			begin	
+				arr[27]:= (10 * Multi div 100);
+				arr[10]:= (10 * Multi div 100);
+				arr[0]:= (10 * Multi div 100);
+				arr[2]:= (10 * Multi div 100);
+			end;
+		6 : 
+			begin	
+				arr[7]:= (45 * Multi div 100);
+				arr[2]:= (5 * Multi div 100);
+				arr[0]:= (5 * Multi div 100);
+				arr[6]:= (2 * Multi div 100);
+			end;
+		7 : 
+			begin	
+				arr[6]:= (22 * Multi div 100);
+				arr[0]:= (5 * Multi div 100);
+			end;
+		8 : 
+			begin	
+				arr[1]:= (20 * Multi div 100);
+				arr[27]:= (20 * Multi div 100);
+			end;
+			
+		9 : 
+			begin	
+				arr[5]:= (50 * Multi div 100);
+			end;
+		//Advanced
+		10 : 
+			begin	
+				arr[0]:= (35 * Multi div 100);
+				arr[7]:= (20 * Multi div 100);
+				arr[8]:= (10 * Multi div 100);
+			end;
+		11 : 
+			begin	
+				arr[9]:= (20 * Multi div 100);
+				arr[10]:= (20 * Multi div 100);
+				arr[13]:= (20 * Multi div 100);
+				arr[27]:= (20 * Multi div 100);
+			end;
+		12 : 
+			begin	
+				arr[0]:= (20 * Multi div 100);
+				arr[1]:= (15 * Multi div 100);
+				arr[2]:= (20 * Multi div 100);
+				arr[5]:= (25 * Multi div 100);
+			end;
+		13 : 
+			begin	
+				arr[7]:= (45 * Multi div 100);
+				arr[6]:= (5 * Multi div 100);
+				arr[8]:= (10 * Multi div 100);
+				arr[10]:= (15 * Multi div 100);
+				arr[13]:= (5 * Multi div 100);
+			end;
+		14 : 
+			begin	
+				arr[0]:= (15 * Multi div 100);
+				arr[1]:= (65 * Multi div 100);
+			end;
+			
+		//Expert
+		15 : 
+			begin	
+				arr[7]:= (50 * Multi div 100);
+				arr[12]:= (45 * Multi div 100);
+				arr[9]:= (5 * Multi div 100);
+			end;
+		16 : 
+			begin	
+				arr[9]:= (60 * Multi div 100);
+				arr[10]:= (20 * Multi div 100);
+				arr[13]:= (10 * Multi div 100);
+				arr[0]:= (10 * Multi div 100);
+			end;
+		17 : 
+			begin	
+				arr[6]:= (25 * Multi div 100);
+				arr[5]:= (50 * Multi div 100);
+				arr[7]:= (25 * Multi div 100);
+			end;
+		18 : 
+			begin	
+				arr[12]:= (40 * Multi div 100);
+				arr[0]:= (25 * Multi div 100);
+				arr[1]:= (25 * Multi div 100);
+				arr[2]:= (25 * Multi div 100);
+			end;
+		19 : 
+			begin	
+				arr[7]:= (30 * Multi div 100);
+				arr[1]:= (70 * Multi div 100);
+			end;
+		//extreme
+		20 : 
+			begin	
+				arr[0]:= (75 * Multi div 100);
+				arr[2]:= (75 * Multi div 100);
+				arr[1]:= (50 * Multi div 100);
+			end;
+			
+		21 : 
+			begin	
+				arr[7]:= (25 * Multi div 100);
+				arr[6]:= (25 * Multi div 100);
+				arr[5]:= (25 * Multi div 100);
+				arr[8]:= (25 * Multi div 100);
+				arr[10]:= (25 * Multi div 100);
+				arr[13]:= (25 * Multi div 100);
+				arr[27]:= (25 * Multi div 100);
+				arr[12]:= (25 * Multi div 100);
+			end;
+			
+		22 :
+			begin	
+				arr[7]:= (25 * Multi div 100);
+				arr[6]:= (25 * Multi div 100);
+				arr[5]:= (25 * Multi div 100);
+				arr[8]:= (25 * Multi div 100);
+				arr[10]:= (25 * Multi div 100);
+				arr[13]:= (25 * Multi div 100);
+				arr[27]:= (25 * Multi div 100);
+				arr[12]:= (25 * Multi div 100);
+			end;
+		
+	end;
+	//2,      1,     5,    7,    6,    0,      9,    8,10, 13, 27,  12
+	//Timber, Stone, Coal, Gold, Iron, Wood, Corn, Food,          Skin  : Integer;
+	with gCityBonuses do 
+	begin
+		Percante(arr[2], Timber);
+		Percante(arr[1], Stone);
+		Percante(arr[5], Coal);
+		Percante(arr[7], Gold);
+		Percante(arr[6], Iron);
+		Percante(arr[0], Wood);
+		Percante(arr[9], Corn);
+		Percante(arr[8], Food);
+		Percante(arr[10], Food);
+		Percante(arr[13], Food);
+		Percante(arr[27], Food);
+		Percante(arr[12], Skin);
+	end;
+	Result := arr;
+end;
+
+function GetHouseCost(aType : integer) : Integer;
+begin
+	case aType of
+		14:	Result:= 400;//querry
+		22:	Result:= 1300;//mill
+		3:	Result:= 850;//coal mine
+		7:	Result:= 2700;//bakery
+		29:	Result:= 5300;//market
+		15:	Result:= 3000;//metalurgists
+		18:	Result:= 10000;//townhall
+		17:	Result:= WT_COST;//watchtower
+	
+	end;
+	Result := Result * gCityBonuses.HouseCost div 100;
+end;
+
+function GetHouseWaveBonus(aType : integer) : Integer;
+begin
+	Result := 0;
+	case aType of
+		14:	Result:= 25;//querry
+		22:	Result:= 1;//mill
+		3:	Result:= 51;//coal mine
+		7:	Result:= 2;//bakery
+		29:	Result:= 3;//market
+		15:	Result:= 200;//metalurgists
+		18:	Result:= 200;//townhall
+		
+	end;
+	
+	case aType of
+		14, 3, 15, 18:	Result := Result * gCityBonuses.HouseMoney div 100;//money bonus
+		22, 7, 29:	Result := Result * gCityBonuses.HouseLifes;//life Bonus
+		
+	end;
+end;
+
+function GetTowerNextType(UType : integer) : Integer;
+begin
+	Result := -1;
+	case UType of
+		14 : Result := 15;
+		15 : Result := 16;
+		16 : Result := 23;
+		23 : Result := 26;
+		25 : Result := 17;
+		17 : Result := 18;
+		24 : Result := 19;
+		19 : Result := 20;
+		27 : Result := 21;
+		21 : Result := 22;
+	end;
+end;
+
+Function GetWatchTowerDamage : Integer;
+begin
+	Result := WT_DAMAGE + gCityBonuses.TowerAttack;
+end;
+
+function GetTowerDamage(UType : integer) : Integer;
+begin
+	Result := TOWER_DAMAGE[UType - 14] * gCityBonuses.UnitAttack div 100;		
+end;
+
+function GetTowerUpgradeDamage(UType, aLVL : integer; IsWT : Boolean) : Integer;
+var aMP : Single;
+	aNType : Integer;
+begin
+	
+	If IsWT then 
+	begin
+		Result := GetWatchTowerDamage + (GetWatchTowerDamage * aLVL);
+		Exit;
+	end;
+	
+	aNType := GetTowerNextType(UType);
+	
+	If aNType <> -1 then 
+	begin
+		Result := GetTowerDamage(aNType);
+		Exit;
+	end;
+	
+	aMP := 0.4 + (0.4 * aLVL);
+	aMP := aMP * aMP;
+	
+	Result := GetTowerDamage(UType) + U.FloorTo(GetTowerDamage(UType) * aMP, 5);		
+end;
+
+
+function GetTowerCost(UType : integer) : Integer;
+begin
+	Result := TOWER_COST[UType - 14] * gCityBonuses.UnitCost div 100;	
+end;
+
+function GetTowerUpgradeCost(UType, aLVL : integer; IsWatchTower : Boolean) : Integer;
+var aMP : Single;
+	TT : Integer;
+begin
+	TT := -1;
+	If not IsWatchTower then 
+		TT := GetTowerNextType(UType);
+		
+	If TT > -1 then 
+	begin
+		Result := TOWER_COST[TT - 14] + (TOWER_COST[TT - 14] div 10) - TOWER_COST[UType - 14];
+		Exit;		
+	end;
+	
+	aMP := 0.4 + (0.25 * aLVL);
+	aMP := aMP * aMP div 2;
+	
+	If IsWatchTower then 
+		Result := GetHouseCost(17)  + (GetHouseCost(17) div 20 * aLVL)
+	else
+		Result := GetTowerCost(UType) + U.FloorTo(GetTowerCost(UType) * aMP, 5);		
+end;
+
+function HasEnoughMoney(aNeededMoney : Integer) : Boolean;
+begin
+	with gMaps.CurrentSaveData do 
+		Result := Money >= aNeededMoney;
+end;
+
+function GetNeededMoney(aNeededMoney : Integer) : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+		Result := aNeededMoney - Money;
+end;
+
+procedure SetRemove(aPos : TKMPoint);
+begin
+	gRemove.Pos := aPos;
+	gRemove.Time := GT;
+end;

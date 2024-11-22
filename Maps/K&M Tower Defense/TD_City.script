@@ -1,0 +1,657 @@
+var DismissTime : Integer; 
+
+function GetSpotHouseCost(aType : Integer) : array of Integer;
+var arr : array[0..27] of Integer;
+begin
+	case aType of 
+	0: begin //sawmill
+		arr[0] := 35;
+		arr[1] := 20;
+		arr[2] := 20;
+		end;
+	1: begin //ironsmithy
+		arr[5] := 45;
+		arr[6] := 56;
+		arr[0] := 10;
+		arr[1] := 89;
+		arr[2] := 65;
+		arr[7] := 40;
+		end;
+	2: begin //weapon smithy
+		arr[5] := 25;
+		arr[6] := 35;
+		arr[0] := 30;
+		arr[1] := 60;
+		arr[2] := 60;
+		arr[7] := 60;
+		end;
+	4: begin //iron mine
+		arr[0] := 15;
+		arr[1] := 40;
+		arr[2] := 25;
+		arr[7] := 15;
+		end;
+	5: begin //gold mine
+		arr[0] := 100;
+		arr[1] := 10;
+		arr[2] := 83;
+		arr[7] := 45;
+		end;
+	6: begin //fisherman's hut
+		arr[0] := 40;
+		arr[1] := 40;
+		arr[2] := 15;
+		arr[7] := 5;
+		arr[8] := 25;
+		arr[13] := 25;
+		end;
+	8: begin //farm
+		arr[0] := 65;
+		arr[1] := 50;
+		arr[2] := 65;
+		arr[12] := 20;
+		end;
+	9: begin //woodcutter
+		arr[0] := 50;
+		end;
+	10: begin //armor smithy
+		arr[5] := 75;
+		arr[6] := 60;
+		arr[0] := 50;
+		arr[1] := 45;
+		arr[2] := 45;
+		arr[7] := 45;
+		end;
+	12: begin //stables
+		arr[6] := 10;
+		arr[0] := 35;
+		arr[1] := 25;
+		arr[2] := 45;
+		arr[7] := 15;
+		end;
+	16: begin //swine farm
+		arr[0] := 115;
+		arr[1] := 25;
+		end;
+	17: begin //Watch Tower
+		arr[6] := 53;
+		arr[0] := 15;
+		arr[1] := 25;
+		arr[2] := 55;
+		arr[7] := 100;
+		arr[12] := 30;
+		end;
+	19: begin //Weapons Workshop
+		arr[0] := 15;
+		arr[1] := 25;
+		arr[2] := 55;
+		arr[12] := 85;
+		arr[9] := 100;
+		end;
+	20: begin //Armory Workshop
+		arr[0] := 24;
+		arr[1] := 66;
+		arr[27] := 47;
+		arr[8] := 52;
+		arr[10] := 58;
+		arr[13] := 45;
+		arr[9] := 25;
+		end;
+	24: begin //butcher's
+		arr[0] := 66;
+		arr[1] := 55;
+		arr[27] := 44;
+		arr[8] := 33;
+		arr[10] := 22;
+		arr[13] := 11;
+		arr[7] := 25;
+		end;
+	25: begin //Tannery
+		arr[0] := 66;
+		arr[1] := 55;
+		arr[2] := 44;
+		arr[8] := 33;
+		end;
+	28: begin //vineyard
+		arr[0] := 66;
+		arr[1] := 55;
+		arr[2] := 44;
+		arr[5] := 83;
+		arr[8] := 33;
+		end;
+	end;
+	Result := arr;
+end;
+
+function GetSpotHouseCostUpgrade(aType, aLVL : integer) : array of Integer;
+var I : Integer;
+	arr : array of Integer;
+	MP : Integer;
+begin
+	arr := GetSpotHouseCost(aType);
+	MP := 50 * aLVL;
+	MP := U.FloorTo(MP + ( 30 * 1.2 * aLVL), 1)
+	for I := 0 to high(arr) do 
+		If arr[I] > 0 then 
+			arr[I] := arr[I] * (100 + (MP) ) div 100;
+	Result := arr;
+end;
+
+function GetHouseSpotID(aPos : TKMPoint) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	With gCity do 
+	begin
+		for I := 0 to high(Spot) do 
+			If PointNearPoint(aPos, Spot[I].Pos, 3) then 
+			begin
+				Result := I;
+				Break;
+			end;
+	end;
+end;
+
+function GetHousePriceString(aResources : array of Integer) : String;
+var finString : String;
+	I, J, K, H: Integer;
+	aLines : array of String;
+begin
+	finString := '';
+	for I := 0 to high(aResources) do 
+		If aResources[I] > 0 then 
+		begin
+			J := high(aLines);
+			H := length(aLines);
+			
+			If K mod 2 = 0 then 
+			begin
+				SetLength(aLines, H + 1);
+				aLines[H] := S.WareTypeName(I) + ' : ' + IntToStr(S.HouseResourceAmount(gCity.Store, I) ) + ' / ' + IntToStr(aResources[I]) + ' ;'
+			end else
+			begin
+				aLines[J] := AddSpaceToLine(aLines[J], 30);
+				aLines[J] := aLines[J] + S.WareTypeName(I) + ' : ' + IntToStr(S.HouseResourceAmount(gCity.Store, I) ) + ' / ' + IntToStr(aResources[I]) + ' ;';
+			end;
+			inc(K);
+		end;
+	for I := 0 to high(aLines) do 
+		finString := finString + '|' + aLines[I];
+		
+	Result := finString;
+end;
+
+function GetCityHouseBonus(aType, aLVL : Integer) : TD_CityBonuses;
+begin
+	Inc(aLVL);
+	With Result do 
+		case aType of 
+			2 : UnitAttack := 5 * aLVL;
+			10 : UnitCost := -3 * aLVL;
+			5 : HouseMoney := 5 * aLVL;
+			17 : TowerAttack := 40 * aLVL;
+			6 : HouseLifes := 1 * aLVL;
+			24 : StartLife := 3 * aLVL;
+			28 : StartMoney := 10 * aLVL;
+			1 : StartMP := 1 * aLVL{(aLVL div 2)};
+			20 : BossHP := -2 * aLVL;
+			19 : EnUnitsHP := -2 * aLVL;
+			
+			//map resources
+			9 : Wood := 15 * aLVL;
+			0 : Timber := 15 * aLVL;
+			8 : Corn := 20 * aLVL;
+			4 : begin 
+					Coal := 5 * aLVL;
+					Iron := 5 * aLVL;
+					Gold := 5 * aLVL;
+				end;
+			16 : Food := 10 * aLVL;
+			12 : begin 
+					Corn := 15 * aLVL;
+					Stone := 20 * aLVL;
+					Skin := 5 * aLVL;
+				end;
+			25 : Skin := 40 * aLVL;
+			
+		end;
+end;
+
+function GetCityHouseBonusStr(aType, aLVL : Integer) : String;
+var finString : String;
+	aBonus : TD_CityBonuses;
+begin
+	aBonus := GetCityHouseBonus(aType, aLVL);
+	finString := '';
+	with aBonus do 
+	begin
+		If StartLife > 0 then 
+			finString := finString + '|<$170>' + IntToStr(StartLife);
+			
+		If StartMoney > 0 then 
+			finString := finString + '|<$169>' + IntToStr(StartMoney);
+			
+		If StartMP > 0 then 
+			finString := finString + '|<$171>' + IntToStr(StartMP);
+			
+		If UnitCost <> 0 then 
+			finString := finString + '|<$174>' + IntToStr(UnitCost) + ' %';
+			
+		If UnitAttack <> 0 then 
+			finString := finString + '|<$165>' + IntToStr(UnitAttack) + ' %';
+			
+		If TowerAttack > 0 then 
+			finString := finString + '|<$166>' + IntToStr(TowerAttack);
+			
+		If HouseLifes > 0 then 
+			finString := finString + '|<$168>' + IntToStr(HouseLifes);
+			
+		If HouseMoney > 0 then 
+			finString := finString + '|<$167>' + IntToStr(HouseMoney) + ' %';
+			
+		If HouseCost <> 0 then 
+			finString := finString + '|<$188>' + IntToStr(HouseCost) + ' %';
+			
+		If EnUnitsHP <> 0 then 
+			finString := finString + '|<$173>' + IntToStr(EnUnitsHP) + ' %';
+			
+		If BossHP <> 0 then 
+			finString := finString + '|<$172>' + IntToStr(BossHP) + ' %';
+			
+		If (Timber > 0 )
+		or (Stone > 0 )
+		or (Coal > 0 )
+		or (Gold > 0 )
+		or (Iron > 0 )
+		or (Wood > 0 )
+		or (Corn > 0 )
+		or (Food > 0 )
+		or (Skin > 0 ) then 
+		begin
+			finString := finString + '|<$176>';
+			
+			If (Timber > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(2) + ' : + ' + IntToStr(Timber) + ' %';
+			If (Stone > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(1) + ' : + ' + IntToStr(Stone) + ' %';
+			If (Coal > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(5) + ' : + ' + IntToStr(Coal) + ' %';
+			If (Gold > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(7) + ' : + ' + IntToStr(Gold) + ' %';
+			If (Iron > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(6) + ' : + ' + IntToStr(Iron) + ' %';
+			If (Wood > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(0) + ' : + ' + IntToStr(Wood) + ' %';
+			If (Corn > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(9) + ' : + ' + IntToStr(Corn) + ' %';
+			If (Food > 0 ) then 
+				finString := finString + '| <$189>+ ' + IntToStr(Food) + ' %';
+			If (Skin > 0 ) then 
+				finString := finString + '| '+ S.WareTypeName(12) + ' : + ' + IntToStr(Skin) + ' %';
+		end;
+	end;
+	Result := finString;
+end;
+
+procedure DismissUnits;
+var I : Integer;
+	arr : Array of Integer;
+begin
+	arr := S.PlayerGetAllUnits(CITY_PLAYER);
+	for I := 0 to high(arr) do 
+		If not (S.UnitType(arr[I]) in [9, 0]) then 
+			If S.UnitIdle(arr[I]) then 
+				A.UnitDismiss(arr[I]);
+end;
+
+function SumBonuses(aB1, aB2 : TD_CityBonuses) : TD_CityBonuses;
+begin
+	with Result do 
+	begin		
+		StartLife := aB1.StartLife + aB2.StartLife;
+		StartMoney := aB1.StartMoney + aB2.StartMoney;
+		StartMP := aB1.StartMP + aB2.StartMP;
+		
+		UnitCost := aB1.UnitCost + aB2.UnitCost;
+		UnitAttack := aB1.UnitAttack + aB2.UnitAttack;
+		TowerAttack := aB1.TowerAttack + aB2.TowerAttack;
+		
+		HouseLifes := aB1.HouseLifes + aB2.HouseLifes;
+		HouseMoney := aB1.HouseMoney + aB2.HouseMoney;
+		HouseCost := aB1.HouseCost + aB2.HouseCost;
+		
+		EnUnitsHP := aB1.EnUnitsHP + aB2.EnUnitsHP;
+		BossHP := aB1.BossHP + aB2.BossHP;
+		
+		Timber := aB1.Timber + aB2.Timber;
+		Stone := aB1.Stone + aB2.Stone;
+		Coal := aB1.Coal + aB2.Coal;
+		Gold := aB1.Gold + aB2.Gold;
+		Iron := aB1.Iron + aB2.Iron;
+		Wood := aB1.Wood + aB2.Wood;
+		Corn := aB1.Corn + aB2.Corn;
+		Food := aB1.Food + aB2.Food;
+		Skin := aB1.Skin + aB2.Skin;
+	end;
+end;
+
+procedure ResetCityBonuses;
+begin
+
+	with gCityBonuses do 
+	begin
+		StartLife := 0;
+		StartMoney := 0;
+		StartMP := 0;
+		
+		UnitCost := 100;//percentage done
+		UnitAttack := 100;//percentage done
+		TowerAttack := 0;//percentage done
+		
+		HouseLifes := 1; // done
+		HouseMoney := 100;	//percentage	done
+		HouseCost := 100;//percentage done
+		
+		EnUnitsHP := 100;//percentage done
+		BossHP := 100;//percentage done
+		
+		Timber := 100;//percentage done
+		Stone := 100;//percentage done
+		Coal := 100;//percentage done
+		Gold := 100;//percentage done
+		Iron := 100;//percentage done
+		Wood := 100;//percentage done
+		Corn := 100;//percentage done
+		Food := 100;//percentage done
+		Skin := 100;//percentage done
+	end;
+	
+end;
+
+procedure RefreshCityBonuses;
+var I : Integer;
+begin	
+	ResetCityBonuses;
+	with gCity do 
+		for I := 0 to 7 do 
+			If Spot[I].aType >= 0 then 
+				gCityBonuses := SumBonuses(gCityBonuses, GetCityHouseBonus(Spot[I].aType, Spot[I].aTypeLVL[Spot[I].aType]) );
+	
+	UpdateOverlay;
+end;
+
+function CityStoreHasResources(aResources : array of Integer) : Boolean;
+var I : Integer;
+begin
+	Result := true;
+	with gCity do 
+		for I := 0 to 27 do 
+			If aResources[I] > 0 then 
+				If S.HouseResourceAmount(Store, I) < aResources[I] then 
+				begin
+					Result := false;
+					Break;
+				end;
+end;
+
+procedure CityTakeWaresFromStore(aResources :array of Integer);
+var I : Integer;
+begin
+	with gCity do 
+		for I := 0 to 27 do 
+			If aResources[I] > 0 then 
+				A.HouseTakeWaresFrom(Store, I, aResources[I]);
+
+end;
+
+procedure LeaveSpot;
+begin
+	with gCity do 
+	begin
+		SelectedSpot := -1;
+	end;
+	A.FogCoverAll(PLAYER);
+	A.FogRevealRect(PLAYER, 194, 191, 249, 245);
+	MoveCamera(U.KMPoint(221, 215));	
+	gMode := gmCity;
+	DismissTime := GT + 100;
+	RefreshCityBonuses;
+end;
+
+procedure DeleteSpotHouse;
+begin
+	with gCity.Spot[gCity.SelectedSpot] do 
+	begin
+		aType := -1;
+		If ID > 0 then 
+			A.HouseDestroy(ID, true);
+			
+		ID := -1;
+	end;
+end;
+
+procedure ShoCHBonuses(aType, aLVL : Integer);
+begin
+	A.ShowMsg(PLAYER, '<$177>' + GetCityHouseBonusStr(aType, aLVL));
+end;
+
+procedure UpgradeSpotHouse(aPos : TKMPoint);
+var arr : array of Integer;
+	SID : Integer;
+begin
+	SID := GetHouseSpotID(aPos);
+	If SID = -1 then 
+		Exit;
+	with gCity.Spot[SID] do 
+		If aType >= 0 then 
+		begin
+			arr := GetSpotHouseCostUpgrade(aType, aTypeLVL[aType]);
+			If CityStoreHasResources(arr) then
+			begin
+				CityTakeWaresFromStore(arr);
+				inc(aTypeLVL[aType]);
+				RefreshCityBonuses;
+				ShoCHBonuses(aType, aTypeLVL[aType])
+				A.ShowMsgFormatted(PLAYER, '<$143>' + GetHousePriceString(GetSpotHouseCostUpgrade(aType, aTypeLVL[aType]) ), [S.HouseTypeName(aType), aTypeLVL[aType] + 1] );
+			end else
+				A.ShowMsgFormatted(PLAYER, '<$142>' + GetHousePriceString(arr), [S.HouseTypeName(aType), aTypeLVL[aType] + 1]);
+		end;
+	
+end;
+
+procedure SpotSelectHouse(aPos : TKMPoint);
+var HH, HType : Integer;
+	arr : array of Integer;
+begin
+	HH := S.HouseAt(aPos.X, aPos.Y);
+	If HH = -1 then 
+		Exit;
+	HType := S.HouseType(HH);
+	
+	with gCity.Spot[gCity.SelectedSpot] do
+	begin
+		If HType = 5 then 
+			If not canHaveGold then 
+			begin
+				A.ShowMsg(PLAYER, IStr(198));
+				Exit;
+			end;
+		If HType = 4 then 
+			If not canHaveIron then 
+			begin
+				A.ShowMsg(PLAYER, IStr(199));
+				Exit;
+			end;
+			
+		If aTypeBuilded[HType] then 
+		begin
+		
+			If (aTypeI >= 0) and (aTypeI = HType) then 		
+			begin
+				aTypeBuilded[HType] := true;
+				If ID > 0 then 
+					A.HouseDestroy(ID, true);
+				
+				If aType in [4, 5] then 
+					ID := A.GiveHouse(CITY_PLAYER, aTypeI, addPos.X, addPos.Y)
+				else
+					ID := A.GiveHouse(CITY_PLAYER, aTypeI, Pos.X, Pos.Y);
+					
+				A.HouseDeliveryMode(ID, dmTakeOut);
+				
+				aTypeI := -1;	
+				aType := HType;
+				A.ShowMsgFormatted(PLAYER, '<$150>', [S.HouseTypeName(aType), aTypeLVL[aType] + 1]);
+				SendTutorialMSG(2);
+				LeaveSpot;
+			end else
+			begin
+				aTypeI := HType;
+				A.ShowMsgFormatted(PLAYER, '<$149> <$134>', [S.HouseTypeName(HType)] );
+				ShoCHBonuses(aTypeI, aTypeLVL[aTypeI])
+			end;
+			
+		end else
+		begin
+			arr := GetSpotHouseCost(HType);
+			If not CityStoreHasResources(arr) then 
+			begin
+				A.ShowMsgFormatted(PLAYER, '<$148>' + GetHousePriceString(arr), [S.HouseTypeName(HType)]);
+				ShoCHBonuses(HType, aTypeLVL[HType])
+				Exit;
+			end;
+			If (aTypeI >= 0) and (aTypeI = HType) then 		
+			begin
+				aTypeBuilded[HType] := true;
+				If ID > 0 then 
+					A.HouseDestroy(ID, true);	
+				
+				If aTypeI in [4, 5] then 
+					ID := A.GiveHouse(CITY_PLAYER, aTypeI, addPos.X, addPos.Y)
+				else
+					ID := A.GiveHouse(CITY_PLAYER, aTypeI, Pos.X, Pos.Y);
+					
+				A.HouseDeliveryMode(ID, dmTakeOut);
+				SendTutorialMSG(2);
+				
+				aTypeI := -1;
+				
+				aType := HType;			
+				A.ShowMsgFormatted(PLAYER, '<$150>', [S.HouseTypeName(aType), aTypeLVL[aType] + 1]);
+				CityTakeWaresFromStore(arr);
+				LeaveSpot;
+			end else
+			begin
+				aTypeI := HType;
+				A.ShowMsgFormatted(PLAYER, '<$149>' + GetHousePriceString(arr), [S.HouseTypeName(HType)] );
+				ShoCHBonuses(aTypeI, aTypeLVL[aTypeI])
+			end;
+		end;
+	
+	end;
+end;
+
+
+procedure SelectSpot(aPos : TKMPoint);
+var SID : Integer;
+begin
+
+	SID := GetHouseSpotID(aPos);
+	gCity.SelectedSpot := SID;
+	If SID = -1 then 
+		Exit;
+	gMode := gmHouseSpot;
+	A.FogCoverAll(PLAYER);
+	A.FogRevealRect(PLAYER, 234, 13, 252, 37);
+	MoveCamera(U.KMPoint(243, 23));
+	SendTutorialMSG(1);
+end;
+
+{$EVENT evtBeacon : OnBeaconCity}
+procedure OnBeaconCity(aPlayer, X, Y : Integer);
+var Pos : TKMPoint;
+begin
+	Pos := U.KMPoint(X,Y);
+	If S.UnitAt(X,Y) > 0 then 
+		Exit;
+		
+	If not S.FogRevealed(PLAYER, X,Y) then 
+		Exit;
+		
+	If not (gMode in [gmCity, gmHouseSpot]) then 
+		Exit;
+	If gMode = gmCity then 
+		SelectSpot(Pos)
+	else
+	If gMode = gmHouseSpot then
+	begin
+	
+		If S.MapTileType(Pos.X, Pos.Y) = 7 then 
+		begin
+			DeleteSpotHouse;
+			LeaveSpot;
+		end else
+		If S.MapTileType(Pos.X, Pos.Y) = 0 then 
+		begin
+			LeaveSpot;
+		end else
+			SpotSelectHouse(Pos);
+		
+	end;
+end;
+
+{$EVENT evtPlanRoadPlaced : OnPlanRoadPlacedCity}
+procedure OnPlanRoadPlacedCity(aPlayer, X ,Y : integer);
+begin
+	If  not ( gMode in [gmCity]) then 
+		Exit;
+	UpgradeSpotHouse(U.KMPoint(X,Y));
+	A.PlanRemove(aPlayer, X ,Y);
+	
+end;
+
+{$EVENT evtTick : OnTickCity}
+procedure OnTickCity;
+begin
+	If GT = DismissTime then 	
+		DismissUnits;
+end;
+{$EVENT evtMissionStart : OnMissionStartCity}
+procedure OnMissionStartCity;
+var I : integer;
+begin
+	with gCity do 
+	begin
+		Market := S.HouseAt(233, 226);
+		Store := S.HouseAt(211, 206);
+		SelectedSpot := -1;
+		Spot[0].Pos := U.KMPoint(203, 199);
+		Spot[1].Pos := U.KMPoint(221, 197);
+		Spot[2].Pos := U.KMPoint(239, 198);
+		Spot[3].Pos := U.KMPoint(239, 214);
+		Spot[4].Pos := U.KMPoint(238, 236);
+		Spot[5].Pos := U.KMPoint(222, 237);
+		Spot[6].Pos := U.KMPoint(204, 237);
+		Spot[7].Pos := U.KMPoint(203, 217);
+		
+		for I := 0 to high(Spot) do 
+		begin
+			Spot[I].aType := -1;
+			Spot[I].aTypeI := -1;
+		end;
+			
+		Spot[0].canHaveGold := true;
+		Spot[0].addPos := U.KMPoint(207, 194);
+		
+		Spot[1].canHaveIron := true;
+		Spot[1].addPos := U.KMPoint(224, 194);
+		
+		Spot[2].canHaveGold := true;			
+		Spot[2].addPos := U.KMPoint(240, 195);
+	end;
+	ResetCityBonuses;
+	//RefreshCityBonuses;
+	//gCityBonuses.EnUnitsHP := 20;
+	SendTutorialMSG(0);
+	UpdateOverlay;
+end;

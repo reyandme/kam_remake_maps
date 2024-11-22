@@ -1,0 +1,678 @@
+
+
+
+//return map ID
+Function AddLifes(Addition : Integer) : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		Lifes := Lifes + Addition;
+		
+		If Lifes > LIFES_LIMIT then
+			Lifes := LIFES_LIMIT;
+			
+		If Lifes < 0 then 
+		begin
+			Lifes := 0;
+			QuitMapLost;
+		end;
+		Result := Lifes;
+	end;
+	UpdateOverlay;
+end;
+
+Procedure AutoFeed(aPlayer : Integer);
+var aArray : array of Integer;
+	I : Integer;
+begin
+	aArray := S.PlayerGetAllUnits(aPlayer);
+	If Length(aArray) = 0 then 
+		Exit;
+		
+	for I := 0 to high(aArray) do 
+		A.UnitHungerSet(aArray[I], 27000);
+end;
+
+function GetUnitID(aUnit : Integer) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	If length(gEnemyUnits) = 0 then 
+		Exit;
+	for I := 0 to high(gEnemyUnits) do 
+		If aUnit = gEnemyUnits[I].ID then 
+		begin
+			Result := I;
+			Break;
+		end;
+		
+end;
+
+
+procedure ChangeBossType;
+begin
+	If (gMaps.BossType = 11) then 
+		gMaps.BossType := 13
+	else
+		If gMaps.WaveID mod 35 = 0 then 
+		gMaps.BossType := 11;
+end;
+
+ // returns true if unit was killed near store
+function WalkToNextCorner(var aUnit : KD_UnitStats) : Boolean;
+var aLastCorner : Boolean;
+	aCorner, UU : Integer;
+	aMap : TD_MapData;
+begin
+	Result := false
+	aCorner := aUnit.PosID + 1;
+	UU := aUnit.ID;
+	aMap := gMaps.Map[gMaps.SelectedId];
+	
+	//check if he is at the end position;
+	If (length(aMap.RoadData.Corners) = 0) or (aUnit.PosID > high(aMap.RoadData.Corners)) then 
+	begin
+		KillInvulnerableUnit(aUnit.ID, true);
+		If aUnit.IsBoss then 
+			AddLifes(-10)
+		else
+			AddLifes(-1);
+		aUnit.Killed := true;
+		ClearUnitsArray;
+		Result := true;
+		If aUnit.IsBoss then 
+			ChangeBossType;
+		Exit;
+	end;
+	If aCorner > High(aMap.RoadData.Corners) then 
+		aLastCorner := true;
+		
+	If aLastCorner then 
+	begin
+		inc(aUnit.PosID);
+		with aMap.RoadData do 
+			A.UnitOrderWalk(UU, StorePos[0].X, StorePos[0].Y );		
+	end else
+	begin
+		inc(aUnit.PosID);
+		
+		with aMap.RoadData do 
+			A.UnitOrderWalk(UU, Corners[aCorner].X, Corners[aCorner].Y );		
+		
+	end;
+
+end;
+Procedure UnitChangeHP(var aUnit : KD_UnitStats; var aTower : TD_Tower);
+begin
+	With aUnit do 
+	begin
+		If aTower.IsWatchTower then
+		begin
+			If aUnit.UType = 11 then 
+				HP := HP - (aTower.Attack * 2)
+			else
+				HP := HP - aTower.Attack;
+		end else
+		If byte(UType) in aTower.BonusFor then 			
+			HP := HP - (aTower.Attack * 2)
+		else
+		If byte(aTower.aUnit.UType) in BonusFor then 
+			HP := HP - (aTower.Attack div 2)	
+		else
+			HP := HP - aTower.Attack;
+			
+		If IsBoss then 
+			UpdateOverlay;
+			
+		If HP <= 0 then
+		begin
+			Killed := true;
+			KillInvulnerableUnit(ID, false);
+			ClearUnitsArray;
+			If IsBoss then 
+				ChangeBossType;
+			
+			AddMoneyAfterKill(MoneyAtKill);
+				
+		end;
+	end;
+end;
+
+
+
+procedure CheckUnitsPoses;
+var I : Integer;
+	ClearOverlay : Boolean;
+begin
+	If length(gEnemyUnits) = 0 then 
+		Exit;
+		
+	for I := 0 to high(gEnemyUnits) do 
+		If S.UnitIdle(gEnemyUnits[I].ID) then 
+			If WalkToNextCorner(gEnemyUnits[I]) then 
+				ClearOverlay := true;
+	If ClearOverlay then 
+		UpdateOverlay;
+end;
+
+procedure TowerRangedAttackSingle(aGID : Integer; aPos : TKMPoint);
+var UID : Integer;
+	I : Integer;
+begin		
+	If length(gEnemyUnits) = 0 then 
+		Exit;
+		
+	A.GroupOrderHalt(aGID);
+	for I := 6 downto 2 do 
+	begin
+		UID := S.ClosestUnit(I, aPos.X, aPos.Y, -1);
+		If UID > 0 then 
+		begin
+			A.GroupOrderAttackUnit(aGID, UID);
+			If not S.GroupIdle(aGID) then 
+				Break;
+		end;
+	end;
+
+end;
+
+procedure TowerRangedAttack;
+var I, J : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+		If length(RangedTowers) = 0 then 
+			Exit
+		else
+		for J := 0 to high(RangedTowers) do 
+			If RangedTowers[J].aUnit.Deleted then 
+				Continue
+			else
+			with RangedTowers[J] do 
+				TowerRangedAttackSingle(aUnit.GID, aUnit.Pos);
+end;
+
+function ShowTowerStats(aPos : TKMPoint) : Integer;
+var TID, I : Integer;
+	finString : String;
+	firstType : Boolean;
+begin
+	TID := GetTowerIDFromPos(aPos);
+	//ACheck('Tower Show Stats ' + IntToStr(TID));
+	Result := TID;	
+	If TID = -1 then 
+		Exit;
+		
+	with gMaps.CurrentSaveData.Towers[TID] do 
+	begin
+		firstType := true;
+		finString := '<$186>';
+		finString := finString + '|<$41>' + IntToStr(LVL);
+		finString := finString + '|<$27>' + IntToStr(Attack) + '  --> ' + IntToStr(GetTowerUpgradeDamage(aUnit.UType, LVL, IsWatchTower));
+		finString := finString + '|<$26>' + IntToStr(GetTowerUpgradeCost(aUnit.UType, LVL, IsWatchTower));
+		finString := finString + '|<$58>' + IntToStr(Cost * 80 div 100);
+		finString := finString + '|<$51>';
+		
+		for I := 0 to 13 do 
+			If byte(I) in BonusFor then 
+			If firstType then 
+			begin
+				finString := finString + S.UnitTypeName(I);
+				firstType := false
+			end else	
+				finString :=  finString +' / ' + S.UnitTypeName(I);
+	end;
+	
+	A.ShowMSG(PLAYER, finString);
+end;
+
+function UpgradeTowerChangeType : Integer;
+begin
+	with gMaps.CurrentSaveData.Towers[gUpgrade.Pos.X] do 
+	begin
+		aUnit := SetWarrior(SingleGroup(MAP_PLAYER, aUnit.UType, aUnit.Pos));
+		A.UnitHPSetInvulnerable(aUnit.ID, true);
+		If  IsTowerRanged(aUnit) then 
+			RefreshRangedUnits;
+	end;
+end;
+
+function UpgradeTower(aPos : TKMPoint) : Integer;
+var TID, aUpgCost, aNType : Integer;
+begin
+	
+	TID := GetTowerIDFromPos(aPos);
+	//ACheck('TowerUpgrade ' + IntToStr(TID));
+	Result := TID;	
+	
+	If TID = -1 then 
+		Exit;
+		
+	with gMaps.CurrentSaveData.Towers[TID] do 
+	begin
+		aUpgCost := GetTowerUpgradeCost(aUnit.UType, LVL, IsWatchTower);
+		
+			
+		If HasEnoughMoney(aUpgCost) then 
+		begin
+			AddMoney(-aUpgCost);
+			If not IsWatchTower then 
+				If not (aUnit.UType in [26, 18, 22, 20]) then 
+				begin
+					aNType := GetTowerNextType(aUnit.UType);
+					Cost := Cost + (aUpgCost * 80 div 100);
+					Attack := GetTowerDamage(aNType);
+					KillInvulnerableUnit(aUnit.ID, true);
+					aUnit.UType := aNType;
+					UpgTime := GT;
+					gUpgrade.Time := UpgTime;
+					gUpgrade.Pos.X := TID;
+					gUpgrade.Pos.Y := aNType;
+					ShowTowerStats(aPos);
+					//ACheck('TowerUpgrade to Type ' + IntToStr(Attack) + ' '+ IntToStr(aUpgCost));
+					Exit;
+				end;
+			
+			Cost := Cost + (aUpgCost * 80 div 100);
+			Attack := GetTowerUpgradeDamage(aUnit.UType, LVL, IsWatchTower);
+			//ACheck('TowerUpgrade ' + IntToStr(Attack) + ' '+ IntToStr(aUpgCost));
+			inc(LVL);
+			ShowTowerStats(aPos);
+		end else
+			If IsWatchTower then 
+				A.ShowMSGFormatted(PLAYER, '<$22>%s |<$21>%d / %d <$9>', [S.HouseTypeName(aUnit.UType), gMoney, aUpgCost])
+			else
+				A.ShowMSGFormatted(PLAYER, '<$22>%s |<$21>%d / %d <$9>', [S.UnitTypeName(aUnit.UType), gMoney, aUpgCost])
+		
+	end;
+end;
+
+
+function SpawnUnit : Integer;
+var J, RID : Integer;
+	aStartPos, aSecPos : TKMPoint;
+	UU : KD_UnitStats;
+begin
+	If not gMaps.MapHasBegun then 
+		gMaps.MapHasBegun := true;
+	with gMaps.Map[gMaps.SelectedId].RoadData do
+	begin	
+		If length(SchoolPos) > 1 then 
+		begin
+			Inc(gMaps.RoadID)
+			If gMaps.RoadID > high(SchoolPos) then 
+				gMaps.RoadID := 0;
+				
+			RID := gMaps.RoadID;
+		end;
+		aStartPos := SchoolPos[RID];
+		
+		If length(Corners) = 0 then 
+			aSecPos := StorePos[RID]
+		else
+			aSecPos := Corners[0];
+	end;
+	
+	UU := SetUnit(A.GiveUnit(gMaps.UnitPlayer, gMaps.CurrentSaveData.UnitType, aStartPos.X, aStartPos.Y, 4));
+	
+	inc(gMaps.UnitPlayer)
+	if gMaps.UnitPlayer > 5 then 
+		gMaps.UnitPlayer := 2;
+		
+	UU.HP := gMaps.CurrentSaveData.WaveUnitHP;
+	UU.BonusFor := GetUnitBonus(UU.UType)
+	case UU.Utype of
+		11 : UU.MoneyAtKill := 400;
+		13 : UU.MoneyAtKill := 100;
+		else UU.MoneyAtKill := 1;
+	end;
+	A.UnitOrderWalk(UU.ID, aSecPos.X, aSecPos.Y);
+	A.UnitHPSetInvulnerable(UU.ID, true);
+	
+	J := length(gEnemyUnits);
+	SetLength(gEnemyUnits, J + 1);
+	
+	Result := J;
+	
+	gEnemyUnits[J] := UU;
+	
+	With gMaps do 
+	begin	
+		If not (byte(gMaps.CurrentSaveData.UnitType) in [11, 13]) then 
+		begin
+			UnitSpawnTime := GT + UnitSpawnDelay;
+			inc(UnitSpawnedCount)
+		end;
+		If UnitSpawnedCount = 19 then 	
+		begin
+			WaveTime := GT + 600;
+			If WaveID mod 5 = 0 then 
+			begin
+				If GT > BossSpawnTime then 
+					BossSpawnTime := GT + (UnitSpawnDelay * 10);
+					
+				WaveTime := GT + 2400;
+				
+			end;
+				
+			UnitSpawnTime := 99999999;
+		end;
+	end;
+	//ACheck;
+end;
+
+procedure SpawnBoss;
+var UType, UOwner, J : integer;
+	
+begin
+	UType := gMaps.CurrentSaveData.UnitType;
+	UOwner := gMaps.UnitPlayer;
+	
+	gMaps.CurrentSaveData.UnitType := gMaps.BossType;
+	gMaps.UnitPlayer := 6;
+	J := SpawnUnit;
+	with gEnemyUnits[J] do 
+	begin
+		IsBoss := true;
+		If gMaps.CurrentSaveData.UnitType = 13 then 
+			HP := gMaps.CurrentSaveData.WaveUnitHPBefore * 7 * gCityBonuses.BossHP div 100
+		else
+			HP := gMaps.CurrentSaveData.WaveUnitHPBefore * 14 * gCityBonuses.BossHP div 100;
+	end;
+	gMaps.BossID := J;
+	 gMaps.UnitPlayer := UOwner;
+	gMaps.CurrentSaveData.UnitType := UType;
+end;
+
+procedure SelectUnit(aPos : TKMPoint);
+var UU, aCost : Integer;
+	DoReload : Boolean;
+begin
+	UU := S.UnitAt(aPos.X, aPos.Y);
+	If UU = -1 then 
+	begin
+		If gMode in [gmPlaceUnit, gmPlaceHouse] then 
+			ShowUnitPlaces_Remove;
+		ResetSelectedTower;
+		gMode := gmGame;
+		Exit;
+	end;
+	with gTowerSelected do
+	begin
+		aCost := GetTowerCost(S.UnitType(UU));
+		If not HasEnoughMoney(aCost) then 
+		begin
+			A.ShowMSG(PLAYER, '<$20>' + S.UnitTypeName(S.UnitType(UU)) + '|<$21>' + IntToStr(gMoney) + ' / ' + IntToStr(aCost) + ' <$9>' );
+			Exit;
+		end;
+		
+		SendTutorialMSG(4);
+		SendTutorialMSG(10);
+		
+		If (aUnit.UType > 0) and IsTowerRanged(aUnit) and not IsTypeRanged(S.UnitType(UU)) then 
+			DoReload := true;
+		If (aUnit.UType > 0) and not IsTowerRanged(aUnit) and IsTypeRanged(S.UnitType(UU)) then 
+			DoReload := true;
+			
+		If DoReload then 
+			ShowUnitPlaces_Remove;
+			
+		If aUnit.UType = 0 then 
+			DoReload := true;
+
+		aUnit.UType := S.UnitType(UU);
+		
+		IsHouse := false;
+		IsWatchTower := false;
+		
+		If DoReload then 
+		begin
+			If IsTowerRanged(aUnit) then 
+				ShowUnitPlaces(tbRanged)
+			else
+				ShowUnitPlaces(tbMelee);
+		end;
+		
+		SelectionTime := U.FloorTo(GT + 600, 10);
+		//ACheck('Unit selected');
+	end;
+	gMode := gmPlaceUnit;
+	
+end;
+
+procedure SelectHouse(aPos : TKMPoint);
+var HH, aCost : Integer;
+	DoReload : Boolean;
+begin
+	HH := S.HouseAt(aPos.X, aPos.Y);
+	If HH = -1 then 
+	begin
+		If gMode in [gmPlaceUnit, gmPlaceHouse] then 
+			ShowUnitPlaces_Remove;
+		ResetSelectedTower;
+		gMode := gmGame;
+		Exit;
+	end;
+	with gTowerSelected do
+	begin
+		DoReload := true;
+		aCost := GetHouseCost(S.HouseType(HH));
+		If not HasEnoughMoney( aCost ) then 
+		begin
+			A.ShowMSG(PLAYER, '<$20>' + S.HouseTypeName(S.HouseType(HH)) + '|<$21>' + IntToStr(gMoney) + ' / ' + IntToStr(aCost)  + ' <$9>' );
+			Exit;
+		end;
+		
+		If (aUnit.UType > 0) and (aUnit.UType in [3, 14, 22]) and (S.HouseType(HH) in [3, 14, 22]) then 
+			DoReload := false;
+			
+		If aUnit.UType > 0 then 
+			If DoReload then 
+				ShowUnitPlaces_Remove;
+		
+		If aUnit.UType = 0 then 
+			DoReload := true;
+			
+		aUnit.UType := S.HouseType(HH);
+		
+		Attack := 35;
+		LVL := 1;
+		IsHouse := true;
+		Cost := 100;
+		If aUnit.UType = 17 then 
+			IsWatchTower := true;
+			
+		If DoReload then 
+			If gSettings.ShowHousesPlaces then 
+				CheckAllPlacesForHouses;	
+		
+		SelectionTime := U.FloorTo(GT + 600, 10);
+		//ShowUnitPlaces(tbHouse);
+			
+	end;
+	gMode := gmPlaceHouse;
+	
+end;
+
+function TileIsBlocked(Pos : TKMPoint; tType : TD_TileBlock) : Boolean;
+var PP : TKMPoint;
+begin
+	PP := GetMapPos(Pos);
+	with gMaps.MapLandData.TileData[PP.X][PP.Y] do 
+		Result := tType in Passability;
+end;
+
+{$EVENT evtBeacon : OnBeaconUnits}
+procedure OnBeaconUnits(aPlayer, X ,Y : integer);
+var aPos : TKMPoint;
+	CanPlace : Boolean;
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+		
+	aPos := U.KMPoint(X,Y);
+	If PosInMap(aPos) then 
+	begin
+		If gMode = gmGame then
+			DeleteHouse(aPos);
+		If gTowerSelected.aUnit.UType = 0 then 
+			Exit;
+		If gMode = gmPlaceUnit then 
+		begin
+			//If not S.IsRoadAt(-1, X,Y) then 
+			If not gTowerSelected.IsWatchTower then 
+				If IsTowerRanged(gTowerSelected.aUnit) then 
+					CanPlace := TileIsBlocked(aPos, tbRanged)
+				else
+					CanPlace := TileIsBlocked(aPos, tbMelee);
+				
+			If CanPlace then 
+			begin
+				gMode := gmGame;
+				ShowUnitPlaces_Remove;
+				TowerPlace(gTowerSelected.aUnit.UType, aPos, false, true);	
+				RefreshTilesPassabilities(aPos, 2);
+				//RefreshTilePassabilities;
+			end else
+				A.ShowMsg(0, 'Cannot place tower here!')
+		end else
+		If gMode = gmPlaceHouse then 
+			If CheckPlaceAroundForHouses(gTowerSelected.aUnit.UType, GetMapPos(aPos), false) then 
+			begin
+				gMode := gmGame;
+				ShowUnitPlaces_Remove;
+				HousePlace(aPos, true);
+				RefreshTilesPassabilities(aPos, 5);
+				//RefreshTilePassabilities;
+			end else
+				ACheck('no');
+	end else	
+	If S.HouseAt(X,Y) > 0 then 
+		SelectHouse(aPos)
+	else
+		SelectUnit(aPos);		
+	
+	UpdateOverlay;
+end;
+
+{$EVENT evtHouseDamaged : OnHouseDamagedUnits}
+procedure OnHouseDamagedUnits(aHouse,aAttacker : integer);
+begin
+	If aHouse > 0 then 
+		A.HouseAddRepair(aHouse, 50);
+end;
+
+{$EVENT evtPlanRoadPlaced : OnPlanRoadPlacedUnits}
+procedure OnPlanRoadPlacedUnits(aPlayer, X ,Y : integer);
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+	If DeleteTower(U.KMPoint(X,Y)) >= 0 then 	
+	begin
+		ClearTowersArray;
+		SetRemove(U.KMPoint(X,Y));
+	end;
+	A.PlanRemove(aPlayer, X ,Y);
+end;
+{$EVENT evtPlanWineFieldPlaced : OnPlanWineFieldPlacedUnits}
+procedure OnPlanWineFieldPlacedUnits(aPlayer, X ,Y : integer);
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+	UpgradeTower(U.KMPoint(X, Y))
+	A.PlanRemove(aPlayer, X ,Y);
+end;
+
+{$EVENT evtPlanFieldPlaced : OnPlanFieldPlacedUnits}
+procedure OnPlanFieldPlacedUnits(aPlayer, X ,Y : integer);
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+	ShowTowerStats(U.KMPoint(X,Y))
+	A.PlanRemove(aPlayer, X ,Y);
+end;
+
+{$EVENT evtUnitAttacked : OnUnitAttackedUnits}
+//Unit Attacked change it's HP
+procedure OnUnitAttackedUnits(aUnit, aKiller : Integer);
+var aUIndex, aTIndex : Integer;
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+	aUIndex := GetUnitID(aUnit);
+	aTIndex := GetTowerID(aKiller);
+	
+	If (aTIndex = -1) or (aUIndex = -1) then 
+		Exit;
+	//ACheck;
+	UnitChangeHP(gEnemyUnits[aUIndex], gMaps.CurrentSaveData.Towers[aTIndex]);
+end;
+
+procedure GiveHousesBonuses;
+var I, GB : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+		If length(Houses) > 0 then 
+			for I := 0 to high(Houses) do 
+			begin
+				GB := GetHouseWaveBonus(S.HouseType(Houses[I].ID));
+				If GB > 20 then 
+					AddMoney(GB)
+				else
+				If GB > 0 then 
+					AddLifes(GB);
+				If S.HouseType(Houses[I].ID) = 18 then
+					If gMaps.WaveID mod 10 = 0 then 
+						inc(MoneyMP);
+			end;
+end;
+
+{$EVENT evtTick : OnTickUnits}
+procedure OnTickUnits;
+begin
+	If  not ( gMode in [gmGame, gmPlaceUnit, gmPlaceHouse]) then 
+		Exit;
+	If GT = gRemove.Time + 2 then 
+		RefreshTilesPassabilities(gRemove.Pos, 2);
+	If GT = gUpgrade.Time + 2 then 
+		UpgradeTowerChangeType;
+	If GT mod 10 <> 0 then 
+		Exit;
+	If GT = gMaps.UnitSpawnTime then 
+		SpawnUnit;
+		
+	If GT = gMaps.BossSpawnTime then 
+		SpawnBoss;
+		
+	CheckUnitsPoses;
+	TowerRangedAttack;
+	If GT mod 200 = 0 then 
+		GiveStoneToTowers;
+	If GT mod 9000 = 0 then 
+	begin
+		AutoFeed(PLAYER);
+		AutoFeed(MAP_PLAYER);
+		AutoFeed(CITY_PLAYER);
+		AutoFeed(8);
+	end;
+	If GT = gTowerSelected.SelectionTime then 
+	begin
+		ResetSelectedTower;
+		ShowUnitPlaces_Remove;
+		gMode := gmGame;
+		UpdateOverlay;
+	end;
+	
+	If GT = gMaps.WaveTime then 
+	begin
+		StartNextRound;
+		GiveHousesBonuses;
+	end;
+end;
+
+{$EVENT evtMissionStart : OnMissionStartUnits}
+procedure OnMissionStartUnits;
+begin
+	//TowerPlace(17, U.KMPoint(31, 13), false);
+	gMaps.DoAtMapQuit := @DeleteAllTowers;
+	A.ShowMSG(PLAYER, '<$63>')
+end;

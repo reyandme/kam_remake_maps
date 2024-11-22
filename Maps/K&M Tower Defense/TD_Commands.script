@@ -1,0 +1,40 @@
+
+{$COMMAND show_units:ShowUnits}
+{$COMMAND show_houses:ShowHouses}
+{$COMMAND give_money:GiveMoney}
+{$COMMAND back:GetBack}
+{$COMMAND skip_tutorial:SkipTutorial}
+
+procedure ShowUnits(aHandID : Integer);
+begin
+	gSettings.ShowUnitsPlaces := not gSettings.ShowUnitsPlaces;
+end;
+
+procedure ShowHouses(aHandID : Integer);
+begin
+	gSettings.ShowHousesPlaces := not gSettings.ShowHousesPlaces;
+end;
+
+procedure GiveMoney(aHandID, aCount : Integer);
+begin
+	AddMoney(aCount);
+end;
+
+procedure GiveLifes(aHandID, aCount : Integer);
+begin
+	AddLifes(aCount);
+end;
+
+procedure GetBack(aHandID : Integer);
+begin
+	case gMode of 	
+		gmGame  : QuitMap(false);
+		gmSelectMap  : QuitMapView;
+		gmCity  : QuitCity;
+	end;
+end;
+
+procedure SkipTutorial(aHandID : Integer);
+begin
+	gTutorial.Skip := not gTutorial.Skip;
+end;

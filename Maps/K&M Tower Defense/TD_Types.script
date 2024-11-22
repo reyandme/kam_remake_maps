@@ -1,0 +1,176 @@
+type 
+	TProcEv = procedure ();
+	
+	TProcAtLoc = procedure(Pos : TKMPoint);
+	TDByteSet = set of Byte;
+	
+	TD_MedalType = (aNone,aBronze,aSilver,aGold,aDiamond,aLegendary);
+	
+	KD_HouseStats = record
+		Pos : TKMPoint;
+		aType, ID : Integer;
+	end;
+	
+	KD_UnitStats = record
+		ID, PosID, HP : integer;
+		Pos : TKMPoint;
+		UType, MoneyAtKill : integer;
+		Killed, IsBoss : Boolean;
+		BonusFor : TDByteSet;
+	end;
+	
+	KD_WarriorStats = record
+		ID, GID : integer;
+		Pos : TKMPoint;
+		UType : integer;
+		Deleted : Boolean;
+	end;
+	
+	TD_TowerTiming = record
+		Time : Integer;
+		Pos : TKMPoint;
+	end;
+	
+	TD_Tower = record
+		aUnit : KD_WarriorStats;
+		LVL, Attack, Cost : Integer;	
+		IsWatchTower, IsHouse : Boolean; // true if tower is watch tower
+		UpgTime, Tile, TileRot, SelectionTime : Integer;
+		BonusFor : TDByteSet;
+	end;
+	
+	TD_RECT = record
+		Pos, Size : TKMPoint;
+	end;
+	
+	TD_Settings = record
+		ShowUnitsPlaces : Boolean;
+		ShowHousesPlaces : Boolean;
+	end;
+	
+	
+	TD_TileBlock = (tbNone, tbHouse, tbBigHouse, tbMelee, tbRanged, tbTower);
+	TD_TileBlockSet = set of TD_TileBlock;	
+	
+	TD_TileLock = (tlNone, tlRoad, tlUnit, tlHouse, tlField, tlNotWalk, tlNotBuild);
+	TD_TileLockSet = Set of TD_TileLock;
+	
+	TD_GameMode = (gmNone, gmSelectMap, gmPlaceUnit, gmPlaceHouse, gmGame, gmCity, gmHouseSpot);
+	
+	TD_MapRoad = record	
+		Corners, SchoolPos, StorePos : array of TKMPoint;		
+	end;
+	
+	{TD_ObjectsReplacement = record
+		X,Y, ObjectID : Integer;
+	end;}
+	
+	TD_Tile = record
+		Passability : TD_TileBlockSet;
+		Lock : TD_TileLockSet;
+		ObjectID : Byte;
+	end;
+	
+	TD_MapTilesData = record
+		//ObjectsToShow : array of TD_ObjectsReplacement;
+		TileData : array[0..31] of array[0..31] of TD_Tile;
+	end;
+	
+	TD_SaveData = record
+		Wave, BestWave, Money, Lifes, MoneyMP, MoneyGathered : Integer;
+		
+		WaveUnitHPBefore, WaveUnitHP, WaveUnitHPAdd, UnitType : Integer;
+		WaveMultiplier : Single;
+		
+		Towers, RangedTowers : array of TD_Tower;
+		Houses : array of KD_HouseStats;
+	end;
+	
+	TD_MapData = record	
+		Pos : TKMPoint;
+		ID, UnitSpawnDelay : Integer;
+		Name : String;
+		Medal : TD_MedalType;
+		RoadData : TD_MapRoad;	
+		Saved, Unlocked : Boolean;
+		Save : TD_SaveData;
+		DoAtStart : TProcEv;
+	end;
+	
+	TD_MapDataCollection = record
+	
+		Map : array of TD_MapData;
+		
+		MapLandBackup, MapLandData : TD_MapTilesData;
+		SelectedId, RoadID : Integer;
+		CurrentSaveData : TD_SaveData;
+		//WaveData
+		WaveID, WaveTime, MapStartTime, UnitSpawnTime, UnitSpawnedCount, UnitSpawnDelay, UnitPlayer: Integer;
+		BossSpawnTime, BossType, BossID: Integer;
+		MapHasBegun : Boolean;
+		DoAtMapQuit, DoAtLost : TProcEv;
+	end;
+	
+	TD_CityBonuses = record
+		StartLife, StartMoney, StartMP : integer;
+		UnitCost, UnitAttack, TowerAttack : integer ;
+		
+		HouseLifes, HouseMoney, HouseCost : Integer;
+		
+		EnUnitsHP, BossHP : Integer;
+		//2,    1,     5,    7,    6,   0,     9,    8,10, 13, 27,  12
+		Timber, Stone, Coal, Gold, Iron, Wood, Corn, Food,          Skin  : Integer;
+	end;
+	
+	TD_CitySpot = record
+		Pos, addPos : TKMPoint;
+		aTypeLVL : array[0..29] of Integer;
+		aTypeBuilded : array[0..29] of Boolean;
+		aType, aTypeI, ID : Integer;
+		canHaveGold, canHaveIron : Boolean;
+	end;
+	 
+	TD_City = record
+		Market, Store : Integer;
+		Spot : array[0..7] of TD_CitySpot;
+		SelectedSpot : Integer;
+	end;
+	
+	TD_EnemyUnits = array of KD_UnitStats;
+	
+	TD_Tutorial = record
+		Skip : Boolean;
+		City,
+		CitySpot,
+		CityHousePlaced,
+		
+		MapSelection,
+		MapSelectUnit,
+		MapLoadSave,
+		MapUnitPlaced,
+		MapHousePlaced,
+		MapMedalReached,
+		MapShowPlaces,
+		MapUnitSelected,
+		MapSelected
+		: Boolean;
+	end;
+//global variables
+
+var gDifficulty : Integer;		
+	gTowerSelected : TD_Tower;
+	gSettings : TD_Settings;
+	
+var gMaps : TD_MapDataCollection;
+	gEnemyUnits : TD_EnemyUnits;
+	gPanelUnits : array of Integer;
+	gMode : TD_GameMode;
+	gMapCorner : TKMPoint;
+	gRemove, gUpgrade : TD_TowerTiming;
+	TOWER_DAMAGE : array of Integer;
+	TOWER_COST : array of Integer;
+	gRanged : TByteSet;
+	gCity : TD_City;
+	gCityBonuses : TD_CityBonuses;
+	gTutorial : TD_Tutorial;
+	gMoney : Integer;

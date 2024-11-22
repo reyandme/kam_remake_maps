@@ -1,0 +1,217 @@
+﻿0: Nie zaznaczono
+1: [$58FFB7]Zaznaczony budynek[$FFFFFF] : 
+2: [$42E4FF]Koszt budynku[$FFFFFF] : 
+3: [$42E4FF]Monety na falę[$FFFFFF] : 
+4: [$58FFB7]Zaznaczona jednostka[$FFFFFF] : 
+5: [$42E4FF]Koszt jednostki[$FFFFFF] : 
+6: [$58FFB7]/\[$FFFFFF] : 
+7: [$0087E7]\/[$FFFFFF] : 
+8: [$6800FF]Życia[$FFFFFF] : 
+9: [$42E4FF]Monet KM[$FFFFFF] : 
+10: Typ przeciwnika : 
+11: [$FFFF00]/\[$FFFFFF] : 
+12: [$0000FF]+ BOSS[$FFFFFF] : 
+13: [$5400FF]BOSS HP[$FFFFFF] : 
+
+14: Żaden
+15: Antyjazda
+16: Piechota
+17: Strzeleckie
+18: Jazda
+
+19: [$1EB09E]Fala[$FFFFFF] : 
+
+20: Nie masz wystarczająco monet KM żeby kupić : 
+21: Potrzebujesz : 
+
+22: Nie masz wystarczająco monet KM żeby ulepszyć :
+23: Pomyślnie ulepszono
+
+24: [$42E4FF]Mnożnik monet KM[$FFFFFF] : 
+25: [$58FFB7]Poziom jednostki[$FFFFFF] : 
+26: [$42E4FF]Następny poziom za[$FFFFFF] : 
+27: [$0000FF]Obrażenia[$FFFFFF] : 
+
+28: 1. Wybierz mapę. | Postaw znacznik "B" na mapie wktórą chcesz zagrać.
+29: 2. Wybieranie jednostki/budynku. | Postaw znacznik "B" na jednostce/budynek, który chcesz postawić.
+30: 3. Stawianie jednostki/budynku. | Postaw znacznik "B" w miejscu gdzie jednostka/budynek ma być postawiona.
+
+31: 4. Usuwanie jednostki. | Postaw znacznik drogi na jednostce, którą chcesz usunąć.
+32: Usuwanie budynku: | Postaw znacznik "B" na budynku, który chcesz usunąć.
+
+33: 6. Ulepszanie jednostki. | Postaw znacznik pola winogron na jednostce, którą chcesz ulepszyć.
+34: 7. Pokaż statystyki jednostki. | Postaw znacznik pola pszenicy na jednostce żeby zobaczyć jej statystyki.
+
+35: 8. Jednostka - podpowiedź. | Jednostki nie mogą być postawione blisko innej jednostki/budynku.
+36: 9. Strzelający - podpowiedź. | Jednostki strzeleckie nie mogą być postawione blisko drogi.
+
+37: Jednostka postawiona
+38: Budynek postawiony
+
+39:koszt
+
+40:na :
+41: [$58FFB7]Poziom wieży[$FFFFFF] : 
+
+42: [$0093C6]Brązowy[$FFFFFF]
+43: [$C5C5C5]Srebrny[$FFFFFF]
+44: [$00C5FF]Złoty[$FFFFFF]
+45: [$FFD200]Diamentowy[$FFFFFF] 
+46: [$FF468E]Bitynowa Odznaka[$FFFFFF]
+
+47: [$FF468E]Bitynowa Odznaka osiągnięta[$FFFFFF]
+
+48: [$FFB4B4]HP przeciwnika[$FFFFFF] : 
+
+49: [$6800FF]Życia na falę[$FFFFFF] : 
+50: [$6800FF]+1 Mnożnik monet na 10 fal[$FFFFFF]
+
+51: [$0000FF]Bonus do[$FFFFFF] : 
+
+52: Ładowanie danych mapy
+53: Ładowanie danych jednostek
+54: Ładowanie danych budynków
+55: Załadowano
+
+56:Podgląd map
+57: Potwierdź wybór mapy
+
+58: Sprzedaj za : 
+
+59:Podczas wyboru jednostki są pokazane miejsca, w których możesz je postawić. Przy słabszym sprzęcie może lekko przycinać grę. | Czy chcesz aby były one wyświetlane? || Trawa - TAK | Ziemia - NIE
+60:Podczas wyboru budynku są pokazane miejsca, w których możesz je postawić. Przy słabszym sprzęcie może lekko przycinać grę. | Czy chcesz aby były one wyświetlane? || Trawa - TAK | Ziemia - NIE
+61: Wyświetlanie miejsc | Jednostki : 
+62: Wyświetlanie miejsc | Budynki : 
+
+63:Przed rozpoczęciem grania na normalnej mapie muszę cię nauczyć jak wygląda rozgrywka w K&M Tower Defense. (Polecam grać na prędkości x10 lub x30, gra może się trochę dłużyć na niższych prędkościach)
+64:Na początku musisz się nauczyć jak : wybierać jednostki/budynek, ulepszać jednostki, jak je usuwać, itd. Prawie wszystkie akcje są wykonywane przez sygnał "B".
+65:Wybierz jednostkę/budynek wciskając "B" i kładąc go na jednostce, którą chcesz postawić. Jeśli się pomyliłeś, w każdej chwili możesz zmienić wybraną jednostkę/budynek, stawiając na niej ponownie sygnał.
+66:Wszystkie miejsca gdzie można postawić jednostkę/budynek będą wyświetlone ( oznaczone jako kamień- tam gdzie kamień, tam możesz postawić ).
+67:Dobra robota! |Po postawieniu jednostki/budynku zaczną przychodzić cywile przeciwnika. Po lewej stronie będą wyświetlane wszystkie aktualne statystyki.Między innymi : ilość żyć, ilość Monet KM, dane jednostki i typ nadchodzących wrogów.
+68:Co każde 5 fal przybywa BOSS. Jest silniejszy niż reszta jednostek i posiada bonus do dwóch typów żołnierzy.
+69:Świetnie! Zabiłeś bossa. Teraz wybierz budynek i postaw go gdzieś. Budynki dają monety KM albo życia ( jeżeli masz jakieś stracone ) na falę.
+70:Jesteś w tym całkiem dobry. Po ukończeniu poradnika będziesz mógł grać na każdej dostępnej mapie.
+71:Jeśli chcesz zobaczyć jak dużo kosztuje jednostka/budynek, postaw sygnał na płytcę bruku po lewej stronie panelu jednostek/budynków.
+
+72:Teraz postaw sygnał "B" tam gdzie jednostka ma być ustawiona. Jednostki atakujące z bliska będą atakować tylko przy drodze. Strzelcy nie mogą być postawieni obok drogi.
+73:Wszystkie jednostki wyszły. Musisz je zabić zanim dojdą do spichrza, inaczej stracisz życia. Jak strzacisz wszystkie, to wrócisz do podglądu map.||   1 przeciwnik = 1 życie
+
+74:Połóż znacznik pola na swoim żołnierzu. Dostaniesz wtedy wiadomość o wszystkich danych tej jednostki. Jej słabości, bonusy, obrażenia i ile potrzebujesz monet KM aby ją ulepszyć.
+75:Połóż znacznik pola winogron na swoim żołnierzu, a ulepszysz ją jeżeli masz wystarczająco monet KM, jeśli nie to będziesz o tym poinformowany. Podstawowe jednostki będą ulepszone na następny ich typ, np. żołdak -> topornik, topornik -> piechór z mieczem, pachołek -> łucznik, itd. ( Działa tylko raz w poradniku)
+76:Jak jednostka ma najwyższy typ, to będzie ulepszana na następny poziom
+77:Jeżeli chcesz usunąć jednostkę, postaw na niej znacznik drogi. Dostaniesz z powrotem połowę tego co musiałeś w nią zainwestować. (Nie działa w poradniku)
+78:Teraz postaw go gdzieś.
+
+79:Jak chcesz usunąć budynek, postaw na nim sygnał "B". (Nie działa w poradniku)
+80:Brawo! Ukończyłeś poradnik.
+81:Jeżeli grałeś wcześniej na tej mapie i znasz jej podstawy, możesz pominąć poradnik stawiająć sygnał "B" na jasnej drewnianej płytce po lewej stronie mapy.
+82:Straciłeś wszystkie życia. || Doszedłeś do : %d fali| Zebrałeś łącznie : %d [$42E4FF]monet KM[$FFFFFF]| Wygrałeś na tej mapie : %s
+
+83: żaden medal
+
+110: [$00AC00]Meandry[$FFFFFF]
+111: [$00AC00]Krawędź Życia[$FFFFFF]
+112: [$00AC00]Bitynowa Jaskinia[$FFFFFF]
+113: [$00AC00]Oczko Wodne[$FFFFFF]
+114: [$00AC00]Śnieżyca[$FFFFFF]
+115: [$00DDff]W Dół Rzeki[$FFFFFF]
+116: [$00DDff]Początek Podróży[$FFFFFF]
+117: [$00DDff]Pustynne Pętle[$FFFFFF]
+118: [$00DDff]Wyspy Przeprawowe[$FFFFFF]
+119: [$00DDff]Marzenie Górnika[$FFFFFF]
+120: [$0098ff]Centrum Miasta[$FFFFFF]
+121: [$0098ff]Dziwna Wyspa[$FFFFFF]
+122: [$0098ff]Wejście do Królestwa[$FFFFFF]
+123: [$0098ff]Świątynia Króla[$FFFFFF]
+124: [$0098ff]Wyspa Lotosu[$FFFFFF]
+125: [$0000ff]Zdradziecki Pakt[$FFFFFF]
+126: [$0000ff]Sen Farmera[$FFFFFF]
+127: [$0000ff]Lustrzany Wymiar[$FFFFFF]
+128: [$0000ff]Stocznia[$FFFFFF]
+129: [$0000ff]Bridge Disaster[$FFFFFF]
+130: [$FF78A2]Góra Velgrin[$FFFFFF]
+131: [$FF78A2]Prawdziwe Szaleństwo[$FFFFFF]
+132: [$FF78A2]Ciepło Wulkanu[$FFFFFF]
+
+133:Chcesz wybrać tę mapę : %s ?| [$FFFF00]Medal : %s[$FFFFFF] | [$1EB09E]Najlepszy wynik : %d fala[$ffffff]| [$42E4FF]Ilość zdobytych monet KM : %d[$ffffff] | [$00AC00]%s[$ffffff] |Postaw sygnał jeszcze raz aby potwierdzić wybór mapy.
+
+134:Brak
+
+135:Brak zapisanej gry
+
+136:Załadowano ostatnie dane mapy
+137:Nie można wczytać podczas grania
+
+138:Przed rozpoczęciem możesz wczytać zapisane dane mapy. Postaw sygnał na ciemnej drewnianej płytce, znajdującej się po lewej stronie.
+
+139:Posiada zapisaną grę
+
+140:Wczytaj zapisaną grę : |[$6800FF]Życia : %d [$ffffff]|[$42E4FF]Monet KM : %d|[$1EB09E]Fala : %d[$ffffff]| stawiająć sygnał na ciemnej drewnianej płytce znajdującej się po lewej stronie mapy.
+
+141:Główne Miasto
+
+142:Nie można ulepszyć [ %s ] do poziomu %d, potrzebujesz : 
+143:Ulepszono : [ %s ] - poziom %d| Następny poziom za :
+144:Chcesz ulepszyć : %s?| Jeśli tak, postaw sygnał na nim jeszcze raz.
+145:Nie mozna ulepszyć, osiągnięto maksymalny poziom
+146:Nie można mieć dwóch tych samych budynków
+147:Nie można wybudować tutaj tego budynku
+148:Nie można wybudować : [ %s ], za mało surowców. Koszt :
+149:Jesteś pewien, że chcesz wybudować : [ %s ]?| Jeśli tak, postaw sygnał na nim jeszcze raz. Koszt :
+150:Wybudowałeś [ %s ] poziom : %d
+152:To jest twoje miasto. Jeśli chcesz zagrać w jakąś minimapę postaw sygnał na koszarach. Możesz wybudować tutaj nowe budynki, postaw sygnał na piaszczystych miejscach, a będziesz przeniesiony do panelu budynków. Jeżeli znasz podstawy możesz pominąć poradnik komendą /skip_tutorial.
+153:Możesz ulepszyć postawiony budynek, kładąc na piasczystym terenie plan drogi. Jeśli nie masz wystarczająco surowców będziesz o tym poinformowany.
+154:Postaw dwukrotnie sygnał na budynku. Jesli nie masz wystarczająco surowców, nie postawisz go. Możesz wrócić do głównego miasta stawiając sygnał na trawiastym miejscu lub usunąć aktualny budynek stawiająć sygnał na lawie.
+
+165: [$58FFB7]Obrażenia jednostek : + 
+166: [$58FFB7]Obrażenia wieży : + 
+167: [$42E4FF]Przychód z budynków : + 
+168: [$6800FF]Życia z budynków : x
+169: [$42E4FF]Początkowe monety : + 
+170: [$6800FF]Początkowe życia : + 
+171: [$42E4FF]Początkowy mnożnik monet : + 
+172: [$A400FF]HP Boss'ów :  
+173: [$0087E7]HP Jednostek przeciwnika :  
+174: [$FFFF00]Koszt jednostek : 
+175: [$FFFF00]Bonus budynku : [$ffffff] 
+176: Surowce przy zdobyciu medalu :
+
+177:[$FFFF00]Bonus budynku : [$ffffff] 
+
+178: K&M Remake Tower Defense. ||Mapa zaprojektowana na godziny i godziny strategicznej gry. Stwórz własną obronę z kombinacji jednostek i budynków. 14 jednostek i 8 budynków do wyboru. Zaplanuj własne miasto żeby zebrać bonusy, ulepszaj jednostki i zabij wszystkich przeciwników stojących na twojej drodze.|Graj tak długo jak zechcesz. 10 godzin, 100 godzin, nie ma znaczenia, ponieważ możesz zapisać grę, wczytać i grać dalej.|Polecam grać na większych prędkościach np. x30 lub x60.||Poradnik wideo : https://youtu.be/Y05p1hjLhkM |||Autor : [$0707FF]KingDyron|[$ffffff]|Map designer : [$FFED99]PabloB
+
+179:[$FFFF00]Surowce po zdobyciu medalu : [$ffffff] 
+180:[$FFFF00]Surowce z budynków : [$ffffff] 
+
+181:Nie ulepszyłeś jednostki.
+
+182:Nadal nie postawiłeś budynku.
+
+183:Legenda statystyk|| Jednostki Atakujące : |[$58FFB7]/\[$FFFFFF] - Bonus do ataku przeciwko...| [$0087E7]\/[$FFFFFF] - Słabsi przeciwko... | Wrogie jednostki :|[$FFFF00]/\[$FFFFFF] - Bonus do obrony przeciwko...
+
+184:[$FFFF00]Mapa[$FFFFFF]: 
+
+185:Fala : 
+186:Statystyki wieży :
+
+187:Usunięto budynek : %s | Dostałeś z powrotem : %d <$9>
+
+188: [$FFFF00]Koszt budynków : 
+189: Żywność : 
+
+190:Oto widok każdej minimapy, w którą będziesz mógł zagrać. Na razie nie każda jest pokazana, ponieważ nie jest odblokowana. Wybierasz mapę za pomocą dwukrotnego postawieniu na mapie sygnału. Jeżeli chcesz wrócić do miasta wpisz komendę /back.
+
+
+191:Połóż na swojej jednostce znacznik:  |I. Pola - Dostaniesz wtedy wiadomość o wszystkich danych tej jednostki.|II. Pola winogron - Ulepszenie jednostki|III. Drogi - Usunięcie jednostki
+
+192:Po każdym zdobyciu medalu otrzymujesz surowce w swoim mieście, które były wyświetlone podczas wyboru mapy. 
+
+194:Podczas wyboru jednostki/budynku są pokazane miejsca, w których możesz je postawić. Przy słabszym sprzęcie może lekko przycinać grę. | Jeżeli nie chcesz aby były wyświetlane wpisz komendę : /show_units - dla jednostek, show_houses - dla budynków.
+
+195:Możesz opuścić mapę w każdej chwili. Wystarczy, że postawisz sygnał na jasnej drewnianej płytce i powrócisz do swojego miasta lub wpiszesz komendę /back.
+
+196.Nie znaleziono mapy!
+197.Mapa nie jest odblokowana!
+
+198:Nie można wybudować tutaj kopalni złota!
+199:Nie można wybudować tutaj kopalni żelaza!
