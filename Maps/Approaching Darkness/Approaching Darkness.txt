@@ -1,0 +1,15 @@
+Author
+DontTalk
+
+Version
+1.2 Ambience Patch
+
+SmallDesc
+A Mission by DontTalk
+
+BigDescLIBX
+1
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

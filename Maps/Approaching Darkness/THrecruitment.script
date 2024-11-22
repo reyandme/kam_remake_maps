@@ -1,0 +1,72 @@
+{$EVENT evtTick:TownHallUnitOnTick}
+
+var
+    TopBandits: array[0..2] of Integer;
+	MiddleBandits: array[0..3] of Integer;
+	BottomBandits: array[0..2] of Integer;
+	Difficulty: Integer;
+	
+procedure TownHallUnitOnTick();
+begin
+    if (S.GameTime > TopBandits[0]) and (S.StatUnitTypeCount(2, UNIT_BARBARIAN) < 36) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(154, 46), UNIT_BARBARIAN, 1);
+        TopBandits[0]:= (S.GameTime + Difficulty);
+		end;
+	
+	if (S.GameTime > TopBandits[1]) and (S.StatUnitTypeCount(2, UNIT_BOWMAN) < 36) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(154, 46), UNIT_ROGUE, 1);
+        TopBandits[1]:= (S.GameTime + Difficulty);
+		end;	
+		
+	if (S.GameTime > TopBandits[2]) and (S.StatUnitTypeCount(2, UNIT_VAGABOND) < 45) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(154, 46), UNIT_VAGABOND, 1);
+        TopBandits[2]:= (S.GameTime + Difficulty);
+		end;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////				
+	if (S.GameTime > MiddleBandits[0]) and (S.StatUnitTypeCount(4, UNIT_BARBARIAN) < 24) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(153, 138), UNIT_BARBARIAN, 1);
+        MiddleBandits[0]:= (S.GameTime + Difficulty);
+		end;
+	
+	if (S.GameTime > MiddleBandits[1]) and (S.StatUnitTypeCount(4, UNIT_BOWMAN) < 48) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(153, 138), UNIT_ROGUE, 1);
+        MiddleBandits[1]:= (S.GameTime + Difficulty);
+		end;	
+		
+	if (S.GameTime > MiddleBandits[2]) and (S.StatUnitTypeCount(4, UNIT_VAGABOND) < 36) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(153, 138), UNIT_VAGABOND, 1);
+        MiddleBandits[2]:= (S.GameTime + Difficulty);
+		end;	
+		
+	if (S.GameTime > MiddleBandits[3]) and (S.StatUnitTypeCount(4, UNIT_LANCE_CARRIER) < 18) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(153, 138), UNIT_REBEL, 1);
+        MiddleBandits[3]:= (S.GameTime + Difficulty);
+		end;	
+////////////////////////////////////////////////////////////////////////////////////////////////////////		
+    if (S.GameTime > BottomBandits[0]) and (S.StatUnitTypeCount(4, UNIT_BARBARIAN) < 48) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(143, 208), UNIT_BARBARIAN, 1);
+        BottomBandits[0]:= (S.GameTime + Difficulty);
+		end;
+		
+	if (S.GameTime > BottomBandits[1]) and (S.StatUnitTypeCount(4, UNIT_BOWMAN) < 60) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(143, 208), UNIT_ROGUE, 1);
+        BottomBandits[1]:= (S.GameTime + Difficulty);
+		end;
+
+	if (S.GameTime > BottomBandits[2]) and (S.StatUnitTypeCount(4, UNIT_LANCE_CARRIER) < 45) then
+	    begin
+	    Actions.HouseTownHallEquip(States.HouseAt(143, 208), UNIT_REBEL, 1);
+        BottomBandits[2]:= (S.GameTime + Difficulty);
+		end;
+end;	
+
+	
