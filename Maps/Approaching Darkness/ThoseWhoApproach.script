@@ -1,0 +1,365 @@
+{$EVENT evtTick:Enemy}
+
+procedure Enemy();
+var
+aUnits: array of Integer;
+i: Integer;
+
+begin
+if States.GameTime = (FrostLevel[7] - 6000) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (8, UNIT_SCOUT, 3, 170, DIRECTION_E, 9, 3);
+	A.GiveGroup (8, UNIT_SCOUT, 3, 166, DIRECTION_E, 9, 3);
+	A.GiveGroup (8, UNIT_SCOUT, 3, 162, DIRECTION_E, 9, 3);
+	A.GiveGroup (10, UNIT_SCOUT, 3, 158, DIRECTION_E, 9, 3);
+	A.GiveGroup (10, UNIT_SCOUT, 3, 154, DIRECTION_E, 9, 3);
+	A.GiveGroup (10, UNIT_SCOUT, 3, 150, DIRECTION_E, 9, 3);
+	///Main Force
+	A.GiveGroup (5, UNIT_KNIGHT, 123, 3, DIRECTION_S, 8, 4);
+	A.GiveGroup (5, UNIT_KNIGHT, 129, 3, DIRECTION_S, 8, 4);
+	A.GiveGroup (5, UNIT_KNIGHT, 135, 3, DIRECTION_S, 8, 4);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 158, 15, DIRECTION_S, 8, 4);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 160, 15, DIRECTION_S, 8, 4);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 162, 15, DIRECTION_S, 8, 4);
+	A.GiveGroup (7, UNIT_PIKEMAN, 70, 3, DIRECTION_S, 8, 4);
+	A.GiveGroup (7, UNIT_PIKEMAN, 75, 3, DIRECTION_S, 8, 4);
+	A.GiveGroup (7, UNIT_PIKEMAN, 80, 3, DIRECTION_S, 8, 4);
+	end;
+	
+if States.GameTime = (FrostLevel[7] - 5400) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (8, UNIT_KNIGHT, 23, 208, DIRECTION_N, 12, 4);
+	A.GiveGroup (8, UNIT_KNIGHT, 27, 208, DIRECTION_N, 12, 4);
+	A.GiveGroup (8, UNIT_KNIGHT, 31, 208, DIRECTION_N, 12, 4);
+	///Main Force
+	A.GiveGroup (5, UNIT_SWORD_FIGHTER, 41, 3, DIRECTION_S, 9, 3);
+	A.GiveGroup (5, UNIT_SWORD_FIGHTER, 44, 3, DIRECTION_S, 9, 3);
+	A.GiveGroup (7, UNIT_SWORD_FIGHTER, 47, 3, DIRECTION_S, 9, 3);
+	A.GiveGroup (7, UNIT_SWORD_FIGHTER, 50, 3, DIRECTION_S, 9, 3);
+	A.GiveGroup (7, UNIT_SWORD_FIGHTER, 3, 3, DIRECTION_S, 9, 3);
+	A.GiveGroup (5, UNIT_KNIGHT, 4, 135, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_KNIGHT, 4, 130, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_KNIGHT, 4, 125, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_KNIGHT, 4, 120, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_KNIGHT, 4, 115, DIRECTION_E, 9, 3);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] - 4800) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 147, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 151, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 155, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 159, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 163, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 167, DIRECTION_E, 6, 3);
+	A.GiveGroup (10, UNIT_CROSSBOWMAN, 2, 171, DIRECTION_E, 6, 3);
+	///Main Force
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 41, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 44, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 47, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 50, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 83, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 86, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 89, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 92, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 95, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 98, DIRECTION_S, 6, 3);
+	A.GiveGroup (5, UNIT_CROSSBOWMAN, 2, 101, DIRECTION_S, 6, 3);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] - 4200) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (9, UNIT_PIKEMAN, 3, 159, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_LANCE_CARRIER, 3, 163, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_PIKEMAN, 3, 167, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_LANCE_CARRIER, 3, 171, DIRECTION_E, 9, 3);
+	///Main Force
+	A.GiveGroup (6, UNIT_SCOUT, 41, 3, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 44, 3, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 47, 3, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 50, 3, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 89, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 92, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 95, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 98, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 5, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 8, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 3, 11, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 6, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 6, 5, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 6, 8, DIRECTION_E, 6, 3);
+	A.GiveGroup (6, UNIT_SCOUT, 6, 11, DIRECTION_E, 6, 3);
+	end;
+	
+if States.GameTime = (FrostLevel[7] - 3600) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (9, UNIT_PIKEMAN, 3, 159, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_LANCE_CARRIER, 3, 163, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_PIKEMAN, 3, 167, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_LANCE_CARRIER, 3, 171, DIRECTION_E, 9, 3);
+	///Main Force
+	A.GiveGroup (5, UNIT_PIKEMAN, 3, 88, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_LANCE_CARRIER, 3, 85, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_LANCE_CARRIER, 3, 97, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_PIKEMAN, 3, 94, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_LANCE_CARRIER, 3, 91, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_PIKEMAN, 3, 100, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_PIKEMAN, 3, 4, DIRECTION_E, 9, 3);
+	A.GiveGroup (5, UNIT_LANCE_CARRIER, 3, 2, DIRECTION_E, 9, 3);
+	A.GiveGroup (7, UNIT_AXE_FIGHTER, 3, 14, DIRECTION_E, 9, 3);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] - 3000) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (9, UNIT_AXE_FIGHTER, 3, 159, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_AXE_FIGHTER, 3, 167, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_SWORD_FIGHTER, 3, 163, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_SWORD_FIGHTER, 3, 171, DIRECTION_E, 9, 3);
+	///Main Force
+	A.GiveGroup (7, UNIT_LANCE_CARRIER, 3, 117, DIRECTION_E, 8, 4);
+	A.GiveGroup (7, UNIT_LANCE_CARRIER, 3, 121, DIRECTION_E, 8, 4);
+	A.GiveGroup (7, UNIT_LANCE_CARRIER, 3, 125, DIRECTION_E, 8, 4);
+	A.GiveGroup (7, UNIT_LANCE_CARRIER, 3, 129, DIRECTION_E, 8, 4);
+	end;
+
+if States.GameTime = (FrostLevel[7] - 2400) then
+    begin
+    /// Brigde Force
+	A.GiveGroup (9, UNIT_AXE_FIGHTER, 3, 159, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_SWORD_FIGHTER, 3, 163, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_AXE_FIGHTER, 3, 167, DIRECTION_E, 9, 3);
+	A.GiveGroup (9, UNIT_SWORD_FIGHTER, 3, 171, DIRECTION_E, 9, 3);
+	///Main Force
+	A.GiveGroup (6, UNIT_SWORD_FIGHTER, 3, 85, DIRECTION_E, 9, 3);    
+	A.GiveGroup (6, UNIT_AXE_FIGHTER, 3, 88, DIRECTION_E, 9, 3);    
+	A.GiveGroup (6, UNIT_SWORD_FIGHTER, 3, 91, DIRECTION_E, 9, 3);  
+	A.GiveGroup (6, UNIT_AXE_FIGHTER, 3, 94, DIRECTION_E, 9, 3);    
+	A.GiveGroup (6, UNIT_SWORD_FIGHTER, 3, 97, DIRECTION_E, 9, 3); 
+	A.GiveGroup (6, UNIT_AXE_FIGHTER, 3, 2, DIRECTION_E, 9, 3);
+	A.GiveGroup (6, UNIT_SWORD_FIGHTER, 3, 5, DIRECTION_E, 9, 3);
+	A.GiveGroup (6, UNIT_AXE_FIGHTER, 3, 8, DIRECTION_E, 9, 3);
+	A.GiveGroup (6, UNIT_SWORD_FIGHTER, 6, 2, DIRECTION_E, 9, 3);
+	A.GiveGroup (6, UNIT_AXE_FIGHTER, 9, 2, DIRECTION_E, 9, 3);
+	end;	
+
+///THIS COULD BE SHORTER BUT IM NOT RISKING LAGS	
+if States.GameTime = (FrostLevel[7] - 600) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(10);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;	
+	
+if States.GameTime = (FrostLevel[7] - 540) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(9);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;	
+	
+if States.GameTime = (FrostLevel[7] - 480) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(8);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;
+
+if States.GameTime = (FrostLevel[7] - 420) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(7);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;
+
+if States.GameTime = (FrostLevel[7] - 360) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(6);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;
+
+if States.GameTime = (FrostLevel[7] - 300) then
+    begin
+    ///SaturationFill
+	aUnits := S.PlayerGetAllUnits(5);
+
+    for i := 0 to High(aUnits) do
+    begin
+        A.UnitHungerSet(aUnits[i], 27000);
+    end;
+	end;	
+	
+/// ATTACK PATTERN
+if States.GameTime = (FrostLevel[7] + 300) then	
+    begin
+	A.AIDefencePositionRemove(9, 11, 189);
+	A.AIDefencePositionRemove(9, 11, 185);
+	A.AIDefencePositionRemove(9, 11, 181);
+	A.AIDefencePositionRemove(9, 11, 178);
+	A.AIDefencePositionRemove(9, 11, 174);
+	A.AIDefencePositionRemove(9, 11, 171);
+	A.AIDefencePositionRemove(9, 12, 167);
+	A.AIDefencePositionRemove(9, 12, 163);
+	A.AIDefencePositionRemove(7, 12, 73);
+	A.AIDefencePositionRemove(7, 12, 66);
+	A.AIDefencePositionRemove(6, 12, 102);
+	A.AIDefencePositionRemove(6, 12, 102);
+	A.AIDefencePositionRemove(6, 11, 97);
+	A.AIDefencePositionRemove(6, 10, 92);
+	A.AIDefencePositionRemove(6, 11, 85);
+	A.AIDefencePositionRemove(6, 12, 80);
+	A.AIDefencePositionRemove(6, 14, 61);
+	A.AIDefencePositionRemove(6, 13, 54);
+	A.AIDefencePositionRemove(6, 14, 48);
+	A.AIDefencePositionRemove(6, 31, 38);
+	A.AIDefencePositionRemove(6, 35, 34);
+	A.AIDefencePositionRemove(6, 54, 25);
+	A.AIDefencePositionRemove(6, 53, 17);
+	A.AIDefencePositionRemove(6, 60, 15);
+	A.AIDefencePositionRemove(6, 71, 9);
+	A.AIDefencePositionRemove(6, 76, 6);
+	A.AIDefencePositionRemove(6, 80, 9);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] + 675) then	
+    begin
+	A.AIDefencePositionRemove(10, 19, 165);
+	A.AIDefencePositionRemove(10, 18, 171);
+	A.AIDefencePositionRemove(10, 18, 176);
+	A.AIDefencePositionRemove(10, 18, 181);
+	A.AIDefencePositionRemove(10, 18, 187);
+	A.AIDefencePositionRemove(10, 17, 193);
+	A.AIDefencePositionRemove(10, 22, 202);
+	A.AIDefencePositionRemove(5, 19, 94);
+	A.AIDefencePositionRemove(5, 19, 85);
+	A.AIDefencePositionRemove(5, 19, 65);
+	A.AIDefencePositionRemove(5, 20, 76);
+	A.AIDefencePositionRemove(5, 21, 67);
+	A.AIDefencePositionRemove(5, 21, 59);
+	A.AIDefencePositionRemove(5, 22, 51);
+	A.AIDefencePositionRemove(5, 34, 43);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] + 1125) then	
+    begin
+	A.AIDefencePositionRemove(5, 121, 13);
+	A.AIDefencePositionRemove(5, 127, 13);
+	A.AIDefencePositionRemove(5, 134, 14);
+	A.AIDefencePositionRemove(5, 122, 8);
+	A.AIDefencePositionRemove(5, 128, 8);
+	A.AIDefencePositionRemove(5, 134, 9);
+	A.AIDefencePositionRemove(5, 122, 3);
+	A.AIDefencePositionRemove(5, 128, 3);
+	A.AIDefencePositionRemove(5, 134, 4);
+	end;
+	
+	
+if States.GameTime = (FrostLevel[7] + 1475) then	
+    begin
+	A.AIDefencePositionRemove(7, 122, 8);
+	A.AIDefencePositionRemove(7, 128, 8);
+	A.AIDefencePositionRemove(7, 134, 9);
+	A.AIDefencePositionRemove(8, 23, 208);
+	A.AIDefencePositionRemove(8, 27, 208);
+	A.AIDefencePositionRemove(8, 31, 208);
+	end;
+
+if States.GameTime = (FrostLevel[7] + 1825) then	
+    begin
+	A.AIDefencePositionRemove(5, 84, 10);
+	A.AIDefencePositionRemove(7, 75, 10);
+	A.AIDefencePositionRemove(7, 65, 12);
+	A.AIDefencePositionRemove(5, 56, 21);
+	A.AIDefencePositionRemove(5, 50, 22);
+	A.AIDefencePositionRemove(5, 55, 14);
+	A.AIDefencePositionRemove(5, 71, 5);
+	A.AIDefencePositionRemove(5, 80, 5);
+	A.AIDefencePositionRemove(5, 20, 130);
+	A.AIDefencePositionRemove(5, 21, 124);
+	A.AIDefencePositionRemove(5, 17, 123);
+	A.AIDefencePositionRemove(5, 16, 129);
+	A.AIDefencePositionRemove(5, 12, 132);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] + 2275) then	
+    begin
+	A.AIDefencePositionRemove(9, 15, 189);
+	A.AIDefencePositionRemove(9, 15, 185);
+	A.AIDefencePositionRemove(9, 15, 181);
+	A.AIDefencePositionRemove(9, 15, 178);
+	A.AIDefencePositionRemove(9, 15, 174);
+	A.AIDefencePositionRemove(9, 15, 171);
+	A.AIDefencePositionRemove(9, 16, 167);
+	A.AIDefencePositionRemove(9, 16, 163);
+	A.AIDefencePositionRemove(8, 7, 189);
+	A.AIDefencePositionRemove(8, 7, 183);
+	A.AIDefencePositionRemove(8, 7, 173);
+	A.AIDefencePositionRemove(8, 7, 169);
+	A.AIDefencePositionRemove(8, 7, 163);
+	A.AIDefencePositionRemove(8, 7, 159);
+	A.AIDefencePositionRemove(5, 38, 40);
+	A.AIDefencePositionRemove(5, 30, 47);
+	A.AIDefencePositionRemove(5, 22, 55);
+	A.AIDefencePositionRemove(5, 22, 63);
+	A.AIDefencePositionRemove(5, 21, 71);
+	A.AIDefencePositionRemove(5, 21, 81);
+	A.AIDefencePositionRemove(5, 19, 89);
+	A.AIDefencePositionRemove(5, 20, 98);
+	end;	
+	
+	
+if States.GameTime = (FrostLevel[7] + 2675) then	
+    begin
+	A.AIDefencePositionRemove(7, 4, 120);
+	A.AIDefencePositionRemove(7, 8, 120);
+	A.AIDefencePositionRemove(7, 4, 126);
+	A.AIDefencePositionRemove(7, 8, 126);
+	A.AIDefencePositionRemove(6, 15, 96);
+	A.AIDefencePositionRemove(6, 14, 90);
+	A.AIDefencePositionRemove(6, 15, 85);
+	A.AIDefencePositionRemove(6, 16, 80);
+	A.AIDefencePositionRemove(6, 17, 75);
+	A.AIDefencePositionRemove(6, 16, 71);
+	A.AIDefencePositionRemove(6, 17, 67);
+	A.AIDefencePositionRemove(6, 18, 62);
+	A.AIDefencePositionRemove(6, 18, 57);
+	A.AIDefencePositionRemove(6, 18, 52);
+	end;	
+	
+if States.GameTime = (FrostLevel[7] + 3000) then	
+    begin
+    A.AIDefencePositionRemoveAll(5);
+	A.AIDefencePositionRemoveAll(6);
+	A.AIDefencePositionRemoveAll(7);
+	A.AIDefencePositionRemoveAll(8);
+	A.AIDefencePositionRemoveAll(9);
+	A.AIDefencePositionRemoveAll(10);
+	end;		
+end;

@@ -1,0 +1,628 @@
+{$I improvestaticai.script}  /// By Strangelove
+{$I constants.script}  /// By Greeny
+{$I Icepassage.script}
+{$I THrecruitment.script}
+{$I YellowBaseBuild.script}
+{$I ThoseWhoApproach.script}
+
+var 
+    DifficultySetting: TKMMissionDifficulty;
+	TowerAmount, TowerQuestCompletion, ArmyQuestCompletion, SausageAmount, ArmyAmount: Integer;
+	TowerQuest, SausageQuest, ArmyQuest: Boolean;
+	BanditCamp: array[0..2] of Boolean;
+
+procedure OnMissionStart();
+begin
+DifficultySetting:= States.MissionDifficulty();
+ArmyQuestCompletion:= 10000000000;
+TowerQuestCompletion:= 10000000000;
+TowerQuest:= false;
+SausageQuest:= false;
+ArmyQuest:= false;
+A.ShowMsg(0, '<$2>');
+A.CinematicStart(0);
+A.UnitOrderWalk(S.UnitAt(158, 94), 84, 87);
+A.UnitOrderWalk(S.UnitAt(158, 95), 84, 88);
+A.UnitOrderWalk(S.UnitAt(158, 96), 84, 89);
+A.UnitOrderWalk(S.UnitAt(159, 94), 85, 87);
+A.UnitOrderWalk(S.UnitAt(159, 95), 85, 88);
+A.UnitOrderWalk(S.UnitAt(159, 96), 85, 89);
+A.UnitOrderWalk(S.UnitAt(160, 94), 86, 87);
+A.UnitOrderWalk(S.UnitAt(160, 95), 86, 88);
+A.UnitOrderWalk(S.UnitAt(160, 96), 86, 89);
+A.UnitOrderWalk(S.UnitAt(161, 94), 87, 87);
+A.UnitOrderWalk(S.UnitAt(161, 95), 87, 88);
+A.UnitOrderWalk(S.UnitAt(161, 96), 87, 89);
+BanditCamp[0]:=false;
+BanditCamp[1]:=false;
+BanditCamp[2]:=false;
+//offsets
+TopBandits[0]:= 200;
+TopBandits[1]:= 400;
+TopBandits[2]:= 600;
+MiddleBandits[0]:= 275;
+MiddleBandits[1]:= 475;
+MiddleBandits[2]:= 875;
+MiddleBandits[3]:= 1075;
+BottomBandits[0]:= 250;
+BottomBandits[1]:= 450;
+BottomBandits[2]:= 650;
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		FrostLevel[0]:= 8000;
+        FrostLevel[1]:= 17000;
+        FrostLevel[2]:= 28000;
+        FrostLevel[3]:= 41000;
+        FrostLevel[4]:= 52000;
+        FrostLevel[5]:= 65000;
+        FrostLevel[6]:= 78000;
+        FrostLevel[7]:= 90000;
+		Difficulty:= 1100; //bandit equip rate 
+		A.AIEquipRate(1, 1, 350);
+		A.GiveWares(0, WARE_GOLD, 150);
+		A.GiveWares(0, WARE_STONES, 200);
+		A.GiveWares(0, WARE_TIMBER, 80);
+		A.GiveWares(0, WARE_WINE, 80);
+		A.GiveWares(0, WARE_SAUSAGES, 40);
+		A.GiveWares(0, WARE_LOAVES, 60);
+		A.GiveWares(0, WARE_FISH, 30);
+        end;
+		
+        mdNormal:
+        begin
+		FrostLevel[0]:= 8000;
+        FrostLevel[1]:= 15000;
+        FrostLevel[2]:= 25000;
+        FrostLevel[3]:= 36000;
+        FrostLevel[4]:= 47000;
+        FrostLevel[5]:= 58000;
+        FrostLevel[6]:= 69000;
+        FrostLevel[7]:= 81000;
+		Difficulty:= 900; //bandit equip rate 
+		A.AIEquipRate(1, 1, 450);
+		A.GiveWares(0, WARE_GOLD, 130);
+		A.GiveWares(0, WARE_STONES, 165);
+		A.GiveWares(0, WARE_TIMBER, 65);
+		A.GiveWares(0, WARE_WINE, 70);
+		A.GiveWares(0, WARE_SAUSAGES, 35);
+		A.GiveWares(0, WARE_LOAVES, 50);
+		A.GiveWares(0, WARE_FISH, 25);
+        end;
+		
+        mdHard1:
+        begin
+		FrostLevel[0]:= 8000;
+        FrostLevel[1]:= 12000;
+        FrostLevel[2]:= 18000;
+        FrostLevel[3]:= 24000;
+        FrostLevel[4]:= 33000;
+        FrostLevel[5]:= 44000;
+        FrostLevel[6]:= 55000;
+        FrostLevel[7]:= 66000;
+		Difficulty:= 700; //bandit equip rate 
+		A.AIEquipRate(1, 1, 550);
+		A.GiveWares(0, WARE_GOLD, 110);
+		A.GiveWares(0, WARE_STONES, 130);
+		A.GiveWares(0, WARE_TIMBER, 50);
+		A.GiveWares(0, WARE_WINE, 60);
+		A.GiveWares(0, WARE_SAUSAGES, 30);
+		A.GiveWares(0, WARE_LOAVES, 40);
+		A.GiveWares(0, WARE_FISH, 20);
+        end;
+    end;
+
+end;
+
+procedure OnTick();
+begin
+
+if (States.GameTime MOD 12000 = 0) then
+	begin
+    Actions.MarketSetTrade((States.HouseAt(67, 159)), WARE_GOLD, WARE_CORN, 55);
+	end;
+	
+if S.GameTime = 10 then
+    begin
+    A.CinematicPanTo(0, 98, 79, 75);
+	end;
+	
+if S.GameTime = 85 then
+    begin
+    A.CinematicEnd(0);
+	end;
+	
+if S.GameTime = 3000 then
+    begin
+    A.ShowMsgGoto(0, 55, 159,'<$5>');
+	end;	
+	
+if S.GameTime = 6000 then
+    begin
+    A.ShowMsg(0,'<$6>');
+	TowerQuest:= true;
+	end;	
+	
+if S.GameTime = 18000 then
+    begin
+    A.ShowMsg(0,'<$11>');
+	SausageQuest:= true;
+	end;	
+	
+if S.GameTime = 36000 then
+    begin
+    A.ShowMsg(0,'<$13>');
+	ArmyQuest:= true;
+	end;	
+	
+if TowerQuest then
+    begin
+	A.OverlayTextSet(0, '<$7>: ' + inttostr(TowerAmount)+ '/11');
+	end;
+	
+if ArmyQuest then
+    begin
+	ArmyAmount:= S.StatArmyCount(0);
+	A.OverlayTextSet(0, '<$14>: ' + inttostr(ArmyAmount)+ '/150');
+	end;	
+	
+if SausageQuest then
+    begin
+	SausageAmount:= S.HouseResourceAmount(S.HouseAt(82, 87), WARE_SAUSAGES);
+	A.OverlayTextSet(0, '<$12>: ' + inttostr(SausageAmount)+ '/60');
+	end;	
+	
+if SausageQuest and TowerQuest then
+    begin
+	SausageAmount:= S.HouseResourceAmount(S.HouseAt(82, 87), WARE_SAUSAGES);
+	A.OverlayTextSet(0, '<$7>: ' + inttostr(TowerAmount)+ '/11');
+	A.OverlayTextAppend(0, '|<$12>: ' + inttostr(SausageAmount)+ '/60');
+	end;
+	
+if SausageQuest and ArmyQuest then
+    begin
+	ArmyAmount:= S.StatArmyCount(0);
+	SausageAmount:= S.HouseResourceAmount(S.HouseAt(82, 87), WARE_SAUSAGES);
+	A.OverlayTextSet(0, '<$12>: ' + inttostr(SausageAmount)+ '/60');
+	A.OverlayTextAppend(0, '|<$14>: ' + inttostr(ArmyAmount)+ '/150');
+	end;	
+	
+if TowerQuest and ArmyQuest then
+    begin
+	ArmyAmount:= S.StatArmyCount(0);
+	A.OverlayTextSet(0, '<$7>: ' + inttostr(TowerAmount)+ '/11');
+	A.OverlayTextAppend(0, '|<$14>: ' + inttostr(ArmyAmount)+ '/150');
+	end;	
+		
+if SausageQuest and TowerQuest and ArmyQuest then
+    begin
+	ArmyAmount:= S.StatArmyCount(0);
+	SausageAmount:= S.HouseResourceAmount(S.HouseAt(82, 87), WARE_SAUSAGES);
+	A.OverlayTextSet(0, '<$7>: ' + inttostr(TowerAmount)+ '/11');
+	A.OverlayTextAppend(0, '|<$12>: ' + inttostr(SausageAmount)+ '/60');
+	A.OverlayTextAppend(0, '|<$14>: ' + inttostr(ArmyAmount)+ '/150');
+	end;
+	
+
+	
+if (TowerAmount = 11) and (TowerQuest = true) then
+    begin
+    A.ShowMsg(0, '<$4>')
+	TowerQuest:= false;
+	A.OverlayTextSet(0, '');
+	TowerQuestCompletion:= S.GameTime;
+	end;
+	
+if (SausageAmount = 60) and (SausageQuest = true) then
+    begin
+	A.ShowMsg(0, '<$15>')
+	SausageQuest:= false;
+	A.OverlayTextSet(0, '');
+	A.HouseTakeWaresFrom(S.HouseAt(82, 87), WARE_SAUSAGES, 60);
+	A.GiveWares(1, WARE_SAUSAGES, 1000);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 70);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 60);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 50);
+        end;
+    end;
+	end;
+	
+if (ArmyAmount > 149) and (ArmyQuest = true) then
+    begin
+    A.ShowMsg(0, '<$16>')
+	ArmyQuest:= false;
+	ArmyQuestCompletion:= S.GameTime;
+	A.OverlayTextSet(0, '');
+	end;	
+	
+if 	(S.GameTime = (TowerQuestCompletion + 2400)) then
+    begin
+	A.ShowMsg(0, '<$3>')
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 100);
+		A.GiveWares(0, WARE_LOAVES, 50);
+		A.GiveWares(0, WARE_IRON_SHIELD, 15);
+		A.GiveWares(0, WARE_IRON_ARMOR, 15);
+		A.GiveWares(0, WARE_SWORDS, 15);
+		A.GiveWares(0, WARE_HORSES, 15);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 92, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 99, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 95, DIRECTION_W, 12, 4);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 90);
+		A.GiveWares(0, WARE_LOAVES, 40);
+		A.GiveWares(0, WARE_IRON_SHIELD, 10);
+		A.GiveWares(0, WARE_IRON_ARMOR, 10);
+		A.GiveWares(0, WARE_SWORDS, 10);
+		A.GiveWares(0, WARE_HORSES, 10);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 92, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 99, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 95, DIRECTION_W, 8, 4);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 80);
+		A.GiveWares(0, WARE_LOAVES, 30);
+		A.GiveWares(0, WARE_IRON_SHIELD, 5);
+		A.GiveWares(0, WARE_IRON_ARMOR, 5);
+		A.GiveWares(0, WARE_SWORDS, 5);
+		A.GiveWares(0, WARE_HORSES, 5);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 92, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 161, 99, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 95, DIRECTION_W, 8, 4);
+        end;
+    end;
+	A.GroupOrderWalk(S.GroupAt(161, 92), 105, 77, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(161, 99), 105, 84, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(161, 95), 105, 80, DIRECTION_W);
+	end;
+	
+	
+if 	(S.GameTime = (ArmyQuestCompletion + 2400)) then
+    begin
+	A.ShowMsg(0, '<$3>')
+	A.GiveGroup(0, UNIT_AXE_FIGHTER, 153, 97, DIRECTION_W, 9, 3);
+	A.GiveGroup(0, UNIT_AXE_FIGHTER, 153, 93, DIRECTION_W, 9, 3);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 160);
+		A.GiveWares(0, WARE_LOAVES, 70);
+		A.GiveWares(0, WARE_WINE, 90);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 97, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 93, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 93, DIRECTION_W, 12, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 97, DIRECTION_W, 12, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 140);
+		A.GiveWares(0, WARE_LOAVES, 60);
+		A.GiveWares(0, WARE_WINE, 80);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 97, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 93, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 93, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 97, DIRECTION_W, 9, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 120);
+		A.GiveWares(0, WARE_LOAVES, 50);
+		A.GiveWares(0, WARE_WINE, 60);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 97, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 161, 93, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 93, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 157, 97, DIRECTION_W, 6, 3);
+        end;
+    end;
+	A.GroupOrderWalk(S.GroupAt(153, 97), 107, 82, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(153, 93), 107, 86, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(157, 93), 111, 82, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(157, 97), 111, 86, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(161, 97), 116, 82, DIRECTION_W);
+	A.GroupOrderWalk(S.GroupAt(161, 93), 116, 86, DIRECTION_W);
+	end;
+
+if S.GameTime = (FrostLevel[7] + 200) then
+    begin
+	A.ShowMsg(0, '<$17>')
+	Actions.PlayOGG(0,'WarHorn', 1);
+	end;	
+end;
+
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+begin
+	typeU := States.UnitType(aUnitID);
+	if (typeU = UNIT_ROGUE) and (States.UnitOwner(aUnitID) = 2) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_ROGUE then
+		begin
+			typeU := UNIT_BOWMAN;
+			temporary := Actions.GiveGroup(2, UNIT_BOWMAN, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = UNIT_ROGUE) and (States.UnitOwner(aUnitID) = 4) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_ROGUE then
+		begin
+			typeU := UNIT_BOWMAN;
+			temporary := Actions.GiveGroup(4, UNIT_BOWMAN, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = UNIT_REBEL) and (States.UnitOwner(aUnitID) = 4) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_REBEL then
+		begin
+			typeU := UNIT_LANCE_CARRIER;
+			temporary := Actions.GiveGroup(4, UNIT_LANCE_CARRIER, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = UNIT_ROGUE) and (States.UnitOwner(aUnitID) = 3) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_ROGUE then
+		begin
+			typeU := UNIT_BOWMAN;
+			temporary := Actions.GiveGroup(3, UNIT_BOWMAN, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = UNIT_REBEL) and (States.UnitOwner(aUnitID) = 3) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_REBEL then
+		begin
+			typeU := UNIT_LANCE_CARRIER;
+			temporary := Actions.GiveGroup(3, UNIT_LANCE_CARRIER, tempX, tempY, 4, 1, 1);
+		end;
+	end;	
+end;
+
+procedure OnHouseBuilt(aHouseID: Integer);
+begin
+if ((aHouseID = S.HouseAt(46, 111)) and (S.HouseType(S.HouseAt(46, 111)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(45, 102)) and (S.HouseType(S.HouseAt(45, 102)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+	
+if ((aHouseID = S.HouseAt(49, 94)) and (S.HouseType(S.HouseAt(49, 94)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(51, 86)) and (S.HouseType(S.HouseAt(51, 86)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(49, 74)) and (S.HouseType(S.HouseAt(49, 74)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;	
+	
+if ((aHouseID = S.HouseAt(52, 66)) and (S.HouseType(S.HouseAt(52, 66)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(58, 62)) and (S.HouseType(S.HouseAt(58, 62)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(80, 41)) and (S.HouseType(S.HouseAt(80, 41)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(87, 37)) and (S.HouseType(S.HouseAt(49, 74)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;	
+	
+if ((aHouseID = S.HouseAt(110, 46)) and (S.HouseType(S.HouseAt(110, 46)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;
+
+if ((aHouseID = S.HouseAt(108, 39)) and (S.HouseType(S.HouseAt(108, 39)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount + 1;
+	end;	
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+if (aHouseID = States.HouseAt(160, 48)) and (BanditCamp[0] = false) and (aDestroyerIndex = 0) then
+    begin
+	A.ShowMsg(0, '<$8>')
+	BanditCamp[0]:=true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 100);
+		A.GiveWares(0, WARE_LOAVES, 45);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 90);
+		A.GiveWares(0, WARE_LOAVES, 40);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 80);
+		A.GiveWares(0, WARE_LOAVES, 35);
+        end;
+    end;
+	end;
+
+if (aHouseID = States.HouseAt(159, 136)) and (BanditCamp[1] = false) and (aDestroyerIndex = 0) then
+    begin
+	A.ShowMsg(0, '<$9>')
+	BanditCamp[1]:=true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 95);
+		A.GiveWares(0, WARE_TIMBER, 50);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 85);
+		A.GiveWares(0, WARE_TIMBER, 40);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 80);
+		A.GiveWares(0, WARE_TIMBER, 30);
+        end;
+    end
+	end;
+	
+if (aHouseID = States.HouseAt(137, 207)) and (BanditCamp[2] = false) and (aDestroyerIndex = 0) then
+    begin
+	A.ShowMsg(0, '<$10>')
+	BanditCamp[2]:=true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 120);
+		A.GiveWares(0, WARE_HAND_AXES, 25);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 110);
+		A.GiveWares(0, WARE_HAND_AXES, 20);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 100);
+		A.GiveWares(0, WARE_HAND_AXES, 15);
+        end;
+    end
+	end;
+	
+if ((aHouseID = S.HouseAt(46, 111)) and (S.HouseType(S.HouseAt(46, 111)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(45, 102)) and (S.HouseType(S.HouseAt(45, 102)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+	
+if ((aHouseID = S.HouseAt(49, 94)) and (S.HouseType(S.HouseAt(49, 94)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(51, 86)) and (S.HouseType(S.HouseAt(51, 86)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(49, 74)) and (S.HouseType(S.HouseAt(49, 74)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;	
+	
+if ((aHouseID = S.HouseAt(52, 66)) and (S.HouseType(S.HouseAt(52, 66)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(58, 62)) and (S.HouseType(S.HouseAt(58, 62)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(80, 41)) and (S.HouseType(S.HouseAt(80, 41)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(87, 37)) and (S.HouseType(S.HouseAt(49, 74)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;	
+	
+if ((aHouseID = S.HouseAt(110, 46)) and (S.HouseType(S.HouseAt(110, 46)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;
+
+if ((aHouseID = S.HouseAt(108, 39)) and (S.HouseType(S.HouseAt(108, 39)) = HOUSE_WATCHTOWER)) then
+    begin
+	TowerAmount:= TowerAmount - 1;
+	end;		
+	
+end;
+
+procedure OnUnitDied(aUnitThatWasKilled: Integer; aPlayerWhoKilledUnit: Integer);
+Var
+    i: Integer;
+    playersWhoWin: Array of Integer;
+    playersWhoLose: Array of Integer;
+    allHaveNoTroops: Boolean;
+begin
+    playersWhoWin := [0];    
+    playersWhoLose := [5, 6, 7, 8, 9, 10];
+
+    allHaveNoTroops := True;
+    For i := 0 to Length(playersWhoLose) - 1 do
+        If States.StatArmyCount(playersWhoLose[i]) > 0 then allHaveNoTroops := False;
+        
+    If (allHaveNoTroops = True) And (States.GameTime > FrostLevel[7]) Then
+        Actions.PlayerWin(playersWhoWin,True);
+end;

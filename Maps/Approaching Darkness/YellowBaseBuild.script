@@ -1,0 +1,275 @@
+{$EVENT evtTick:YellowBaseBuild}
+
+procedure YellowBaseBuild();
+begin
+if S.GameTime = 6000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_IRON_MINE, 58, 152);
+	A.PlanAddHouse(1, HOUSE_IRON_MINE, 84, 153);
+	A.PlanAddRoad(1, 57, 153);
+	A.PlanAddRoad(1, 58, 153);
+	A.PlanAddRoad(1, 70, 158);
+	A.PlanAddRoad(1, 70, 157);
+	A.PlanAddRoad(1, 70, 156);
+	A.PlanAddRoad(1, 71, 156);
+	A.PlanAddRoad(1, 72, 156);
+	A.PlanAddRoad(1, 73, 156);
+	A.PlanAddRoad(1, 74, 156);
+	A.PlanAddRoad(1, 75, 156);
+	A.PlanAddRoad(1, 75, 155);
+	A.PlanAddRoad(1, 76, 155);
+	A.PlanAddRoad(1, 77, 155);
+	A.PlanAddRoad(1, 78, 155);
+	A.PlanAddRoad(1, 79, 155);
+	A.PlanAddRoad(1, 80, 155);
+	A.PlanAddRoad(1, 81, 155);
+	A.PlanAddRoad(1, 82, 155);
+	A.PlanAddRoad(1, 83, 155);
+	A.PlanAddRoad(1, 83, 154);
+	A.PlanAddRoad(1, 84, 154);
+	end;
+	
+if S.GameTime = 11000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 87, 156);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 86, 160);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 81, 160);
+	A.PlanAddHouse(1, HOUSE_IRON_SMITHY, 79, 157);
+	A.PlanAddRoad(1, 82, 156);
+	A.PlanAddRoad(1, 81, 157);
+	A.PlanAddRoad(1, 82, 157);
+	A.PlanAddRoad(1, 83, 157);
+	A.PlanAddRoad(1, 78, 158);
+	A.PlanAddRoad(1, 79, 158);
+	A.PlanAddRoad(1, 80, 158);
+	A.PlanAddRoad(1, 81, 158);
+	A.PlanAddRoad(1, 83, 158);
+	A.PlanAddRoad(1, 84, 158);
+	A.PlanAddRoad(1, 85, 158);
+	A.PlanAddRoad(1, 85, 157);
+	A.PlanAddRoad(1, 86, 157);
+	A.PlanAddRoad(1, 87, 157);
+	A.PlanAddRoad(1, 78, 159);
+	A.PlanAddRoad(1, 78, 160);
+	A.PlanAddRoad(1, 79, 160);
+	A.PlanAddRoad(1, 79, 161);
+	A.PlanAddRoad(1, 80, 161);
+	A.PlanAddRoad(1, 81, 161);
+	A.PlanAddRoad(1, 83, 159);
+	A.PlanAddRoad(1, 83, 160);
+	A.PlanAddRoad(1, 84, 160);
+	A.PlanAddRoad(1, 84, 161);
+	A.PlanAddRoad(1, 85, 161);
+	A.PlanAddRoad(1, 86, 161);
+	end;
+
+if S.GameTime = 16200 then
+    begin
+	A.PlanAddHouse(1, HOUSE_IRON_MINE, 94, 156);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 78, 164);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 83, 166);
+	A.PlanAddHouse(1, HOUSE_WOODCUTTERS, 88, 166);
+	A.PlanAddRoad(1, 94, 157);
+    A.PlanAddRoad(1, 93, 157);
+	A.PlanAddRoad(1, 92, 157);
+	A.PlanAddRoad(1, 91, 157);
+	A.PlanAddRoad(1, 90, 157);
+	A.PlanAddRoad(1, 89, 157);
+	A.PlanAddRoad(1, 88, 157);
+	A.PlanAddRoad(1, 84, 162);
+	A.PlanAddRoad(1, 83, 162);
+	A.PlanAddRoad(1, 82, 162);
+	A.PlanAddRoad(1, 81, 162);
+	A.PlanAddRoad(1, 81, 163);
+	A.PlanAddRoad(1, 80, 163);
+	A.PlanAddRoad(1, 80, 164);
+	A.PlanAddRoad(1, 78, 165);
+	A.PlanAddRoad(1, 79, 165);
+	A.PlanAddRoad(1, 80, 165);
+	A.PlanAddRoad(1, 81, 165);
+	A.PlanAddRoad(1, 81, 166);
+	A.PlanAddRoad(1, 81, 167);
+	A.PlanAddRoad(1, 82, 167);
+	A.PlanAddRoad(1, 83, 167);
+	A.PlanAddRoad(1, 84, 167);
+	A.PlanAddRoad(1, 85, 167);
+	A.PlanAddRoad(1, 86, 167);
+	A.PlanAddRoad(1, 87, 167);
+	A.PlanAddRoad(1, 88, 167);
+	end;
+
+if S.GameTime = 23500 then
+    begin
+	A.PlanAddHouse(1, HOUSE_SAWMILL, 78, 154);
+	A.PlanAddHouse(1, HOUSE_ARMOR_SMITHY, 50, 178);
+	A.PlanAddHouse(1, HOUSE_WEAPON_SMITHY, 56, 180);
+	A.PlanAddRoad(1, 58, 177);
+	A.PlanAddRoad(1, 59, 178);
+	A.PlanAddRoad(1, 58, 178);
+	A.PlanAddRoad(1, 59, 179);
+	A.PlanAddRoad(1, 59, 180);
+	A.PlanAddRoad(1, 59, 181);
+	A.PlanAddRoad(1, 54, 181);
+	A.PlanAddRoad(1, 55, 181);
+	A.PlanAddRoad(1, 56, 181);
+	A.PlanAddRoad(1, 57, 181);
+	A.PlanAddRoad(1, 58, 181);
+	A.PlanAddRoad(1, 54, 180);
+	A.PlanAddRoad(1, 53, 180);
+	A.PlanAddRoad(1, 53, 179);
+	A.PlanAddRoad(1, 52, 179);
+	A.PlanAddRoad(1, 51, 179);
+	A.PlanAddRoad(1, 50, 179);
+	A.PlanAddRoad(1, 49, 179);
+	A.PlanAddRoad(1, 48, 179);
+	A.PlanAddRoad(1, 48, 178);
+	A.PlanAddRoad(1, 48, 177);
+	A.PlanAddRoad(1, 48, 176);
+	A.PlanAddRoad(1, 47, 176);
+	A.PlanAddRoad(1, 47, 175);
+	A.PlanAddRoad(1, 46, 175);
+	A.PlanAddRoad(1, 45, 175);
+	A.PlanAddRoad(1, 53, 178);
+	A.PlanAddRoad(1, 54, 178);
+	A.PlanAddRoad(1, 54, 177);
+	end;	
+	
+if S.GameTime = 33000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_WATCHTOWER, 47, 178);
+	A.PlanAddHouse(1, HOUSE_IRON_SMITHY, 62, 179);
+	A.PlanAddHouse(1, HOUSE_VINEYARD, 52, 181);
+	A.PlanAddRoad(1, 52, 182);
+	A.PlanAddRoad(1, 53, 182);
+	A.PlanAddRoad(1, 54, 182);
+	A.PlanAddRoad(1, 47, 179);
+	A.PlanAddRoad(1, 60, 180);
+	A.PlanAddRoad(1, 61, 180);
+	A.PlanAddRoad(1, 62, 180);
+	A.PlanAddRoad(1, 63, 180);
+	A.PlanAddRoad(1, 64, 180);
+	A.PlanAddRoad(1, 64, 181);
+	A.PlanAddRoad(1, 65, 181);
+	A.PlanAddWineField(1, 49, 180);
+	A.PlanAddWineField(1, 49, 181);
+	A.PlanAddWineField(1, 49, 182);
+	A.PlanAddWineField(1, 49, 183);
+	A.PlanAddWineField(1, 49, 184);
+	A.PlanAddWineField(1, 48, 183);
+	A.PlanAddWineField(1, 48, 184);
+	A.PlanAddWineField(1, 50, 182);
+	A.PlanAddWineField(1, 50, 183);
+	A.PlanAddWineField(1, 51, 182);
+	A.PlanAddWineField(1, 51, 183);
+	end;
+	
+if S.GameTime = 41000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_VINEYARD, 61, 183);
+	A.PlanAddHouse(1, HOUSE_IRON_MINE, 106, 151);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 74, 180);
+    A.PlanAddRoad(1, 61, 184);
+	A.PlanAddRoad(1, 62, 184);
+	A.PlanAddRoad(1, 62, 183);
+	A.PlanAddRoad(1, 63, 183);
+	A.PlanAddRoad(1, 63, 182);
+	A.PlanAddRoad(1, 64, 182);
+	A.PlanAddRoad(1, 71, 179);
+	A.PlanAddRoad(1, 71, 180);
+	A.PlanAddRoad(1, 72, 180);
+	A.PlanAddRoad(1, 72, 181);
+	A.PlanAddRoad(1, 73, 181);
+	A.PlanAddRoad(1, 74, 181);
+	A.PlanAddRoad(1, 95, 157);
+	A.PlanAddRoad(1, 96, 157);
+	A.PlanAddRoad(1, 97, 157);
+	A.PlanAddRoad(1, 97, 156);
+	A.PlanAddRoad(1, 98, 156);
+	A.PlanAddRoad(1, 99, 156);
+	A.PlanAddRoad(1, 100, 156);
+	A.PlanAddRoad(1, 100, 155);
+	A.PlanAddRoad(1, 101, 155);
+	A.PlanAddRoad(1, 102, 155);
+	A.PlanAddRoad(1, 102, 154);
+	A.PlanAddRoad(1, 102, 153);
+	A.PlanAddRoad(1, 103, 153);
+	A.PlanAddRoad(1, 104, 153);
+	A.PlanAddRoad(1, 104, 152);
+	A.PlanAddRoad(1, 105, 152);
+	A.PlanAddRoad(1, 106, 152);
+	A.PlanAddWineField(1, 55, 182);
+	A.PlanAddWineField(1, 56, 182);
+	A.PlanAddWineField(1, 57, 182);
+	A.PlanAddWineField(1, 58, 182);
+	A.PlanAddWineField(1, 56, 183);
+	A.PlanAddWineField(1, 57, 183);
+	A.PlanAddWineField(1, 58, 183);
+	A.PlanAddWineField(1, 58, 184);
+	A.PlanAddWineField(1, 59, 184);
+	A.PlanAddWineField(1, 60, 184);
+	end;	
+	
+if S.GameTime = 50000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_WATCHTOWER, 44, 166);
+    A.PlanAddHouse(1, HOUSE_WATCHTOWER, 46, 183);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 75, 174);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 78, 168);
+	A.PlanAddRoad(1, 44, 167);
+	A.PlanAddRoad(1, 48, 180);
+	A.PlanAddRoad(1, 48, 181);
+	A.PlanAddRoad(1, 48, 182);
+	A.PlanAddRoad(1, 47, 182);
+	A.PlanAddRoad(1, 47, 183);
+	A.PlanAddRoad(1, 47, 184);
+	A.PlanAddRoad(1, 46, 184);
+	A.PlanAddRoad(1, 72, 174);
+	A.PlanAddRoad(1, 73, 174);
+	A.PlanAddRoad(1, 73, 175);
+	A.PlanAddRoad(1, 74, 175);
+	A.PlanAddRoad(1, 75, 175);
+	A.PlanAddRoad(1, 78, 169);
+	A.PlanAddRoad(1, 79, 169);
+	A.PlanAddRoad(1, 80, 169);
+	A.PlanAddRoad(1, 80, 168);
+	A.PlanAddRoad(1, 81, 168);
+	A.PlanAddRoad(1, 76, 175);
+	A.PlanAddRoad(1, 77, 175);
+	A.PlanAddRoad(1, 77, 174);
+	A.PlanAddRoad(1, 78, 174);
+	A.PlanAddRoad(1, 78, 173);
+	A.PlanAddRoad(1, 78, 172);
+	A.PlanAddRoad(1, 78, 171);
+	A.PlanAddRoad(1, 79, 171);
+	A.PlanAddRoad(1, 80, 171);
+	A.PlanAddRoad(1, 80, 170);
+	end;
+
+if S.GameTime = 58000 then
+    begin
+	A.PlanAddHouse(1, HOUSE_IRON_MINE, 113, 147);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 76, 171);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 81, 174);
+	A.PlanAddHouse(1, HOUSE_COAL_MINE, 83, 170);
+	A.PlanAddRoad(1, 76, 172);
+	A.PlanAddRoad(1, 77, 172);
+	A.PlanAddRoad(1, 79, 174);
+	A.PlanAddRoad(1, 79, 175);
+	A.PlanAddRoad(1, 80, 175);
+	A.PlanAddRoad(1, 81, 175);
+	A.PlanAddRoad(1, 81, 171);
+	A.PlanAddRoad(1, 82, 171);
+	A.PlanAddRoad(1, 83, 171);
+	A.PlanAddRoad(1, 107, 152);
+	A.PlanAddRoad(1, 108, 152);
+	A.PlanAddRoad(1, 109, 152);
+	A.PlanAddRoad(1, 110, 152);
+	A.PlanAddRoad(1, 110, 151);
+	A.PlanAddRoad(1, 111, 151);
+	A.PlanAddRoad(1, 111, 150);
+	A.PlanAddRoad(1, 111, 149);
+	A.PlanAddRoad(1, 112, 149);
+	A.PlanAddRoad(1, 112, 148);
+	A.PlanAddRoad(1, 113, 148);
+	end;	
+end;
