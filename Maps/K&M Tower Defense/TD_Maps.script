@@ -1,0 +1,1283 @@
+
+
+//return map ID
+function GetFullMapPos(aPos : TKMPoint) : TKMPoint;
+begin
+	Result := U.KMPoint(gMapCorner.X + aPos.X, gMapCorner.Y + aPos.Y);
+end;
+
+function GetMapPos(aPos : TKMPoint) : TKMPoint;
+begin
+	Result := U.KMPoint(aPos.X - gMapCorner.X, aPos.Y - gMapCorner.Y );
+end;
+
+function PosInMap(aPos : TKMPoint) : Boolean;
+begin
+	Result := U.InAreaI(aPos.X, aPos.Y, gMapCorner.X, gMapCorner.Y, gMapCorner.X + 31, gMapCorner.Y + 31);	
+end;
+
+Function MPosInMap(aPos : TKMPoint) : Boolean;
+begin
+	Result := false;
+	If not U.InRangeI(aPos.X, 0, 31) then 
+		Exit;	
+	If not  U.InRangeI(aPos.Y, 0, 31) then 
+		Exit;	
+		
+	Result := true;
+end;
+
+Function AddMoney(Addition : Integer) : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		Money := Money + Addition;
+		If Addition > 0 then 
+			MoneyGathered := MoneyGathered + Addition;
+		Result := Money;
+	gMoney := Money;
+	end;
+	UpdateOverlay;
+end;
+
+Function AddMoneyAfterKill(Addition : Integer) : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		Money := Money + (Addition * MoneyMP);
+		
+		If Addition > 0 then 
+			MoneyGathered := MoneyGathered + (Addition * MoneyMP);  
+			
+		Result := Money;
+	end;
+	UpdateOverlay;
+end;
+
+function LandIsWalkable(Pos : TKMPoint) : Boolean;
+begin
+	Result := S.MapTilePassability(Pos.X, Pos.Y, 1)
+end;
+
+function LandIsBuildable(Pos : TKMPoint) : Boolean;
+begin
+	Result := S.MapTilePassability(Pos.X, Pos.Y, 3)
+end;
+
+function MapCreate(MapName : String; aPos : TKMPoint; StartPos, EndPos, MapCorners : array of TKMpoint) : Integer;
+var J : Integer;
+begin
+	with gMaps do 
+	begin
+		J := length(Map);
+		Result := J;
+		SetLength(Map, J + 1);
+		with Map[J] do 
+		begin
+			Pos := aPos;
+			ID := J;
+			Name := GeMapName(ID);
+			DoAtStart := nil;
+			With RoadData do 
+			begin
+				SchoolPos := StartPos;
+				StorePos := EndPos;
+				Corners := MapCorners;
+			end;
+		end;
+	end;
+end;
+
+procedure KillAllPlayerUnits(aPlayer : Integer);
+var I : Integer;
+	aArray : array of Integer;
+begin
+	aArray := S.PlayerGetAllUnits(aPlayer);
+	If Length(aArray) = 0 then 
+		Exit;
+		
+	for I := 0 to high(aArray) do 
+		KillInvulnerableUnit(aArray[I], true);
+end;
+
+procedure DestroyAllPlayerHouses(aPlayer : Integer);
+var I : Integer;
+	aArray : array of Integer;
+begin
+	aArray := S.PlayerGetAllHouses(aPlayer);
+	If Length(aArray) = 0 then 
+		Exit;
+		
+	for I := 0 to high(aArray) do 
+		A.HouseDestroy(aArray[I], true);
+		
+end;
+
+procedure CreatePanel(aMap : TD_MapData);
+var I : Integer;
+	aPos : TKMPoint;
+begin
+	KillAllPlayerUnits(7);
+	aPos := U.KMPoint(aMap.Pos.X, aMap.Pos.Y + 34)
+	for I := 0 to high(gPanelUnits) do 
+		SingleGroup(7, gPanelUnits[I], U.KMPoint(aPos.X + (I * 2), aPos.Y));
+end;
+
+Procedure SetTileLock(Pos : TKMPoint);
+begin
+
+	If not PosInMap(Pos) then 
+		Exit;
+		
+	If not (S.IsRoadAt(-1, Pos.X, Pos.Y))then 
+			A.MapTileObjectSet(Pos.X, Pos.Y, 61);	
+	
+	If not S.IsRoadAt(-1, Pos.X, Pos.Y) then 
+		with gMaps.MapLandData.TileData[Pos.X - gMapCorner.X][Pos.Y - gMapCorner.Y] do 
+			ObjectID := 61;
+end;
+
+Procedure SetUnlockTile(Pos : TKMPoint);
+begin
+	If not PosInMap(Pos) then 
+		Exit;
+		
+	If not S.IsRoadAt(-1, Pos.X, Pos.Y) then 
+		A.MapTileObjectSet(Pos.X, Pos.Y, 255);	
+	
+	If not S.IsRoadAt(-1, Pos.X, Pos.Y) then 
+		with gMaps.MapLandData.TileData[Pos.X - gMapCorner.X][Pos.Y - gMapCorner.Y] do 
+			ObjectID := 255;
+end;
+
+function MapIdFromPos(Pos : TKMPoint) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	
+	with gMaps do 
+		for I := 0 to high(Map) do 
+			If U.InAreaI(Pos.X, Pos.Y, Map[I].Pos.X, Map[I].Pos.Y, Map[I].Pos.X + 31, Map[I].Pos.Y + 31) then
+			begin
+				Result := I;
+				Break;
+			end;
+end;
+
+procedure AddPlacePassability(Pos : TKMPoint; aPassability : TD_TileBlockSet);
+begin	
+	with gMaps.MapLandData.TileData[Pos.X][Pos.Y] do 
+		Passability := Passability + aPassability;
+end;
+
+procedure AddTileLock(Pos : TKMPoint; aLock : TD_TileLockSet);
+begin	
+	with gMaps.MapLandData.TileData[Pos.X][Pos.Y] do 
+		Lock := Lock + aLock;
+end;
+
+procedure RemovePlacePassability(Pos : TKMPoint; aPassability : TD_TileBlockSet);
+begin	
+	with gMaps.MapLandData.TileData[Pos.X][Pos.Y] do 
+		Passability := Passability - aPassability;
+end;
+
+procedure ShowUnitPlaces(tType : TD_TileBlock);
+var X,Y  : integer;
+	P : TKMPoint;
+begin
+	P := gMapCorner;
+	If gSettings.ShowUnitsPlaces then 
+		for X := 0 to 31 do 
+			for Y := 0 to 31 do 
+				with gMaps.MapLandData.TileData[X][Y] do
+					If tType in Passability then 
+						A.MapTileObjectSet(P.X + X, P.Y + Y, 8);
+end;
+
+procedure ShowUnitPlaces_Remove;
+var X,Y  : integer;
+	P : TKMPoint;
+begin
+	P := gMapCorner;
+	If gSettings.ShowUnitsPlaces then 
+		for X := 0 to 31 do 
+			for Y := 0 to 31 do 
+				with gMaps.MapLandData.TileData[X][Y] do					
+					If LandIsWalkable(SumPositions([P, U.KMPoint(X,Y)])) or (S.MapTileObject(P.X + X, P.Y + Y) = 8) then 
+						A.MapTileObjectSet(P.X + X, P.Y + Y, ObjectID);
+end;
+
+procedure ResetMainValues;
+begin
+	With gMaps do 
+	begin
+		SelectedId := 99999999;
+		UnitSpawnTime := 99999999;
+		with CurrentSaveData do
+		begin
+			WaveUnitHP := 99999999;
+			WaveUnitHPAdd := 99999999;
+			WaveMultiplier := 99999999;
+			UnitType := 99999999;
+			MoneyGathered := 0;
+		end;
+		UnitSpawnedCount := 99999999;
+		MapHasBegun := false;
+		WaveTime := 99999999;
+		UnitSpawnDelay := 99999999;
+	end;
+	
+	gMapCorner := U.KMPoint(999, 999);
+end;
+
+procedure ClearUnitsArray;
+var I, J : Integer;
+	aEnUnits : TD_EnemyUnits;	
+begin
+	gMaps.BossID := -1;
+	If length(gEnemyUnits) = 0 then 
+		Exit;
+		
+	for I := 0 to high(gEnemyUnits) do 
+		If not gEnemyUnits[I].Killed and not S.UnitDead(gEnemyUnits[I].ID) then 
+		begin
+			J := length(aEnUnits);
+			SetLength(aEnUnits, J + 1);
+			aEnUnits[J] := gEnemyUnits[I];
+			If gEnemyUnits[I].IsBoss then 
+				gMaps.BossID := J;
+		end;
+	gEnemyUnits := aEnUnits;
+	
+end;
+
+procedure ClearHousesArray;
+var I, J : Integer;
+	anHouses : array of KD_HouseStats;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		If length(Houses) > 0 then
+			for I := 0 to high(Houses) do 
+				If not S.HouseDestroyed(Houses[I].ID) then 
+				begin			
+					J := length(anHouses);
+					SetLength(anHouses, J + 1);
+					anHouses[J] := Houses[I];
+				end;
+		
+		Houses := anHouses;
+	end;
+end;
+
+procedure AddHouseToSave(aHouse : Integer);
+var J : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		J := length(Houses);
+		SetLength(Houses, J + 1);
+		Houses[J].ID := aHouse;
+		Houses[J].Pos := S.HousePosition(aHouse);
+		Houses[J].aType := S.HouseType(aHouse);
+	end;
+end;
+
+procedure GiveStoneToTowers;
+var I : Integer;
+begin
+	with gMaps.CurrentSaveData do 
+	begin
+		If Length(Houses) = 0 then 
+			Exit;
+		for I := 0 to high(Houses) do 
+			If S.HouseType(Houses[I].ID) = 17 then 
+				If S.HouseResourceAmount(Houses[I].ID, 1) <= 1 then 
+					A.HouseAddWaresTo(Houses[I].ID, 1, 5);
+	end;		
+end;
+
+procedure RefreshRangedUnits;
+var I, J : Integer;
+	aNRT : array of TD_Tower; //rangedd towers
+begin
+	with gMaps.CurrentSaveData do
+	begin
+		If length(Towers) > 0 then 
+			for I := 0 to high(Towers) do
+				If not Towers[I].IsWatchTower then 
+					If IsTowerRanged(Towers[I].aUnit) then 
+					begin
+						J := length(aNRT);
+						SetLength(aNRT, J + 1);
+						aNRT[J] := Towers[I];
+					end;
+					
+		RangedTowers := aNRT;
+		
+	end;
+end;
+
+function TowerPlace(aUType : Integer; Pos : TKMPoint; IsWT, TakeMoney : Boolean) : Integer;
+var TT : TD_Tower;
+	J, HH : Integer;
+begin
+	Result := -1;
+	With TT do 
+	begin
+		A.MapTileObjectSet(Pos.X, Pos.Y, 255);
+		If IsWT then 
+		begin
+			A.MapTileObjectSet(Pos.X, Pos.Y, 255);
+			A.MapTileObjectSet(Pos.X, Pos.Y+1, 255);
+			Tile := S.MapTileType(Pos.X, Pos.Y + 1);
+			TileRot := S.MapTileRotation(Pos.X, Pos.Y + 1);
+			A.MapTileSet(Pos.X, Pos.Y + 1, 36, 0);
+			HH := A.GiveHouse(MAP_PLAYER, aUType, Pos.X, Pos.Y);
+			A.HouseAddWaresTo(HH, 1, 5);
+			AddHouseToSave(HH);
+			IsWatchTower := true;
+			aUnit.ID := SingleGroup(MAP_PLAYER, 13, U.KMPoint(Pos.X, Pos.Y + 1) );
+			aUnit.UType := 17;
+			aUnit.Pos := U.KMPoint(Pos.X, Pos.Y + 1);
+			Attack := WT_DAMAGE;
+			BonusFor := GetTowerBonus(117);
+			Cost := GetHouseCost(17);
+		end else
+		begin
+			aUnit := SetWarrior(SingleGroup(MAP_PLAYER, aUType, Pos));
+			Tile := S.MapTileType(Pos.X, Pos.Y);
+			TileRot := S.MapTileRotation(Pos.X, Pos.Y);
+			A.MapTileSet(Pos.X, Pos.Y, 36, 0);
+			Attack := GetTowerDamage(aUType);
+			Cost := GetTowerCost(aUType);
+			BonusFor := GetTowerBonus(aUType);
+			DoAround(Pos, @SetTileLock);
+			
+			SendTutorialMSG(6);
+		end;
+		LVL := 1;
+		If TakeMoney then 
+			AddMoney(-Cost);
+		A.UnitHPSetInvulnerable(aUnit.ID, true);
+	end;
+	
+	with gMaps.CurrentSaveData do
+	begin
+		J := Length(Towers);
+		Result := J;
+		SetLength(Towers, J + 1);
+		Towers[J] := TT;
+		If  IsTowerRanged(TT.aUnit) then 
+			RefreshRangedUnits;
+	end;
+	ResetSelectedTower;
+	//with gMaps.MapLandData do 
+	//	Objects[Pos.X - gMapCorner.X][Pos.Y - gMapCorner.Y] := 255;
+		
+	with gMaps do 
+		If not MapHasBegun then 
+			If GT > MapStartTime + 10 then 
+			begin
+				MapHasBegun := true;
+				A.MapTileSet(gMapCorner.X - 2, gMapCorner.Y + 26, 245, 0);
+				WaveTime := U.FloorTo(GT + 100, 10);
+				//ACheck('MapHasBegun');
+			end;
+end;
+
+function HousePlace(Pos : TKMPoint; TakeMoney : Boolean) : integer;
+begin
+	If gTowerSelected.IsWatchTower then 
+		TowerPlace(gTowerSelected.aUnit.UType, Pos, true, true)
+	else		
+		Result := A.GiveHouse(MAP_PLAYER, gTowerSelected.aUnit.UType, Pos.X, Pos.Y);
+	If TakeMoney then 
+		AddMoney(-GetHouseCost(gTowerSelected.aUnit.UType));
+	
+	SendTutorialMSG(7);
+	
+	with gMaps do 
+		If not MapHasBegun then 
+		begin
+			MapHasBegun := true;
+			A.MapTileSet(gMapCorner.X - 2, gMapCorner.Y + 26, 245, 0);
+			WaveTime := U.FloorTo(GT + 100, 10);
+			//ACheck('MapHasBegun');
+		end;
+	SetUnlockTile(Pos);	
+	
+	If Result > 0 then 
+		AddHouseToSave(Result);	
+	
+	ResetSelectedTower;
+end;
+
+
+procedure LoadMapDataBackup;
+var X,Y : Integer;
+	aPos : TKMPoint;
+begin
+	aPos := gMaps.Map[gMaps.SelectedId].Pos;
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+			With gMaps.MapLandBackup.TileData[X][Y] do 
+				A.MapTileObjectSet(X + aPos.X, Y + aPos.Y, ObjectID);
+end;
+
+procedure MakeMapDataBackup;
+var X,Y : Integer;
+	aPos : TKMPoint;
+begin
+	aPos := gMaps.Map[gMaps.SelectedId].Pos;
+		for X := 0 to 31 do 
+			for Y := 0 to 31 do
+				With gMaps.MapLandBackup.TileData[X][Y] do 
+				begin
+					ObjectID := S.MapTileObject(X + aPos.X, Y + aPos.Y);
+					gMaps.MapLandData.TileData[X][Y].ObjectID := ObjectID;
+				end;
+end;
+
+function CheckUnit(Pos : TKMPoint) : Boolean; //check if unit is MAP_PLAYER unit
+var UU : Integer;
+begin
+	Result := false;
+	UU := S.UnitAt(Pos.X, Pos.Y);
+	
+	If UU = -1 then 
+		Exit;
+		
+	If S.UnitOwner(UU) = MAP_PLAYER then 
+		Result := true;
+end;
+
+procedure CheckPlaceAroundForMelee(aPos : TKMPoint);
+var X, Y : integer;
+	canPlace : Boolean;
+begin
+	If not MPosInMap(SumPositions([U.KMPoint(-1, -1), aPos]))
+	or not MPosInMap(SumPositions([U.KMPoint(1, 1), aPos])) then 
+		Exit;
+		
+	with gMaps.MapLandData do 
+	begin
+		CanPlace := false;
+		
+		for X := -1 to 1 do 
+			for Y := -1 to 1 do 
+			with TileData[aPos.X + X][aPos.Y + Y] do 
+			begin
+				If tlRoad  in Lock then 
+					CanPlace := true;
+					
+				if (tlHouse in Lock)
+				or (tlUnit in Lock)
+				or (tlField in Lock) then 
+					CanPlace := false;
+			end;
+		
+		with TileData[aPos.X][aPos.Y] do 
+		begin
+			If tlRoad in Lock then 
+				CanPlace := false;
+				
+			If tlNotWalk in Lock then 
+				CanPlace := false;
+		end;	
+		If CanPlace then 
+			AddPlacePassability(aPos, [tbMelee]);
+	end;
+end;
+
+procedure CheckPlaceAroundForRanged(aPos : TKMPoint);
+var X, Y : integer;
+	canPlace : Boolean;
+begin
+	If not MPosInMap(SumPositions([U.KMPoint(-1, -1), aPos]))
+	or not MPosInMap(SumPositions([U.KMPoint(1, 1), aPos])) then 
+		Exit;
+	with gMaps.MapLandData do 
+	begin
+		canPlace := true;
+		
+		for X := -1 to 1 do 
+			for Y := -1 to 1 do 
+				with TileData[aPos.X + X][aPos.Y + Y] do 
+					if (tlHouse in Lock)
+					or (tlUnit in Lock)
+					or (tlRoad in Lock)
+					or (tlField in Lock) then 
+						CanPlace := false;
+		
+		with TileData[aPos.X][aPos.Y] do 				
+			If tlNotWalk in Lock then 
+				CanPlace := false;
+				
+		If canPlace then 
+			AddPlacePassability(aPos, [tbRanged]);
+	end;	
+end;
+
+function CheckPlaceAroundForHouses(aType : Integer; aPos : TKMPoint; Add : Boolean) : Boolean;
+var X, Y : integer;
+	canPlace : Boolean;
+	HouseData : TD_Rect;
+	finPos : TKMPoint;
+begin
+	Result := false;
+	HouseData := GetHouseSize(aType);
+	
+	with gMaps.MapLandData do 
+	begin	
+		canPlace := true;
+		
+		for X := 0 to HouseData.Size.X do 
+			for Y := 0 to HouseData.Size.Y do 
+			begin
+				
+				finPos := SumPositions([U.KMPoint(X,Y), HouseData.Pos, aPos]);
+				
+				If not MPosInMap(finPos) then 
+				begin
+					canPlace := false;
+					Break;
+				end;
+				
+				with TileData[finPos.X][finPos.Y] do 
+					if (tlHouse in Lock)
+					or (tlUnit in Lock)
+					or (tlRoad in Lock)
+					or (tlNotBuild in Lock)
+					or (tlField in Lock) then 
+						canPlace := false;
+
+				If not canPlace then 
+					Break;
+			end;
+		If canPlace then 
+			for X := -1 to HouseData.Size.X + 1 do 
+				for Y := -1 to HouseData.Size.Y + 1 do 
+				begin
+					finPos := SumPositions([U.KMPoint(X,Y), HouseData.Pos, aPos]);
+					
+					If not MPosInMap(finPos) then 
+					begin
+						Break;
+						canPlace := false
+					end;
+					with TileData[finPos.X][finPos.Y] do 
+						if (tlHouse in Lock) then 
+							canPlace := false;
+					If not canPlace then 
+						Break;
+				end;
+				
+		If canPlace then 
+			with TileData[aPos.X][aPos.Y + 1] do 
+				If not MPosInMap(U.KMPoint(aPos.X, aPos.Y + 1)) then 
+					If (tlRoad in Lock) then 
+						canPlace := false;
+			
+		//finPos := SumPositions([U.KMPoint(-gMapCorner.X,-gMapCorner.Y), aPos]);
+		
+		If Add then 
+			If canPlace then 
+				RemovePlacePassability(aPos, [tbHouse]);
+		
+			
+		Result := canPlace;	
+		
+		If Add then 
+			If canPlace then 
+				AddPlacePassability(aPos, [tbHouse]);
+			
+	end;	
+end;
+
+procedure CheckAllPlacesForHouses;
+var X,Y: integer;
+begin	
+			
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+			If tbHouse in gMaps.MapLandData.TileData[X][Y].Passability then 
+				If CheckPlaceAroundForHouses(gTowerSelected.aUnit.UType, U.KMPoint(X,Y), false) then 
+					A.MapTileObjectSet(gMapCorner.X + X,gMapCorner.Y + Y, 8);
+end;
+
+procedure CheckAllPlacesForHousesAtLoad;
+var X,Y: integer;
+begin			
+
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+			CheckPlaceAroundForHouses(17, U.KMPoint(X,Y), true);
+			
+end;
+
+procedure Map_SetOneTileLock(aPos : TKMPoint);
+var X,Y: integer;
+	Pos : TKMPoint;
+begin
+	X := aPos.X;
+	Y := aPos.Y;
+	if not MPosInMap(aPos) then 
+		Exit;
+	with gMaps.MapLandData.TileData[X][Y] do 
+	begin
+		Pos := GetFullMapPos(aPos);
+		
+		If S.IsRoadAt(-1, Pos.X, Pos.Y) then 
+			AddTileLock(U.KMPoint(X,Y), [tlRoad]);
+			
+		If S.IsFieldAt(-1, Pos.X, Pos.Y) then 
+			AddTileLock(U.KMPoint(X,Y), [tlField]);
+			
+		If S.HouseAt(Pos.X, Pos.Y) > 0 then 
+			AddTileLock(U.KMPoint(X,Y), [tlHouse]);
+			
+		If CheckUnit(Pos) then 
+			AddTileLock(U.KMPoint(X,Y), [tlUnit]);	
+			
+		If not LandIsWalkable(SumPositions([gMapCorner, U.KMPoint(X,Y)])) then 
+			AddTileLock(U.KMPoint(X,Y), [tlNotWalk]);
+			
+		If not LandIsBuildable(SumPositions([gMapCorner, U.KMPoint(X,Y)])) then 
+			AddTileLock(U.KMPoint(X,Y), [tlNotBuild]);
+			
+	end;
+end;
+
+procedure Map_SetTileLocks;
+var X,Y: integer;
+	Pos : TKMPoint;
+begin
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+			Map_SetOneTileLock(U.KMPoint(X,Y));
+		
+end;
+
+procedure RefreshTilesPassabilities(aPos : TKMpoint; aRadius : Integer);
+var aX,aY: integer;
+	finX, finY : Integer;
+begin
+	for aX := -aRadius to aRadius do 
+		for aY := -aRadius to aRadius do 
+		begin
+			finX := aPos.X - gMapCorner.X + aX;
+			finY := aPos.Y - gMapCorner.Y + aY;
+			if MPosInMap(U.KMPoint(finX, finY)) then 
+				with gMaps.MapLandData.TileData[finX][finY] do 
+				begin
+					Lock := [];
+					Passability := [];
+				end;
+		end;
+	
+			
+	for aX := -aRadius to aRadius do 
+		for aY := -aRadius to aRadius do 
+		begin
+			finX := aPos.X - gMapCorner.X + aX;
+			finY := aPos.Y - gMapCorner.Y + aY;
+			Map_SetOneTileLock(U.KMPoint(finX, finY));
+			
+		end;
+	for aX := -aRadius to aRadius do 
+		for aY := -aRadius to aRadius do 
+		begin
+			finX := aPos.X - gMapCorner.X + aX;
+			finY := aPos.Y - gMapCorner.Y + aY;
+			if MPosInMap(U.KMPoint(finX, finY)) then
+			begin
+				CheckPlaceAroundForMelee(U.KMPoint(finX,finY));
+				CheckPlaceAroundForRanged(U.KMPoint(finX,finY));
+				CheckPlaceAroundForHouses(17, U.KMPoint(finX,finY), true);
+			end;
+		end;
+end;
+
+procedure RefreshTilePassabilities;
+var X,Y: integer;
+begin
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+		begin
+			gMaps.MapLandData.TileData[X][Y].Passability := [];
+			gMaps.MapLandData.TileData[X][Y].Lock := [];
+		end;
+			
+	Map_SetTileLocks;
+	
+	for X := 0 to 31 do 
+		for Y := 0 to 31 do 
+		begin
+			CheckPlaceAroundForMelee(U.KMPoint(X,Y))
+			CheckPlaceAroundForRanged(U.KMPoint(X,Y));
+		end;
+		
+	CheckAllPlacesForHousesAtLoad;
+
+end;
+
+
+function DeleteTower(aPos : TKMPoint) : Integer;
+var TID : Integer;
+	HH : integer;
+begin
+	TID := GetTowerIDFromPos(aPos);
+	//ACheck('TowerDelete ' + IntToStr(TID));
+	Result := TID;	
+	If TID = -1 then 
+		Exit;
+		
+	with gMaps.CurrentSaveData.Towers[TID] do 
+	begin
+		aUnit.Deleted := true;
+		KillInvulnerableUnit(aUnit.ID, true);
+		If IsTowerRanged(aUnit) then 
+			RefreshRangedUnits;
+		HH := S.HouseAt(aPos.X, aPos.Y - 1);
+		If (HH > 0) and (S.HouseType(HH) = 17) then 
+			A.HouseDestroy(HH, true);
+			
+		A.MapTileSet(aPos.X, aPos.Y, Tile, TileRot);
+			
+		AddMoney(Cost * 80 div 100);
+		
+		DoAround(aPos, @SetUnlockTile);
+	end;
+	//ClearTowersArray;
+	//RefreshTilesPassabilities(Pos, 2);
+end;
+
+function DeleteHouse(aPos : TKMPoint) : Integer;
+var HH, HHCost : integer;
+begin
+	HH := S.HouseAt(aPos.X, aPos.Y);
+	Result := HH;
+	If HH = -1 then 
+		Exit;
+	If S.HouseType(HH) = 17 then 
+		Exit;
+	HHCost := GetHouseCost(S.HouseType(HH)) * 80 div 100;
+	A.ShowMSGFormatted(PLAYER, '<$187>', [S.HouseTypeName(S.HouseType(HH)), HHCost]);
+	
+	A.HouseDestroy(HH, true);
+	AddMoney(HHCost);
+	RefreshTilesPassabilities(aPos, 5);
+	ClearHousesArray;
+end;
+
+
+procedure DeleteAllTowers;
+var I : Integer;
+begin
+	
+	with gMaps.CurrentSaveData do
+		If Length(Towers) > 0 then 
+			for I := 0 to high(Towers) do 
+				DeleteTower(Towers[I].aUnit.Pos);
+	ClearTowersArray;
+end;
+
+procedure LoadMap;
+var I, J : Integer;
+	aSave : TD_SaveData;
+	Pos2, Pos3 : TKMPoint;
+begin
+	//ACheck('Map Load');
+	with gMaps do 
+	begin
+		MapHasBegun := true;
+		UnitSpawnTime := U.FloorTo(GT + 300, 10);
+		If not Map[SelectedId].Saved then 
+			Exit;
+		aSave := Map[SelectedId].Save;
+		Pos2 := Map[SelectedId].Pos;
+		for I := 0 to high(aSave.Towers) do 
+		begin
+			Pos3 := aSave.Towers[I].aUnit.Pos;
+			If aSave.Towers[I].IsWatchTower then 
+				J := TowerPlace(aSave.Towers[I].aUnit.UType, U.KMPoint(Pos3.X, Pos3.Y - 1), aSave.Towers[I].IsWatchTower, false) 
+			else
+				J := TowerPlace(aSave.Towers[I].aUnit.UType, Pos3, aSave.Towers[I].IsWatchTower, false);
+				
+			CurrentSaveData.Towers[J].LVL := aSave.Towers[I].LVL;
+			CurrentSaveData.Towers[J].Attack := aSave.Towers[I].Attack;
+			CurrentSaveData.Towers[J].Cost := aSave.Towers[I].Cost;
+			CurrentSaveData.Money := aSave.Money;
+			CurrentSaveData.MoneyGathered := aSave.MoneyGathered;
+			CurrentSaveData.Lifes := aSave.Lifes;
+			
+			CurrentSaveData.WaveUnitHP := aSave.WaveUnitHP;
+			CurrentSaveData.WaveUnitHPAdd := aSave.WaveUnitHPAdd;
+			CurrentSaveData.WaveMultiplier := aSave.WaveMultiplier;
+			CurrentSaveData.WaveUnitHPBefore := aSave.WaveUnitHPBefore;
+			CurrentSaveData.UnitType := aSave.UnitType;
+		end;
+		A.MapTileSet(Pos2.X - 2, Pos2.Y + 26, 245, 0);
+		WaveID := aSave.Wave;
+		
+		with aSave do 
+			If length(Houses) > 0 then 
+				for I := 0 to high(Houses) do 
+				begin
+					gTowerSelected.aUnit.UType := Houses[I].aType;
+					HousePlace(Houses[I].Pos, false);
+				end;
+	end;
+	RefreshTilePassabilities;
+	//gMaps.Map[gMaps.SelectedId].Save;
+	UpdateOverlay;
+end;
+
+procedure SaveMap;
+begin
+	//ACheck('MapSave');
+	with gMaps do 
+		If MapHasBegun then 
+		begin
+			Map[SelectedId].Save.Towers := CurrentSaveData.Towers;
+			Map[SelectedId].Save.RangedTowers := CurrentSaveData.RangedTowers;
+			Map[SelectedId].Save.Money := CurrentSaveData.Money;
+			Map[SelectedId].Save.Lifes := CurrentSaveData.Lifes;
+			Map[SelectedId].Save.MoneyMP := CurrentSaveData.MoneyMP;
+			Map[SelectedId].Save.MoneyGathered := CurrentSaveData.MoneyGathered;
+			Map[SelectedId].Save.Wave := WaveID;
+			Map[SelectedId].Save.WaveUnitHP := CurrentSaveData.WaveUnitHP;
+			Map[SelectedId].Save.WaveUnitHPAdd := CurrentSaveData.WaveUnitHPAdd;
+			Map[SelectedId].Save.WaveMultiplier := CurrentSaveData.WaveMultiplier;
+			Map[SelectedId].Save.WaveUnitHPBefore := CurrentSaveData.WaveUnitHPBefore;
+			Map[SelectedId].Save.UnitType := CurrentSaveData.UnitType;
+			Map[SelectedId].Save.Houses := CurrentSaveData.Houses;
+			
+			Map[SelectedId].Saved := true;
+		end else 
+			Map[SelectedId].Saved := false;
+end;
+
+procedure QuitMapView;
+begin
+	gMode := gmCity;
+	MoveCamera(U.KMPoint(221, 215));
+	
+	A.FogCoverAll(PLAYER);
+	A.FogRevealRect(PLAYER, 194, 191, 249, 245);
+	UpdateOverlay;
+	ResetMainValues;
+end;
+
+procedure QuitMap(Lose : Boolean);
+begin
+	If Lose then 
+		gMaps.Map[gMaps.SelectedId].Saved := false;
+	
+	with gMaps.Map[gMaps.SelectedId].Save do 
+	begin
+		If gMaps.WaveID > BestWave then 
+			BestWave := gMaps.WaveID;
+	end;
+	
+	
+	DeleteAllTowers;
+	//KillAllPlayerUnits(7);
+	KillAllPlayerUnits(2);
+	KillAllPlayerUnits(3);
+	KillAllPlayerUnits(4);
+	KillAllPlayerUnits(5);
+	KillAllPlayerUnits(6);
+	DestroyAllPlayerHouses(MAP_PLAYER);
+	
+	ClearUnitsArray;
+		
+	LoadMapDataBackup;
+	QuitMapView;
+	
+	ClearHousesArray;
+end;
+
+procedure QuitCity;
+var I, LastUnlocked : Integer;
+	Pos2 : TKMPoint;
+begin
+	for I := 0 to 8 do 
+		A.PlayerShareFog(PLAYER, I, false);
+	A.FogCoverAll(PLAYER);
+	for I := 0 to high(gMaps.Map) do 
+		with gMaps.Map[I] do 
+			If Unlocked then 	
+			begin
+				A.FogRevealRect(PLAYER, Pos.X - 1, Pos.Y - 1, Pos.X + 32, Pos.Y + 32);
+				LastUnlocked := I;
+			end;
+	Pos2 := gMaps.Map[LastUnlocked].Pos;
+	MoveCamera(U.KMPoint(Pos2.X + 16, Pos2.Y + 16));
+	UpdateOverlay;
+	gMode := gmSelectMap;
+	SendTutorialMSG(3);
+end;
+
+procedure QuitMapLost;
+begin
+	QuitMap(true);
+end;
+
+procedure IncUnitHP;
+begin
+	with gMaps do 
+	begin 
+		with CurrentSaveData do 
+		begin		
+			If WaveId mod 5 = 0 then
+			begin
+				//0.5 at round 50 + add 0.125 -> 0.675
+				WaveMultiplier := WaveMultiplier + 0.05 +(0.05 * WaveID div 20);		
+				WaveUnitHPAdd := WaveUnitHPAdd + U.FloorTo(5 * WaveMultiplier, 1);
+			
+			end;
+			
+			WaveUnitHPBefore := WaveUnitHPBefore + WaveUnitHPAdd;
+			WaveUnitHP := WaveUnitHPBefore * gCityBonuses.EnUnitsHP div 100
+		end;
+		
+	end;
+end;
+
+procedure UnlockMap(aID : Integer);
+begin
+	with gMaps do 
+	begin
+		If high(Map) >= (aID + 1) then 
+			Map[aID + 1].Unlocked := true;
+		
+		If high(Map) >= (aID + 5) then 
+			Map[aID + 5].Unlocked := true;
+	end;
+end;
+
+procedure ChangeMapMedal(var aMap : TD_MapData);
+var I : integer;
+	aResources : array of Integer;
+begin
+
+	with aMap do 
+	begin
+		Medal := GetNextMedal(Medal);
+		
+		SendTutorialMSG(8);
+		
+		UnlockMap(ID);
+		aResources := GetMapResources(ID);
+		for I := 0 to high(aResources) do 
+			If aResources[I] > 0 then 
+				A.HouseAddWaresTo(gCity.Market, I, aResources[I]);
+	end;
+	
+end;
+procedure StartNextRound;
+begin
+	
+	SaveMap;
+	With gMaps do 
+	begin			
+		UnitSpawnedCount := 0;
+		
+		UnitSpawnTime := WaveTime + 100;
+		
+		If WaveID mod 2 = 0 then 
+			inc(CurrentSaveData.UnitType);
+			
+		inc(WaveID);
+		If WaveID mod 15 = 0 then 	
+			inc(CurrentSaveData.MoneyMp);
+		IncUnitHP;
+		
+		If CurrentSaveData.UnitType = 9 then 
+			CurrentSaveData.UnitType := 10
+		else
+		If CurrentSaveData.UnitType = 11 then 
+			CurrentSaveData.UnitType := 12
+		else
+		If CurrentSaveData.UnitType > 12 then 
+			CurrentSaveData.UnitType := 0;
+		If WaveID - 1 = GetMedalWave(Map[SelectedId].Medal) then 
+			ChangeMapMedal(Map[SelectedId]);
+			
+		AddMoney(25);
+	end;
+	UpdateOverlay;	
+end;
+
+
+procedure UnlockAllMaps;
+var I : Integer;
+begin
+	with gMaps do 
+		for I := 0 to high(Map) do 
+			Map[I].Unlocked := true;
+end;
+
+
+
+procedure Map15DoAtStart;
+begin
+	TowerPlace(17, U.KMPoint(36, 152), true, false);
+	TowerPlace(17, U.KMPoint(14, 170), true, false);
+end;
+
+procedure Map17DoAtStart;
+begin
+	TowerPlace(17, U.KMPoint(112, 177), true, false);
+end;
+
+procedure StartMap;
+var Pos2 : TKMPoint;
+begin
+	with gMaps do 
+	begin
+		with CurrentSaveData do 
+		begin
+			Lifes := 100 + gCityBonuses.StartLife;
+			Money := 200 + gCityBonuses.StartMoney;
+			MoneyMP := 1 + gCityBonuses.StartMP;
+			WaveUnitHPBefore := 20;
+			
+			WaveUnitHP := WaveUnitHPBefore * gCityBonuses.EnUnitsHP div 100;
+			BossType := 13;
+			WaveUnitHPAdd := 5;
+			WaveMultiplier := 1;
+			gMoney := Money;
+		end;
+		
+		SendTutorialMSG(11);
+		
+		UnitSpawnDelay := Map[SelectedId].UnitSpawnDelay;
+		UnitPlayer := 2;
+		MapStartTime := GT;
+		//UnitSpawnTime := U.FloorTo(GT + 300, 10);
+		CurrentSaveData.UnitType := -1;
+		UnitSpawnedCount := 0;
+		WaveID := 0;
+		
+		CreatePanel(Map[SelectedId]);
+		Pos2 := Map[SelectedId].Pos;
+		
+		MoveCamera(U.KMPoint(Pos2.X + 16, Pos2.Y + 16));
+		
+		gMode := gmGame;		
+		SendTutorialMSG(4);
+		If Map[SelectedId].Saved then 
+		begin
+			A.MapTileSet(Pos2.X - 2, Pos2.Y + 26, 350, 0)
+			SendTutorialMSG(5);
+			with Map[SelectedId].Save do 
+			begin
+				A.ShowMsgFormatted(PLAYER, '<$140>', [Lifes, Money, Wave])
+			end;
+			
+		end else
+			A.MapTileSet(Pos2.X - 2, Pos2.Y + 26, 245, 0);
+		If Map[SelectedId].DoAtStart <> nil then 
+			Map[SelectedId].DoAtStart();
+		A.FogCoverAll(PLAYER);
+		A.FogRevealRect(PLAYER, Pos2.X - 4, Pos2.Y - 1, Pos2.X + 31, Pos2.Y + 31 + 10);
+		
+	end; 
+		
+	gMapCorner := Pos2;
+	
+	MakeMapDataBackup;
+	RefreshTilePassabilities;
+	
+	UpdateOverlay;
+	
+end;
+
+procedure SelectMap(Pos : TKMPoint);
+var aMID : Integer;
+	Pos2 : TKMPoint;
+	aMsg : String;
+begin
+	aMID := MapIdFromPos(Pos);
+	If aMID = -1 then 
+	begin
+		A.ShowMsg(PLAYER, IStr(196))
+		Exit;
+	end;
+	If gMaps.Map[aMID].Unlocked then 
+	begin
+	
+		with gMaps do 
+		begin
+			If SelectedId <> 99999999 then 
+				If SelectedId = aMID then 
+				begin
+					StartMap;
+					Exit;
+				end;
+				
+			SelectedId := aMID;
+			Pos2 := Map[SelectedId].Pos;
+			If not Map[aMID].Saved then 
+				aMsg := '<$135>'
+			else
+				aMsg := '<$139>';
+				
+			A.ShowMsgFormatted(PLAYER, '<$133>', [Map[aMID].Name, GetMedalName(Map[aMID].Medal), Map[aMID].Save.Wave, Map[aMID].Save.MoneyGathered, aMsg]);
+		end; 
+
+	end else
+		A.ShowMsg(PLAYER, IStr(197));
+		
+	UpdateOverlay;
+	
+end;
+
+{$EVENT evtBeacon : OnBeaconMaps}
+procedure OnBeaconMaps(aPlayer, X, Y : Integer);
+var Pos, Pos2 : TKMPoint;
+	HH : Integer;
+begin
+	Pos := U.KMPoint(X,Y);
+	If S.UnitAt(X,Y) > 0 then 
+		Exit;
+		
+	If not S.FogRevealed(PLAYER, X,Y) then 
+		Exit;
+		
+	If gMode = gmGame then 
+	begin
+		Pos2 := gMaps.Map[gMaps.SelectedId].Pos;
+		case Pos of 
+			U.KMPoint(Pos2.X - 2, Pos2.Y + 30) : QuitMap(false);
+			U.KMPoint(Pos2.X - 2, Pos2.Y + 26) : If not gMaps.MapHasBegun then  LoadMap;
+		end;
+	end else
+	If gMode = gmCity then 
+	begin
+		HH := S.HouseAt(X,Y);
+		If HH > 0 then 
+			If S.HouseType(HH) = 21 then 
+			begin
+				QuitCity;
+				UpdateOverlay;
+			end;
+	end else
+	If gMode = gmSelectMap then 
+		SelectMap(U.KMPoint(X, Y));
+end;
+
+{$EVENT evtMissionStart : OnMissionStartMaps}
+
+procedure OnMissionStartMaps;
+var J, I : Integer;
+begin
+	gPanelUnits := [14, 15, 16, 23, 26, 25, 17, 18, 24, 19, 20, 27, 21, 22];
+	//beginner
+	MapCreate('0', U.KMPoint(10, 7), [U.KMPoint(11, 10)], [U.KMPoint(40, 38)],[]);
+	MapCreate('1', U.KMPoint(57, 7), [U.KMPoint(86, 37)], [U.KMPoint(59, 37)], 
+	[
+		U.KMPoint(84, 16), 
+		U.KMPoint(78, 16), 
+		U.KMPoint(78, 24), 
+		U.KMPoint(86, 24) 
+	]
+	);
+	MapCreate('2', U.KMPoint(104, 7), [U.KMPoint(117, 27)], [U.KMPoint(105, 22)], 
+	[
+		U.KMPoint(124, 11), 
+		U.KMPoint(134, 11), 
+		U.KMPoint(134, 32), 
+		U.KMPoint(126, 32), 
+		U.KMPoint(126, 13), 
+		U.KMPoint(132, 13), 
+		U.KMPoint(132, 30), 
+		U.KMPoint(128, 30) 
+	]
+	);	
+	MapCreate('3', U.KMPoint(151, 7), [U.KMPoint(152, 26)], [U.KMPoint(181, 10)], 
+	[
+		U.KMPoint(153, 22), 
+		U.KMPoint(153, 11), 
+		U.KMPoint(164, 11), 
+		U.KMPoint(164, 22), 
+		U.KMPoint(153, 22), 
+		U.KMPoint(153, 11), 
+		U.KMPoint(164, 11), 
+		U.KMPoint(164, 22),
+		U.KMPoint(153, 22), 
+		U.KMPoint(153, 11), 
+		U.KMPoint(164, 11), 
+		U.KMPoint(164, 22), 
+		U.KMPoint(159, 22)
+	]
+	);	
+	
+	MapCreate('4', U.KMPoint(198, 7), [ U.KMPoint(228, 10),U.KMPoint(199, 10)], [U.KMPoint(220, 17), U.KMPoint(220, 17)], [])	;
+	//intermediate
+	MapCreate('5', U.KMPoint(10, 54), [U.KMPoint(12, 58)], [U.KMPoint(39, 83)], []);
+	MapCreate('6', U.KMPoint(57, 54), [U.KMPoint(66, 85)], [U.KMPoint(58, 57)], []);
+	MapCreate('7', U.KMPoint(104, 54), [U.KMPoint(110, 57)], [U.KMPoint(129, 57)], 
+	[
+		U.KMPoint(120, 68), 
+		U.KMPoint(120, 61), 
+		U.KMPoint(114, 61), 
+		U.KMPoint(114, 83), 
+		U.KMPoint(108, 83), 
+		U.KMPoint(108, 77), 
+		U.KMPoint(133, 77), 
+		U.KMPoint(133, 84), 
+		U.KMPoint(128, 84) 
+	]
+	);	
+	MapCreate('8', U.KMPoint(151, 54), [U.KMPoint(152, 67)], [U.KMPoint(180, 57)], []);
+	MapCreate('9', U.KMPoint(195, 54), [U.KMPoint(200, 85), U.KMPoint(227, 58),U.KMPoint(227, 85) ], [U.KMPoint(212, 69),U.KMPoint(212, 69),U.KMPoint(212, 69),U.KMPoint(212, 69)], []);
+	//Advanced
+	MapCreate('10', U.KMPoint(10, 101), [U.KMPoint(26, 104),U.KMPoint(26, 104)], [U.KMPoint(18, 130),U.KMPoint(33, 130)], []);
+	MapCreate('11', U.KMPoint(57, 101), [U.KMPoint(60, 119),U.KMPoint(61, 130)], [U.KMPoint(83, 130),U.KMPoint(83, 130)], []);
+	MapCreate('12', U.KMPoint(104, 101), [U.KMPoint(111, 104)], [U.KMPoint(131, 130)], []);
+	MapCreate('13', U.KMPoint(151, 101), [U.KMPoint(153, 131),U.KMPoint(180, 105)], [U.KMPoint(166, 119),U.KMPoint(166, 119)], []);
+	MapCreate('14', U.KMPoint(198, 101), [U.KMPoint(199, 114)], [U.KMPoint(199, 108)], []);
+	//Expert
+	J := MapCreate('15', U.KMPoint(10, 148), [U.KMPoint(14, 177), U.KMPoint(37, 177), U.KMPoint(22, 168), U.KMPoint(28, 168) ], [U.KMPoint(13, 158), U.KMPoint(38, 158),U.KMPoint(13, 158), U.KMPoint(38, 158)], []); //add tower at start;
+	gMaps.Map[J].DoAtStart := @Map15DoAtStart;
+	MapCreate('16', U.KMPoint(57, 148), [U.KMPoint(70, 179)], [U.KMPoint(60, 166)], []);
+	J := MapCreate('17', U.KMPoint(104, 148), [U.KMPoint(113, 151), U.KMPoint(126, 151)], [U.KMPoint(109, 151), U.KMPoint(130, 151)], []);// add tower at start;
+	gMaps.Map[J].DoAtStart := @Map17DoAtStart;
+	MapCreate('18', U.KMPoint(151, 148), [U.KMPoint(154, 153), U.KMPoint(158, 153)], [U.KMPoint(163, 177),U.KMPoint(163, 177)], []);
+	MapCreate('19', U.KMPoint(198, 148), [U.KMPoint(199, 152), U.KMPoint(199, 179)], [U.KMPoint(228, 170),U.KMPoint(228, 170)], []);
+	//Extreme
+	MapCreate('20', U.KMPoint(57, 195), [U.KMPoint(58, 212)], [U.KMPoint(87, 212)], []);
+	MapCreate('21', U.KMPoint(104, 195), 
+	[U.KMPoint(134, 198),U.KMPoint(105, 223),U.KMPoint(134, 208),U.KMPoint(105, 213),U.KMPoint(134, 218),U.KMPoint(105, 203)], 
+	[U.KMPoint(105, 218),U.KMPoint(134, 203),U.KMPoint(105, 198),U.KMPoint(134, 223),U.KMPoint(105, 208),U.KMPoint(134, 203)], []);
+	
+	MapCreate('22', U.KMPoint(151, 195), [U.KMPoint(163, 219), U.KMPoint(167, 219)], [U.KMPoint(165, 215), U.KMPoint(165, 215)], []);
+	with gMaps do 
+	begin
+		for I := 0 to high(Map) do 
+		case I of 
+			4, 9, 13 : Map[I].UnitSpawnDelay := 40;
+			5, 6, 8, 10, 19 : Map[I].UnitSpawnDelay := 70;
+			14, 16, 18, 3 : Map[I].UnitSpawnDelay := 60;
+			15, 20, 21 : Map[I].UnitSpawnDelay := 80;
+			22 : Map[I].UnitSpawnDelay := 90;
+			else
+				Map[I].UnitSpawnDelay := 50;
+		end;
+	end;
+	gMaps.Map[0].Unlocked :=  true;
+	//gMaps.Map[3].Unlocked := true;
+	gMaps.BossType := 13;
+	gMaps.BossID := -1;
+	ResetMainValues;
+	//SelectMap(U.KMPoint(23, 21));
+	//SelectMap(U.KMPoint(5, 17));
+	gMode := gmCity;
+	gMaps.DoAtLost := @QuitMapLost;
+	//UnlockAllMaps;
+end;

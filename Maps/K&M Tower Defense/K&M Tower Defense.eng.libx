@@ -1,0 +1,216 @@
+0: No one selected
+1: [$58FFB7]House selected[$FFFFFF] : 
+2: [$42E4FF]House Price[$FFFFFF] : 
+3: [$42E4FF]Coins per wave[$FFFFFF] : 
+4: [$58FFB7]Unit selected[$FFFFFF] : 
+5: [$42E4FF]Unit Price[$FFFFFF] : 
+6: [$58FFB7]/\[$FFFFFF] : 
+7: [$0087E7]\/[$FFFFFF] : 
+8: [$6800FF]Lifes[$FFFFFF] : 
+9: [$42E4FF]KM Coins[$FFFFFF] : 
+10: Enemy type : 
+11: [$FFFF00]/\[$FFFFFF] : 
+12: [$0000FF]+ BOSS[$FFFFFF] : 
+13: [$5400FF]BOSS HP[$FFFFFF] : 
+
+14: None
+15: Antihorse
+16: Melee
+17: Ranged
+18: Mounted
+
+19: [$1EB09E]Wave[$FFFFFF] : 
+
+20: You don't have enough KM Coins to buy :
+21: You need :
+
+22: You don't have enough KM Coins to upgrade :
+23: Succesfully upgraded
+
+24: [$42E4FF]KM Coins multiplier[$FFFFFF] : 
+25: [$58FFB7]Unit level[$FFFFFF] : 
+26: [$42E4FF]Next level for[$FFFFFF] : 
+27: [$0000FF]Damage[$FFFFFF] : 
+
+28: Select map. | Set beacon at map which you want to play
+29: 2. Select unit/house. | Set beacon at unit/house which you want to place.
+30: 3. Placing unit/house. | Set beacon at place where the unit/house has to be placed.
+
+31: 4. Deleting unit. | Set road plan at unit which you want to remove.
+32: 5. Deleting house. | Set beacon at house which you want to remove.
+
+33: 6. Upgrading unit. | Set winefield plan at unit which you want to upgrade.
+34: 7. Show unit's statistics. | Set cornfield plan at unit which you want to show statistics.
+
+35: 8. Units hint. | Units cannot be placed nearby the other Unit/house.
+36: 9. Ranged units hint. | Ranged units cannot be placed nearby main road.
+
+37: Unit placed
+38: House placed
+
+39:cost
+40:to :
+41: [$58FFB7]Tower level[$FFFFFF] : 
+
+42: [$0093C6]Bronze[$FFFFFF] 
+43: [$C5C5C5]Silver[$FFFFFF] 
+44: [$00C5FF]Gold[$FFFFFF] 
+45: [$FFD200]Diamond[$FFFFFF] 
+46: [$FF468E]Bitin Order[$FFFFFF] 
+
+47: [$FF468E]Bitin Order reached[$FFFFFF]
+
+48: [$FFB4B4]Enemy HP[$FFFFFF] :
+
+49: [$6800FF]Lifes per wave[$FFFFFF] : 
+50: [$42E4FF]+1 KM Coins multiplier per 10 waves[$FFFFFF]
+51: [$0000FF]Bonus against[$FFFFFF] : 
+
+52: Map data loading
+53: Units data loading
+54: Houses data loading
+55: Loaded
+
+56: Maps view
+57: [$6800FF]Confirm map[$FFFFFF]
+
+58: Sell for : 
+
+59: When selecting a UNIT, the places where you can place them are shown. With weaker hardware, it may slightly lag the game. | Do you want them to be displayed? || Grass - YES | Dirt - NO
+60: When selecting a HOUSE, the places where you can place them are shown. With weaker hardware, it may slightly lag the game. | Do you want them to be displayed? || Grass - YES | Dirt - NO
+61: Displaying places | Units 
+62: Displaying places | Houses 
+
+
+63:Before playing normal map I will show you how to play K&M Tower Defense. (I prefer to play this map on speed x10 or even x30, the gameplay could take a long time on the lower speeds). Almost every action is called by placing a beacon (press B).
+64:First you have to learn how to : select units/houses, upgrade units, how to sell them etc. Almost every action in that game you can do by placing beacon.
+65:Now, select unit/house by placing beacon at unit/house which you want to select. If you made wrong selection you can always change it by placing beacon again.
+66:All places where you can set unit/house will be displayed.( marked as a stone - wherever a stone is, you can place it there )
+67:Good job! |After placing unit/house the enemies will start to approach. On the left side of the screen will be shown all your actual statistics. Mainly how much lifes have left, how much you have KM coins, unit's data and type of coming enemies.
+68:Every 5 waves the boss will arrive. He is stronger than normal enemies and have defense bonus against two type of units.
+69:Cool! You killed the boss. Now select house and place it somewhere. Houses can give KM Coins or lifes ( if you lost any ) per wave.
+70:You are pretty good at it. After completing the tutorial, you will be able to play on every map in that game.
+71:If you want to see how much unit/house costs place beacon at tile on the left side of the unit/house panel.
+
+72:Now place beacon "B" at place where the unit has to be set. Melee units can only attack when they are close to a road. Ranged units can't be places nearby the road.
+73:All enemies are out. You have to kill them before they get to the storehouse otherwise you will lose your lifes.||   1 Enemy = 1 Life
+
+74:Place cornfield plan at any unit. You will get message with all unit's data. It's weaknesses, bonuses, damage and how much KM Coins you need to upgrade the unit.
+75:Place wine field plan at any unit. You will upgrade it if you have enough KM Coins, if not you will be informed about it.|Basic units will be upgraded to next type of unit, f.e. Militia will upgrade to Axe fighter, Rogue to Bowman, Bowman to Crossbowman, etc.(works only once in the tutorial).
+76:If unit has the highest unit type then it will upgrade to next level.
+77:If you want to remove unit place plan road at it. You will get half of what you had to invest in it (don't work in the tutorial).
+78:Now place it somewhere.
+
+79:If you want to remove house place beacon at it. (don't work in the tutorial)
+80:You completed the tutorial. 
+81:If you played that map before you can skip tutorial by placing beacon at light wooden tile on the left side of the map.
+82:Straciłeś wszystkie życia. || Doszedłeś do : %d fali| Zebrałeś łącznie : %d [$42E4FF]monet KM[$FFFFFF]
+
+83: no medal
+
+110: [$00AC00]Meanders[$FFFFFF]
+111: [$00AC00]Border of Life[$FFFFFF]
+112: [$00AC00]Bityn cave[$FFFFFF]
+113: [$00AC00]Pond[$FFFFFF]
+114: [$00AC00]Snow Storm[$FFFFFF]
+115: [$00DDff]Downstream[$FFFFFF]
+116: [$00DDff]The Journey's Beginning[$FFFFFF]
+117: [$00DDff]Desert Loops[$FFFFFF]
+118: [$00DDff]Spice Islands[$FFFFFF]
+119: [$00DDff]Miner's Dream[$FFFFFF]
+120: [$0098ff]Town Center[$FFFFFF]
+121: [$0098ff]Weird Island[$FFFFFF]
+122: [$0098ff]Kingdom Entrance[$FFFFFF]
+123: [$0098ff]The King's Temple[$FFFFFF]
+124: [$0098ff]Lotus Island[$FFFFFF]
+125: [$0000ff]Treacherous Pact[$FFFFFF]
+126: [$0000ff]A Farmers Wish[$FFFFFF]
+127: [$0000ff]Mirror Dimension[$FFFFFF]
+128: [$0000ff]Shipyard[$FFFFFF]
+129: [$0000ff]Bridge Disaster[$FFFFFF]
+130: [$A278C4]Mount Velgrine[$FFFFFF]
+131: [$A278C4]The Real Madness[$FFFFFF]
+132: [$A278C4]The Heat of the Volcano[$FFFFFF]
+
+133:Do you want to choose : %s ?| [$FFFF00]Medal : %s [$ffffff]| [$1EB09E]Best wave : %d wave[$ffffff]| [$42E4FF]Total collected KM Coins : %d [$ffffff]|[$00AC00]%s[$ffffff]|Set beacon again if you want to confirm the selection.
+
+134:None
+
+135:None saved map data
+136:Loaded last saved map data
+137:Can't load while playing
+
+138:Before starting the game you can load last saved map data. Set beacon at dark wooden tile placed on the left.
+
+139:Has a saved game
+
+140:Load saved game : |[$6800FF]Lifes : %d [$ffffff]|[$42E4FF]KM Coins: %d|[$1EB09E]Wave : %d[$ffffff]| by setting a beacon at dark wooden tile on the left side of the map.
+
+
+141:Main City
+
+142:Cannot upgrade [ %s ] to level %d, you need : 
+143:Upgraded : [ %s ] to level %d| Next level for :
+144:Do you want to upgrade : %s?| If yes set beacon at it again. 
+145:Cannot upgrade, maximum house level reached.
+146:You cannot have two the same houses
+147:Cannot build that house here
+148:Cannot build : [ %s ] , not enough resources :
+149:Are you sure you want to buy : [ %s ]?| If yes set beacon at it again : 
+150:You have built [ %s ] level : %d
+
+152:This is your city. If you want to play another map press 'B'  and place beacon at barracks. You can build here new buildings, place beacon at sandy places and you will be moved to houses panel. If you know the basics you can skip the tutorial messages with command /skip_tutorial.
+153:You can upgrade a house by placing at the sandy places the road plan. If you don't have enough resources, you will be informed.
+154:Place beacon twice at house and you will place it. If you do not have enough resources, you will not build it. You can go back to the city by placing the beacon at grassy tiles or at lava tiles to remove current house.
+
+165: [$58FFB7]Units attack bonus : + 
+166: [$58FFB7]Tower attack bonus : + 
+167: [$42E4FF]Houses income bonus : + 
+168: [$6800FF]Lifes from houses : x
+169: [$42E4FF]Start coins : + 
+170: [$6800FF]Start lifes : + 
+171: [$42E4FF]Start coin multiplier : + 
+172: [$5400FF]Boss HP :  
+173: [$0087E7]Enemy units HP :  
+174: [$FFFF00]Unit cost :  
+175: [$FFFF00]House bonus[$ffffff] :  
+176: Wares after winning a medal : 
+
+177: [$FFFF00]House bonus[$ffffff] :  
+
+178: K&M Remake Tower Defense. ||Map designed to give you hours and hours of strategy gaming. Make your best defense from a combination of attacking units and buildings. 14 units and 8 towere to choose. Create your own city to gather bonuses, upgrade units and then kill every last unit that comes your way.|Play as long as you want. 10 hours, 100 hours, doesn't matter because you can just save the game, load it and keep playing. I recommend playing with higher game speed f.e. x30 or x60.||Tutorial Video : https://www.youtube.com/watch?v=jF1aHxBjszU |||Autor : [$0707FF]KingDyron|[$ffffff]|Map designer : [$FFED99]PabloB
+
+179:[$FFFF00]Wares after winning a medal : [$ffffff] 
+180:[$FFFF00]Wares from buildings : [$ffffff] 
+181:You still didn't upgrade the unit.
+182:You still didn't place a house.
+
+183:Statistics Legend|| Attacking Units : |[$58FFB7]/\[$FFFFFF] - Attack bonus against...|[$0087E7]\/[$FFFFFF] - Weak against... | Enemy Units :|[$FFFF00]/\[$FFFFFF] - Defense Bonus against...
+
+184:[$FFFF00]Map[$FFFFFF]: 
+
+185:Wave : 
+186:Tower stats :
+
+187:Deleted house : %s | You got at return : %d <$9>
+
+188: [$FFFF00]Houses cost : 
+189: Food : 
+
+190:That's a view of every unlocked map. You can choose map by placing at it the beacon twice. If you want to go back to the city you can type a command /back.
+
+
+191:Place on your unit plan of :|I. Field - You will get every information about that unit|II. Wine field -  Upgrade unit|III. Road - Delete unit.
+
+192:After winning a medal you will get wares ( which were showed while map selecting ) to the city
+
+194:After selecting a unit/house, the places where you can place them are shown. With weaker hardware, it may slightly lag the game.
+| If you don't want to display them type command : /show_units - for units, /show_houses - for houses
+
+195:You can leave the map in any time. Just place beacon at light wooden tile on the left or type command /back and you will return to the city.
+
+196.Map not found!
+197.Map is NOT unlocked!
+
+198:Can't build a gold mine here!
+199:Can't build an iron mine here!

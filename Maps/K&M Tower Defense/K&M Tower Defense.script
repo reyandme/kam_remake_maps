@@ -1,0 +1,16 @@
+﻿const PLAYER = 0;
+	MAP_PLAYER = 7;
+	CITY_PLAYER = 9;
+	WT_DAMAGE = 600; //600 original
+	WT_COST = 2000; //1500 original 
+	LIFES_LIMIT = 125;
+	LIFES_LIMIT_PER_ROUND = 10; // not used
+	
+// To Do
+{
+	Some Units have to have special skills
+
+
+}
+{$I TD_Functions.script}
+

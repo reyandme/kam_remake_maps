@@ -1,0 +1,244 @@
+
+
+{$I TD_Types.script}
+	
+Procedure ACheck(aMessage : String);
+begin
+	A.ShowMsg(0, aMessage);
+end;
+
+function GroupLeader(aGroup : Integer) : Integer;
+begin
+	Result := S.GroupMember(aGroup, 0);
+end;
+
+
+function SetUnit(aUnit : Integer) : KD_UnitStats;
+begin
+
+	with Result do 
+	begin
+		ID := aUnit;
+		Pos := S.UnitPosition(aUnit);
+		UType := S.UnitType(aUnit);	
+		A.UnitHpSetInvulnerable(ID, true);
+	end;
+
+end;
+
+function SetWarrior( aGroup : Integer) : KD_WarriorStats; 
+var aLeader : Integer;
+begin
+	Result.ID := -1;
+	
+	If aGroup <= 0 then
+		Exit;
+	aLeader := GroupLeader(aGroup);
+	
+	with Result do 
+	begin
+		GID := aGroup;
+		ID := aLeader;
+		UType := S.UnitType(aLeader);
+		Pos := S.UnitPosition(aLeader);
+	end;
+end;
+
+function IncLArrayI( var aArray :array of Integer) : Integer;
+begin
+	Result := Length(aArray);
+	SetLength(aArray, Result + 1);
+end;
+
+function Power(aNumber, aCount : Integer) : integer;
+var I, newRes : Integer;
+begin
+	newRes := aNumber;
+	for I := 0 to aCount - 2 do 
+		newRes := newRes * aNumber;
+		
+	Result := newRes;
+	
+end;
+
+function PointNearPoint(aPos1, aPos2 : TKMpoint; aRadius : Integer) : Boolean;
+var r : Integer;
+begin
+	Result := false;
+	r:=aRadius
+	If Power(aPos1.X-aPos2.X, 2) + Power(aPos1.Y-aPos2.Y, 2) <= Power(r, 2) then 
+		Result := true;
+end;
+
+function SingleToInteger(aSingle : Single; aNrCount : Integer) : String;
+var I, res : integer;	
+begin
+	res := U.FloorTo(aSingle, 1);
+	If aNrCount > 7 then 
+		aNrCount := 7;
+		
+	I := U.FloorTo( (aSingle - res) * Power( 10, aNrCount) , 1 );
+	Result := IntToStr(res) + '.' + IntToStr(I);
+end;
+
+function SumPositions(Poses : array of TKMPoint) : TKMPoint;
+var I : Integer;
+begin
+	Result := U.KMPoint(-1, -1);
+	If Length(Poses) = 0 then 
+		Exit
+	else		
+	If Length(Poses) = 1 then 
+	begin
+		Result := Poses[0];
+		Exit;
+	end;
+	
+	Result := Poses[0];
+	
+	for I := 1 to high(Poses) do 
+		Result := U.KMPoint(Result.X + Poses[I].X, Result.Y + Poses[I].Y);
+end;
+
+function Percante(var aVar : Integer; aPercentage : Integer) : Integer;
+begin
+	aVar := aVar * aPercentage div 100;
+end;
+
+function SingleGroup(aPlayer, aUType : Integer; Pos : TKMPoint) : Integer;
+begin
+	If aUType > 13 then 
+		Result := A.GiveGroup(aPlayer, aUType, Pos.X, Pos.Y, 4, 1, 1)
+	else
+		Result := A.GiveUnit(aPlayer, aUType, Pos.X, Pos.Y, 4)
+end;
+
+procedure SetDMod;
+begin
+	Case S.MissionDifficulty of 
+		0..3 : gDifficulty := 0;
+		4 : gDifficulty := 1;
+		5..8 : gDifficulty := 2;
+		else gDifficulty := 1;
+	end;
+end;
+
+
+function Maximum(A,B : Integer) : Integer;
+begin
+	Result := A
+	If A > B then 
+		Result := B;
+
+end;
+
+function Minimum(A,B : Integer) : Integer;
+begin
+	Result := A
+	If A < B then 
+		Result := B;
+
+end;
+
+
+function MaxMinRange(A, B, C : Integer) : Integer;
+begin
+	Result := A
+	If A < B then 
+		Result := B;
+		
+	If A > C then 
+		Result := C;
+
+end;
+
+function GT : Integer;
+begin
+	Result := S.GameTime;
+end;
+
+Function IStr(ID: Integer) : String;
+begin
+	Result:= '<$' + IntToStr(ID) +'>';
+end;
+
+function AddSpaceToLine(aLine : String; ToLenght  : Integer) : String;
+var I : Integer;
+begin
+	Result := aLine;
+	If Length(aLine) > ToLenght then 
+		Exit;
+	
+	for I := 0 to ToLenght - Length(aLine) do 
+		aLine := aLine + ' ';
+	Result := aLine;
+end;
+
+procedure SendTutorialMSGInCondition(var Condition : Boolean; aMSGID : Integer);
+begin
+	If Condition then 
+		Exit;
+		
+	Condition := true;
+	A.ShowMSG(PLAYER, '<$' + IntToStr(aMSGID) + '>');
+end;
+
+procedure SendTutorialMSG(aID : Integer);
+begin
+	with gTutorial do 
+		If not Skip then 		
+			case aID of 
+				0: SendTutorialMSGInCondition(City, 152);
+					
+				1: SendTutorialMSGInCondition(CitySpot, 154);
+				
+				2: SendTutorialMSGInCondition(CityHousePlaced, 153);
+				
+				3: SendTutorialMSGInCondition(MapSelection, 190);
+				
+				4: SendTutorialMSGInCondition(MapSelectUnit, 65);
+				
+				5: SendTutorialMSGInCondition(MapLoadSave, 138);
+				
+				6: SendTutorialMSGInCondition(MapUnitPlaced, 191);
+				
+				7: SendTutorialMSGInCondition(MapHousePlaced, 32);
+				
+				8: SendTutorialMSGInCondition(MapMedalReached, 192);
+				
+				9: SendTutorialMSGInCondition(MapShowPlaces, 194);
+				
+				10: SendTutorialMSGInCondition(MapUnitSelected, 72);
+				
+				11: SendTutorialMSGInCondition(MapSelected, 195);
+			
+			end;
+			
+	
+end;
+
+{$EVENT evtMissionStart:OnMissionStartFunctions}
+procedure OnMissionStartFunctions;
+begin
+	SetDMod;
+	gSettings.ShowHousesPlaces := true;
+	gSettings.ShowUnitsPlaces := true;
+	gRemove.Time := 99999999;
+	gUpgrade.Time := 99999999;
+	TOWER_DAMAGE :=[25,40,60,35,60,45,65,50,100,115,25,15,200,35];
+	TOWER_COST := [85,150,230,150,225,125,195,200,375,375,50,100,550,115];
+	A.PlayerAllianceChange(0, 9, false, true)
+	A.HouseAllowAllyToSelectAll(-1, true);
+	A.FogCoverAll(PLAYER);
+	A.FogRevealRect(PLAYER, 194, 191, 249, 245);
+	gRanged := [17, 18, 25];
+end;
+
+{$I TD_MapUnitFunctions.script}
+{$I TD_Overlay.script}
+{$I TD_Maps.script}
+{$I TD_Units.script}
+{$I TD_City.script}
+
+
+{$I TD_Commands.script}
