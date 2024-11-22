@@ -1,0 +1,388 @@
+//-- Tools --//
+//By Strangelove
+//v0.2
+//18.11.2024
+//Developed for r15122
+//Last tested on r15122
+
+
+
+function MinToTick(Minutes: Integer): Integer;
+begin
+	Result := Minutes *600;
+end;
+
+
+function Randomize(Value: Integer; Percentage: Single): Integer;
+begin
+	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
+end;
+
+
+function IsImportantBuilding(aHouseType: TKMHouseType): Boolean;
+begin
+	case aHouseType of
+		htStore: Result := true;
+		htSchool: Result := true;
+		htBarracks: Result := true;
+		htTownhall: Result := true;
+		else
+			Result := false;
+	end;
+end;
+
+
+function IsWarrior(aUnitType: TKMUnitType): Boolean;
+begin
+	case aUnitType of
+		utMilitia: Result := true;
+		utAxeFighter: Result := true;
+		utSwordFighter: Result := true;
+		utBowman: Result := true;
+		utCrossbowman: Result := true;
+		utLanceCarrier: Result := true;
+		utPikeman: Result := true;
+		utScout: Result := true;
+		utKnight: Result := true;
+		utBarbarian: Result := true;
+		utRebel: Result := true;
+		utRogue: Result := true;
+		utWarrior: Result := true;
+		utVagabond: Result := true;
+		else
+			Result := false;
+	end;
+end;
+
+
+function RandomAttackTarget(Target: array of TKMAIAttackTarget): TKMAIAttackTarget;
+begin
+    Result := Target[Utils.RandomRangeI(Low(Target), High(Target))];
+end;
+
+
+function GetEffectiveEquipRate(Player: Integer): Integer;
+var
+    LeatherEquipRate, IronEquipRate: Integer;
+begin
+    case States.AIArmyType(Player) of
+        atIronThenLeather:
+        begin
+            LeatherEquipRate := States.AIEquipRate(Player, 0);
+            IronEquipRate := States.AIEquipRate(Player, 1);
+            if LeatherEquipRate < IronEquipRate then
+            begin
+                Result := LeatherEquipRate;
+            end else
+                Result := IronEquipRate;
+        end;
+        atLeather: Result := States.AIEquipRate(Player, 0);
+        atIron: Result := States.AIEquipRate(Player, 1);
+        atIronAndLeather:
+        begin
+            LeatherEquipRate := States.AIEquipRate(Player, 0);
+            IronEquipRate := States.AIEquipRate(Player, 1);
+            Result := Round((LeatherEquipRate *IronEquipRate) /(LeatherEquipRate +IronEquipRate));
+        end;
+    end;
+end;
+
+
+//Return GroupType of Army Units
+function GetGroupType(UnitType: Integer): Byte; 
+begin
+	case UnitType of
+		14,15,16,23,26: Result := 0; //Melee
+		19,20,25:		Result := 1; //Antihorse
+		17,18,24:		Result := 2; //Ranged
+		21,22,27:		Result := 3; //Mounted
+	end;
+end;
+
+
+procedure SetAIStartPositionToClosestHouse(HumanPlayer, AIPlayer: Integer; AIHouseType: TKMHouseType);
+var
+    aHouses: array of Integer;
+    h: Integer;
+    hPosX, hPosY: Integer;
+    ClosestHouse: Integer;
+begin
+        aHouses := States.PlayerGetAllHouses(AIPlayer);
+
+        //Get prefered House
+        for h := Low(aHouses) to High(aHouses) do
+        begin
+            if States.HouseTypeEx(aHouses[h]) = AIHouseType then
+            begin
+               hPosX := States.HousePositionX(aHouses[h]);
+               hPosY := States.HousePositionY(aHouses[h]);
+
+               //What House of HumanPlayer is closest to those Coordinates (HumanPlayer HouseType does not matter)
+               ClosestHouse := States.ClosestHouseEx(HumanPlayer, hPosX, hPosY, htAny);
+               break;
+            end else
+                ClosestHouse := -1;
+        end;
+
+        //No Prefered House? Just use random House
+        if ClosestHouse = -1 then
+        begin
+            hPosX := States.HousePositionX(aHouses[Utils.RandomRangeI(Low(aHouses), High(aHouses))]);
+            hPosY := States.HousePositionY(aHouses[Utils.RandomRangeI(Low(aHouses), High(aHouses))]);
+            ClosestHouse := States.ClosestHouseEx(HumanPlayer, hPosX, hPosY, htAny);
+        end;
+
+    	Actions.AIStartPosition(AIPlayer, States.HousePositionX(ClosestHouse), States.HousePositionY(ClosestHouse));
+end;
+
+
+
+procedure DisplayGoals(Player: Integer; GoalStatus: Byte; sStringToDisplay: ANSIString);
+begin
+	case GoalStatus of
+		0: Actions.OverlayTextAppend(Player, '[$FFFFFF]|  o ' + sStringToDisplay); //Pending
+		1: Actions.OverlayTextAppend(Player, '[$00FF00]|  v ' + sStringToDisplay); //Successfull
+		2: Actions.OverlayTextAppend(Player, '[$0000FF]|  x ' + sStringToDisplay); //Failed
+	end;
+end;
+
+
+
+procedure LogAttackTimings(Player: Integer; MenTotal: array of Integer);
+var
+    EquipRate, AttackTiming: Integer;
+    a: Integer;
+begin
+    Actions.Log('Estimated Attack Timings for Player' +inttostr(Player));
+
+    EquipRate := GetEffectiveEquipRate(Player);
+
+    for a := Low(MenTotal) to High(MenTotal) do
+    begin
+        if a = 0 then
+        begin
+            AttackTiming := States.AIRecruitDelay(Player) +(EquipRate *MenTotal[a]);
+        end else
+            AttackTiming := AttackTiming +(EquipRate *MenTotal[a]);
+
+        Actions.Log(inttostr(a +1) + '. Attack Timing: ' +inttostr(Round(AttackTiming /600)) + 'min');
+    end;
+end;
+
+
+procedure SetEqualEquipRate(Player, Rate: Integer);
+begin
+	Actions.AIEquipRate(Player, 0, Rate);
+	Actions.AIEquipRate(Player, 1, Rate);
+end;
+
+
+procedure GiveHouseAndConnect(Player, HouseType, X, Y: Integer);
+var
+	HouseID, ClosestHouse: Integer;
+begin
+	HouseID := Actions.GiveHouse(Player, HouseType, X, Y);
+	if  HouseID <> -1 then
+	begin
+		ClosestHouse := States.ClosestHouse(Player, X, Y, 11); //Closest Storehouse
+		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(ClosestHouse), States.HousePositionY(ClosestHouse) +1, true);
+		if HouseType = 17 then //Watchtower
+		begin
+			Actions.HouseAddWaresTo(HouseID, 1, 5); //Add Stone to House if Tower
+			Actions.GiveUnit(Player, 13, X, Y +1, 4); //Add Recruit
+		end;
+	end else
+		Actions.Log('House could not be added!' + ' Player:' + inttostr(Player) + ' X:' + inttostr(X) + ' Y:' + inttostr(Y));
+end;
+
+
+procedure GiveHouseAndConnectEx(Player: Integer; HouseTypeEx: TKMHouseType; X, Y: Integer);
+var
+	HouseID, ClosestHouse: Integer;
+begin
+	HouseID := Actions.GiveHouseEx(Player, HouseTypeEx, X, Y);
+
+	if  HouseID <> -1 then
+	begin
+		ClosestHouse := States.ClosestHouseEx(Player, X, Y, htStore); //Closest Storehouse
+
+		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(ClosestHouse), States.HousePositionY(ClosestHouse) +1, true);
+	    Actions.GiveUnitEx(Player, States.HouseTypeToWorkerType(HouseTypeEx), X, Y +1, dirS); //Add appropriate Unit
+
+		case HouseTypeEx of
+		    htWatchtower: Actions.HouseAddWaresToEx(HouseID, wtStone, 5); //Add Stone to House if Tower
+		    //Missing...
+		end;
+	end else
+		Actions.Log('House could not be added!' + ' Player:' + inttostr(Player) + ' X:' + inttostr(X) + ' Y:' + inttostr(Y));
+end;
+
+
+procedure PopulateDefensePositions();
+var
+	p, j: Integer;
+	defPosCount: Integer;
+	pos: TKMDefencePositionInfo;
+	
+	GroupPosX, GroupPosY: Integer;
+	Radius: Integer;
+	GroupID: Integer;
+	GroupDir: TKMDirection;
+	GroupType: TKMGroupType;
+	PositionType: TKMAIDefencePosType;
+	
+	aCount, aColumns: Integer;
+	
+	UnitType: TKMUnitType;
+	
+	EquipRateLeather, EquipRateIron: Integer;
+begin
+	for p := 0 to States.StatPlayerCount -1 do
+	begin
+		if States.PlayerIsAI(p) then
+		begin
+			defPosCount := States.StatAIDefencePositionsCount(p);
+
+			if defPosCount < 1 then
+				continue;
+			
+			for j := 0 to defPosCount -1 do
+			begin
+				pos := States.AIDefencePositionGetByIndex(p, j);
+				
+				GroupPosX := pos.X;
+				GroupPosY := pos.Y;
+				Radius := pos.Radius;
+				GroupID := pos.GroupID;
+				GroupDir := pos.Dir;
+				GroupType := pos.GroupType;
+				PositionType := pos.PositionType;
+				
+				States.AIGroupsFormationGetEx(p, GroupType, aCount, aColumns);
+				
+				case States.AIArmyType(p) of
+					atIronThenLeather, atIron:
+						case GroupType of
+							gtMelee: UnitType := utSwordFighter;
+							gtAntiHorse: UnitType := utPikeman; 
+							gtRanged: UnitType := utCrossbowman;
+							gtMounted: UnitType := utKnight;
+						end;
+						
+					atLeather:
+						case GroupType of
+							gtMelee: UnitType := utAxeFighter;
+							gtAntiHorse: UnitType := utLancecarrier;
+							gtRanged: UnitType := utBowman;
+							gtMounted: UnitType := utScout;
+						end;
+						
+					atIronAndLeather: //Mixed
+					begin
+						EquipRateLeather := States.AIEquipRate(p, 0); //Leather
+ 						EquipRateIron := States.AIEquipRate(p, 1); //Iron
+						
+						//Randomize Unit Types proportional to EquipRate
+						case Utils.RandomRangeI(0, EquipRateLeather +EquipRateIron) of
+							0..EquipRateLeather:
+							begin
+								case GroupType of
+									gtMelee: UnitType := utSwordFighter;
+									gtAntiHorse: UnitType := utPikeman; 
+									gtRanged: UnitType := utCrossbowman;
+									gtMounted: UnitType := utKnight;
+								end;
+							end	else
+								case GroupType of
+									gtMelee: UnitType := utAxeFighter;
+									gtAntiHorse: UnitType := utLancecarrier;
+									gtRanged: UnitType := utBowman;
+									gtMounted: UnitType := utScout;
+								end;
+						end;
+					end;
+				end;
+				
+				//Townhall availalbe?
+				if States.StatHouseTypeCountEx(p, htTownHall) > 0 then
+						case UnitType of
+							utSwordFighter:
+								if Utils.RandomRangeI(0, 2) = 0 then //33% Chance to change Swordman to Warrior
+									UnitType := utWarrior;
+							utAxeFighter: 
+								if Utils.RandomRangeI(0, 1) = 0 then //50% Chance to update Axefighter to Barbarian
+									UnitType := utBarbarian;
+						end;
+				
+				//Place Groups on Defence Positions
+				if PositionType = dtFrontLine then
+					Actions.GiveGroupEx(p, UnitType, GroupPosX, GroupPosY, GroupDir, aCount, aColumns);
+						
+			end;
+		end;
+	end;
+end;
+
+
+procedure AddDefencePositionAndGroup(Player: Byte; UnitType, X, Y: Integer; D: Byte; Radius: Integer); //Causes Problems if AI already has Attack defence positions with same GroupType (Added Groups will be asigned to previously existing positions)
+var
+	Count, Columns, GroupID: Integer;
+begin
+	Actions.AIDefencePositionAdd(Player, X, Y, D, GetGroupType(UnitType), Radius, 0);
+	States.AIGroupsFormationGet(Player, GetGroupType(UnitType), Count, Columns);
+	GroupID := Actions.GiveGroup(Player, UnitType, X, Y, D, Count, Columns);
+end;
+
+
+procedure AddAIAttack(Player: Integer; Repeating: Boolean; Delay: Cardinal; MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups: Integer; Target: TKMAIAttackTarget; CustomPosition: TKMPoint);
+var
+	g: Byte;
+	outCount, outColums: Integer;
+	GroupUnitCount: array[0..3] of Integer;
+	Total: Integer;
+begin
+	for g := 0 to 3 do
+	begin
+		States.AIGroupsFormationGet(Player, g, outCount, outColums);
+		GroupUnitCount[g] := outCount;
+	end;
+
+	Total := MeleeGroups *GroupUnitCount[0] +AntiHorseGroups *GroupUnitCount[1] +RangedGroups *GroupUnitCount[2] +MountedGroups *GroupUnitCount[3];
+	Actions.AIAttackAdd(Player, Repeating, Delay, Total, MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups, false, Target, CustomPosition); //Once
+end;
+
+
+procedure AddAIAttackRandom(Player: Integer; Repeating: Boolean; Delay: Cardinal; TotalMen: Integer; Target: TKMAIAttackTarget; CustomPosition: TKMPoint);
+begin
+	Actions.AIAttackAdd(Player, Repeating, Delay, TotalMen, 1, 1, 1, 1, true, Target, CustomPosition); //Once
+end;
+
+
+//Changes Waterfall End-Tiles (Not automated yet)
+procedure ChangeWaterfallEndTiles(X1, X2, Y: Integer);
+var
+	aTiles: array of Integer;
+	i, k, iTile: Integer;
+	X: Integer;
+begin
+	SetLength(aTiles, (X2-X1+1));
+	for i := 0 to Length(aTiles) -1 do
+	begin
+		case States.KaMRandomI(2) of //Start only with 230 or 232
+			0: iTile := 230;
+			1: iTile := 232;
+		end;
+		aTiles[i] := iTile;
+		if i > 0 then //After 232 can only fallow 233
+			if ((aTiles[i-1]) = 232) then
+				aTiles[i] := 233;
+		if (i = (Length(aTiles) -1)) then //Cant end with 232
+			if aTiles[i] = 232 then
+				aTiles[i] := 230;
+	end;
+	for X := X1 to X2 do
+	begin
+		Actions.MapTileSet(X, Y, aTiles[k], 0);
+		Inc(k);
+	end;
+end;
