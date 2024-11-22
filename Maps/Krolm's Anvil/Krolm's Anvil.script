@@ -1,0 +1,953 @@
+{$I improvestaticai.script}
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	Corsair, Sea: Boolean;
+	Siege, Camp, Camp2, DigTimer1, DigTimer2: Integer;
+	Attack1, Attack2, Attack3: Integer;
+	
+/// DISCLAIMER - THIS SCRIPT WAS WRITTEN BY A TOTAL SCRIPTING NOOB DON'T USE IT AS AN EXAMPLE ON HOW TO WRITE SCRIPTS.
+
+Procedure ChangeHouseOwner(aX,aY, toPlayer:Integer);
+var aHouseWares : array[0..27] of integer;
+	aHouseID, newHouseID, aHType, aDamage : Integer;
+	HousePos : TKMPoint;
+	I : Integer;
+begin
+	If States.HouseAt(aX,aY) > 0 then 
+	begin
+		aHouseID := States.HouseAt(aX,aY);
+		HousePos := States.HousePosition(aHouseID);
+		aHType := States.HouseType(aHouseID);
+		aDamage := States.HouseDamage(aHouseID);
+		for I := 0 to 27 do 
+			aHouseWares[I] := States.HouseResourceAmount(aHouseID,I);
+		
+		Actions.HouseDestroy(aHouseID, true);
+		newHouseID := Actions.GiveHouse(toPlayer,aHType,HousePos.X,HousePos.Y);
+		for I := 0 to 27 do
+			If aHouseWares[I]>0 then Actions.HouseAddWaresTo(newHouseID,I,aHouseWares[I]);
+			
+		Actions.HouseAddDamage(newHouseID,aDamage);
+	end;
+end;
+
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+
+begin
+	typeU := States.UnitType(aUnitID);
+	if (typeU = 15) and (States.UnitOwner(aUnitID) = 10) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 15 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(10, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = 15) and (States.UnitOwner(aUnitID) = 14) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 15 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(14, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = 14) and (States.UnitOwner(aUnitID) = 12) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 14 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(12, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+	
+	if (typeU = 14) and (States.UnitOwner(aUnitID) = 13) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = 14 then
+		begin
+			typeU := 23;
+			temporary := Actions.GiveGroup(13, 23, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+end;	
+ 
+
+
+procedure OnMissionStart();
+begin
+DifficultySetting := States.MissionDifficulty();
+Siege := 360000000;
+Camp := 360000000;
+Camp2 := 360000000;
+DigTimer1 := 360000000;
+DigTimer2 := 360000000;
+Corsair := false;
+Sea := false;
+Actions.GiveHouse(8, 17, 102, 117);
+Actions.GiveHouse(8, 17, 113, 107);
+Actions.GiveHouse(8, 17, 121, 106);
+Actions.GiveHouse(8, 17, 129, 108);
+Actions.GiveHouse(8, 17, 132, 114);
+Actions.GiveHouse(8, 21, 122, 119);
+Actions.PlanAddHouse(8, 13, 124, 124);
+Actions.PlanAddHouse(8, 20, 118, 126);
+Actions.PlanAddHouse(8, 20, 106, 117);
+Actions.PlanAddHouse(8, 19, 117, 114);
+Actions.PlanAddHouse(8, 19, 116, 117);
+Actions.GiveHouse(7, 17, 100, 70);
+Actions.GiveHouse(7, 17, 114, 76);
+Actions.GiveHouse(7, 17, 121, 72);
+Actions.GiveHouse(7, 17, 120, 59);
+Actions.GiveHouse(7, 17, 104, 56);
+Actions.GiveHouse(7, 21, 111, 63);
+Actions.PlanAddHouse(7, 13, 104, 73);
+Actions.PlanAddHouse(7, 20, 121, 67);
+Actions.PlanAddHouse(7, 20, 105, 65);
+Actions.PlanAddHouse(7, 19, 105, 61);
+Actions.PlanAddHouse(7, 19, 111, 58);
+Actions.ShowMsg(0, '<$1>');
+Actions.FogCoverAll(0)
+Actions.FogRevealCircle(0, 39, 108, 15);
+Actions.FogRevealCircle(0, 12, 55, 35);
+Actions.FogRevealCircle(0, 6, 18, 10);
+Actions.FogRevealCircle(0, 11, 18, 10);
+Actions.FogRevealCircle(0, 16, 18, 10);
+Actions.FogRevealCircle(0, 21, 18, 10);
+Actions.FogRevealCircle(0, 27, 14, 10);
+Actions.FogRevealCircle(0, 39, 17, 10);
+Actions.FogRevealCircle(0, 50, 23, 10);
+Actions.FogRevealCircle(0, 50, 83, 10);
+Actions.FogRevealCircle(0, 50, 61, 10);
+Actions.FogRevealCircle(0, 50, 45, 10);
+Actions.FogRevealCircle(0, 49, 70, 10);
+Actions.FogRevealCircle(0, 49, 35, 10);
+Actions.FogRevealCircle(0, 40, 81, 10);
+Actions.FogRevealCircle(0, 31, 82, 10);
+Actions.FogRevealCircle(0, 12, 36, 25);
+Actions.PlayerShareFogCompliment(0, 5, False);
+Actions.PlayerShareFogCompliment(0, 3, False);
+		case DifficultySetting of
+	    mdEasy1:
+        begin
+		Attack1 := 42000;
+        Attack2 := 44500;
+        Attack3 := 56500;
+		Actions.GiveWares(0, 1, 150);
+		Actions.GiveWares(0, 2, 80);
+		Actions.GiveWares(0, 8, 75);
+		Actions.GiveWares(0, 10, 40);
+		Actions.GiveWares(0, 13, 30);
+		Actions.GiveWares(0, 27, 25);
+        Actions.GiveWares(0, 7, 80);
+        Actions.GiveGroup(15, 14, 8, 8, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 23, 7, 4, 8, 4);
+		Actions.GiveGroup(15, 17, 28, 5, 4, 8, 4);
+		Actions.GiveGroup(15, 19, 35, 13, 3, 12, 4);
+		Actions.GiveGroup(15, 23, 43, 13, 5, 12, 4);
+		Actions.GiveGroup(15, 14, 32, 3, 4, 15, 5);	
+		Actions.GiveGroup(15, 17, 60, 16, 5, 8, 4);
+		Actions.GiveGroup(15, 17, 62, 23, 6, 8, 4);
+		Actions.GiveGroup(15, 15, 55, 31, 6, 9, 3);
+		Actions.GiveGroup(15, 15, 55, 38, 6, 9, 3);		
+		Actions.GiveGroup(15, 17, 57, 91, 7, 8, 4);
+		Actions.GiveGroup(15, 17, 61, 82, 6, 8, 4);
+		Actions.GiveGroup(15, 27, 85, 57, 6, 25, 5);
+		Actions.GiveGroup(15, 27, 85, 63, 6, 25, 5);
+		Actions.GiveGroup(15, 27, 104, 89, 6, 20, 5);
+		Actions.GiveGroup(15, 27, 104, 84, 6, 20, 5);		
+		Actions.GiveGroup(15, 14, 66, 18, 6, 10, 5);	
+		Actions.GiveGroup(15, 14, 66, 24, 6, 10, 5);	
+		Actions.GiveGroup(15, 19, 56, 53, 6, 10, 5);
+		Actions.GiveGroup(15, 19, 60, 53, 6, 10, 5);		
+		Actions.GiveGroup(15, 14, 4, 90, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 20, 92, 7, 8, 4);
+		Actions.GiveGroup(15, 19, 23, 86, 0, 10, 5);
+		Actions.GiveGroup(15, 15, 25, 92, 7, 10, 5);
+		Actions.GiveGroup(15, 17, 11, 88, 1, 8, 4);	
+		Actions.GiveGroup(15, 15, 55, 70, 6, 10, 5);
+		Actions.GiveGroup(15, 15, 71, 71, 6, 10, 5);
+		Actions.GiveGroup(15, 17, 59, 45, 6, 8, 4);
+		Actions.GiveGroup(15, 17, 59, 61, 6, 8, 4);		
+		Actions.GiveGroup(15, 23, 42, 86, 0, 8, 4);
+		Actions.GiveGroup(15, 17, 36, 90, 0, 8, 4);		
+		Actions.GiveGroup(15, 14, 65, 101, 7, 10, 5);
+		Actions.GiveGroup(15, 14, 63, 109, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 60, 106, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 68, 104, 7, 10, 5);		
+		Actions.GiveGroup(6, 23, 77, 144, 6, 6, 3);
+		Actions.GiveGroup(6, 23, 77, 136, 6, 6, 3);
+		Actions.GiveGroup(6, 23, 82, 143, 6, 6, 3);
+		Actions.GiveGroup(6, 23, 85, 149, 5, 6, 3);
+		Actions.GiveGroup(6, 18, 74, 137, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 74, 143, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 81, 151, 5, 6, 3);
+		Actions.GiveGroup(15, 19, 59, 8, 5, 12, 4);
+		Actions.GiveWeapons(7, 16, 400);
+		Actions.GiveWeapons(7, 18, 800);
+		Actions.GiveWeapons(7, 20, 400);
+		Actions.GiveWeapons(7, 22, 400);
+		Actions.GiveWeapons(7, 24, 400);
+		Actions.GiveWeapons(7, 26, 200);
+		Actions.GiveWeapons(8, 16, 400);
+		Actions.GiveWeapons(8, 18, 800);
+		Actions.GiveWeapons(8, 20, 400);
+		Actions.GiveWeapons(8, 22, 400);
+		Actions.GiveWeapons(8, 24, 400);
+		Actions.GiveWeapons(8, 26, 200);		
+		Actions.AIEquipRate(7, 0, 500);
+		Actions.AIEquipRate(8, 0, 500);
+		Actions.AIEquipRate(11, 0, 300);
+		Actions.AIEquipRate(12, 0, 300);
+		Actions.AIEquipRate(13, 0, 300);
+		Actions.AIEquipRate(9, 0, 300);
+		Actions.AIEquipRate(10, 0, 300);
+		Actions.AIEquipRate(14, 0, 300);
+        end;
+		
+        mdNormal:
+        begin
+		Attack1 := 36000;
+        Attack2 := 38500;
+        Attack3 := 50500;
+		Actions.GiveWares(0, 1, 120);
+		Actions.GiveWares(0, 2, 65);
+		Actions.GiveWares(0, 8, 75);
+		Actions.GiveWares(0, 10, 40);
+		Actions.GiveWares(0, 13, 30);
+		Actions.GiveWares(0, 27, 25);
+        Actions.GiveWares(0, 7, 70);
+        Actions.GiveGroup(15, 14, 8, 8, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 23, 7, 4, 8, 4);
+		Actions.GiveGroup(15, 17, 28, 5, 4, 8, 4);	
+		Actions.GiveGroup(15, 19, 35, 13, 3, 12, 4);
+		Actions.GiveGroup(15, 23, 43, 13, 5, 12, 4);
+		Actions.GiveGroup(15, 15, 32, 3, 4, 15, 5);
+		Actions.GiveGroup(15, 17, 60, 16, 5, 8, 4);
+		Actions.GiveGroup(15, 17, 62, 23, 6, 8, 4);	
+		Actions.GiveGroup(15, 15, 55, 31, 6, 9, 3);
+		Actions.GiveGroup(15, 15, 55, 38, 6, 9, 3);		
+		Actions.GiveGroup(15, 17, 57, 91, 7, 8, 4);
+		Actions.GiveGroup(15, 17, 61, 82, 6, 8, 4);	
+		Actions.GiveGroup(15, 17, 60, 34, 6, 12, 4);
+		Actions.GiveGroup(15, 27, 85, 57, 6, 25, 5);
+		Actions.GiveGroup(15, 27, 85, 63, 6, 25, 5);	
+		Actions.GiveGroup(15, 21, 104, 89, 6, 20, 5);
+		Actions.GiveGroup(15, 21, 104, 84, 6, 20, 5);		
+		Actions.GiveGroup(15, 14, 66, 18, 6, 20, 5);	
+		Actions.GiveGroup(15, 14, 66, 24, 6, 20, 5);			
+		Actions.GiveGroup(15, 19, 56, 53, 6, 15, 5);
+		Actions.GiveGroup(15, 19, 60, 53, 6, 10, 5);		
+		Actions.GiveGroup(15, 14, 4, 90, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 20, 92, 7, 8, 4);
+		Actions.GiveGroup(15, 19, 23, 86, 0, 20, 5);
+		Actions.GiveGroup(15, 15, 25, 92, 7, 15, 5);
+		Actions.GiveGroup(15, 17, 11, 88, 1, 8, 4);		
+		Actions.GiveGroup(15, 23, 55, 70, 6, 10, 5);
+		Actions.GiveGroup(15, 15, 71, 71, 6, 10, 5);
+		Actions.GiveGroup(15, 17, 59, 45, 6, 8, 4);
+		Actions.GiveGroup(15, 17, 59, 61, 6, 8, 4);		
+		Actions.GiveGroup(15, 23, 42, 86, 0, 16, 4);
+		Actions.GiveGroup(15, 17, 36, 90, 0, 8, 4);		
+		Actions.GiveGroup(15, 14, 65, 101, 7, 10, 5);
+		Actions.GiveGroup(15, 14, 63, 109, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 60, 106, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 68, 104, 7, 10, 5);	
+		Actions.GiveGroup(6, 23, 77, 144, 6, 9, 3);
+		Actions.GiveGroup(6, 23, 77, 136, 6, 9, 3);
+		Actions.GiveGroup(6, 23, 82, 143, 6, 6, 3);
+		Actions.GiveGroup(6, 23, 85, 149, 5, 6, 3);
+		Actions.GiveGroup(6, 18, 74, 137, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 74, 143, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 81, 151, 5, 6, 3);
+		Actions.GiveGroup(15, 19, 59, 8, 5, 12, 4);
+		Actions.GiveWeapons(7, 16, 1000);
+		Actions.GiveWeapons(7, 18, 3000);
+		Actions.GiveWeapons(7, 20, 1000);
+		Actions.GiveWeapons(7, 22, 1000);
+		Actions.GiveWeapons(7, 24, 1000);
+		Actions.GiveWeapons(7, 26, 500);
+		Actions.GiveWeapons(8, 16, 1000);
+		Actions.GiveWeapons(8, 18, 3000);
+		Actions.GiveWeapons(8, 20, 1000);
+		Actions.GiveWeapons(8, 22, 1000);
+		Actions.GiveWeapons(8, 24, 1000);
+		Actions.GiveWeapons(8, 26, 500);		
+		Actions.AIEquipRate(7, 0, 300);
+		Actions.AIEquipRate(8, 0, 300);
+		Actions.AIEquipRate(9, 0, 200);
+		Actions.AIEquipRate(11, 0, 200);
+		Actions.AIEquipRate(12, 0, 200);
+		Actions.AIEquipRate(13, 0, 200);
+		Actions.AIEquipRate(10, 0, 200);
+		Actions.AIEquipRate(14, 0, 200);
+        end;
+		
+        mdHard1:
+        begin
+		Attack1 := 30000;
+        Attack2 := 32500;
+        Attack3 := 44500;
+		Actions.GiveWares(0, 1, 90);
+		Actions.GiveWares(0, 2, 50);
+		Actions.GiveWares(0, 8, 75);
+		Actions.GiveWares(0, 10, 40);
+		Actions.GiveWares(0, 13, 30);
+		Actions.GiveWares(0, 27, 25);
+        Actions.GiveWares(0, 7, 60);
+        Actions.GiveGroup(15, 14, 8, 8, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 23, 7, 4, 8, 4);
+		Actions.GiveGroup(15, 17, 28, 5, 4, 8, 4);	
+		Actions.GiveGroup(15, 19, 35, 13, 3, 12, 4);
+		Actions.GiveGroup(15, 23, 43, 13, 5, 12, 4);
+		Actions.GiveGroup(15, 23, 32, 3, 4, 15, 5);
+		Actions.GiveGroup(15, 17, 60, 16, 5, 8, 4);
+		Actions.GiveGroup(15, 17, 62, 23, 6, 8, 4);	
+		Actions.GiveGroup(15, 23, 55, 31, 6, 9, 3);
+		Actions.GiveGroup(15, 23, 55, 38, 6, 9, 3);		
+		Actions.GiveGroup(15, 17, 57, 91, 7, 8, 4);
+		Actions.GiveGroup(15, 17, 61, 82, 6, 8, 4);	
+		Actions.GiveGroup(15, 17, 60, 34, 6, 12, 4);
+	    Actions.GiveGroup(15, 27, 85, 57, 6, 25, 5);
+		Actions.GiveGroup(15, 27, 85, 63, 6, 25, 5);	
+	    Actions.GiveGroup(15, 21, 104, 89, 6, 25, 5);
+		Actions.GiveGroup(15, 21, 104, 84, 6, 25, 5);		
+		Actions.GiveGroup(15, 14, 66, 18, 6, 20, 5);	
+		Actions.GiveGroup(15, 14, 66, 24, 6, 20, 5);			
+		Actions.GiveGroup(15, 19, 56, 53, 6, 15, 5);
+		Actions.GiveGroup(15, 19, 60, 53, 6, 10, 5);		
+		Actions.GiveGroup(15, 14, 4, 90, 2, 20, 5);
+		Actions.GiveGroup(15, 17, 20, 92, 7, 8, 4);
+		Actions.GiveGroup(15, 19, 23, 86, 0, 20, 5);
+		Actions.GiveGroup(15, 15, 25, 92, 7, 15, 5);
+		Actions.GiveGroup(15, 17, 11, 88, 1, 8, 4);		
+		Actions.GiveGroup(15, 23, 55, 70, 6, 10, 5);
+		Actions.GiveGroup(15, 15, 71, 71, 6, 15, 5);
+		Actions.GiveGroup(15, 17, 59, 45, 6, 8, 4);
+		Actions.GiveGroup(15, 17, 59, 61, 6, 8, 4);		
+		Actions.GiveGroup(15, 23, 42, 86, 0, 16, 4);
+		Actions.GiveGroup(15, 17, 36, 90, 0, 8, 4);		
+		Actions.GiveGroup(15, 15, 65, 101, 7, 10, 5);
+		Actions.GiveGroup(15, 15, 63, 109, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 60, 106, 7, 10, 5);
+		Actions.GiveGroup(15, 19, 68, 104, 7, 10, 5);		
+		Actions.GiveGroup(15, 14, 15, 89, 2, 9, 3);
+		Actions.GiveGroup(15, 19, 58, 7, 5, 12, 4);	
+		Actions.GiveGroup(6, 23, 77, 144, 6, 9, 3);
+		Actions.GiveGroup(6, 23, 77, 136, 6, 9, 3);
+		Actions.GiveGroup(6, 23, 82, 143, 6, 9, 3);
+		Actions.GiveGroup(6, 23, 85, 149, 5, 9, 3);
+		Actions.GiveGroup(6, 18, 74, 137, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 74, 143, 6, 6, 3);
+		Actions.GiveGroup(6, 18, 81, 151, 5, 6, 3);
+		Actions.GiveGroup(15, 19, 59, 8, 5, 9, 3);
+		Actions.GiveWeapons(7, 16, 10000);
+		Actions.GiveWeapons(7, 18, 30000);
+		Actions.GiveWeapons(7, 20, 10000);
+		Actions.GiveWeapons(7, 22, 10000);
+		Actions.GiveWeapons(7, 24, 10000);
+		Actions.GiveWeapons(7, 26, 5000);
+		Actions.GiveWeapons(8, 16, 10000);
+		Actions.GiveWeapons(8, 18, 30000);
+		Actions.GiveWeapons(8, 20, 10000);
+		Actions.GiveWeapons(8, 22, 10000);
+		Actions.GiveWeapons(8, 24, 10000);
+		Actions.GiveWeapons(8, 26, 5000);	
+		Actions.AIEquipRate(7, 0, 210);
+		Actions.AIEquipRate(8, 0, 210);
+		Actions.AIEquipRate(9, 0, 125);
+		Actions.AIEquipRate(11, 0, 170);
+		Actions.AIEquipRate(12, 0, 170);
+		Actions.AIEquipRate(13, 0, 170);
+	    Actions.AIEquipRate(10, 0, 150);
+		Actions.AIEquipRate(14, 0, 150);
+        end;
+        end;
+end;
+
+procedure OnUnitAttacked(aU, aAttacker: Integer);
+begin   
+if ((States.UnitOwner(aU) = 6) and (Corsair = false)) then
+    begin
+     Actions.AIDefencePositionRemoveAll(6);
+	 Corsair:= true;
+    end;
+end;
+
+procedure OnTick;
+begin
+If S.GameTime = (Siege + 3000) then
+    begin
+	Actions.PlanAddHouse(2, 17, 43, 28);
+	Actions.PlanAddHouse(2, 17, 45, 49);
+	Actions.PlanAddHouse(2, 17, 45, 58);
+	Actions.PlanAddHouse(2, 17, 28, 78);
+	Actions.ShowMsgGoto(0, 106, 12, '<$3>');
+	Actions.PlayerShareFogCompliment(0, 3, True);
+	Actions.FogRevealCircle(0, 106, 12, 15);
+    Actions.FogRevealCircle(0, 111, 65, 4);
+    Actions.FogRevealCircle(0, 120, 121, 4);
+	end;
+	
+If S.GameTime = (Siege + 6500) then
+    begin
+	Actions.PlanAddHouse(2, 16, 39, 72);
+	Actions.PlanAddHouse(2, 8, 42, 38);
+	Actions.PlanAddHouse(2, 8, 42, 70);
+	Actions.PlanAddHouse(2, 8, 43, 75);
+	end;
+	
+If S.GameTime = (Siege + 8500) then
+    begin
+	Actions.PlanAddHouse(2, 9, 12, 90);
+	Actions.PlanAddHouse(2, 9, 7, 92);
+	end;	
+	
+If S.GameTime = (Siege + 11500) then
+    begin
+	Actions.PlanAddHouse(1, 3, 20, 8);
+	Actions.PlanAddHouse(1, 3, 24, 9);
+	Actions.PlanAddHouse(1, 3, 24, 4);
+	Actions.PlanAddHouse(1, 3, 28, 3);
+	Actions.PlanAddHouse(1, 3, 32, 5);
+	Actions.PlanAddHouse(1, 3, 29, 8);
+	Actions.PlanAddHouse(1, 3, 33, 9);	
+	Actions.PlanAddHouse(1, 4, 6, 4);
+	Actions.PlanAddHouse(1, 4, 17, 3);
+	Actions.PlanAddHouse(1, 4, 39, 5);
+	end;	
+	
+If S.GameTime = (Siege + 17000) then
+    begin
+	Actions.PlanAddHouse(1, 3, 47, 13);
+	Actions.PlanAddHouse(1, 3, 53, 15);
+	Actions.PlanAddHouse(1, 3, 58, 13);
+	Actions.PlanAddHouse(1, 3, 59, 10);
+	Actions.PlanAddHouse(1, 4, 49, 6);
+	Actions.PlanAddHouse(1, 4, 58, 4);
+	Actions.PlanAddHouse(1, 4, 66, 13);
+	Actions.PlanAddHouse(2, 29, 6, 65);
+	Actions.AIDefencePositionAdd(1, 68, 19, 3, 0, 15, 0);
+	Actions.AIDefencePositionAdd(1, 60, 21, 4, 1, 15, 0);
+	end;
+	
+If S.GameTime = (Siege + 19500) then
+    begin
+    Actions.PlanAddHouse(2, 17, 61, 16);
+	Actions.PlanAddRoad(2, 61, 17);
+	Actions.PlanAddRoad(2, 62, 17);
+	Actions.PlanAddRoad(2, 62, 16);
+	Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+	end;
+	
+If S.GameTime = (Siege + 25000) then
+    begin
+	Actions.PlanAddHouse(2, 9, 38, 90);
+	Actions.PlanAddHouse(2, 9, 44, 90);
+	Actions.PlanAddRoad(2, 24, 84);
+	Actions.PlanAddRoad(2, 24, 85);
+	Actions.PlanAddRoad(2, 24, 86);
+	Actions.PlanAddRoad(2, 25, 86);
+	Actions.PlanAddRoad(2, 25, 87);
+	Actions.PlanAddRoad(2, 26, 87);
+	Actions.PlanAddRoad(2, 26, 88);
+	Actions.PlanAddRoad(2, 27, 88);
+	Actions.PlanAddRoad(2, 28, 88);
+	Actions.PlanAddRoad(2, 29, 88);
+	Actions.PlanAddRoad(2, 29, 89);
+	Actions.PlanAddRoad(2, 30, 89);
+	Actions.PlanAddRoad(2, 31, 89);
+	Actions.PlanAddRoad(2, 32, 89);
+	Actions.PlanAddRoad(2, 33, 90);
+	Actions.PlanAddRoad(2, 33, 89);
+	Actions.PlanAddRoad(2, 34, 90);
+	Actions.PlanAddRoad(2, 35, 90);
+	Actions.PlanAddRoad(2, 35, 91);
+	Actions.PlanAddRoad(2, 36, 91);
+	Actions.PlanAddRoad(2, 37, 91);
+	Actions.PlanAddRoad(2, 38, 91);
+	Actions.PlanAddRoad(2, 39, 91);
+	Actions.PlanAddRoad(2, 40, 91);
+	Actions.PlanAddRoad(2, 41, 91);	
+	Actions.PlanAddRoad(2, 42, 91);
+	Actions.PlanAddRoad(2, 43, 91);
+	Actions.PlanAddRoad(2, 44, 91);
+	Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+	end;
+		
+If S.GameTime = (Siege + 54000) then
+    begin
+	Actions.AIDefencePositionRemove(1, 68, 19);
+    Actions.AIDefencePositionRemove(1, 60, 21);
+	Actions.AIDefencePositionAdd(1, 67, 27, 4, 0, 15, 0);
+	Actions.AIDefencePositionAdd(1, 60, 29, 3, 1, 15, 0);
+    Actions.PlanAddHouse(1, 3, 68, 17);
+	Actions.PlanAddHouse(1, 3, 68, 22);
+	Actions.PlanAddHouse(1, 3, 63, 22);
+	Actions.PlanAddHouse(1, 3, 59, 23);
+	Actions.PlanAddHouse(1, 4, 70, 14);
+	Actions.PlanAddHouse(1, 4, 75, 20);
+	Actions.PlanAddRoad(1, 65, 16);
+	Actions.PlanAddRoad(1, 64, 16);
+    Actions.PlanAddRoad(1, 66, 16);
+	Actions.PlanAddRoad(1, 66, 17);
+	Actions.PlanAddRoad(1, 66, 18);
+	Actions.PlanAddRoad(1, 67, 18);	
+	Actions.PlanAddRoad(1, 68, 18);
+	Actions.PlanAddRoad(1, 69, 18);
+	Actions.PlanAddRoad(1, 70, 18);
+	Actions.PlanAddRoad(1, 71, 18);
+	Actions.PlanAddRoad(1, 71, 17);
+	Actions.PlanAddRoad(1, 71, 16);
+	Actions.PlanAddRoad(1, 70, 16);
+	Actions.PlanAddRoad(1, 70, 15);	
+	Actions.PlanAddRoad(1, 71, 19);
+	Actions.PlanAddRoad(1, 71, 20);
+	Actions.PlanAddRoad(1, 72, 20);
+	Actions.PlanAddRoad(1, 73, 20);
+	Actions.PlanAddRoad(1, 73, 21);
+	Actions.PlanAddRoad(1, 74, 21);
+    Actions.PlanAddRoad(1, 75, 21);
+	Actions.PlanAddRoad(1, 62, 18);
+	Actions.PlanAddRoad(1, 62, 19);
+	Actions.PlanAddRoad(1, 62, 20);
+	Actions.PlanAddRoad(1, 61, 20);
+	Actions.PlanAddRoad(1, 61, 21);
+	Actions.PlanAddRoad(1, 61, 22);
+	Actions.PlanAddRoad(1, 61, 23);
+	Actions.PlanAddRoad(1, 61, 24);
+	Actions.PlanAddRoad(1, 60, 24);
+	Actions.PlanAddRoad(1, 59, 24);
+	Actions.PlanAddRoad(1, 62, 23);
+	Actions.PlanAddRoad(1, 63, 23);
+	Actions.PlanAddRoad(1, 64, 23);
+	Actions.PlanAddRoad(1, 65, 23);
+	Actions.PlanAddRoad(1, 66, 23);
+	Actions.PlanAddRoad(1, 67, 23);
+	Actions.PlanAddRoad(1, 68, 23);
+	end;
+	
+If S.GameTime = (Siege + 75000) then
+    begin
+    Actions.AIDefencePositionAdd(10, 227, 98, 6, 2, 5, 1);
+	Actions.AIDefencePositionAdd(10, 229, 103, 5, 2, 5, 1);
+	Actions.AIDefencePositionAdd(10, 234, 109, 5, 2, 5, 1);
+	Actions.AIDefencePositionAdd(10, 241, 86, 3, 0, 5, 1);
+	Actions.AIDefencePositionAdd(10, 245, 82, 3, 0, 5, 1);
+	Actions.AIDefencePositionAdd(10, 239, 110, 3, 0, 5, 1);
+	Actions.AIDefencePositionAdd(10, 239, 115, 3, 0, 5, 1);	
+	Actions.AIDefencePositionAdd(14, 225, 5, 5, 2, 5, 1);
+	Actions.AIDefencePositionAdd(14, 241, 14, 4, 2, 5, 1);
+	Actions.AIDefencePositionAdd(14, 240, 2, 4, 2, 5, 1);
+	Actions.AIDefencePositionAdd(14, 248, 16, 6, 0, 5, 1);
+	Actions.AIDefencePositionAdd(14, 252, 16, 6, 0, 5, 1);
+	Actions.AIDefencePositionAdd(14, 252, 3, 6, 0, 5, 1);
+	Actions.AIDefencePositionAdd(14, 231, 20, 6, 0, 5, 1);
+	Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+	end;
+	
+If S.GameTime = (Siege + 180000) then
+    begin
+		case DifficultySetting of
+	        mdEasy1:
+        begin
+		Actions.AIEquipRate(7, 0, 400);
+		Actions.AIEquipRate(8, 0, 400);
+		Actions.AIEquipRate(11, 0, 250);
+		Actions.AIEquipRate(12, 0, 250);
+		Actions.AIEquipRate(13, 0, 250);
+		Actions.AIEquipRate(9, 0, 220);
+		Actions.AIEquipRate(10, 0, 220);
+		Actions.AIEquipRate(14, 0, 220);
+		Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+        end;
+		
+        mdNormal:
+        begin
+		Actions.AIEquipRate(7, 0, 260);
+		Actions.AIEquipRate(8, 0, 260);
+		Actions.AIEquipRate(9, 0, 120);
+		Actions.AIEquipRate(11, 0, 170);
+		Actions.AIEquipRate(12, 0, 170);
+		Actions.AIEquipRate(13, 0, 170);
+		Actions.AIEquipRate(10, 0, 125);
+		Actions.AIEquipRate(14, 0, 125);
+		Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+        end;
+	
+        mdHard1:
+        begin
+		Actions.AIEquipRate(7, 0, 180);
+		Actions.AIEquipRate(8, 0, 180);
+		Actions.AIEquipRate(9, 0, 85);
+		Actions.AIEquipRate(11, 0, 125);
+		Actions.AIEquipRate(12, 0, 125);
+		Actions.AIEquipRate(13, 0, 125);
+	    Actions.AIEquipRate(10, 0, 90);
+		Actions.AIEquipRate(14, 0, 90);
+		Actions.MarketSetTrade((States.HouseAt(6, 65)), 12, 5, 999);
+        end;
+	    end;
+	end;
+	
+
+	
+If ((S.GameTime = 30000) and (Sea = false)) then
+    begin
+	Actions.ShowMsg(0, '<$5>');
+	Actions.FogRevealCircle(0, 200, 120, 5);
+	end;
+
+If ((S.GameTime = Attack1) and (Sea = false)) then
+	begin
+        Attack1 := (S.GameTime + 15000);
+		case DifficultySetting of
+	    mdEasy1:
+        begin
+    	Actions.GiveGroup(16, 15, 200, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 15, 204, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 15, 200, 134, 6, 12, 3);
+    	Actions.GiveGroup(16, 15, 204, 134, 6, 12, 3);
+     	Actions.GiveGroup(16, 19, 221, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 221, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 17, 221, 120, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 226, 120, 0, 10, 5);
+     	Actions.GiveGroup(16, 17, 200, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 205, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 21, 194, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 197, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 215, 123, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 218, 123, 6, 12, 4);
+        end;
+		
+        mdNormal:
+        begin
+    	Actions.GiveGroup(16, 23, 200, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 23, 204, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 15, 200, 134, 6, 12, 3);
+    	Actions.GiveGroup(16, 15, 204, 134, 6, 12, 3);
+     	Actions.GiveGroup(16, 19, 221, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 221, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 17, 221, 120, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 226, 120, 0, 10, 5);
+     	Actions.GiveGroup(16, 17, 200, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 205, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 21, 194, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 197, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 215, 123, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 218, 123, 6, 12, 4);
+        end;
+		
+        mdHard1:
+        begin
+    	Actions.GiveGroup(16, 23, 200, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 23, 204, 131, 6, 12, 3);
+    	Actions.GiveGroup(16, 23, 200, 134, 6, 12, 3);
+    	Actions.GiveGroup(16, 23, 204, 134, 6, 12, 3);
+     	Actions.GiveGroup(16, 19, 221, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 123, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 221, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 19, 225, 126, 6, 12, 3);
+	    Actions.GiveGroup(16, 17, 221, 120, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 226, 120, 0, 10, 5);
+     	Actions.GiveGroup(16, 17, 200, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 17, 205, 128, 0, 10, 5);
+	    Actions.GiveGroup(16, 21, 194, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 197, 131, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 215, 123, 6, 12, 4);
+	    Actions.GiveGroup(16, 21, 218, 123, 6, 12, 4);
+        end;
+        end;
+    end;
+	
+If ((S.GameTime = Attack2) and (Sea = false)) then
+	begin
+     Actions.AIDefencePositionRemoveAll(16);
+	 Attack2 := (S.GameTime + 15000);
+    end;
+		
+If ((S.GameTime = Attack3) and (Sea = false)) then
+	begin
+	 Actions.AIDefencePositionAdd(16, 147, 81, 6, 0, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 147, 73, 6, 0, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 152, 73, 6, 0, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 152, 81, 6, 0, 10, 0); 
+	 Actions.AIDefencePositionAdd(16, 139, 57, 6, 1, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 139, 46, 6, 1, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 144, 57, 6, 1, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 144, 46, 6, 1, 10, 0);	 
+	 Actions.AIDefencePositionAdd(16, 150, 77, 6, 2, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 157, 77, 6, 2, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 141, 51, 6, 2, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 148, 51, 6, 2, 10, 0);	 
+	 Actions.AIDefencePositionAdd(16, 146, 77, 6, 3, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 153, 77, 6, 3, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 137, 51, 6, 3, 10, 0);
+	 Actions.AIDefencePositionAdd(16, 144, 51, 6, 3, 10, 0);
+	 Attack3 := (S.GameTime + 15000);
+    end;
+	
+If S.GameTime = (DigTimer1 + 50) then
+    begin
+    Actions.HouseAddBuildingMaterials(States.HouseAt(108, 69));
+	end;		
+	
+If S.GameTime = (DigTimer1 + 950) then
+    begin
+	Actions.GiveWares(4, 1, 1500);
+	Actions.GiveWares(4, 2, 1500);
+	Actions.GiveWares(4, 8, 2000);
+	Actions.GiveWares(4, 10, 2000);
+	Actions.GiveWares(4, 13, 2000);
+	Actions.GiveWares(4, 27, 2000);
+    Actions.GiveWares(4, 7, 1000);
+	Actions.GiveWares(4, 5, 1000);
+	Actions.GiveWares(4, 6, 1000);
+	Actions.GiveWares(4, 19, 15);
+	Actions.GiveWares(4, 17, 5);
+	Actions.GiveWares(4, 25, 5);
+	Actions.GiveWares(4, 23, 5);
+	Actions.GiveWares(4, 21, 5);
+	Actions.PlanAddHouse(4, 13, 112, 68);
+	Actions.PlanAddHouse(4, 27, 116, 65);
+	end;	
+	
+If S.GameTime = (DigTimer1 + 2350) then
+    begin
+	Actions.PlanAddHouse(4, 17, 120, 59);
+	Actions.PlanAddHouse(4, 17, 104, 56);
+	Actions.PlanAddHouse(4, 17, 100, 70);
+	Actions.PlanAddHouse(4, 17, 114, 76);
+	Actions.PlanAddHouse(4, 17, 121, 72);
+    Actions.PlanAddHouse(4, 21, 111, 63);
+	Actions.HouseAddDamage(States.HouseAt(111, 58), 350);
+	Actions.HouseAddDamage(States.HouseAt(105, 61), 350);
+	Actions.HouseAddDamage(States.HouseAt(105, 65), 350);
+	Actions.HouseAddDamage(States.HouseAt(121, 67), 350);
+	end;	
+	
+If S.GameTime = (DigTimer1 + 4350) then
+    begin
+	Actions.PlanAddHouse(4, 1, 112, 58);
+    Actions.PlanAddHouse(4, 2, 105, 61);
+	Actions.PlanAddHouse(4, 10, 106, 65);
+	Actions.PlanAddHouse(4, 3, 112, 72);
+	Actions.PlanAddHouse(4, 3, 118, 69);
+	Actions.PlanAddHouse(4, 4, 127, 72);
+    Actions.PlanAddHouse(4, 4, 97, 64);
+	end;	
+	
+If S.GameTime = (DigTimer1 + 7350) then
+    begin
+	Actions.PlanAddHouse(4, 29, 106, 73);
+    Actions.PlanAddHouse(4, 24, 123, 67);
+	Actions.GiveWares(4, 14, 750);
+	Actions.GiveWeapons(4, 17, 1000);
+	Actions.GiveWeapons(4, 19, 3000);
+	Actions.GiveWeapons(4, 21, 1000);
+	Actions.GiveWeapons(4, 23, 1000);
+	Actions.GiveWeapons(4, 25, 1000);
+	Actions.GiveWeapons(4, 26, 500);
+	end;	
+	
+If S.GameTime = (DigTimer2 + 50) then
+    begin
+    Actions.HouseAddBuildingMaterials(States.HouseAt(116, 121));
+	end;	
+		
+If S.GameTime = (DigTimer2 + 950) then
+    begin
+	Actions.GiveWares(17, 1, 1500);
+	Actions.GiveWares(17, 2, 1500);
+	Actions.GiveWares(17, 8, 2000);
+	Actions.GiveWares(17, 10, 2000);
+	Actions.GiveWares(17, 13, 2000);
+	Actions.GiveWares(17, 27, 2000);
+    Actions.GiveWares(17, 7, 1000);
+	Actions.GiveWares(17, 5, 1000);
+	Actions.GiveWares(17, 6, 1000);
+	Actions.GiveWares(17, 19, 15);
+	Actions.GiveWares(17, 17, 5);
+	Actions.GiveWares(17, 25, 5);
+	Actions.GiveWares(17, 23, 5);
+	Actions.GiveWares(17, 21, 5);
+	Actions.PlanAddHouse(17, 13, 111, 115);
+	end;	
+	
+If S.GameTime = (DigTimer2 + 2550) then
+    begin
+	Actions.PlanAddHouse(17, 17, 132, 114);
+	Actions.PlanAddHouse(17, 17, 129, 108);
+	Actions.PlanAddHouse(17, 17, 102, 117);
+	Actions.PlanAddHouse(17, 17, 121, 106);
+	Actions.PlanAddHouse(17, 17, 113, 107);
+    Actions.PlanAddHouse(17, 21, 122, 119);
+	Actions.PlanAddHouse(17, 27, 110, 120);
+	Actions.HouseAddDamage(States.HouseAt(118, 126), 350);
+	Actions.HouseAddDamage(States.HouseAt(106, 117), 350);
+	Actions.HouseAddDamage(States.HouseAt(117, 114), 350);
+	Actions.HouseAddDamage(States.HouseAt(116, 117), 350);
+	end;	
+	
+If S.GameTime = (DigTimer2 + 4550) then
+    begin
+	Actions.PlanAddHouse(17, 1, 118, 114);
+    Actions.PlanAddHouse(17, 2, 116, 117);
+	Actions.PlanAddHouse(17, 10, 124, 124);
+	Actions.PlanAddHouse(17, 3, 115, 129);
+	Actions.PlanAddHouse(17, 3, 119, 126);
+	Actions.PlanAddHouse(17, 3, 111, 126);
+	Actions.PlanAddHouse(17, 4, 101, 111);
+    Actions.PlanAddHouse(17, 4, 134, 99);
+	end;	
+	
+If S.GameTime = (DigTimer2 + 7550) then
+    begin
+	Actions.PlanAddHouse(17, 29, 106, 125);
+    Actions.PlanAddHouse(17, 24, 108, 112);
+	Actions.PlanAddHouse(17, 7, 108, 117);
+	Actions.GiveWares(17, 14, 750);
+	Actions.GiveWares(17, 11, 750);
+	Actions.GiveWeapons(17, 17, 1000);
+	Actions.GiveWeapons(17, 19, 3000);
+	Actions.GiveWeapons(17, 21, 1000);
+	Actions.GiveWeapons(17, 23, 1000);
+	Actions.GiveWeapons(17, 25, 1000);
+	Actions.GiveWeapons(17, 26, 500);
+	end;		
+end;
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+if  (aIndex = 15) then
+	begin 
+	Siege := S.GameTime;
+	Actions.ShowMsgGoto(0, 31, 136, '<$2>');	
+    Actions.FogRevealCircle(0, 31, 136, 10);
+	Actions.GiveUnit(0, 9, 30, 137, 4);
+	Actions.GiveUnit(0, 0, 30, 138, 4);
+	Actions.GiveUnit(0, 9, 30, 139, 4);
+	Actions.GiveUnit(0, 0, 31, 137, 4);
+	Actions.GiveUnit(0, 0, 31, 138, 4);
+	Actions.GiveUnit(0, 0, 31, 139, 4);
+	Actions.GiveUnit(0, 9, 32, 137, 4);
+	Actions.GiveUnit(0, 0, 32, 138, 4);
+	Actions.GiveUnit(0, 9, 32, 139, 4);
+	end;
+	
+if  (aIndex = 7) then
+	begin 
+	Actions.ShowMsgGoto(0, 108, 69, '<$4>');
+	Actions.PlanAddHouse(4, 11, 108, 69);
+	Actions.GiveUnit(4, 9, 107, 70, 4);
+	Actions.GiveUnit(4, 0, 107, 71, 4);
+	Actions.GiveUnit(4, 9, 107, 72, 4);
+	Actions.GiveUnit(4, 0, 108, 70, 4);
+	Actions.GiveUnit(4, 0, 108, 71, 4);
+	Actions.GiveUnit(4, 0, 108, 72, 4);
+	Actions.GiveUnit(4, 9, 109, 70, 4);
+	Actions.GiveUnit(4, 0, 109, 71, 4);
+	Actions.GiveUnit(4, 9, 109, 72, 4);
+	Actions.GiveGroup(4, 16, 7, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 16, 6, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 20, 5, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 20, 4, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 20, 3, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 18, 2, 68, 2, 4, 4);
+	Actions.GiveGroup(4, 18, 1, 68, 2, 4, 4);
+	ChangeHouseOwner(121, 72, 4);
+	ChangeHouseOwner(114, 76, 4);
+	ChangeHouseOwner(100, 70, 4);
+	ChangeHouseOwner(120, 59, 4);
+	ChangeHouseOwner(104, 56, 4);
+	ChangeHouseOwner(116, 65, 4);
+	Camp := S.GameTime;
+	end;
+	
+if  (aIndex = 8) then
+	begin 
+	Actions.ShowMsgGoto(0, 116, 121, '<$6>');
+	Actions.PlanAddHouse(17, 11, 116, 121);
+	Actions.GiveUnit(17, 9, 115, 122, 4);
+	Actions.GiveUnit(17, 0, 115, 123, 4);
+	Actions.GiveUnit(17, 9, 115, 124, 4);
+	Actions.GiveUnit(17, 0, 116, 122, 4);
+	Actions.GiveUnit(17, 0, 116, 123, 4);
+	Actions.GiveUnit(17, 0, 116, 124, 4);
+	Actions.GiveUnit(17, 9, 117, 122, 4);
+	Actions.GiveUnit(17, 0, 117, 123, 4);
+	Actions.GiveUnit(17, 9, 117, 124, 4);
+	Actions.GiveGroup(17, 16, 7, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 16, 6, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 20, 5, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 20, 4, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 20, 3, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 18, 2, 68, 2, 4, 4);
+	Actions.GiveGroup(17, 18, 1, 68, 2, 4, 4);
+	ChangeHouseOwner(110, 120, 17);
+	ChangeHouseOwner(132, 114, 17);
+	ChangeHouseOwner(129, 108, 17);
+	ChangeHouseOwner(102, 117, 17);
+	ChangeHouseOwner(121, 106, 17);
+	ChangeHouseOwner(113, 107, 17);
+	Camp2 := S.GameTime;
+	end;	
+	
+if  (aIndex = 9) then
+	begin 
+    Actions.ShowMsg(0, '<$7>');
+	Sea := true;
+	end;	
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+	if ((aHouseID = States.HouseAt(108, 69)) AND (States.HouseOwner(aHouseID) = 4)) then
+	begin
+	Actions.PlayerDefeat(4);
+	end;
+	
+	if ((aHouseID = States.HouseAt(109, 9)) AND (States.HouseOwner(aHouseID) = 3)) then
+	begin
+    Actions.PlayerDefeat(3);
+	end;
+	
+	if ((aHouseID = States.HouseAt(116, 121)) AND (States.HouseOwner(aHouseID) = 17)) then
+	begin
+	Actions.PlayerDefeat(17);
+	end;
+end;
+
+procedure OnHousePlanDigged (aHouse: Integer);
+begin
+if (aHouse = S.HouseAt(108, 69)) and (S.HouseOwner(S.HouseAt(108, 69)) = 4) then
+begin
+   DigTimer1 := S.GameTime;
+end;
+
+if (aHouse = S.HouseAt(116, 121)) and (S.HouseOwner(S.HouseAt(116, 121)) = 17) then
+begin
+   DigTimer2 := S.GameTime;
+end;
+end;
