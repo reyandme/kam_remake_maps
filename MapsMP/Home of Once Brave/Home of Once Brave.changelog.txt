@@ -77,3 +77,14 @@ Home of Once Brave
 0.8.0c: (06.04.2023)
 - Updated improvestaticai.script to newest version
 - Added newest version of difficulty.script and set MAX_HANDS to 28
+
+0.8.1: (21.11.2024)
+- Updated improvestaticai.script to newest version
+- difficulty.script replaced by tools.script
+- Changes to main script
+- Changes to libx file
+- Fixed a bug in player3.script that broke attacks of this player
+- Visual Updates to the map
+- Due to a bug, fogsharing with allies was enabled: fixed
+- Changed Random states to Random utils
+- Replaced old commands with Ex variants (in main script only)

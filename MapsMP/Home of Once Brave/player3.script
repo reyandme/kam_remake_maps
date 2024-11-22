@@ -81,52 +81,6 @@ begin
 	Actions.HouseTownHallMaxGold(Townhall, COST_BARBARIAN *2);
 	//Set Trade: Skins -> Coal
 	Actions.MarketSetTrade(Market, 15, 5, 999);
-
-	
-	//Set AI Attack
-	AddAIAttack(PLAYER, false, 0, 1, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Once
-	
-	//Set Equiprate and repeating attacks in accordance to Difficulty
-	case States.MissionDifficulty() of
-		mdEasy3: begin
-			Actions.AIWorkerLimit(PLAYER, 6);
-			Actions.AIEquipRate(Player, 0, 300); //2Units/Minute
-			AddAIAttack(PLAYER, true, 300, 2, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdEasy2: begin
-			Actions.AIWorkerLimit(PLAYER, 4);
-			Actions.AIEquipRate(Player, 0, 400);
-			AddAIAttack(PLAYER, true, 300, 2, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdEasy1: begin
-			Actions.AIWorkerLimit(PLAYER, 2);
-			Actions.AIEquipRate(Player, 0, 500);
-			AddAIAttack(PLAYER, true, 300, 2, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdNormal: begin
-			Actions.AIEquipRate(Player, 0, 600); //1Unit/Minute
-			AddAIAttack(PLAYER, true, 300, 2, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdHard1: begin
-			Actions.AIEquipRate(Player, 0, 700);
-			AddAIAttack(PLAYER, true, 300, 1, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdHard2: begin
-			Actions.AIEquipRate(Player, 0, 800);
-			AddAIAttack(PLAYER, true, 300, 1, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-		mdHard3: begin
-			Actions.AIEquipRate(Player, 0, 900);
-			AddAIAttack(PLAYER, true, 300, 1, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-			AddAIAttack(PLAYER, true, 300, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
-		end;
-	end;
 	
 	//Calculate Total Army Limit
 	TotalArmyLimit := GetUnitLimit(23, PLAYER) +GetUnitLimit(24, PLAYER) +GetUnitLimit(25, PLAYER) +GetUnitLimit(27, PLAYER);
@@ -136,9 +90,10 @@ begin
 	RecruitDelay := States.AIRecruitDelay(PLAYER);
 	
 	//Set Random Target for attacks
-	case States.KaMRandomI(2) of
+	case States.KaMRandomI(3) of
 		0: Actions.AIStartPosition(PLAYER, 87, 44); //Player8
 		1: Actions.AIStartPosition(PLAYER, 66, 130); //Player9
+		2: Actions.AIStartPosition(PLAYER, 13, 234); //Player13
 	end;
 end;
 
@@ -189,6 +144,54 @@ begin
 					bSwitchTrade := true;
 				end;
 			end;
+			
+	if GameTime = RecruitDelay then
+	begin
+		//Set AI Attack
+		AddAIAttack(PLAYER, false, 0, 1, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Once
+		
+		//Set Equiprate and repeating attacks in accordance to Difficulty
+		case States.MissionDifficulty() of
+			mdEasy3: begin
+				Actions.AIWorkerLimit(PLAYER, 6);
+				Actions.AIEquipRate(Player, 0, 300); //2Units/Minute
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 2, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdEasy2: begin
+				Actions.AIWorkerLimit(PLAYER, 4);
+				Actions.AIEquipRate(Player, 0, 400);
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 2, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdEasy1: begin
+				Actions.AIWorkerLimit(PLAYER, 2);
+				Actions.AIEquipRate(Player, 0, 500);
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 2, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdNormal: begin
+				Actions.AIEquipRate(Player, 0, 600); //1Unit/Minute
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 2, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdHard1: begin
+				Actions.AIEquipRate(Player, 0, 700);
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 1, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdHard2: begin
+				Actions.AIEquipRate(Player, 0, 800);
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 1, 3, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+			mdHard3: begin
+				Actions.AIEquipRate(Player, 0, 900);
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 1, 2, 1, 0, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+				AddAIAttack(PLAYER, true, GetEffectiveEquipRate(PLAYER) -1, 0, 0, 0, 3, attClosestBuildingFromStartPos, aCustomPosition); //Repeating
+			end;
+		end;
+	end;
 end;
 
 
