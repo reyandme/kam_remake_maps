@@ -1,0 +1,96 @@
+{$INCLUDE RandomStorehouse.script}
+{$INCLUDE MapInitializer.script}
+
+procedure InitPlayer(playerId, xMin, xMax, yMin, yMax: integer);
+var
+  serfs: integer;
+  workers: integer;
+  slow: boolean;
+
+begin
+
+case States.KamRandomI(5) of
+    0:
+      begin
+        serfs := 8;
+        workers := 7;
+      end;
+    1:
+      begin
+        serfs := 7;
+        workers := 6;
+      end;
+    2:
+      begin
+        serfs := 6;
+        workers := 5;
+      end;
+    3:
+      begin
+        serfs := 5;
+        workers := 4;
+      end;
+    4:
+      begin
+        serfs := 4;
+        workers := 3;
+      end;
+  end;
+
+  slow := States.KamRandomI(5) = 0;
+
+  RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
+
+  case States.KamRandomI(2) of
+    0:
+      if (not slow) then
+      begin
+        RNST_SetUnlockedBuildingTypes(playerId, [htQuarry]);
+      end;
+    1:
+      RNST_SetUnlockedBuildingTypes(playerId, [htWoodcutters]);
+  end;
+
+  if  (States.KamRandomI(2) = 0) then
+  begin
+    RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
+  end;
+
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, 80 + States.KamRandomI(11));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 5 + States.KamRandomI(3));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 34 + States.KamRandomI(13));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, 45 + States.KamRandomI(35));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, 10 + States.KamRandomI(61));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, 5 + States.KamRandomI(56));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 2 + States.KamRandomI(19));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, 2 + States.KamRandomI(14));
+end;
+
+procedure InitPlayers();
+begin
+
+  RNST_SightRadius := 50;
+  RNST_IsAllowedToPlaceAtCoal := true;
+
+  InitPlayer(0,12,52,10,50);
+  InitPlayer(1,76,116,22,62);
+  InitPlayer(2,140,180,22,62);
+  InitPlayer(3,204,244,10,50);
+
+  RNST_InitBoundPlayer(4,0,12,52,205,245);
+  RNST_InitBoundPlayer(5,1,76,116,193,233);
+  RNST_InitBoundPlayer(6,2,141,181,192,232);
+  RNST_InitBoundPlayer(7,3,204,244,205,245);
+end;
+
+procedure OnMissionStart;
+begin
+  InitPlayers();
+  RNST_FogAroundStoreHouseDisabled := true;
+  MI_InitMap(States.KamRandomI(8));
+
+  Actions.PlayOGGLooped(-1, 'Desert', 0.2);
+  Actions.PlayOGGLooped(-1, 'Desert2', 0.3);
+
+end;
+
