@@ -1,0 +1,23 @@
+﻿1:Oddziały Archonta w końcu opuściły wioskę. Mieszkańcy wreszcie mogą wyjść z ukrycia i wrócić do swoich zajęć. Na razie udało nam się zapłacić to, czego zażądał ciemiężca, ale nie możemy pozwolić, by nas dalej wykorzystywano. Musimy zbudować potęgę zdolną przeciwstawić się tyranii!
+2:Z powodu suszy dużo zboża i drewna nie nadaje się do użytku i musi zostać odrzucone. Powinniśmy rozszerzyć naszą produkcję, aby odrobić straty.
+3:Ograbiłeś karawanę. Te towary są teraz twoje.
+4:Miasto Maaburu jest ważnym ośrodkiem handlu w regionie, przez co często przybywają do niego karawany. Powinniśmy spróbować zastawić zpułapkę i splądrować jak najwięcej z nich, aby zdobyć niezbędne zasoby potrzebne do pokonania opresyjnych sił czających się w fortecy.
+5:W okolicy są inne osady, których mieszkańcy mogą chcieć nam pomóc w walce z Archontem. Niestety w każdym z nich wróg umieścił posterunki. Zniszcz je, aby mieszańcy mogli pomóc nam w naszym przedsięwzięciu.
+6:Wioska Burnam została wyzwolona przez nasze siły. Sołtys podziękował nam za nasze wysiłki, ale powiedział, że nie będzie nam pomagał w bezpośredniej walce, by nie ryzykować zniszczenia jego wioski. Obiecał jednak regularnie przysyłać nam surowce, by wesprzeć nas w naszej walce. Przysyłają nam też plany opisujące, jak zbudować dymarkę.
+7:Wioska Nyxar została wyzwolona przez nasze wojska. Wieśniacy mieszkający w niej nie chcą się mieszać w nasz konflikt z Archontem, ale dali nam dużą ilość zasobów, wzamian za obietnicę, że nie będziemy im już przeszkadzać.
+8:Wieś Wazulas została wyzwolona przez naszych żołnierzy. Nasza rewolucja jest bardzo wspierana przez mieszkańców i wielu z nich zabrało swój dobytek i dołączyło do naszej armii. Inni, którzy nie chcieli walczyć, opuścili wioskę w obawie przed odwetem ze strony Maaburu.
+9:Wioska Burnham wysłała nam obiecane zasoby. Są gotowe do użycia w naszym spichlerzu.
+10:Archont ma dość naszej ekspansji. Jego wojska maszerują, teraz jednym wyjściem jest śmierć ich lub nasza.
+11:Antioliya nigdy nie była spokojnym miejscem. Kraina ta przez lata była rządzoną przez bezwzględnych Archontów, którzy eksploatowali ją dla własnych korzyści. Teraz, gdy nadeszła katastrofalna susza, życie zwykłych ludzi stało się jeszcze gorsze niż wcześniej. Nie możemy pozwolić, aby tyran ukryty w mieście Maaburu nadal ucztował, podczas gdy my tu umieramy z głodu. Nadszedł czas na bunt. Własnymi rękami zakończymy rządy tyranów!||[$0707FF]Poziom Trudności:[] ****||Map uses [$E1FA6B]Strangelove's[] improved AI script.||Caravan Script by [$37D208]King Dyron[].
+101:Burnam 
+102:Nyxar 
+103:Wazulas 
+104:Wojska Archona
+105:Wojska Archona
+106:Wojska Archona
+107:Maaburu
+108:Maaburu
+109:Maaburu
+110:Maaburu
+111:Maaburu
+112:Karawany

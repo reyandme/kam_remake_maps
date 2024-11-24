@@ -1,0 +1,15 @@
+﻿0:Ein jahrzehntelanger Konflikt hat die Länder des Königreichs Andrain heimgesucht. Viele Jahre lang griff die Baronie Rnhein die Küsten des Königreichs an und schaffte es, viele wichtige Städte und Häfen innerhalb des Königreichs zu erobern. Im Laufe des Krieges eroberten die Andrianer alle besetzten Siedlungen zurück, mit Ausnahme der Festung Mornheil, die die letzte verbliebene Siedlung unter rnheinischer Kontrolle innerhalb der Grenzen des andrianischen Königreichs ist. Ein großes Heer wurde zusammengezogen, um den Besatzern den letzten Schlag zu versetzen und die Baronie aus den Grenzen des Königreichs zu vertreiben. Führen Sie die Belagerung an und beenden Sie den Krieg ein für alle Mal!||[$0707FF]Schwierigkeitsgrad:[] ***||Map uses [$E1FA6B]Strangelove's[] improved AI script.|Map uses [$7A7AEB]Cmowla's[] Anti Lure script (3.9b).
+1:Wir haben die Schlacht gewonnen, doch leider sind unsere Verluste hoch. Nur wenige Soldaten haben es geschafft, lebend aus dem Kampf zurückzukehren. Wir müssen unser Belagerungslager ausbauen und unsere Streitkräfte schnell wieder aufstocken. Der Feind wird bald versuchen, uns anzugreifen, um unsere Schwäche auszunutzen.
+2:Die Tore der Festung haben sich geöffnet! Die Verteidiger haben eine erste Angriffsgruppe geschickt, die uns vernichten soll. Von nun an müssen wir mit regelmäßigen Angriffen rechnen, um die Belagerung zu durchbrechen. Seid auf der Hut!
+3:Die andrianische Armee machte den Hafen dem Erdboden gleich. Nun hat die Festung den Zugang zu ihren Vorräten verloren. Bald werden viele feindliche Soldaten verhungern, so dass die Verteidigung der Festung stark geschwächt ist und sie für unseren Angriff offen ist.
+4:[$095DF6]Zeit vor dem Angriff[]
+5:Wir haben aus den umliegenden Dörfern die Nachricht erhalten, dass ein Schiff mit rnheischen Truppen in unsere Richtung unterwegs ist. Der Feind wird versuchen, die Belagerung zu durchbrechen. Wir sollten schnell handeln und die Festung einnehmen, bevor sie ankommen, um unnötige Kämpfe zu vermeiden.
+6:Die rnheische Armee ist am Strand nahe der Festung gelandet! Wir müssen sie zurückschlagen, sonst ist alles verloren!
+7:Die Festung Mornheil ist stark verteidigt, was sie zu einem schwierigen Angriffsziel macht. Allerdings hat sie selbst keinen Zugang zu Nahrungsmitteln. Sie wird vom Hafen durch ein Höhlensystem unter dem Berg versorgt. Wenn wir den Hafen zerstören, ist die Festung auf sich allein gestellt, und die darin versteckte Armee wird bald verhungern.
+8:Wir haben vom König von Andria Vorräte erhalten, die uns bei der Eroberung der Festung helfen sollen. Nutzt sie weise.
+101:Andrianische Armee
+102:Festung Mornheil
+103:Hafen von Mornheil
+104:Hafen von Mornheil
+105:Festung Mornheil
+106:Festung Mornheil

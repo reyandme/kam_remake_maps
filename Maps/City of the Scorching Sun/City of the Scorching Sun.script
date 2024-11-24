@@ -1,0 +1,665 @@
+{$I KD_Hearse.script}  /// by KingDyron
+{$I improvestaticai.script}  /// By Strangelove
+
+var 
+    DifficultySetting: TKMMissionDifficulty;
+    MyHearse : HKS_Hearse;
+	MyHearse2 : HKS_Hearse;
+	MyHearse3 : HKS_Hearse;
+	RandomTiming: Integer;
+	RandomTiming2: Integer;
+	RandomTiming3: Integer;
+	KeyPlayerDefeated: Boolean;
+
+	
+Procedure OnWareProduced(aHouse : Integer; aWareType : TKMWareType; aCount : Integer);
+var WType : Integer;
+    Percentage : array[TKMMissionDifficulty] of Integer;
+begin
+    Percentage[0] := 50;
+    Percentage[3] := 20;
+    Percentage[4] := 33;
+    Percentage[5] := 45;
+    WType := ord(aWareType) - 1;
+
+    If S.HouseType(aHouse) in [8, 9] then 
+        If S.KamRandomI(100) < Percentage[byte(S.MissionDifficulty)] then 
+            A.HouseTakeWaresFrom(aHouse, WType, aCount);
+end; 
+
+procedure MyHearseSetup;
+begin
+	Hearse_Free(MyHearse); 
+	Hearse_SetRadius(MyHearse, 3);
+	Hearse_SetGroupSize(MyHearse, 6, 3);
+	Hearse_SetLeaderGroupSize(MyHearse, 9, 3)
+	Hearse_AddReward(MyHearse, [7], [20]);	
+	Hearse_AddMidPosFromDefencePoses(MyHearse, 1);
+	Hearse_SetOwner(MyHearse, 12);
+	Hearse_SetPoses(MyHearse, U.KMPoint(79, 157), U.KMPoint(138, 94));
+	Hearse_ChangeTypes(MyHearse, [19, 14]); 
+	
+end;
+
+
+procedure MyHearseSetup2;
+begin
+	Hearse_Free(MyHearse2);
+	Hearse_SetRadius(MyHearse2, 3);
+	Hearse_SetGroupSize(MyHearse2, 6, 3);
+	Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);
+
+	Hearse_AddReward(MyHearse2, [15, 8, 13], [5, 15, 10]);	
+
+	Hearse_AddMidPosFromDefencePoses(MyHearse2, 2);
+	
+	Hearse_SetOwner(MyHearse2, 12);
+	Hearse_SetPoses(MyHearse2, U.KMPoint(3, 73), U.KMPoint(138, 94));
+
+	Hearse_ChangeTypes(MyHearse2, [19, 21, 14]);
+	
+end;
+
+procedure MyHearseSetup3;
+begin
+	Hearse_Free(MyHearse3);
+	Hearse_SetRadius(MyHearse3, 3);
+	Hearse_SetGroupSize(MyHearse3, 6, 3);
+	Hearse_SetLeaderGroupSize(MyHearse3, 6, 3);
+	Hearse_AddReward(MyHearse3, [3, 4, 5], [15, 15, 30]);	
+	Hearse_AddMidPosFromDefencePoses(MyHearse3, 3);
+	
+	Hearse_SetOwner(MyHearse3, 12);
+	Hearse_SetPoses(MyHearse3, U.KMPoint(41, 3), U.KMPoint(138, 94));
+	Hearse_ChangeTypes(MyHearse3, [16, 19, 21]); 
+	
+end;
+
+procedure OnMissionStart();
+begin
+begin
+
+	MyHearseSetup;
+	MyHearseSetup2;
+	MyHearseSetup3;
+	
+end;
+begin
+    RandomTiming := States.KaMRandomI(3000) + 9000;
+	RandomTiming2 := States.KaMRandomI(3000) + 18000;
+	RandomTiming3 := States.KaMRandomI(3000) + 27000;
+    DifficultySetting := States.MissionDifficulty();
+    Actions.FogCoverAll(0)
+    Actions.PlayerShareFogCompliment(0, 3, False);
+    Actions.PlayerShareFogCompliment(0, 2, False);
+	Actions.PlayerShareFogCompliment(0, 1, False);
+	Actions.FogRevealCircle(0, 31, 131, 14);
+    case DifficultySetting of
+	        mdEasy1:
+        begin
+            Actions.GiveWares(0, 0, 10);
+			Actions.GiveWares(0, 1, 60);
+			Actions.GiveWares(0, 2, 50);
+			Actions.GiveWares(0, 8, 30);
+			Actions.GiveWares(0, 10, 30);
+			Actions.GiveWares(0, 13, 30);
+			Actions.GiveWares(0, 27, 10);
+            Actions.GiveWares(0, 7, 75);
+			Actions.GiveWares(0, 9, 10);
+			Actions.AIEquipRate(4, 0, 450);
+	        Actions.AIEquipRate(5, 0, 450);
+			Actions.AIEquipRate(6, 0, 450);
+            Actions.AIEquipRate(4, 1, 1000);
+	        Actions.AIEquipRate(5, 1, 1000);
+			Actions.AIEquipRate(6, 1, 1000);
+	        Actions.AIEquipRate(7, 1, 350);
+	        Actions.AIEquipRate(8, 1, 350);
+			Actions.AIEquipRate(9, 1, 250);
+	        Actions.AIEquipRate(10, 1, 250);
+        end;
+		
+        mdNormal:
+        begin
+            Actions.GiveWares(0, 0, 5);
+			Actions.GiveWares(0, 1, 50);
+			Actions.GiveWares(0, 2, 40);
+			Actions.GiveWares(0, 8, 30);
+			Actions.GiveWares(0, 10, 30);
+			Actions.GiveWares(0, 13, 30);
+			Actions.GiveWares(0, 27, 10);
+            Actions.GiveWares(0, 7, 55);
+			Actions.AIEquipRate(4, 0, 300);
+	        Actions.AIEquipRate(5, 0, 300);
+			Actions.AIEquipRate(6, 0, 300);
+            Actions.AIEquipRate(4, 1, 500);
+	        Actions.AIEquipRate(5, 1, 500);
+			Actions.AIEquipRate(6, 1, 500);
+	        Actions.AIEquipRate(7, 1, 225);
+	        Actions.AIEquipRate(8, 1, 225);
+			Actions.AIEquipRate(9, 1, 175);
+	        Actions.AIEquipRate(10, 1, 175);
+        end;
+		
+        mdHard1:
+        begin
+			Actions.GiveWares(0, 1, 40);
+			Actions.GiveWares(0, 2, 40);
+			Actions.GiveWares(0, 8, 30);
+			Actions.GiveWares(0, 10, 30);
+			Actions.GiveWares(0, 13, 30);
+			Actions.GiveWares(0, 27, 10);
+            Actions.GiveWares(0, 7, 40);
+			Actions.AIEquipRate(4, 0, 200);
+	        Actions.AIEquipRate(5, 0, 200);
+			Actions.AIEquipRate(6, 0, 200);
+            Actions.AIEquipRate(4, 1, 200);
+	        Actions.AIEquipRate(5, 1, 200);
+			Actions.AIEquipRate(6, 1, 200);
+	        Actions.AIEquipRate(7, 1, 150);
+	        Actions.AIEquipRate(8, 1, 150);
+			Actions.AIEquipRate(9, 1, 100);
+	        Actions.AIEquipRate(10, 1, 100);
+        end;
+    end;
+end;
+end;
+
+
+
+procedure OnTick;
+var
+    resource: array of Byte;
+	resource2: array of Byte;
+	resource3: array of Byte;
+	
+begin
+    resource := [3, 5, 6];
+	resource2 := [21, 23, 25];
+	resource3 := [17, 19];
+
+	If S.GameTime mod 10 = 0 then 
+	begin
+		Hearse_Refresh(MyHearse);
+		Hearse_Refresh(MyHearse2);
+		Hearse_Refresh(MyHearse3);
+	end;
+		
+		
+    If S.GameTime = RandomTiming then
+    begin
+        Hearse_Reset(MyHearse) 
+        RandomTiming := S.GameTime + 18000 + S.KaMRandomI(6000)
+    end;
+    If S.GameTime = RandomTiming2 then
+    begin
+        Hearse_Reset(MyHearse2) 
+        RandomTiming2 := S.GameTime + 18000 + S.KaMRandomI(6000)
+    end;
+    If S.GameTime = RandomTiming3 then
+    begin
+
+        Hearse_Reset(MyHearse3)
+        RandomTiming3 := S.GameTime + 18000 + S.KaMRandomI(6000)
+    end;
+	
+	If S.GameTime = 18000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse, [16, 19, 15]); 
+		Hearse_SetReward(MyHearse, [9], [25]);	
+		
+	end;
+	If S.GameTime = 27000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [16, 20, 15]); 
+		Hearse_SetReward(MyHearse2, [9], [25]);	
+	end;
+	If S.GameTime = 36000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [16, 20, 15]); 
+		Hearse_SetReward(MyHearse3, [3], [20]);	
+		Hearse_ChangeTypes(MyHearse, [16, 19, 15]); 
+		Hearse_SetReward(MyHearse, [8, 10, 19, 23], [15, 15, 5, 5]);	
+		Hearse_SetGroupSize(MyHearse, 9, 3);
+	end;
+	If S.GameTime = 51000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [22, 22]); 
+		Hearse_SetReward(MyHearse2, [13, 26], [10, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 6, 3);	
+	end;
+    If S.GameTime = 60000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [26, 14, 24]); 
+		Hearse_SetReward(MyHearse3, [0, 2, 1], [10, 10, 30]);
+        Hearse_SetGroupSize(MyHearse3, 25, 5);	
+		Hearse_SetLeaderGroupSize(MyHearse3, 1, 1)
+		Hearse_ChangeTypes(MyHearse, [16, 15, 14]); 
+		Hearse_SetReward(MyHearse, [25, 24], [10, 15]);	
+		Hearse_SetGroupSize(MyHearse, 16, 4);
+		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
+	end;
+		If S.GameTime = 75000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [15, 19, 20]); 
+		Hearse_SetReward(MyHearse2, [9, 8, 14, 2], [5, 5, 3, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 9, 3);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);
+	end;
+	    If S.GameTime = 84000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [14, 24]); 
+		Hearse_SetReward(MyHearse3, [9], [5]);
+        Hearse_SetGroupSize(MyHearse3, 4, 2);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 4, 2);
+		Hearse_ChangeTypes(MyHearse, [22, 22]); 
+		Hearse_SetReward(MyHearse, [26], [20]);	
+		Hearse_SetGroupSize(MyHearse, 9, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
+	end;
+		If S.GameTime = 99000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [23, 21, 22]); 
+		Hearse_SetReward(MyHearse2, [16, 18, 19, 17], [15, 15, 5, 5]);	
+		Hearse_SetGroupSize(MyHearse2, 16, 4);
+        Hearse_SetLeaderGroupSize(MyHearse2, 1, 1);	
+	end;
+		If S.GameTime = 108000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [20, 20, 19]); 
+		Hearse_SetReward(MyHearse3, [22, 23], [15, 10]);	
+		Hearse_SetGroupSize(MyHearse3, 9, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 9, 3);
+		Hearse_ChangeTypes(MyHearse, [23, 26]); 
+		Hearse_SetReward(MyHearse, [7], [45]);	
+		Hearse_SetGroupSize(MyHearse, 9, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
+	end;
+	   If S.GameTime = 123000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [26, 14, 24]); 
+		Hearse_SetReward(MyHearse2, [20], [15]);	
+		Hearse_SetGroupSize(MyHearse2, 20, 5);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);	
+	end;
+	   If S.GameTime = 132000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [15, 16, 19]); 
+		Hearse_SetReward(MyHearse3, [12, 2], [10, 20]);	
+		Hearse_SetGroupSize(MyHearse3, 9, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 16, 4);
+		Hearse_ChangeTypes(MyHearse, [22, 21]); 
+		Hearse_SetReward(MyHearse, [7, 27, 14, 6], [10, 10, 3, 6]);	
+		Hearse_SetGroupSize(MyHearse, 6, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
+	end;
+		If S.GameTime = 147000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [16, 16]); 
+		Hearse_SetReward(MyHearse2, [5, 4, 3], [25, 10, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 9, 3);	
+	end;
+		If S.GameTime = 156000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [20, 21, 19]); 
+		Hearse_SetReward(MyHearse3, [10, 8], [15, 15]);	
+		Hearse_SetGroupSize(MyHearse3, 9, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
+		Hearse_ChangeTypes(MyHearse, [16, 20]); 
+		Hearse_SetReward(MyHearse, [3, 6], [15, 10]);	
+		Hearse_SetGroupSize(MyHearse, 6, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 12, 4);
+	end;
+		If S.GameTime = 171000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [26, 23]); 
+		Hearse_SetReward(MyHearse2, [27], [50]);	
+		Hearse_SetGroupSize(MyHearse2, 4, 2);
+        Hearse_SetLeaderGroupSize(MyHearse2, 4, 2);	  		
+	end;
+	    If S.GameTime = 180000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [14, 24, 27]); 
+		Hearse_SetReward(MyHearse3, [9, 10, 11], [15, 15, 15]);	
+		Hearse_SetGroupSize(MyHearse3, 25, 5);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 25, 5);
+		Hearse_ChangeTypes(MyHearse, [16, 16, 20]); 
+		Hearse_SetReward(MyHearse, [5, 19, 23], [25, 5, 23]);	
+		Hearse_SetGroupSize(MyHearse, 9, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
+	end;
+        If S.GameTime = 195000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [22, 21, 27]); 
+		Hearse_SetReward(MyHearse2, [26, 9], [15, 15]);	
+		Hearse_SetGroupSize(MyHearse2, 16, 4);	
+	end;
+		If S.GameTime = 204000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [20, 22, 16]); 
+		Hearse_SetReward(MyHearse3, [21, 23, 25], [10, 10, 10]);	
+		Hearse_SetGroupSize(MyHearse3, 12, 4);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
+		Hearse_ChangeTypes(MyHearse, [22, 22, 21]); 
+		Hearse_SetReward(MyHearse, [26, 5, 12], [10, 15, 15]);	
+		Hearse_SetGroupSize(MyHearse, 16, 4);
+		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
+	end;
+	    If S.GameTime = 219000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [16, 15]); 
+		Hearse_SetReward(MyHearse2, [2, 0], [20, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 9, 3);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);	
+	end;
+		If S.GameTime = 228000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [23, 15, 14]); 
+		Hearse_SetReward(MyHearse3, [20, 18, 16], [15, 10, 5]);	
+		Hearse_SetGroupSize(MyHearse3, 9, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 6, 3);
+		Hearse_ChangeTypes(MyHearse, [19, 19, 15]); 
+		Hearse_SetReward(MyHearse, [0, 2, 12], [10, 30, 20]);	
+		Hearse_SetGroupSize(MyHearse, 9, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
+	end;
+		If S.GameTime = 243000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [23, 26]); 
+		Hearse_SetReward(MyHearse2, [7], [100]);	
+		Hearse_SetGroupSize(MyHearse2, 16, 4);
+        Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);	 		
+	end;
+	    If S.GameTime = 252000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [16, 15, 20]); 
+		Hearse_SetReward(MyHearse3, [9, 14, 15], [15, 5, 5]);	
+		Hearse_SetGroupSize(MyHearse3, 12, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 9, 3);
+		Hearse_ChangeTypes(MyHearse, [22, 21, 22]); 
+		Hearse_SetReward(MyHearse, [7], [80]);	
+		Hearse_SetGroupSize(MyHearse, 20, 4);
+		Hearse_SetLeaderGroupSize(MyHearse, 20, 4);
+	end;
+		If S.GameTime = 267000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [20, 21]); 
+		Hearse_SetReward(MyHearse2, [22, 19], [15, 15]);	
+		Hearse_SetGroupSize(MyHearse2, 9, 3);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);			
+	end;
+		If S.GameTime = 276000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [15, 15]); 
+		Hearse_SetReward(MyHearse3, [20, 24, 2], [10, 10, 10]);	
+		Hearse_SetGroupSize(MyHearse3, 6, 3);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 6, 3);
+		Hearse_ChangeTypes(MyHearse, [19, 19]); 
+		Hearse_SetReward(MyHearse, [22, 18], [10, 10]);	
+		Hearse_SetGroupSize(MyHearse, 6, 3);
+		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
+	end;
+		If S.GameTime = 291000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [20, 23, 22]); 
+		Hearse_SetReward(MyHearse2, [7, 5, 4], [25, 10, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 6, 3);	
+	end;
+		If S.GameTime = 300000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [23, 26, 16]); 
+		Hearse_SetReward(MyHearse3, [5, 4], [30, 30]);	
+		Hearse_SetGroupSize(MyHearse3, 12, 4);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
+		Hearse_ChangeTypes(MyHearse, [20, 16, 20]); 
+		Hearse_SetReward(MyHearse, [12, 2], [30, 30]);	
+		Hearse_SetGroupSize(MyHearse, 16, 4);
+		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
+	end;
+		If S.GameTime = 315000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [23, 22]); 
+		Hearse_SetReward(MyHearse2, [19, 17, 21], [10, 10, 10]);	
+		Hearse_SetGroupSize(MyHearse2, 4, 2);
+        Hearse_SetLeaderGroupSize(MyHearse2, 20, 5);			
+	end;
+		If S.GameTime = 324000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [14, 24, 27]); 
+		Hearse_SetReward(MyHearse3, [8, 10, 27], [25, 25, 20]);	
+		Hearse_SetGroupSize(MyHearse3, 25, 5);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 25, 5);
+		Hearse_ChangeTypes(MyHearse, [22, 21]); 
+		Hearse_SetReward(MyHearse, [26], [25]);	
+		Hearse_SetGroupSize(MyHearse, 25, 5);
+		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
+	end;
+		If S.GameTime = 339000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [23, 14, 24]); 
+		Hearse_SetReward(MyHearse2, [9, 11, 12], [25, 15, 15]);	
+		Hearse_SetGroupSize(MyHearse2, 25, 5);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 20, 5);
+	end;
+		If S.GameTime = 348000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [16, 20, 22]); 
+		Hearse_SetReward(MyHearse3, [5, 4, 3], [60, 20, 20, 20]);	
+		Hearse_SetGroupSize(MyHearse3, 25, 5);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 20, 5);
+		Hearse_ChangeTypes(MyHearse, [23, 26, 22]); 
+		Hearse_SetReward(MyHearse, [21, 23, 25, 19, 17], [15, 15, 15, 45, 15]);	
+		Hearse_SetGroupSize(MyHearse, 25, 5);
+		Hearse_SetLeaderGroupSize(MyHearse, 20, 5);
+	end;
+		If S.GameTime = 363000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse2, [16, 20, 26]); 
+		Hearse_SetReward(MyHearse2, [7], [40]);	
+		Hearse_SetGroupSize(MyHearse2, 16, 4);	
+		Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);	
+	end;
+		If S.GameTime = 372000 then 
+	begin
+		Hearse_ChangeTypes(MyHearse3, [22, 21]); 
+		Hearse_SetReward(MyHearse3, [7], [40]);
+        Hearse_SetGroupSize(MyHearse3, 16, 4);		
+		Hearse_SetLeaderGroupSize(MyHearse3, 16, 4);
+		Hearse_ChangeTypes(MyHearse, [20, 20, 16]); 
+		Hearse_SetReward(MyHearse, [7], [40]);	
+		Hearse_SetGroupSize(MyHearse, 16, 4);
+		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
+	end;
+    if S.GameTime = 150 then
+	begin
+        Actions.ShowMsg(0, '<$1>');
+		Actions.GiveUnit(0, 0, 29, 124, 4);
+		Actions.GiveUnit(0, 0, 30, 124, 4);
+		Actions.GiveUnit(0, 0, 31, 124, 4);
+		Actions.GiveUnit(0, 0, 29, 125, 4);
+		Actions.GiveUnit(0, 0, 30, 125, 4);
+		Actions.GiveUnit(0, 0, 31, 125, 4);
+		Actions.GiveUnit(0, 0, 38, 126, 4);
+		Actions.GiveUnit(0, 0, 39, 126, 4);
+        Actions.GiveUnit(0, 0, 27, 127, 4);
+		Actions.GiveUnit(0, 0, 27, 126, 4);
+		Actions.GiveUnit(0, 9, 25, 127, 4);
+		Actions.GiveUnit(0, 9, 23, 127, 4);
+		Actions.GiveUnit(0, 9, 24, 127, 4);
+		Actions.GiveUnit(0, 1, 38, 141, 4);
+		Actions.GiveUnit(0, 4, 33, 128, 4);
+		Actions.GiveUnit(0, 4, 30, 137, 4);
+		Actions.GiveUnit(0, 4, 37, 131, 4);
+        Actions.GiveUnit(0, 5, 38, 137, 4);
+		Actions.GiveUnit(0, 6, 42, 132, 4);
+		Actions.GiveUnit(0, 6, 35, 124, 4);
+		Actions.GiveUnit(0, 8, 41, 129, 4);
+		Actions.GiveUnit(0, 10, 26, 123, 4);
+		Actions.GiveGroup(0, 27, 30, 130, 4, 1, 1);
+        Actions.GiveGroup(0, 24, 37, 134, 7, 1, 1);
+        Actions.GiveGroup(0, 24, 32, 139, 2, 1, 1);
+    end;
+	
+	if S.GameTime = 1200 then
+	begin
+	    Actions.ShowMsg(0, '<$2>');
+	end;
+	
+	if S.GameTime = 3000 then
+	begin
+	    Actions.ShowMsg(0, '<$5>');
+	end;
+	
+	if S.GameTime = 6000 then
+	begin
+	    Actions.ShowMsg(0, '<$4>');
+	end;
+   
+   	if S.GameTime = 32000 then
+	begin
+	    Actions.ShowMsg(0, '<$10>');
+	end;
+	
+    if KeyPlayerDefeated then
+    if S.GameTime mod 6000 = 0 then
+		begin
+        Actions.GiveWares(0, resource[States.KaMRandomI(Length(resource) - 1)], Utils.RandomRangeI(8, 22));
+		Actions.GiveWares(0, resource2[States.KaMRandomI(Length(resource) - 1)], Utils.RandomRangeI(1, 3));
+		Actions.GiveWares(0, resource3[States.KaMRandomI(Length(resource) - 1)], Utils.RandomRangeI(2, 7));
+		Actions.ShowMsg(0, '<$9>');
+	end;
+
+end;
+
+procedure OnPlayerDefeated(aIndex: Integer);
+var
+    aUnits, aGroups: array of Integer;
+    i: Integer;
+begin
+if  (aIndex = 4) then
+	begin 
+	Actions.ShowMsg(0, '<$6>');	
+    Actions.PlayerShareFogCompliment(0, 1, True);
+	Actions.HouseUnlock(0, 1)
+	KeyPlayerDefeated := true;
+	end;
+	
+if  (aIndex = 5) then
+	begin 
+	Actions.ShowMsg(0, '<$7>');	
+	Actions.PlayerShareFogCompliment(0, 3, True);
+	    case DifficultySetting of
+		
+	    mdEasy1:
+        begin
+            Actions.GiveWares(0, 7, 250);
+			Actions.GiveWares(0, 9, 60);
+			Actions.GiveWares(0, 27, 50);
+			Actions.GiveWares(0, 4, 50);
+			Actions.GiveWares(0, 5, 50);
+        end;
+		
+		mdNormal:
+        begin
+            Actions.GiveWares(0, 7, 225);
+			Actions.GiveWares(0, 9, 50);
+			Actions.GiveWares(0, 27, 35);
+			Actions.GiveWares(0, 4, 40);
+			Actions.GiveWares(0, 5, 40);
+        end;
+		mdHard1:
+        begin
+            Actions.GiveWares(0, 7, 200);
+			Actions.GiveWares(0, 9, 40);
+			Actions.GiveWares(0, 27, 30);
+			Actions.GiveWares(0, 4, 30);
+			Actions.GiveWares(0, 5, 30);
+        end;
+	end;
+end;
+	
+if  (aIndex = 6) then
+	begin 
+	Actions.ShowMsg(0, '<$8>');	
+	Actions.PlayerShareFogCompliment(0, 2, True);
+	aUnits := States.PlayerGetAllUnits(3);
+        for i := 0 to Length(aUnits) -1 do
+            if States.UnitsGroup(aUnits[i]) = -1 then 
+                Actions.UnitKill(aUnits[i], true);
+        aGroups := States.PlayerGetAllGroups(3);
+        for i := 0 to Length(aGroups) -1 do
+            Actions.UnitKill(aGroups[i], true);
+			
+	case DifficultySetting of
+	        mdEasy1:
+        begin
+	    Actions.GiveGroup(0, 23, 95, 11, 5, 15, 5);
+        Actions.GiveGroup(0, 23, 97, 12, 5, 15, 5);
+        Actions.GiveGroup(0, 25, 98, 8, 5, 20, 5);
+		Actions.GiveGroup(0, 25, 99, 8, 5, 20, 5);
+		Actions.GiveGroup(0, 19, 94, 5, 4, 20, 5);
+		Actions.GiveGroup(0, 14, 90, 17, 5, 25, 5);
+		Actions.GiveGroup(0, 24, 102, 12, 6, 25, 5);
+        end;
+		
+        mdNormal:
+        begin
+	    Actions.GiveGroup(0, 23, 95, 11, 5, 15, 5);
+        Actions.GiveGroup(0, 23, 97, 12, 5, 15, 5);
+        Actions.GiveGroup(0, 25, 98, 8, 5, 15, 5);
+		Actions.GiveGroup(0, 25, 99, 8, 5, 15, 5);
+		Actions.GiveGroup(0, 19, 94, 5, 4, 20, 5);
+		Actions.GiveGroup(0, 14, 90, 17, 5, 25, 5);
+		Actions.GiveGroup(0, 24, 102, 12, 6, 25, 5);
+        end;
+		
+        mdHard1:
+        begin
+	    Actions.GiveGroup(0, 23, 95, 11, 5, 15, 5);
+        Actions.GiveGroup(0, 23, 97, 12, 5, 15, 5);
+        Actions.GiveGroup(0, 25, 98, 8, 5, 12, 4);
+		Actions.GiveGroup(0, 25, 99, 8, 5, 12, 4);
+		Actions.GiveGroup(0, 19, 94, 5, 4, 20, 5);
+		Actions.GiveGroup(0, 14, 90, 17, 5, 25, 5);
+		Actions.GiveGroup(0, 24, 102, 12, 6, 25, 5);
+        end;
+	end;
+end;
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+	if ((aHouseID = States.HouseAt(77, 55)) AND (States.HouseOwner(aHouseID) = 8)) then
+	begin
+	RandomTiming := 3600000;
+	RandomTiming2 := 3600000;
+	RandomTiming3 := 3600000;
+	end;
+	
+	if ((aHouseID = States.HouseAt(92, 68)) AND (States.HouseOwner(aHouseID) = 7)) then
+	begin
+	RandomTiming := 3600000;
+	RandomTiming2 := 3600000;
+	RandomTiming3 := 3600000;
+	end;
+	
+	if ((aHouseID = States.HouseAt(137, 74)) AND (States.HouseOwner(aHouseID) = 9)) then
+	begin
+	RandomTiming := 3600000;
+	RandomTiming2 := 3600000;
+	RandomTiming3 := 3600000;
+	end;
+	
+	if ((aHouseID = States.HouseAt(138, 93)) AND (States.HouseOwner(aHouseID) = 10)) then
+	begin
+	RandomTiming := 3600000;
+	RandomTiming2 := 3600000;
+	RandomTiming3 := 3600000;
+	end;
+	
+	if ((aHouseID = States.HouseAt(144, 95)) AND (States.HouseOwner(aHouseID) = 10)) then
+	begin
+	RandomTiming := 3600000;
+	RandomTiming2 := 3600000;
+	RandomTiming3 := 3600000;
+	end;
+end;
