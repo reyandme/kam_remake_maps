@@ -1,0 +1,30 @@
+procedure OnMissionStart;
+begin
+  Actions.PlayWAVLooped(-1, 'Rain', 0.4);
+end;
+
+function PlayWAVThunder: ANSIString;
+begin
+  case States.KaMRandomI(5) of
+    0: Result:= 'Thunder1';
+    1: Result:= 'Thunder2';
+    2: Result:= 'Thunder3';
+    3: Result:= 'Thunder4';
+    4: Result:= 'Thunder5';
+  end;
+end;
+
+procedure OnTick;
+begin
+
+  if States.GameTime = 30 then
+    begin
+    Actions.PlayWAV(-1, PlayWAVThunder, 1);
+    end;
+
+  if States.GameTime mod 215 = 0 then
+    begin
+    Actions.PlayWAV(-1, PlayWAVThunder, 1);
+    end;
+
+end;

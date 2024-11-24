@@ -1,0 +1,45 @@
+procedure OnMissionStart;
+begin
+  Actions.PlayWAVLooped(-1, 'ambience', 0.7);
+  Actions.PlayWAVAtLocationLooped(-1, 'water', 0.8, 28, 12, 8);
+  Actions.PlayWAVAtLocationLooped(-1, 'water', 0.8, 28, 52, 55);
+end;
+
+function PlayWAVQuack: ANSIString;
+begin
+  case States.KaMRandomI(3) of
+    0: Result:= 'Quack1';
+    1: Result:= 'Quack2';
+    2: Result:= 'Quack3';
+  end;
+end;
+
+function PlayWAVPig: ANSIString;
+begin
+  case States.KaMRandomI(8) of
+    0: Result:= 'Pig1';
+    1: Result:= 'Pig2';
+    2: Result:= 'Pig3';
+    3: Result:= 'Pig4';
+    4: Result:= 'Pig5';
+    5: Result:= 'Pig6';
+    6: Result:= 'Pig7';
+    7: Result:= 'Pig8';
+  end;
+end;
+
+procedure OnTick;
+begin
+
+
+  if States.GameTime mod 264 = 0 then
+    begin
+      Actions.PlayWAVAtLocation(-1, PlayWAVQuack, 3.5, 28, 12, 8);
+    end;
+
+  if States.GameTime mod 192 = 0 then
+    begin
+      Actions.PlayWAVAtLocation(-1, PlayWAVPig, 3.5, 28, 52, 55);
+    end;
+
+end;

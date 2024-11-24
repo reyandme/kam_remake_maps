@@ -1,0 +1,38 @@
+function Wnd: AnsiString;
+begin
+case States.KaMRandomI(7) of
+ 0: result:= 'wnd(0)';
+ 1: result:= 'wnd(1)';
+ 2: result:= 'wnd(2)';
+ 3: result:= 'wnd(3)';
+ 4: result:= 'wnd(4)';
+ 5: result:= 'wnd(5)';
+ 6: result:= 'wnd(6)'; 
+ end;
+end;
+
+function kar: AnsiString;
+begin
+case States.KaMRandomI(3) of
+ 0: result:= 'kar1';
+ 1: result:= 'kar2';
+ 2: result:= 'kar3';
+ end;
+end;
+
+procedure OnTick;
+begin
+
+    if States.GameTime mod 64 = 0 then
+    if States.KamRandomI(100) < 44 then
+      Actions.PlayWAV(-1, Wnd, 1);
+
+    if States.GameTime mod 116 = 0 then
+    if States.KamRandomI(100) < 27 then
+      Actions.PlayWAV(-1, kar, 1);
+
+    if States.GameTime mod 152 = 0 then
+    if States.KamRandomI(100) < 22 then
+      Actions.PlayWAV(-1, 'wolk971', 1);
+
+end;   

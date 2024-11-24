@@ -1,0 +1,2743 @@
+var
+MeleeX: array [100..299] of Integer;
+MeleeY: array [100..299] of Integer;
+AntiCavalryX: array [100..299] of Integer;
+AntiCavalryY: array [100..299] of Integer;
+RangedX: array [100..299] of Integer;
+RangedY: array [100..299] of Integer;
+CavalryX: array [100..299] of Integer;
+CavalryY: array [100..299] of Integer;
+MeleeBarbariansX: array [100..299] of Integer;
+MeleeBarbariansY: array [100..299] of Integer;
+i: Integer;
+Timer: Integer;
+ScorePlayer: array [0..1] of Integer;
+RandomCategory: array [1..3] of Integer;
+TextCategory: array [1..3] of AnsiString;
+Round: array [1..4] of Integer;
+RandomElement: Integer;
+UnitCountRound: Integer;
+UnitCountLine: Integer;
+MeleePair: array [1..4] of Integer;
+AntiCavalryPair: array [1..2] of Integer;
+RangedPair: array [1..2] of Integer;
+CavalryPair: array [1..2] of Integer;
+UnitCountPair: array [1..10] of Integer;
+CountArmyPlayer1: array [2..3] of Integer;
+CountArmyTownhallPlayer1: array [2..3] of Integer;
+CountArmyLeatherPlayer1: array [2..3] of Integer;
+CountArmyIronPlayer1: array [2..3] of Integer;
+CountArmyPlayer2: array [2..3] of Integer;
+CountArmyTownhallPlayer2: array [2..3] of Integer;
+CountArmyLeatherPlayer2: array [2..3] of Integer;
+CountArmyIronPlayer2: array [2..3] of Integer;
+IndexPlaceMelee: array [1..2] of Integer;
+IndexPlaceMeleeBarbarian: array [1..2] of Integer;
+IndexPlaceAntiCavalry: array [1..2] of Integer;
+IndexPlaceRanged: array [1..2] of Integer;
+IndexPlaceCavalry: array [1..2] of Integer;
+Min: array [1..2] of Integer;
+Seconds: array [1..2] of Integer;
+
+{
+
+RandomCategoryType:
+
+0 - Townhall + Townhall
+1 - Leather + Leather
+2 - Iron + Iron
+3 - Townhall + Leather
+4 - Leather + Iron
+5 - Iron + Townhall
+6 - All Random
+
+}
+
+procedure OnMissionStart;
+begin
+  Actions.PlayWAVLooped(-1, 'Forest', 1);
+  Timer:= 12;
+  Actions.UnitKill(States.UnitAt(19,1), true);
+  Actions.UnitKill(States.UnitAt(22,95), true);
+  Actions.FogCoverAll(0);
+  Actions.FogCoverAll(1);
+  Round[1]:= 0;
+  Round[2]:= 0;
+  Round[3]:= 0;
+
+	case States.KaMRandomI(4) of
+		0:
+      begin
+      UnitCountRound:= 6; UnitCountLine:= 3;
+      end;
+		1:
+      begin
+      UnitCountRound:= 8; UnitCountLine:= 4;
+      end;
+		2:
+      begin
+      UnitCountRound:= 10; UnitCountLine:= 5;
+      end;
+		3:
+      begin
+      UnitCountRound:= 12; UnitCountLine:= 4;
+      end;
+	end;
+
+
+//Stage 1//
+///////////////////////////////////////////////////////////////////////////
+MeleeX[101]:= 16; MeleeY[101]:= 84;//1
+MeleeX[102]:= 48; MeleeY[102]:= 91;//2
+MeleeX[103]:= 68; MeleeY[103]:= 86;//1
+MeleeBarbariansX[104]:= 27; MeleeBarbariansY[104]:= 91;//0
+
+AntiCavalryX[101]:= 31; AntiCavalryY[101]:= 87;//2
+AntiCavalryX[102]:= 69; AntiCavalryY[102]:= 91;//1
+
+RangedX[101]:= 24; RangedY[101]:= 87;//1
+RangedX[102]:= 64; RangedY[102]:= 91;//2
+
+CavalryX[101]:= 4; CavalryY[101]:= 81;//2
+CavalryX[102]:= 76; CavalryY[102]:= 92;//1
+
+///////////////////////////////////////////////////////////////////////////
+
+MeleeX[201]:= 22; MeleeY[201]:= 9;//1
+MeleeX[202]:= 40; MeleeY[202]:= 10;//2
+MeleeX[203]:= 67; MeleeY[203]:= 8;//1
+MeleeBarbariansX[204]:= 30; MeleeBarbariansY[204]:= 6;//0
+
+AntiCavalryX[201]:= 26; AntiCavalryY[201]:= 4;//2
+AntiCavalryX[202]:= 58; AntiCavalryY[202]:= 5;//1
+
+RangedX[201]:= 21; RangedY[201]:= 4;//1
+RangedX[202]:= 63; RangedY[202]:= 5;//2
+
+CavalryX[201]:= 5; CavalryY[201]:= 5; //(3)// //2
+CavalryX[202]:= 77; CavalryY[202]:= 11;//1
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+//Stage 2//
+////////////////////////////////////////////////////////////////////////////
+MeleeX[105]:= 18; MeleeY[105]:= 88;//2
+MeleeX[106]:= 46; MeleeY[106]:= 87;//1
+MeleeX[107]:= 59; MeleeY[107]:= 92;//2
+MeleeBarbariansX[108]:= 43; MeleeBarbariansY[108]:= 92;//0
+
+AntiCavalryX[103]:= 9; AntiCavalryY[103]:= 83;//1
+AntiCavalryX[104]:= 75; AntiCavalryY[104]:= 87;//2
+
+RangedX[103]:= 12; RangedY[103]:= 88;//2
+RangedX[104]:= 54; RangedY[104]:= 91;//1
+
+CavalryX[103]:= 28; CavalryY[103]:= 84;//1
+CavalryX[104]:= 52; CavalryY[104]:= 85;//2
+
+///////////////////////////////////////////////////////////////////////////
+
+MeleeX[205]:= 15; MeleeY[205]:= 8;//2
+MeleeX[206]:= 42; MeleeY[206]:= 4;//1
+MeleeX[207]:= 61; MeleeY[207]:= 9;//2
+MeleeBarbariansX[208]:= 37; MeleeBarbariansY[208]:= 6;//0
+
+AntiCavalryX[203]:= 11; AntiCavalryY[203]:= 8;//1
+AntiCavalryX[204]:= 70; AntiCavalryY[204]:= 5;//2
+
+RangedX[203]:= 33; RangedY[203]:= 4;//2
+RangedX[204]:= 52; RangedY[204]:= 4;//1
+
+CavalryX[203]:= 27; CavalryY[203]:= 9;//1
+CavalryX[204]:= 45; CavalryY[204]:= 8;//2
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+//Stage 3//
+////////////////////////////////////////////////////////////////////////////
+MeleeX[109]:= 24; MeleeY[109]:= 79;//1
+MeleeX[110]:= 54; MeleeY[110]:= 81;//2
+MeleeBarbariansX[111]:= 35; MeleeBarbariansY[111]:= 93;//0
+
+AntiCavalryX[105]:= 9; AntiCavalryY[105]:= 79;//1
+AntiCavalryX[106]:= 22; AntiCavalryY[106]:= 83;//2
+AntiCavalryX[107]:= 36; AntiCavalryY[107]:= 89;//1
+AntiCavalryX[108]:= 65; AntiCavalryY[108]:= 82;//2
+
+RangedX[105]:= 15; RangedY[105]:= 80;//2
+RangedX[106]:= 37; RangedY[106]:= 81;//1
+RangedX[107]:= 49; RangedY[107]:= 83;//2
+RangedX[108]:= 63; RangedY[108]:= 86;//1
+
+CavalryX[105]:= 13; CavalryY[105]:= 76;//1
+CavalryX[106]:= 32; CavalryY[106]:= 80;//2
+CavalryX[107]:= 43; CavalryY[107]:= 83;//1
+CavalryX[108]:= 58; CavalryY[108]:= 80;//2
+
+///////////////////////////////////////////////////////////////////////
+
+MeleeX[209]:= 6; MeleeY[209]:= 9;//1
+MeleeX[210]:= 32; MeleeY[210]:= 13;//2
+MeleeBarbariansX[211]:= 52; MeleeBarbariansY[211]:= 7;//0
+
+AntiCavalryX[205]:= 5; AntiCavalryY[205]:= 16;//1
+AntiCavalryX[206]:= 18; AntiCavalryY[206]:= 12;//2
+AntiCavalryX[207]:= 52; AntiCavalryY[207]:= 12;//1
+AntiCavalryX[208]:= 73; AntiCavalryY[208]:= 14;//2
+
+RangedX[205]:= 8; RangedY[205]:= 13;//2
+RangedX[206]:= 34; RangedY[206]:= 10;//1
+RangedX[207]:= 44; RangedY[207]:= 13;//2
+RangedX[208]:= 62; RangedY[208]:= 13;//1
+
+CavalryX[205]:= 13; CavalryY[205]:= 12;//1
+CavalryX[206]:= 37; CavalryY[206]:= 14;//2
+CavalryX[207]:= 57; CavalryY[207]:= 10;//1
+CavalryX[208]:= 68; CavalryY[208]:= 14;//2
+end;
+
+function UnitCountFullRandom: Integer;
+begin
+  case States.KaMRandomI(7) of
+    0: result:= 7;
+    1: result:= 8;
+    2: result:= 9;
+    3: result:= 10;
+    4: result:= 11;
+    5: result:= 12;
+    6: result:= 6;
+  end;
+end;
+
+function UnitCountLineFullRandom: Integer;
+begin
+  case States.KaMRandomI(2) of
+    0: result:= 4;
+    1: result:= 5;
+  end;
+end;
+
+function FullRandomUnitType: Integer;
+begin
+  case States.KaMRandomI(14) of
+    0: result:= 14;
+    1: result:= 15;
+    2: result:= 16;
+    3: result:= 17;
+    4: result:= 18;
+    5: result:= 19;
+    6: result:= 20;
+    7: result:= 21;
+    8: result:= 22;
+    9: result:= 23;
+    10: result:= 24;
+    11: result:= 25;
+    12: result:= 26;
+    13: result:= 27;
+  end;
+end;
+
+function R2MeleeChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(6) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 105;
+    4: result:= 106;
+    5: result:= 107;
+  end;
+end;
+
+function R2MeleeBarbarianChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(2) of
+    0: result:= 104;
+    1: result:= 108;
+  end;
+end;
+
+function R2MeleeChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(6) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 205;
+    4: result:= 206;
+    5: result:= 207;
+  end;
+end;
+
+function R2MeleeBarbarianChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(2) of
+    0: result:= 204;
+    1: result:= 208;
+  end;
+end;
+
+function R2AntiCavalryChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+  end;
+end;
+
+function R2AntiCavalryChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+  end;
+end;
+
+function R2RangedChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+  end;
+end;
+
+function R2RangedChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+  end;
+end;
+
+function R2CavalryChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+  end;
+end;
+
+function R2CavalryChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+  end;
+end;
+
+function R3MeleeChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 105;
+    4: result:= 106;
+    5: result:= 107;
+    6: result:= 109;
+    7: result:= 110;
+  end;
+end;
+
+function R3MeleeBarbarianChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(3) of
+    0: result:= 104;
+    1: result:= 108;
+    2: result:= 111;
+  end;
+end;
+
+function R3MeleeChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 205;
+    4: result:= 206;
+    5: result:= 207;
+    6: result:= 209;
+    7: result:= 210;
+  end;
+end;
+
+function R3MeleeBarbarianChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(3) of
+    0: result:= 204;
+    1: result:= 208;
+    2: result:= 211;
+  end;
+end;
+
+function R3AntiCavalryChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+    4: result:= 105;
+    5: result:= 106;
+    6: result:= 107;
+    7: result:= 108;
+  end;
+end;
+
+function R3AntiCavalryChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+    4: result:= 205;
+    5: result:= 206;
+    6: result:= 207;
+    7: result:= 208;
+  end;
+end;
+
+function R3RangedChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+    4: result:= 105;
+    5: result:= 106;
+    6: result:= 107;
+    7: result:= 108;
+  end;
+end;
+
+function R3RangedChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+    4: result:= 205;
+    5: result:= 206;
+    6: result:= 207;
+    7: result:= 208;
+  end;
+end;
+
+function R3CavalryChooseIndexPlacePlayer1: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 101;
+    1: result:= 102;
+    2: result:= 103;
+    3: result:= 104;
+    4: result:= 105;
+    5: result:= 106;
+    6: result:= 107;
+    7: result:= 108;
+  end;
+end;
+
+function R3CavalryChooseIndexPlacePlayer2: Integer;
+begin
+  case States.KaMRandomI(8) of
+    0: result:= 201;
+    1: result:= 202;
+    2: result:= 203;
+    3: result:= 204;
+    4: result:= 205;
+    5: result:= 206;
+    6: result:= 207;
+    7: result:= 208;
+  end;
+end;
+
+procedure Townhall1;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 14, MeleeX[101], MeleeY[101], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, 14, MeleeX[103], MeleeY[103], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[104], MeleeBarbariansY[104], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 24, AntiCavalryX[102], AntiCavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 25, RangedX[101], RangedY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 27, CavalryX[102], CavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 14, MeleeX[201], MeleeY[201], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, 14, MeleeX[203], MeleeY[203], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[204], MeleeBarbariansY[204], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 24, AntiCavalryX[202], AntiCavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 25, RangedX[201], RangedY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 27, CavalryX[202], CavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+    end;
+
+    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    if (Round[2] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 14, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 3) and (CountArmyPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 4) and (CountArmyPlayer1[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 24, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 6) and (CountArmyPlayer1[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 25, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 8) and (CountArmyPlayer1[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 27, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 14, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 3) and (CountArmyPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 4) and (CountArmyPlayer2[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 24, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 6) and (CountArmyPlayer2[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 25, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 8) and (CountArmyPlayer2[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 27, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+    end;
+
+    if (Round[3] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 14, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 3) and (CountArmyPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 4) and (CountArmyPlayer1[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 24, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 6) and (CountArmyPlayer1[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 25, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 8) and (CountArmyPlayer1[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 27, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 14, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 3) and (CountArmyPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 4) and (CountArmyPlayer2[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 24, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 6) and (CountArmyPlayer2[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 25, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 8) and (CountArmyPlayer2[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 27, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+    end;
+
+end;
+
+procedure Townhall2;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 14, MeleeX[102], MeleeY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 24, AntiCavalryX[101], AntiCavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 25, RangedX[102], RangedY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 27, CavalryX[101], CavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 14, MeleeX[202], MeleeY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 24, AntiCavalryX[201], AntiCavalryY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 25, RangedX[202], RangedY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 27, CavalryX[201], CavalryY[201], 3, UnitCountRound, UnitCountLine);
+
+   end;
+
+     //////////////////////////////////////////////////////////////////////////////////
+
+  if (Round[2] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyTownhallPlayer1[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 14, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[2]:= CountArmyTownhallPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[2] >= 2) and (CountArmyTownhallPlayer1[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 24, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[2]:= CountArmyTownhallPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[2] >= 3) and (CountArmyTownhallPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 25, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[2]:= CountArmyTownhallPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[2] >= 4) and (CountArmyTownhallPlayer1[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 27, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[2]:= CountArmyTownhallPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyTownhallPlayer2[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 14, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[2]:= CountArmyTownhallPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[2] >= 2) and (CountArmyTownhallPlayer2[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 24, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[2]:= CountArmyTownhallPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[2] >= 3) and (CountArmyTownhallPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 25, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[2]:= CountArmyTownhallPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[2] >= 4) and (CountArmyTownhallPlayer2[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 27, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[2]:= CountArmyTownhallPlayer2[2] + 1;
+            end;
+        end;
+
+    end;
+
+  if (Round[3] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyTownhallPlayer1[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 14, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[3]:= CountArmyTownhallPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[3] >= 2) and (CountArmyTownhallPlayer1[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 24, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[3]:= CountArmyTownhallPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[3] >= 3) and (CountArmyTownhallPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 25, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[3]:= CountArmyTownhallPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyTownhallPlayer1[3] >= 4) and (CountArmyTownhallPlayer1[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 27, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer1[3]:= CountArmyTownhallPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyTownhallPlayer2[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 14, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[3]:= CountArmyTownhallPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[3] >= 2) and (CountArmyTownhallPlayer2[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 24, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[3]:= CountArmyTownhallPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[3] >= 3) and (CountArmyTownhallPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 25, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[3]:= CountArmyTownhallPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyTownhallPlayer2[3] >= 4) and (CountArmyTownhallPlayer2[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 27, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyTownhallPlayer2[3]:= CountArmyTownhallPlayer2[3] + 1;
+            end;
+        end;
+
+    end;
+
+end;
+
+procedure Leather1;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 15, MeleeX[101], MeleeY[101], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, 15, MeleeX[103], MeleeY[103], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[104], MeleeBarbariansY[104], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 19, AntiCavalryX[102], AntiCavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 17, RangedX[101], RangedY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 21, CavalryX[102], CavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 15, MeleeX[201], MeleeY[201], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, 15, MeleeX[203], MeleeY[203], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[204], MeleeBarbariansY[204], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 19, AntiCavalryX[202], AntiCavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 17, RangedX[201], RangedY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 21, CavalryX[202], CavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+      ///////////////////////////////////////////////////////////////////////////////////////
+    end;
+
+  if (Round[2] > 0)  then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 15, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 3) and (CountArmyPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 4) and (CountArmyPlayer1[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 19, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 6) and (CountArmyPlayer1[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 17, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 8) and (CountArmyPlayer1[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 21, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 15, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 3) and (CountArmyPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 4) and (CountArmyPlayer2[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 19, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 6) and (CountArmyPlayer2[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 17, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 8) and (CountArmyPlayer2[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 21, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+    end;
+
+  if (Round[3] > 0)  then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 15, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 3) and (CountArmyPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 4) and (CountArmyPlayer1[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 19, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 6) and (CountArmyPlayer1[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 17, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 8) and (CountArmyPlayer1[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 21, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 15, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 3) and (CountArmyPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 4) and (CountArmyPlayer2[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 19, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 6) and (CountArmyPlayer2[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 17, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 8) and (CountArmyPlayer2[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 21, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+
+    end;
+end;
+
+procedure Leather2;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 15, MeleeX[102], MeleeY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 19, AntiCavalryX[101], AntiCavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 17, RangedX[102], RangedY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 21, CavalryX[101], CavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 15, MeleeX[202], MeleeY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 19, AntiCavalryX[201], AntiCavalryY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 17, RangedX[202], RangedY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 21, CavalryX[201], CavalryY[201], 3, UnitCountRound, UnitCountLine);
+    end;
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+  if (Round[2] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyLeatherPlayer1[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 15, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[2]:= CountArmyLeatherPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[2] >= 2) and (CountArmyLeatherPlayer1[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 19, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[2]:= CountArmyLeatherPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[2] >= 3) and (CountArmyLeatherPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 17, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[2]:= CountArmyLeatherPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[2] >= 4) and (CountArmyLeatherPlayer1[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 21, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[2]:= CountArmyLeatherPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyLeatherPlayer2[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 15, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[2]:= CountArmyLeatherPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[2] >= 2) and (CountArmyLeatherPlayer2[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 19, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[2]:= CountArmyLeatherPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[2] >= 3) and (CountArmyLeatherPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 17, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[2]:= CountArmyLeatherPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[2] >= 4) and (CountArmyLeatherPlayer2[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 21, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[2]:= CountArmyLeatherPlayer2[2] + 1;
+            end;
+        end;
+
+   end;
+
+  if (Round[3] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyLeatherPlayer1[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 15, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[3]:= CountArmyLeatherPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[3] >= 2) and (CountArmyLeatherPlayer1[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 19, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[3]:= CountArmyLeatherPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[3] >= 3) and (CountArmyLeatherPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 17, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[3]:= CountArmyLeatherPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyLeatherPlayer1[3] >= 4) and (CountArmyLeatherPlayer1[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 21, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer1[3]:= CountArmyLeatherPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyLeatherPlayer2[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 15, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[3]:= CountArmyLeatherPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[3] >= 2) and (CountArmyLeatherPlayer2[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 19, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[3]:= CountArmyLeatherPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[3] >= 3) and (CountArmyLeatherPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 17, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[3]:= CountArmyLeatherPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyLeatherPlayer2[3] >= 4) and (CountArmyLeatherPlayer2[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 21, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyLeatherPlayer2[3]:= CountArmyLeatherPlayer2[3] + 1;
+            end;
+        end;
+
+    end;
+end;
+
+procedure Iron1;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 16, MeleeX[101], MeleeY[101], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, 16, MeleeX[103], MeleeY[103], 0, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[104], MeleeBarbariansY[104], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 20, AntiCavalryX[102], AntiCavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 18, RangedX[101], RangedY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 22, CavalryX[102], CavalryY[102], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 16, MeleeX[201], MeleeY[201], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, 16, MeleeX[203], MeleeY[203], 4, UnitCountRound, UnitCountLine);
+      Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[204], MeleeBarbariansY[204], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 20, AntiCavalryX[202], AntiCavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 18, RangedX[201], RangedY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 22, CavalryX[202], CavalryY[202], 4, UnitCountRound, UnitCountLine);
+
+    end;
+
+      //////////////////////////////////////////////////////////////////////////////////////
+
+  if (Round[2] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 16, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 3) and (CountArmyPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 4) and (CountArmyPlayer1[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 20, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 6) and (CountArmyPlayer1[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 18, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[2] >= 8) and (CountArmyPlayer1[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 22, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[2]:= CountArmyPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[2] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 16, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 3) and (CountArmyPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 4) and (CountArmyPlayer2[2] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 20, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 6) and (CountArmyPlayer2[2] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 18, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[2] >= 8) and (CountArmyPlayer2[2] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 22, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[2]:= CountArmyPlayer2[2] + 1;
+            end;
+        end;
+
+    end;
+
+  if (Round[3] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyPlayer1[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 16, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 3) and (CountArmyPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 4) and (CountArmyPlayer1[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 20, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 6) and (CountArmyPlayer1[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 18, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyPlayer1[3] >= 8) and (CountArmyPlayer1[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 22, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyPlayer1[3]:= CountArmyPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyPlayer2[3] < 3 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 16, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 3) and (CountArmyPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]]) > 0 then
+            begin
+              IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 4) and (CountArmyPlayer2[3] < 6) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 20, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 6) and (CountArmyPlayer2[3] < 8) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 18, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyPlayer2[3] >= 8) and (CountArmyPlayer2[3] < 10) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 22, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyPlayer2[3]:= CountArmyPlayer2[3] + 1;
+            end;
+        end;
+
+    end;
+end;
+
+procedure Iron2;
+begin
+  if Round[1] > 0 then
+    begin
+      Actions.GiveGroup(0, 16, MeleeX[102], MeleeY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 20, AntiCavalryX[101], AntiCavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 18, RangedX[102], RangedY[102], 0, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(0, 22, CavalryX[101], CavalryY[101], 0, UnitCountRound, UnitCountLine);
+
+      /////////////////////////////////////////////////////////////////////////////////////
+
+      Actions.GiveGroup(1, 16, MeleeX[202], MeleeY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 20, AntiCavalryX[201], AntiCavalryY[201], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 18, RangedX[202], RangedY[202], 4, UnitCountRound, UnitCountLine);
+
+      Actions.GiveGroup(1, 22, CavalryX[201], CavalryY[201], 3, UnitCountRound, UnitCountLine);
+    end;
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+  if (Round[2] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+        while CountArmyIronPlayer1[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R2MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 16, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[2]:= CountArmyIronPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[2] >= 2) and (CountArmyIronPlayer1[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R2AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 20, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[2]:= CountArmyIronPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[2] >= 3) and (CountArmyIronPlayer1[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R2RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 18, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[2]:= CountArmyIronPlayer1[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[2] >= 4) and (CountArmyIronPlayer1[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R2CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(1, 22, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[2]:= CountArmyIronPlayer1[2] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+        while CountArmyIronPlayer2[2] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R2MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 16, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[2]:= CountArmyIronPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[2] >= 2) and (CountArmyIronPlayer2[2] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R2AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 20, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[2]:= CountArmyIronPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[2] >= 3) and (CountArmyIronPlayer2[2] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R2RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 18, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[2]:= CountArmyIronPlayer2[2] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[2] >= 4) and (CountArmyIronPlayer2[2] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R2CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(0, 22, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[2]:= CountArmyIronPlayer2[2] + 1;
+            end;
+        end;
+
+    end;
+
+  if (Round[3] > 0) then
+    begin
+
+        IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+        while CountArmyIronPlayer1[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]]) > 0 then
+            begin
+              IndexPlaceMelee[1]:= R3MeleeChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 16, MeleeX[IndexPlaceMelee[1]], MeleeY[IndexPlaceMelee[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[3]:= CountArmyIronPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[3] >= 2) and (CountArmyIronPlayer1[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[1]:= R3AntiCavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 20, AntiCavalryX[IndexPlaceAntiCavalry[1]], AntiCavalryY[IndexPlaceAntiCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[3]:= CountArmyIronPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[3] >= 3) and (CountArmyIronPlayer1[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]]) > 0 then
+            begin
+              IndexPlaceRanged[1]:= R3RangedChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 18, RangedX[IndexPlaceRanged[1]], RangedY[IndexPlaceRanged[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[3]:= CountArmyIronPlayer1[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+      while (CountArmyIronPlayer1[3] >= 4) and (CountArmyIronPlayer1[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]]) > 0 then
+            begin
+              IndexPlaceCavalry[1]:= R3CavalryChooseIndexPlacePlayer1;
+            end else
+            begin
+              Actions.GiveGroup(0, 22, CavalryX[IndexPlaceCavalry[1]], CavalryY[IndexPlaceCavalry[1]], 0, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer1[3]:= CountArmyIronPlayer1[3] + 1;
+            end;
+        end;
+      ///////////////////////////////////
+
+        IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+        while CountArmyIronPlayer2[3] < 2 do
+        begin
+          if States.GroupAt(MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]]) > 0 then
+            begin
+              IndexPlaceMelee[2]:= R3MeleeChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 16, MeleeX[IndexPlaceMelee[2]], MeleeY[IndexPlaceMelee[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[3]:= CountArmyIronPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[3] >= 2) and (CountArmyIronPlayer2[3] < 3) do
+        begin
+          if States.GroupAt(AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]]) > 0 then
+            begin
+              IndexPlaceAntiCavalry[2]:= R3AntiCavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 20, AntiCavalryX[IndexPlaceAntiCavalry[2]], AntiCavalryY[IndexPlaceAntiCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[3]:= CountArmyIronPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[3] >= 3) and (CountArmyIronPlayer2[3] < 4) do
+        begin
+          if States.GroupAt(RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]]) > 0 then
+            begin
+              IndexPlaceRanged[2]:= R3RangedChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 18, RangedX[IndexPlaceRanged[2]], RangedY[IndexPlaceRanged[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[3]:= CountArmyIronPlayer2[3] + 1;
+            end;
+        end;
+
+      IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+      while (CountArmyIronPlayer2[3] >= 4) and (CountArmyIronPlayer2[3] < 5) do
+        begin
+          if States.GroupAt(CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]]) > 0 then
+            begin
+              IndexPlaceCavalry[2]:= R3CavalryChooseIndexPlacePlayer2;
+            end else
+            begin
+              Actions.GiveGroup(1, 22, CavalryX[IndexPlaceCavalry[2]], CavalryY[IndexPlaceCavalry[2]], 4, UnitCountRound, UnitCountLine);
+              CountArmyIronPlayer2[3]:= CountArmyIronPlayer2[3] + 1;
+            end;
+        end;
+
+    end;
+
+end;
+
+procedure FullRandom;
+begin
+  if Round[1] > 0 then
+    begin
+
+      for i:= 1 to 4 do
+        begin
+          MeleePair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 2 do
+        begin
+          AntiCavalryPair[i]:= FullRandomUnitType;
+          RangedPair[i]:= FullRandomUnitType;
+          CavalryPair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 10 do
+        begin
+          UnitCountPair[i]:= UnitCountFullRandom;
+        end;
+
+      Actions.GiveGroup(0, MeleePair[1], MeleeX[101], MeleeY[101], 0, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[2], MeleeX[103], MeleeY[103], 0, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[3], MeleeBarbariansX[104], MeleeBarbariansY[104], 0, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[1], AntiCavalryX[102], AntiCavalryY[102], 0, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[1], RangedX[101], RangedY[101], 0, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[1], CavalryX[102], CavalryY[102], 0, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1)
+
+      Actions.GiveGroup(1, MeleePair[1], MeleeX[201], MeleeY[201], 4, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[2], MeleeX[203], MeleeY[203], 4, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[3], MeleeBarbariansX[204], MeleeBarbariansY[204], 4, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[1], AntiCavalryX[202], AntiCavalryY[202], 4, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[1], RangedX[201], RangedY[201], 4, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[1], CavalryX[202], CavalryY[202], 4, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1) -> (2)
+
+      Actions.GiveGroup(0, MeleePair[4], MeleeX[102], MeleeY[102], 0, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[2], AntiCavalryX[101], AntiCavalryY[101], 0, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[2], RangedX[102], RangedY[102], 0, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[2], CavalryX[101], CavalryY[101], 0, UnitCountPair[10], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(2)
+
+      Actions.GiveGroup(1, MeleePair[4], MeleeX[202], MeleeY[202], 4, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[2], AntiCavalryX[201], AntiCavalryY[201], 4, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[2], RangedX[202], RangedY[202], 4, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[2], CavalryX[201], CavalryY[201], 3, UnitCountPair[10], UnitCountLineFullRandom);
+    end;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (Round[2] > 0) then
+    begin
+
+      for i:= 1 to 4 do
+        begin
+          MeleePair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 2 do
+        begin
+          AntiCavalryPair[i]:= FullRandomUnitType;
+          RangedPair[i]:= FullRandomUnitType;
+          CavalryPair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 10 do
+        begin
+          UnitCountPair[i]:= UnitCountFullRandom;
+        end;
+
+      Actions.GiveGroup(1, MeleePair[1], MeleeX[105], MeleeY[105], 0, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[2], MeleeX[107], MeleeY[107], 0, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[3], MeleeBarbariansX[108], MeleeBarbariansY[108], 0, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[1], AntiCavalryX[104], AntiCavalryY[104], 0, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[1], RangedX[103], RangedY[103], 0, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[1], CavalryX[104], CavalryY[104], 0, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1)
+
+      Actions.GiveGroup(0, MeleePair[1], MeleeX[205], MeleeY[205], 4, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[2], MeleeX[207], MeleeY[207], 4, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[3], MeleeBarbariansX[208], MeleeBarbariansY[208], 4, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[1], AntiCavalryX[204], AntiCavalryY[204], 4, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[1], RangedX[203], RangedY[203], 4, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[1], CavalryX[204], CavalryY[204], 4, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1) -> (2)
+
+      Actions.GiveGroup(1, MeleePair[4], MeleeX[106], MeleeY[106], 0, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[2], AntiCavalryX[103], AntiCavalryY[103], 0, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[2], RangedX[104], RangedY[104], 0, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[2], CavalryX[103], CavalryY[103], 0, UnitCountPair[10], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(2)
+
+      Actions.GiveGroup(0, MeleePair[4], MeleeX[206], MeleeY[206], 4, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[2], AntiCavalryX[203], AntiCavalryY[203], 4, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[2], RangedX[204], RangedY[204], 4, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[2], CavalryX[203], CavalryY[203], 4, UnitCountPair[10], UnitCountLineFullRandom);
+
+  end;
+
+  if (Round[3] > 0) then
+    begin
+
+      for i:= 1 to 4 do
+        begin
+          MeleePair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 2 do
+        begin
+          AntiCavalryPair[i]:= FullRandomUnitType;
+          RangedPair[i]:= FullRandomUnitType;
+          CavalryPair[i]:= FullRandomUnitType;
+        end;
+
+      for i:= 1 to 10 do
+        begin
+          UnitCountPair[i]:= UnitCountFullRandom;
+        end;
+
+      Actions.GiveGroup(0, MeleePair[1], MeleeX[101], MeleeY[101], 0, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[2], MeleeX[103], MeleeY[103], 0, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(0, MeleePair[3], MeleeBarbariansX[104], MeleeBarbariansY[104], 0, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[1], AntiCavalryX[102], AntiCavalryY[102], 0, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[1], RangedX[101], RangedY[101], 0, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[1], CavalryX[102], CavalryY[102], 0, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1)
+
+      Actions.GiveGroup(1, MeleePair[1], MeleeX[201], MeleeY[201], 4, UnitCountPair[1], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[2], MeleeX[203], MeleeY[203], 4, UnitCountPair[2], UnitCountLineFullRandom);
+      Actions.GiveGroup(1, MeleePair[3], MeleeBarbariansX[204], MeleeBarbariansY[204], 4, UnitCountPair[3], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[1], AntiCavalryX[202], AntiCavalryY[202], 4, UnitCountPair[4], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[1], RangedX[201], RangedY[201], 4, UnitCountPair[5], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[1], CavalryX[202], CavalryY[202], 4, UnitCountPair[6], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(1) -> (2)
+
+      Actions.GiveGroup(0, MeleePair[4], MeleeX[102], MeleeY[102], 0, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, AntiCavalryPair[2], AntiCavalryX[101], AntiCavalryY[101], 0, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, RangedPair[2], RangedX[102], RangedY[102], 0, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(0, CavalryPair[2], CavalryX[101], CavalryY[101], 0, UnitCountPair[10], UnitCountLineFullRandom);
+
+      /////////////////////////////////////////////////////////////////////////////////////(2)
+
+      Actions.GiveGroup(1, MeleePair[4], MeleeX[202], MeleeY[202], 4, UnitCountPair[7], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, AntiCavalryPair[2], AntiCavalryX[201], AntiCavalryY[201], 4, UnitCountPair[8], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, RangedPair[2], RangedX[202], RangedY[202], 4, UnitCountPair[9], UnitCountLineFullRandom);
+
+      Actions.GiveGroup(1, CavalryPair[2], CavalryX[201], CavalryY[201], 3, UnitCountPair[10], UnitCountLineFullRandom);
+    end;
+
+end;
+
+procedure BarbariansAfterRound1;
+begin
+if Round[2] > 0 then
+  begin
+      IndexPlaceMeleeBarbarian[1]:= R2MeleeBarbarianChooseIndexPlacePlayer1;
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+            end;
+
+      IndexPlaceMeleeBarbarian[2]:= R2MeleeBarbarianChooseIndexPlacePlayer2;
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+            end;
+  end;
+if Round[3] > 0 then
+  begin
+      IndexPlaceMeleeBarbarian[1]:= R3MeleeBarbarianChooseIndexPlacePlayer1;
+            begin
+              Actions.GiveGroup(0, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[1]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[1]], 0, UnitCountRound, UnitCountLine);
+            end;
+
+      IndexPlaceMeleeBarbarian[2]:= R3MeleeBarbarianChooseIndexPlacePlayer2;
+            begin
+              Actions.GiveGroup(1, (26 - 3*States.KamRandomI(2)), MeleeBarbariansX[IndexPlaceMeleeBarbarian[2]], MeleeBarbariansY[IndexPlaceMeleeBarbarian[2]], 4, UnitCountRound, UnitCountLine);
+            end;
+  end;
+end;
+
+function Wnd: AnsiString;
+begin
+case States.KaMRandomI(7) of
+ 0: result:= 'wnd(0)';
+ 1: result:= 'wnd(1)';
+ 2: result:= 'wnd(2)';
+ 3: result:= 'wnd(3)';
+ 4: result:= 'wnd(4)';
+ 5: result:= 'wnd(5)';
+ 6: result:= 'wnd(6)'; 
+ end;
+end;
+
+function Amb: AnsiString;
+begin
+case States.KaMRandomI(3) of
+ 0: result:= 'kva1';
+ 1: result:= 'kva2';
+ 2: result:= 'kva3';
+ end;
+end;
+
+procedure OnTick;
+var
+Feed: Integer;
+Clear: Integer;
+UnitsPlayer1: array of Integer;
+UnitsPlayer2: array of Integer;
+begin
+
+    if States.GameTime mod 200 = 0 then
+    if States.KamRandomI(100) < 10 then
+      Actions.PlayWAV(-1, 'kuku', 1);
+
+      Actions.OverlayTextSet(-1, '|');
+
+    if States.GameTime mod 57 = 0 then
+    if States.KamRandomI(100) < 20 then
+      Actions.PlayWAV(-1, Wnd, 1);
+
+    if States.GameTime mod 85 = 0 then
+    if States.KamRandomI(100) < 24 then
+      Actions.PlayWAV(-1, Amb, 1);
+
+    if States.GameTime mod 240 = 0 then
+    if States.KamRandomI(100) < 15 then
+      Actions.PlayWAV(-1, 'wolk971', 1);    
+
+    begin
+    if States.StatArmyCount(0) > 0 then
+      UnitsPlayer1:= States.PlayerGetAllUnits(0);
+    end;
+
+    begin
+    if States.StatArmyCount(1) > 0 then
+      UnitsPlayer2:= States.PlayerGetAllUnits(1);
+    end;
+
+    begin
+    if States.GameTime mod 600 = 0 then
+    if Length(UnitsPlayer1) > 0 then
+      begin
+        for Feed := Low(UnitsPlayer1) to High(UnitsPlayer1) do
+          Actions.UnitHungerSet(UnitsPlayer1[Feed], 27000);
+      end;
+    end;
+
+    begin
+    if States.GameTime mod 600 = 0 then
+    if Length(UnitsPlayer2) > 0 then
+      begin
+        for Feed := Low(UnitsPlayer2) to High(UnitsPlayer2) do
+          Actions.UnitHungerSet(UnitsPlayer2[Feed], 27000);
+      end;
+    end;
+
+if (States.PlayerVictorious(0) = false) and (States.PlayerVictorious(1) = false) then
+begin
+
+  if States.GameTime mod 10 = 0 then
+  if Timer > 0 then
+      Timer:= Timer - 1;
+
+  if (RandomCategory[1] = RandomCategory[2]) or (RandomCategory[2] = RandomCategory[3]) or (RandomCategory[3] = RandomCategory[1]) then
+      begin
+          RandomCategory[1]:= States.KaMRandomI(7);
+          RandomCategory[2]:= States.KaMRandomI(7);
+          RandomCategory[3]:= States.KaMRandomI(7);
+      end;
+
+  for i:= 1 to 3 do
+    begin
+      if RandomCategory[i] = 0 then
+      TextCategory[i]:= '<$3>';
+      if RandomCategory[i] = 1 then
+      TextCategory[i]:= '<$4>';
+      if RandomCategory[i] = 2 then
+      TextCategory[i]:= '<$5>';
+      if RandomCategory[i] = 3 then
+      TextCategory[i]:= '<$6>';
+      if RandomCategory[i] = 4 then
+      TextCategory[i]:= '<$7>';
+      if RandomCategory[i] = 5 then
+      TextCategory[i]:= '<$8>';
+      if RandomCategory[i] = 6 then
+      TextCategory[i]:= '<$9>';
+    end;
+
+  if Timer > 0 then
+      Actions.OverlayTextAppend(-1, '<$12> ' + IntToStr(Timer) + '|');
+  if Timer = 0 then
+    begin
+    if Round[1] > 0 then
+      Actions.OverlayTextAppend(-1, '<$11> ' + '1|');
+    if Round[2] > 0 then
+      Actions.OverlayTextAppend(-1, '<$11> ' + '2|');
+    if Round[3] > 0 then
+      Actions.OverlayTextAppend(-1, '<$11> ' + '3|');
+    end;
+
+  for i:= 1 to 3 do
+  begin
+    if Round[i] > 0 then
+      begin
+        Actions.OverlayTextAppendFormatted(-1, '<$13>||', [Min[2], Min[1], Seconds[2], Seconds[1]]);
+        if States.GameTime mod 10 = 0 then
+          begin
+            Seconds[1]:= Seconds[1] + 1;
+          end;
+      end;
+  end;
+
+    if States.GameTime < 200 then
+          Actions.OverlayTextAppend(-1, '<$0>||');
+    if States.PlayerEnabled(0) and States.PlayerEnabled(1) then
+      begin
+          Actions.OverlayTextAppendFormatted(-1, '<$1>|', [States.PlayerColorText(0), States.PlayerName(0), States.PlayerColorText(1), States.PlayerName(1)]);
+          Actions.OverlayTextAppendFormatted(-1, '<$2>||', [ScorePlayer[0], ScorePlayer[1]]);
+      end;
+    if Timer > 0 then
+      begin
+          Actions.OverlayTextAppendFormatted(-1, '<$10>|', [TextCategory[1], TextCategory[2], TextCategory[3]]);
+      end;
+    for i:= 0 to 1 do
+      begin
+        if ScorePlayer[i] = 2 then
+          begin
+          Actions.PlayerWin([i], true);
+          Actions.PlayerDefeat(i-1);
+          Actions.PlayerDefeat(i+1);
+          end;
+      end;
+
+    if (Round[1] = 0) and (Timer = 0) and (States.StatArmyCount(0) = 0) and (States.StatArmyCount(1) = 0) then
+        begin
+            Round[1]:= 1;
+        end;
+    if (Round[1] < 0) and (Round[2] = 0) and (Timer = 0) and (States.StatArmyCount(0) = 0) and (States.StatArmyCount(1) = 0) then
+        begin
+            Round[2]:= 1;
+        end;
+    if (Round[2] < 0) and (Round[3] = 0) and (Timer = 0) and (States.StatArmyCount(0) = 0) and (States.StatArmyCount(1) = 0) then
+        begin
+            Round[3]:= 1;;
+        end;
+
+    for i:= 1 to 3 do
+      begin
+          if Round[i] = 1 then
+            begin
+            Actions.FogCoverAll(0);
+            Actions.FogCoverAll(1);
+            Round[i]:= 2;
+            Actions.PlayWAV(-1, 'start', 1);
+            RandomElement:= States.KamRandomI(2);
+            if RandomCategory[i] = 0 then
+                begin
+                  if Round[1] > 0 then
+                    begin
+                      Townhall1;
+                      Townhall2;
+                    end;
+                  if (Round[1] < 0) and (Round[i] > 0) then
+                    begin
+                      Townhall1;
+                    end;
+                end;
+            if RandomCategory[i] = 1 then
+                begin
+                  if Round[1] > 0 then
+                    begin
+                      Leather1;
+                      Leather2;
+                    end;
+                  if (Round[1] < 0) and (Round[i] > 0) then
+                    begin
+                      Leather1;
+                    end;
+                end;
+            if RandomCategory[i] = 2 then
+                begin
+                  if Round[1] > 0 then
+                    begin
+                      Iron1;
+                      Iron2;
+                    end;
+                  if (Round[1] < 0) then
+                  if (Round[i] > 0) then
+                    begin
+                      Iron1;
+                    end;
+                end;
+            if RandomCategory[i] = 3 then
+             begin
+                if Round[1] > 0 then
+                begin
+                  begin
+                    if RandomElement = 0 then
+                        Townhall1;
+                    if RandomElement = 1 then
+                        Townhall2;
+                    if RandomElement = 0 then
+                        Leather2;
+                    if RandomElement = 1 then
+                        Leather1;
+                  end;
+                end;
+                if (Round[1] < 0) then
+                if (Round[i] > 0) then
+                  begin
+                        Townhall2;
+                        Leather2;
+                        BarbariansAfterRound1;
+                  end;
+             end;
+            if RandomCategory[i] = 4 then
+              begin
+                if Round[1] > 0 then
+                begin
+                  begin
+                    if RandomElement = 0 then
+                        Leather1;
+                    if RandomElement = 1 then
+                        Leather2;
+                    if RandomElement = 0 then
+                        Iron2;
+                    if RandomElement = 1 then
+                        Iron1;
+                  end;
+                end;
+                  if (Round[1] < 0) then
+                  if (Round[i] > 0) then
+                  begin
+                        Iron2;
+                        Leather2;
+                        BarbariansAfterRound1;
+                  end;
+             end;
+            if RandomCategory[i] = 5 then
+              begin
+                  if Round[1] > 0 then
+                  begin
+                    if RandomElement = 0 then
+                        Iron1;
+                    if RandomElement = 1 then
+                        Iron2;
+                    if RandomElement = 0 then
+                        Townhall2;
+                    if RandomElement = 1 then
+                        Townhall1;
+                  end;
+                  if (Round[1] < 0) and (Round[i] > 0) then
+                  begin
+                        Iron2;
+                        Townhall2;
+                        BarbariansAfterRound1;
+                  end;
+              end;
+            if RandomCategory[i] = 6 then
+              begin
+                    FullRandom;
+              end;
+            end;
+      end;
+
+    for i:= 1 to 3 do
+      begin
+          if Timer = 0 then
+          if (Round[i] > 0) and (States.StatArmyCount(0) = 0) or (States.StatArmyCount(1) = 0) then
+            begin
+             if (States.StatArmyCount(0) = 0) then
+                begin
+                  ScorePlayer[1]:= ScorePlayer[1] + 1;
+                  Actions.PlayWAV(0, 'gg', 1);
+                  Actions.PlayWAV(1, 'winner', 1);
+                end;
+             if (States.StatArmyCount(1) = 0) then
+                begin
+                  ScorePlayer[0]:= ScorePlayer[0] + 1;
+                  Actions.PlayWAV(1, 'gg', 1);
+                  Actions.PlayWAV(0, 'winner', 1);
+                end;
+             if ScorePlayer[0] + ScorePlayer[1] = 1 then
+                begin
+                  Round[1]:= -100;
+                  Round[2]:= 0;
+                  Round[3]:= 0;
+                end;
+             if ScorePlayer[0] + ScorePlayer[1] = 2 then
+                begin
+                  Round[1]:= -100;
+                  Round[2]:= -100;
+                  Round[3]:= 0;
+                end;
+             if (ScorePlayer[0] + ScorePlayer[1] = 3) or (ScorePlayer[0] + ScorePlayer[1] = 4) then
+                begin
+                  Round[1]:= -100;
+                  Round[2]:= -100;
+                  Round[3]:= -100;
+                end;
+             Timer:= 8;
+             Actions.FogCoverAll(0);
+             Actions.FogCoverAll(1);
+	case States.KaMRandomI(4) of
+		0:
+      begin
+      UnitCountRound:= 6; UnitCountLine:= 3;
+      end;
+		1:
+      begin
+      UnitCountRound:= 8; UnitCountLine:= 4;
+      end;
+		2:
+      begin
+      UnitCountRound:= 10; UnitCountLine:= 5;
+      end;
+		3:
+      begin
+      UnitCountRound:= 12; UnitCountLine:= 4;
+      end;
+	end;
+
+             for Clear := Low(UnitsPlayer1) to High(UnitsPlayer1) do
+              Actions.UnitKill(UnitsPlayer1[Clear], true);
+
+             for Clear := Low(UnitsPlayer2) to High(UnitsPlayer2) do
+              Actions.UnitKill(UnitsPlayer2[Clear], true);
+
+             begin
+              CountArmyPlayer1[2]:= 0;
+              CountArmyTownhallPlayer1[2]:= 0;
+              CountArmyLeatherPlayer1[2]:= 0;
+              CountArmyIronPlayer1[2]:= 0;
+              CountArmyPlayer2[2]:= 0;
+              CountArmyTownhallPlayer2[2]:= 0;
+              CountArmyLeatherPlayer2[2]:= 0;
+              CountArmyIronPlayer2[2]:= 0;
+              CountArmyPlayer1[3]:= 0;
+              CountArmyTownhallPlayer1[3]:= 0;
+              CountArmyLeatherPlayer1[3]:= 0;
+              CountArmyIronPlayer1[3]:= 0;
+              CountArmyPlayer2[3]:= 0;
+              CountArmyTownhallPlayer2[3]:= 0;
+              CountArmyLeatherPlayer2[3]:= 0;
+              CountArmyIronPlayer2[3]:= 0;
+              Min[1]:= 0;
+              Min[2]:= 0;
+              Seconds[1]:= 0;
+              Seconds[2]:= 0;
+             end;
+
+            end;
+      end;
+end;
+
+if Min[1] > 9 then
+  begin
+    Min[1]:= 0;
+    Min[2]:= Min[2] + 1;
+  end;
+
+if Seconds[1] > 9 then
+  begin
+    Seconds[1]:= 0;
+    Seconds[2]:= Seconds[2] + 1;
+  end;
+
+if Seconds[2] > 5 then
+  begin
+    Seconds[2]:= 0;
+    Min[1]:= Min[1] + 1;
+  end;
+
+if (States.PlayerVictorious(0) = true) or (States.PlayerVictorious(1) = true) then
+begin
+  Actions.OverlayTextAppendFormatted(-1, '<$1>|', [States.PlayerColorText(0), States.PlayerName(0), States.PlayerColorText(1), States.PlayerName(1)]);
+  Actions.OverlayTextAppendFormatted(-1, '<$2>||', [ScorePlayer[0], ScorePlayer[1]]);
+end;
+
+end;
