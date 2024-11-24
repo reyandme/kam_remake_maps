@@ -58,4 +58,6 @@ begin
 	if (aPlayer = 0) then begin
 		CampaignData.Mission15.RebelsKilled := killed;
 	end;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

@@ -88,4 +88,6 @@ begin
 			Actions.GroupOrderLink(group, aGroupID);
 		end;
 	end;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

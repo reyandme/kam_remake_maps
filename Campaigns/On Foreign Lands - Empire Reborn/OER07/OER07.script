@@ -90,3 +90,5 @@ procedure OnUnitAttacked(aUnit: Integer; aAttacker: Integer);
 begin
 	SU_ExecuteUnitAttack(aUnit, aAttacker);
 end;
+ 
+{$I FixupUnwalkable.script} 

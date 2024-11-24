@@ -407,4 +407,6 @@ begin
 	else if ((mode = 'win') AND (wintime > 0) AND (States.GameTime = wintime)) then begin
 		Actions.PlayerWin([0], true);
 	end;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 

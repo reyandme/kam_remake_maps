@@ -49,7 +49,7 @@ begin
 		end
 	end;
 
-	if (houseType <> 17) then housesCount := housesCount - 1;
+	if (houseType <> 17) and (S.HouseIsComplete(aHouseID)) then housesCount := housesCount - 1;
 end;
 
 procedure OnMissionStart;
@@ -121,4 +121,6 @@ begin
 		r := Actions.GiveGroup(3, 25, 251, 94, 6, 9, 3);	
 		if (r > 0) then Actions.GroupOrderAttackHouse(r, States.ClosestHouse(0, 251, 94, -1));
 	end;
-end;
+end; 
+ 
+{$I FixupUnwalkable.script} 
