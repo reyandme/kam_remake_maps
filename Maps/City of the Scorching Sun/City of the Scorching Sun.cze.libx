@@ -1,0 +1,23 @@
+﻿1:Archónova armáda se stáhla. Vesničané mohou opustit své úkryty a vrátit se do práce. Prozatím jsme byli schopni platit, co po nás ten zlotřilec žádal, takovou tyranii však již nemůžeme dále snášet. Připravte vaše jednotky na vzpouru proti této hanebné nadvládě!
+2:Kvůli značnému suchu nejsou naši dřevorubci a farmáři schopni dodat dostatek dřeva a obilí. Měli bychom rozšířit naší produkci, abychom překonali tento nedostatek.
+3:Vyplenili jste karavanu. Veškeré suroviny jsou nyní vaše.
+4:Město Maaburu je hlavním obchodním uzlem v této oblasti, jako takové ho velmi často navštěvují obchodní karavany. Měli bychom jich co nejvíce přepadnout a vyplenit. Zboží, které převážejí, bude nezbytné k poražení zlotřilé armády, která se v této pevnosti ukrývá.
+5:Některé vesnice v okolí by se mohli přidat k našemu vzdoru proti Archónově nadvládě. Nepřátelské jednotky se však utábořili u každé z nich. Zničte nepřátelské hlídky a místní obyvatelé se k nám jistě přidají.
+6:Vesnice Burnam byla úspěšně osvobozena našimi jednotkami. Radní je nám zavázán, avšak nemá v úmyslu ohrozit vesnici přímým bojem s naším nepřítelem. Jako náhradu přislíbil pravidelné zásobování surovinami a také nám dodal plány na stavbu hutnictví.
+7:Vesnice Nyxar byla úspěšně osvobozena našimi jednotkami. Místní vesničané se nechtějí připojit k našemu boji s Archónem. Výměnou za respektování jejich neutrality nám poskytli velké množství surovin.
+8:Vesnice Wazulas byla úspěšně osvobozena našimi jednotkami. Naše povstání podpořila většina vesničanů, která se i se svým majetkem připojila k armádě. Ostatní vesničané opustili Wazulas kvůli strachu z odvetného úderu z Maaburu.
+9:Dorazila dodávka surovin z vesnice Burnam. Jsou k dispozici v našem skladišti.
+10:Archónova zloba dosáhla vrcholu. Jeho jednotky se daly do pohybu, a nezastaví se, dokud nebudeme my nebo oni totálně rozprášeni.
+11:Antioliya nikdy nebyla zemí míru. Vládnoucí Archóni tuto provincii již dlouhá léta drancují. Nyní dříve neviděné sucho životy běžného lidu ještě zhoršilo. Již nemůžeme dále nečinně přihlížet tomu, jak si padouch ukrytý za zdmi města Maaburu v poklidu pořádá hody, zatímco běžní lidé umírají hlady. Přišel čas povstání. Musíme krutou nadvládu toho tyrana jednou pro vždy ukončit!||[$0707FF]Difficulty Rating:[] ****||Map uses [$E1FA6B]Strangelove's[] improved AI script.||Caravan Script by [$37D208]King Dyron[].
+101:Vesnice Burnam 
+102:Vesnice Nyxar
+103:Vesnice Wazulas 
+104:Archonova armáda
+105:Archonova armáda
+106:Archonova armáda
+107:Město Maaburu
+108:Město Maaburu
+109:Město Maaburu
+110:Město Maaburu
+111:Město Maaburu
+112:Karavany

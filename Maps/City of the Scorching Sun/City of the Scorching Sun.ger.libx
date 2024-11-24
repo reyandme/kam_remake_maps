@@ -1,0 +1,23 @@
+﻿1:Archons Truppen sind endlich abgezogen. Die Dorfbewohner können nun aus ihren Verstecken hervorkommen und die Arbeit wieder aufnehmen.|Wir haben bezahlt was von unseren Unterdrückern gefordert wurde, doch können wir nicht uns nicht länger ausbeuten lassen. Rekrutiert Widerstandstruppen und lehnt euch gegen die Tyrannen auf!
+2:Aufgrund der langanhaltenden Dürreperiode kam es zu großen Ernteausfällen und Waldsterben. Wir sollten unsere Produktionskapazitäten erweitern um den Schaden zu minimieren.
+3:Wir haben eine Karawane ausgeraubt. Die Waren wurden in unser Lagerhaus gebracht.
+4:Die Stadt Maaburu gilt als Handelszentrum und Umschlagplatz für Karawanen. Wir sollten versuchen, so viele wie möglich zu überfallen und zu plündern, um die notwendigen Ressourcen zu ergaunern, die wir brauchen, um die in der Festung lauernden unterdrückerischen Kräfte zu besiegen.
+5:Benachbarte Dörfer teilen unser Schicksal und sind möglicherweise bereit uns im Kampf gegen den Archon zu unterstützen, wenn wir sie von den Belagerungstruppen säubern. Zerstöre deren Camps und befreie die Dörfer aus der Faust der Tyrannen!
+6:Das Dorf Burnam wurde von unseren Truppen befreit. Der Dorfälteste dankte uns für unsere Bemühungen, meint jedoch er könne, aufgrund Angst vor Vergeltungsschlägen, keine Truppen zu Verfügung stellen.|Stattdessen sicherte er uns zu regelmäßig Ressourcen zu senden, um uns in unserem Kampf zu unterstützen. Weiteres teilten sie ihr Wissen zur fortgeschrittenen Eisenherstellung und Verarbeitung mit uns.
+7:Archons Truppen wurden von Nyxar vertrieben. Die Dorfbewohner haben sich aus Angst vor Vergeltung in ihren Häusern verkrochen. Eine beträchtliche Menge an Waren wurde uns zugesagt damit wir wieder abziehen.
+8:Das Dorf Wazulas wurde befreit. Unser Aufstand gegen den Archon wird von den Bewohnern gefeiert und viele von ihnen schließen sich unserer Armee an!
+9:Die Bewohner von Burnam haben die versprochenen Waren zu unserem Lagerhaus geliefert. 
+10:Archon sieht nicht länger zu wie wir unseren Einfluss und Territorien ausbauen. Seine Truppen sind bereits auf dem Vormarsch. Wenn wir sie nicht aufhalten können bedeutet das unseren sicheren Untergang!
+11:Das Land Antioliya war nie ein friedlicher Ort. Im Laufe der Jahre von rücksichtslosen Archonten regiert, wurde das Land systematisch ausgebeutet und das Volk unterdrückt. Auch während der katastrophalen Dürre wurden die Zügel nicht lockerer gelassen. Das Leid der Bevölkerung stieg ins unermessliche. Wir können nicht zulassen, dass der in der Stadt Maaburu versteckte Tyrann weiter schlemmt, während das einfache Volk verhungert. Es ist an der Zeit sich gegen die Unterdrücker aufzulehnen und  die Herrschaft des Archon zu beenden!||[$0707FF]Schwierigkeitsgrad:[] ****||Map uses [$E1FA6B]Strangelove's[] improved AI script.||Caravan Script by [$37D208]King Dyron[].
+101:Dorf Burnam
+102:Dorf Nyxar
+103:Dorf Wazulas
+104:Truppen des Archons
+105:Truppen des Archons
+106:Truppen des Archons
+107:Maaburu-Stadt
+108:Maaburu-Stadt
+109:Maaburu-Stadt
+110:Maaburu-Stadt
+111:Maaburu-Stadt
+112:Karawanen

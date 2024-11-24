@@ -1,0 +1,330 @@
+{$EVENT evtTick : OnTickHearse}
+
+Type 
+	
+	HKS_Hearse = record
+		StartPos, EndPos : TKMPoint;
+		SoldiersID, SoldiersTypes : array of Integer;
+		
+		Reward : array of record
+				WID, aCount : Integer;
+			end;
+		Radius : Integer;
+		Deleted : Boolean;
+		Owner : Integer;
+		MidPosID, ChangeDelay : Integer;
+		MidPoses : array of TKMPoint;
+		GroupSize, LeaderGroupSize : record
+				aCount, Columns : Integer;
+			end;
+	end;
+	
+
+var gHearses : array of HKS_Hearse;
+
+
+Procedure Hearse_SetRadius(var aHearse : HKS_Hearse; aRadius : integer);
+begin
+	with aHearse do 
+		Radius := aRadius;
+end;
+
+
+procedure Hearse_SetGroupSize(var aHearse : HKS_Hearse; Count, aColumns : integer);
+begin
+	with aHearse.GroupSize do 
+	begin
+		aCount := Count;
+		Columns := aColumns;
+	end;
+end;
+
+procedure Hearse_SetLeaderGroupSize(var aHearse : HKS_Hearse; Count, aColumns : integer);
+begin
+	with aHearse.LeaderGroupSize do 
+	begin
+		aCount := Count;
+		Columns := aColumns;
+	end;
+end;
+
+Procedure Hearse_ShowClaimedResources(aHearse : HKS_Hearse);
+var I : Integer;
+	finString : String;
+begin
+	with aHearse do 
+	begin
+		finString := '<$3>';
+		for I := 0 to high(Reward) do 
+			finString := finString + '| ' + S.WareTypeName(Reward[I].WID) + ': ' + IntToStr(Reward[I].aCount);
+		
+		A.ShowMsg(0, finString);
+	end;
+end;
+
+function Hearse_Create(aOwner : Integer; P1,P2 : TKMPoint; Types : array of Integer) : HKS_Hearse;
+var I, K, fType, CC, CM : Integer;
+	IsMore : Boolean;
+begin
+	with Result do 
+	begin		
+	
+		Owner := aOwner;
+		SoldiersTypes := Types;
+		
+		If GroupSize.aCount = 0 then 
+			Hearse_SetGroupSize(Result, 1, 1);
+			
+		If LeaderGroupSize.aCount = 0 then 
+			Hearse_SetLeaderGroupSize(Result, 1, 1);
+			
+		StartPos := P1;
+		EndPos := P2;
+		If Radius = 0 then 
+			Radius := 2;
+			
+		If Length(Types) = 0 then 
+			fType := 16
+		else
+		If Length(Types) = 1 then 
+		begin
+			fType := Types[0];
+			IsMore := False;
+		end else
+			IsMore := true;
+			
+		CC := GroupSize.Columns;
+		CM := GroupSize.aCount;
+		
+		SetLength(SoldiersID, 5);
+		If IsMore then 
+		begin
+			SoldiersID[0] := A.GiveGroup(aOwner, Types[U.MinI(0, High(Types))], P1.X, P1.Y, 0, LeaderGroupSize.aCount, LeaderGroupSize.Columns);
+			SoldiersID[1] := A.GiveGroup(aOwner, Types[U.MinI(1, High(Types))], P1.X - Radius, P1.Y, 0, CM, CC);
+			SoldiersID[2] := A.GiveGroup(aOwner, Types[U.MinI(2, High(Types))], P1.X + Radius, P1.Y, 0, CM, CC);
+			SoldiersID[3] := A.GiveGroup(aOwner, Types[U.MinI(3, High(Types))], P1.X, P1.Y - Radius, 0, CM, CC);
+			SoldiersID[4] := A.GiveGroup(aOwner, Types[U.MinI(4, High(Types))], P1.X, P1.Y + Radius, 0, CM, CC);		
+		end else
+		begin
+			SoldiersID[0] := A.GiveGroup(aOwner, fType, P1.X, P1.Y, 0, LeaderGroupSize.aCount, LeaderGroupSize.Columns);
+			SoldiersID[1] := A.GiveGroup(aOwner, fType, P1.X - Radius, P1.Y, 0, CM, CC);
+			SoldiersID[2] := A.GiveGroup(aOwner, fType, P1.X - Radius, P1.Y, 0, CM, CC);
+			SoldiersID[3] := A.GiveGroup(aOwner, fType, P1.X, P1.Y - Radius, 0, CM, CC);
+			SoldiersID[4] := A.GiveGroup(aOwner, fType, P1.X, P1.Y + Radius, 0, CM, CC);	
+		end;
+		
+		//A.GroupOrderWalk(SoldiersID[0], EndPos.X, EndPos.Y, 0);
+		
+	end;
+end;
+
+function Hearse_Add(aOwner : Integer; P1,P2 : TKMPoint; Types : array of Integer) : Integer;
+var I : Integer;
+begin
+
+	I := length(gHearses);
+	SetLength(gHearses, I + 1);
+	gHearses[I] := Hearse_Create(aOwner, P1, P2, Types);
+	Result := I;
+	
+end;
+
+procedure Hearse_ChangeTypes(var aHearse : HKS_Hearse; Types : array of Integer);
+begin
+	aHearse.SoldiersTypes := Types; 
+end;
+
+
+procedure Hearse_SetPoses(var aHearse : HKS_Hearse; P1, P2 : TKMPoint);
+begin
+	aHearse.StartPos := P1;
+	aHearse.EndPos := P2;
+end;
+
+procedure Hearse_SetOwner(var aHearse : HKS_Hearse; Owner : Integer);
+begin
+	aHearse.Owner := Owner;
+end;
+
+
+procedure Hearse_SetReward(var aHearse : HKS_Hearse; aWare, aCount : array of Integer);
+var I, J : Integer;
+begin
+	with aHearse do 
+	begin
+		SetLength(Reward, 0);
+		for I := 0 to high(aWare) do 
+		begin
+			J := length(Reward);
+			SetLength(Reward, J + 1);
+			Reward[J].WID := aWare[I];
+			Reward[J].aCount := aCount[U.MinI(I,High(aCount))];
+			
+		end;
+	end;
+end;
+
+
+procedure Hearse_AddReward(var aHearse : HKS_Hearse; aWare, aCount : array of Integer);
+var I, J : Integer;
+begin
+	with aHearse do 
+	begin
+		for I := 0 to high(aWare) do 
+		begin
+			J := length(Reward);
+			SetLength(Reward, J + 1);
+			Reward[J].WID := aWare[I];
+			Reward[J].aCount := aCount[U.MinI(I,High(aCount))];
+			
+		end;
+	end;
+end;
+
+procedure Hearse_AddMidPos(var aHearse : HKS_Hearse; P : TKMPoint);
+var I :Integer;
+begin
+	with aHearse do 
+	begin
+		I := length(MidPoses);
+		SetLength(MidPoses, I + 1);
+		MidPoses[I] := P;
+	
+	end;
+
+end;
+
+procedure Hearse_AddMidPosFromDefencePoses(var aHearse : HKS_Hearse; aPlayer : Integer);
+var I, aCount :Integer;
+	aDPos : TKMDefencePositionInfo;
+begin
+	aCount := S.StatAIDefencePositionsCount(aPlayer) - 1;
+	for I := 0 to aCount do 
+	begin
+		aDPos := S.AIDefencePositionGetByIndex(aPlayer, I);
+		Hearse_AddMidPos(aHearse, U.KMPoint(aDPos.X, aDPos.Y));
+	end;
+
+end;
+
+Procedure Hearse_Kill(var aHearse : HKS_Hearse);
+var I : Integer;
+begin
+	with aHearse do 
+	begin
+		for I := 0 to high(SoldiersID) do 
+			If not S.GroupDead(SoldiersID[I]) then 
+				A.GroupKillAll(SoldiersID[I], true);
+		Deleted := true;
+	end;
+end;
+
+procedure Hearse_Free(var aHearse : HKS_Hearse);
+begin
+	with aHearse do 
+	begin
+		SetLength(SoldiersID, 0);
+		SetLength(Reward, 0);
+		SetLength(MidPoses, 0);
+		Radius := 0;
+		MidPosID := 0;
+		Owner := 0;		
+		Deleted := true;
+		ChangeDelay := 90;
+	end;
+	Hearse_SetGroupSize(aHearse, 0, 0);
+	Hearse_SetLeaderGroupSize(aHearse, 0, 0);
+end;
+
+Procedure Hearse_Refresh(var aHearse : HKS_Hearse);
+var P : TKMPoint;
+	aDir : Integer;
+	I : Integer;
+	Killed : Boolean;
+begin
+	with aHearse do 
+	begin
+		If Deleted then 
+			Exit;
+		
+		P := S.UnitPosition(S.GroupMember(SoldiersID[0], 0));
+		aDir := S.UnitDirection(S.GroupMember(SoldiersID[0], 0));
+		begin
+			If (length(MidPoses) > 0) and (MidPosID <= high(MidPoses)) then 
+			begin
+				A.GroupOrderWalk(SoldiersID[0], MidPoses[MidPosID].X, MidPoses[MidPosID].Y, 0);
+				If P = MidPoses[MidPosID] then 
+				begin
+					inc(MidPosID);
+					//A.ShowMsg(0, '');
+				end;
+			
+			end else		
+				A.GroupOrderWalk(SoldiersID[0], EndPos.X, EndPos.Y, 0);
+		end;
+		
+		
+		
+		Killed := true;
+		for I := 0 to high(SoldiersID) do 
+			If not S.GroupDead(SoldiersID[I]) then 
+				Killed := false;
+				
+		If Killed then 
+		begin
+			Hearse_ShowClaimedResources(aHearse);
+			for I := 0 to high(Reward) do 				
+				A.GiveWares(0, Reward[I].WID, Reward[I].aCount);
+				
+			//A.ShowMsg(0, 'True');
+			Deleted := true;
+			
+			Exit;
+		end;
+		
+		If P = EndPos then 
+		begin
+			for I := 0 to high(SoldiersID) do 
+				A.GroupKillAll(SoldiersID[I], true);
+				
+			Deleted := true;
+			
+			Exit;
+		end;
+		If P.X > 0 then 
+		begin
+			If not S.GroupInFight(SoldiersID[1], true) then 
+				A.GroupOrderWalk(SoldiersID[1], P.X - Radius, P.Y, aDir);
+			If not S.GroupInFight(SoldiersID[2], true) then 
+				A.GroupOrderWalk(SoldiersID[2], P.X + Radius, P.Y, aDir);
+			If not S.GroupInFight(SoldiersID[3], true) then 
+				A.GroupOrderWalk(SoldiersID[3], P.X, P.Y - Radius, aDir);
+			If not S.GroupInFight(SoldiersID[4], true) then 
+				A.GroupOrderWalk(SoldiersID[4], P.X, P.Y + Radius, aDir);		
+		end;	
+	end;	
+end;
+
+Procedure Hearse_Reset(var aHearse : HKS_Hearse);
+begin
+	with aHearse do 
+	begin
+		Deleted := false;
+		SetLength(SoldiersID, 0);
+		MidPosID := 0;
+		aHearse := Hearse_Create(Owner, StartPos, EndPos, SoldiersTypes);
+	end;
+end;
+
+Procedure HearseCollection_Refresh;
+var I : Integer;
+begin
+	for I := 0 to high(gHearses) do 
+		Hearse_Refresh(gHearses[I]);
+end;
+
+Procedure OnTickHearse;
+begin
+	If S.GameTime mod 10 = 0 then 
+		HearseCollection_Refresh;
+end;

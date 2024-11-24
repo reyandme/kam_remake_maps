@@ -1,0 +1,15 @@
+Author
+DontTalk
+
+Version
+1.2 Defence Radius Adjustments
+
+SmallDesc
+A Mission By DontTalk
+
+BigDescLIBX
+0
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

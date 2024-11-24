@@ -1,0 +1,441 @@
+{$I improvestaticai.script}  /// By Strangelove
+{$I constants.script}  /// By Greeny
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I AIBasesExpansion.script}
+var
+	DifficultySetting: TKMMissionDifficulty;
+	PortDestroyed, AIattack, Timer, ShipAttack, ShipAssault: Boolean;
+	TimerStart, TimerDifficulty, Countdown, ShipStrike: Integer;
+
+Procedure Kill_All_Units_Of_Player(player: Integer);
+var g, u: Integer; allUnits, allGroups: Array of Integer;
+begin
+    allGroups := S.PlayerGetAllGroups(player);
+    For g := 0 to High(allGroups) do A.GroupKillAll(allGroups[g], true);
+    allUnits := S.PlayerGetAllUnits(player);
+    For u := 0 to High(allUnits) do A.UnitKill(allUnits[u], False);
+end;
+
+Procedure Give_Low_Hunger_To_All_Units_Of_Player(player: Integer);
+var g: Integer; allUnits: Array of Integer;
+begin
+    allUnits := S.PlayerGetAllUnits(player);
+    For g := 0 to High(allUnits) do 
+	if S.UnitsGroup(allUnits[g]) <> -1 then
+	A.UnitHungerSet(allUnits[g], ((S.UnitLowHunger) + (S.KamRandomI(5000))));
+end;
+	
+procedure OnMissionStart();	
+begin
+ShipAttack:= false;
+ShipAssault:= false;
+Countdown:= 1;
+TimerStart:= 36000000;
+ShipStrike:= 36000000;
+PortDestroyed:= false;
+Timer:= false;
+A.PlayerShareFogCompliment(0, 1, False);
+A.FogCoverAll(0)
+A.FogRevealCircle(0, 77, 94, 20);
+A.FogRevealCircle(0, 77, 103, 20);
+A.CinematicStart(0);
+DifficultySetting := S.MissionDifficulty();
+A.GroupOrderStorm(S.GroupAt(68, 97));
+A.GroupOrderStorm(S.GroupAt(68, 104));
+A.GroupOrderStorm(S.GroupAt(68, 111));
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 900);
+		A.GiveWares(0, WARE_STONES, 130);
+		A.GiveWares(0, WARE_TIMBER, 100);
+		A.GiveWares(0, WARE_WINE, 125);
+		A.GiveWares(0, WARE_SAUSAGES, 60);
+		A.GiveWares(0, WARE_LOAVES, 75);
+		A.GiveWares(0, WARE_FISH, 25);
+		A.GiveGroup(0, UNIT_AXE_FIGHTER, 136, 106, DIRECTION_W, 12, 4);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 141, 106, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_BOWMAN, 145, 106, DIRECTION_W, 9, 3);
+		///AI eq rates
+		A.AIEquipRate(3, 0, 450);
+		A.AIEquipRate(3, 1, 600);
+		A.AIEquipRate(4, 0, 450);
+		A.AIEquipRate(4, 1, 600);
+		A.AIEquipRate(5, 1, 300);
+		A.AIEquipRate(6, 1, 150);
+		///Clock
+		TimerDifficulty:= 48000;
+		end;
+		
+		mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 700);
+		A.GiveWares(0, WARE_STONES, 105);
+		A.GiveWares(0, WARE_TIMBER, 95);
+		A.GiveWares(0, WARE_WINE, 110);
+		A.GiveWares(0, WARE_SAUSAGES, 50);
+		A.GiveWares(0, WARE_LOAVES, 70);
+		A.GiveWares(0, WARE_FISH, 25);
+		A.GiveGroup(0, UNIT_AXE_FIGHTER, 136, 106, DIRECTION_W, 12, 4);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 141, 106, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_BOWMAN, 145, 106, DIRECTION_W, 6, 3);
+		///AI eq rates
+		A.AIEquipRate(3, 0, 350);
+		A.AIEquipRate(3, 1, 500);
+		A.AIEquipRate(4, 0, 350);
+		A.AIEquipRate(4, 1, 500);
+		A.AIEquipRate(5, 1, 215);
+		A.AIEquipRate(6, 1, 100);
+		///Clock
+		TimerDifficulty:= 42000;
+		end;
+		
+		mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 500);
+		A.GiveWares(0, WARE_STONES, 90);
+		A.GiveWares(0, WARE_TIMBER, 80);
+		A.GiveWares(0, WARE_WINE, 90);
+		A.GiveWares(0, WARE_SAUSAGES, 40);
+		A.GiveWares(0, WARE_LOAVES, 55);
+		A.GiveWares(0, WARE_FISH, 20);
+		A.GiveGroup(0, UNIT_AXE_FIGHTER, 136, 106, DIRECTION_W, 9, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 141, 106, DIRECTION_W, 6, 3);
+		A.GiveGroup(0, UNIT_BOWMAN, 145, 106, DIRECTION_W, 6, 3);
+		///AI eq rates
+		A.AIEquipRate(3, 0, 250);
+		A.AIEquipRate(3, 1, 400);
+		A.AIEquipRate(4, 0, 250);
+		A.AIEquipRate(4, 1, 400);
+		A.AIEquipRate(5, 1, 125);
+		A.AIEquipRate(6, 1, 50);
+		///Clock
+		TimerDifficulty:= 36000;
+		end;		
+    end;
+end;
+
+procedure OnTick();
+
+begin
+
+if S.GameTime = 5 then
+    begin
+    A.AIDefencePositionRemoveAll(1);
+	A.AIDefencePositionRemoveAll(2);
+	end;
+	
+if S.GameTime = 10 then
+    begin
+    A.CinematicPanTo(0, 74, 117, 290);
+	end;
+	
+if S.GameTime = 310 then
+    begin
+    A.CinematicPanTo(0, 131, 101, 30);
+	end;
+	
+if S.GameTime = 345 then
+    begin
+    Actions.FogCoverAll(0)
+	Actions.FogRevealCircle(0, 131, 101, 22);
+	A.CinematicEnd(0);
+	end;	
+	
+if S.GameTime = 360 then
+    begin
+	Kill_All_Units_Of_Player(1);
+    Kill_All_Units_Of_Player(2);
+	end;	
+
+if S.GameTime = 500 then
+    begin
+	A.ShowMsg(0, '<$1>');
+	A.GiveGroup(0, UNIT_KNIGHT, 105, 102, DIRECTION_E, 6, 3);
+	A.GiveGroup(0, UNIT_PIKEMAN, 105, 94, DIRECTION_E, 14, 4);
+	A.GiveGroup(0, UNIT_CROSSBOWMAN, 105, 98, DIRECTION_E, 3, 3);
+	A.GroupOrderWalk(S.GroupAt(105, 102), 125, 106, DIRECTION_E);
+	A.GroupOrderWalk(S.GroupAt(105, 94), 125, 98, DIRECTION_E);
+	A.GroupOrderWalk(S.GroupAt(105, 98), 125, 102, DIRECTION_E);
+	end;	
+	
+if S.GameTime = 3000 then
+    begin
+	A.ShowMsgGoto(0, 46, 74, '<$7>');
+	A.FogRevealCircle(0, 46, 74, 6);
+    end;
+	
+if (S.GameTime = 4800) and (PortDestroyed = false) then
+    begin
+	A.ShowMsg(0, '<$2>');
+	A.GiveGroup(2, UNIT_KNIGHT, 31, 21, DIRECTION_S, 9, 3);
+	A.GiveGroup(2, UNIT_KNIGHT, 31, 24, DIRECTION_S, 9, 3);
+	A.GiveGroup(2, UNIT_KNIGHT, 31, 27, DIRECTION_S, 9, 3);
+    end;
+	
+if (S.GameTime = 9000) and (PortDestroyed = false) and (S.StatArmyCount(6) > 50) then
+    begin
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 29, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 32, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 29, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 29, DIRECTION_S, 6, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 29, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 29, DIRECTION_S, 6, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 32, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 32, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 29, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 29, DIRECTION_S, 9, 3);
+        end;
+    end;
+end;
+	
+if (S.GameTime = 20000) and (PortDestroyed = false) and (S.StatArmyCount(6) > 60) then
+    begin
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 32, 31, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 29, 37, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_PIKEMAN, 34, 41, DIRECTION_S, 9, 3);
+	    A.GiveGroup(2, UNIT_PIKEMAN, 29, 29, DIRECTION_S, 9, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 32, 31, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 29, 37, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_PIKEMAN, 34, 41, DIRECTION_S, 9, 3);
+	    A.GiveGroup(2, UNIT_PIKEMAN, 29, 29, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_CROSSBOWMAN, 29, 33, DIRECTION_S, 6, 3);
+	    A.GiveGroup(2, UNIT_CROSSBOWMAN, 31, 41, DIRECTION_S, 6, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 32, 31, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_SWORD_FIGHTER, 29, 37, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_PIKEMAN, 34, 41, DIRECTION_S, 9, 3);
+	    A.GiveGroup(2, UNIT_PIKEMAN, 29, 29, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_CROSSBOWMAN, 29, 33, DIRECTION_S, 9, 3);
+	    A.GiveGroup(2, UNIT_CROSSBOWMAN, 31, 41, DIRECTION_S, 9, 3);
+        end;
+    end;
+end;
+	
+if (S.GameTime = 27000) and (PortDestroyed = false) and (S.StatArmyCount(6) > 70) then
+    begin
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 32, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 29, DIRECTION_S, 6, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 29, DIRECTION_S, 6, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 32, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 32, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 29, DIRECTION_S, 9, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 29, DIRECTION_S, 9, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveGroup(2, UNIT_KNIGHT, 31, 27, DIRECTION_S, 12, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 32, 32, DIRECTION_S, 12, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 29, 32, DIRECTION_S, 12, 3);
+		A.GiveGroup(2, UNIT_KNIGHT, 34, 39, DIRECTION_E, 12, 3);
+        end;
+    end;	
+end;;
+
+if (S.GameTime = 36000) then
+    begin
+	A.ShowMsg(0, '<$7>');
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_COAL, 200);
+		A.GiveWares(0, WARE_IRON_ORE, 100);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_COAL, 150);
+		A.GiveWares(0, WARE_IRON_ORE, 75);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_COAL, 100);
+		A.GiveWares(0, WARE_IRON_ORE, 50);
+        end;
+    end;
+end;
+
+if (S.GameTime = 42000) and (PortDestroyed = false) then
+    begin
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.AIEquipRate(5, 1, 250);
+        end;
+		
+        mdNormal:
+        begin
+		A.AIEquipRate(5, 1, 180);
+        end;
+		
+        mdHard1:
+        begin
+		A.AIEquipRate(5, 1, 100);
+        end;
+    end;
+end;
+
+if (States.GameTime MOD 18000 = 0) then
+	begin
+    Actions.MarketSetTrade((States.HouseAt(21, 79)), WARE_GOLD, WARE_CORN, 25);
+	Actions.MarketSetTrade((States.HouseAt(29, 96)), WARE_GOLD, WARE_CORN, 25);
+	Actions.MarketSetTrade((States.HouseAt(19, 134)), WARE_GOLD, WARE_CORN, 25);
+	end;
+//////////////////////////////////////////////CLOCK/////////////////////////////////////////////////////////////
+if S.GameTime = (TimerStart + 9000) then
+    begin
+	A.ShowMsg(0, '<$5>');
+	Timer:= true;
+	end;
+	
+If Timer then
+	begin
+		countdown := TimerStart + TimerDifficulty - S.GameTime;
+		if countdown > 0 then
+		begin
+			A.OverlayTextSet(-1,'<$4>: '+ U.TimeToString(countdown));
+		end else
+		begin
+			A.OverlayTextSet(-1,'');
+			Timer := false;
+		end;
+	end;
+
+if (Countdown = 0) and (ShipAttack = false) then
+    begin
+	A.ShowMsg(0, '<$6>');
+	A.FogRevealCircle(0, 110, 29, 20);
+	ShipStrike:= (S.GameTime + 900);
+	A.AIDefencePositionAdd(2, 103, 43, DIRECTION_S, GROUP_RANGED, 15, 0);
+	A.AIDefencePositionAdd(2, 111, 43, DIRECTION_S, GROUP_RANGED, 15, 0);
+	A.AIDefencePositionAdd(2, 119, 43, DIRECTION_S, GROUP_RANGED, 15, 0);
+	A.AIDefencePositionAdd(2, 107, 43, DIRECTION_S, GROUP_MELEE, 15, 0);
+	A.AIDefencePositionAdd(2, 115, 43, DIRECTION_S, GROUP_MELEE, 15, 0);
+	A.AIDefencePositionAdd(2, 123, 43, DIRECTION_S, GROUP_MELEE, 15, 0);
+	A.AIDefencePositionAdd(2, 107, 39, DIRECTION_S, GROUP_ANTIHORSE, 15, 0);
+	A.AIDefencePositionAdd(2, 113, 39, DIRECTION_S, GROUP_ANTIHORSE, 15, 0);
+	A.AIDefencePositionAdd(2, 119, 39, DIRECTION_S, GROUP_ANTIHORSE, 15, 0);
+	A.AIDefencePositionAdd(2, 124, 39, DIRECTION_S, GROUP_MOUNTED, 15, 0);
+	A.AIDefencePositionAdd(2, 128, 39, DIRECTION_S, GROUP_MOUNTED, 15, 0);
+	A.AIDefencePositionAdd(2, 132, 39, DIRECTION_S, GROUP_MOUNTED, 15, 0);
+	A.GiveGroup(2, UNIT_KNIGHT, 104, 20, DIRECTION_S, 6, 3);
+	A.GiveGroup(2, UNIT_KNIGHT, 110, 23, DIRECTION_S, 6, 3);
+	A.GiveGroup(2, UNIT_KNIGHT, 99, 26, DIRECTION_S, 6, 3);
+	A.GiveGroup(2, UNIT_PIKEMAN, 106, 29, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_PIKEMAN, 110, 29, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_PIKEMAN, 114, 29, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_SWORD_FIGHTER, 102, 26, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_SWORD_FIGHTER, 102, 26, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_SWORD_FIGHTER, 102, 26, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_CROSSBOWMAN, 98, 23, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_CROSSBOWMAN, 102, 23, DIRECTION_S, 12, 4);
+	A.GiveGroup(2, UNIT_CROSSBOWMAN, 106, 23, DIRECTION_S, 12, 4);
+	ShipAttack:= true;
+    end;
+	
+if (S.GameTime = (ShipStrike)) and (ShipAssault = false) then
+    begin
+	A.AIDefencePositionRemoveAll(2);
+	ShipAssault:= true;
+	end;	
+	
+////////////////////////////////////FORTRESS TROOPS ATTACK//////////////////////////////////////////////////////
+if (S.StatArmyCount(5) > 207) and (AIattack = false) and (S.GameTime MOD 10 = 0) then
+    begin
+	A.AIDefencePositionRemove(5, 23, 40);
+	A.AIDefencePositionRemove(5, 26, 34);
+	A.AIDefencePositionRemove(5, 34, 14);
+	A.AIDefencePositionRemove(5, 28, 38);
+	A.AIDefencePositionRemove(5, 31, 34);
+	A.AIDefencePositionRemove(5, 36, 17);
+	A.AIDefencePositionRemove(5, 39, 15);
+	A.AIDefencePositionAdd(5, 81, 59, DIRECTION_SE, GROUP_RANGED, 20, 0);
+	A.AIDefencePositionAdd(5, 83, 56, DIRECTION_SE, GROUP_RANGED, 20, 0);
+	A.AIDefencePositionAdd(5, 86, 54, DIRECTION_SE, GROUP_RANGED, 20, 0);	
+	A.AIDefencePositionAdd(5, 79, 56, DIRECTION_SE, GROUP_MELEE, 20, 0);
+	A.AIDefencePositionAdd(5, 83, 52, DIRECTION_SE, GROUP_MELEE, 20, 0);
+	A.AIDefencePositionAdd(5, 84, 62, DIRECTION_SE, GROUP_ANTIHORSE, 20, 0);
+	A.AIDefencePositionAdd(5, 89, 57, DIRECTION_SE, GROUP_ANTIHORSE, 20, 0);
+	AIattack:= true;
+	end;
+	
+if ((S.StatArmyCount(5) > 219) or (S. StatArmyCount(5) = 219)) and (AIattack = true) and (S.GameTime MOD 10 = 0) then
+    begin
+	A.AIDefencePositionRemove(5, 81, 59);
+	A.AIDefencePositionRemove(5, 83, 56);
+	A.AIDefencePositionRemove(5, 86, 54);
+	A.AIDefencePositionRemove(5, 79, 56);
+	A.AIDefencePositionRemove(5, 83, 52);
+	A.AIDefencePositionRemove(5, 84, 62);
+	A.AIDefencePositionRemove(5, 89, 57);
+	end;	
+	
+if (S.StatArmyCount(5) < 160) and (AIattack = true) and (S.GameTime MOD 10 = 0) then
+    begin
+	A.AIDefencePositionAdd(5, 23, 40, DIRECTION_W, GROUP_RANGED, 28, 0);
+	A.AIDefencePositionAdd(5, 26, 34, DIRECTION_NW, GROUP_RANGED, 30, 0);
+	A.AIDefencePositionAdd(5, 34, 14, DIRECTION_NW, GROUP_RANGED, 35, 0);	
+	A.AIDefencePositionAdd(5, 31, 34, DIRECTION_W, GROUP_MELEE, 31, 0);
+	A.AIDefencePositionAdd(5, 36, 17, DIRECTION_N, GROUP_MELEE, 30, 0);
+	A.AIDefencePositionAdd(5, 28, 38, DIRECTION_N, GROUP_ANTIHORSE, 30, 0);
+	A.AIDefencePositionAdd(5, 39, 15, DIRECTION_W, GROUP_ANTIHORSE, 28, 0);
+	AIattack:= false;
+	end;
+end;
+/////////////////////////////////////HARBOUR DESTRUCTION EFFECTS//////////////////////////////////////////////////////
+
+procedure OnHouseAfterDestroyed(aHouseType: Integer; aOwner: Integer; aX, aY: Integer);
+begin
+if ((S.HouseDestroyed(S.HouseAt(36, 75)) = true) and (S.HouseDestroyed(S.HouseAt(23, 123)) = true) and (S.HouseDestroyed(S.HouseAt(25, 83)) = true) and (S.HouseDestroyed(S.HouseAt(33, 96)) = true) and (S.HouseDestroyed(S.HouseAt(32, 111)) = true) and (S.HouseDestroyed(S.HouseAt(35, 131)) = true)) and (PortDestroyed = false) then
+    begin
+	TimerStart:= S.GameTime;
+	A.ShowMsg(0, '<$3>');
+	PortDestroyed:= true;
+	A.HouseTakeWaresFrom(S.HouseAt(54, 26), WARE_SAUSAGES, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(54, 26), WARE_LOAVES, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(54, 26), WARE_FISH, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(54, 26), WARE_WINE, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(54, 26), WARE_GOLD, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(79, 19), WARE_SAUSAGES, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(79, 19), WARE_LOAVES, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(79, 19), WARE_FISH, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(79, 19), WARE_WINE, 9999);
+	A.HouseTakeWaresFrom(S.HouseAt(79, 19), WARE_GOLD, 9999);
+	Give_Low_Hunger_To_All_Units_Of_Player(6);
+	A.AIEquipRate(5, 1, 300);
+	A.AIEquipRate(6, 1, 500);
+	end;
+end;
