@@ -1,4 +1,6 @@
-﻿1:[$00FF00]Furious Warriors[]
+MaxID:55
+
+1:[$00FF00]Furious Warriors[]
 2:[$%s]%s[]: %d
 3:[$00D7FF]Gold[]: %d
 4:[$00D7FF]Defeated[]:
@@ -35,3 +37,5 @@
 50:[$8CE6F0]test_mode[]
 51:[$32CD32]Refund Time[]... %d
 52: You captured your first barbarian! Build school house to keep them into battle. Cost [$00FF00]%d[] Gold.
+53: No more butcher please. You've reached the limit.(12)
+54: No more School please. You've reached the limit.(1)
