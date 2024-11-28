@@ -221,7 +221,7 @@ begin
 			if( States.PlayerAllianceCheck(aPlayer, j) <> true ) then begin
 				Groups := States.PlayerGetAllGroups(j);
 				for i := 0 to Length(Groups) -1 do begin
-					if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupType(Groups[i]) = 2 ) then begin
+					if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupTypeEx(Groups[i]) = gtRanged ) then begin
 						fUnit:=States.GroupMember(Groups[i], 0);
 						DX := X - States.UnitPositionX(fUnit);
 						DY := Y - States.UnitPositionY(fUnit);
@@ -244,7 +244,7 @@ begin
 	Result := -1;
 	Groups := States.PlayerGetAllGroups(aPlayer);
 	for i := 0 to Length(Groups) -1 do begin
-		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupType(Groups[i]) = 2 ) then begin
+		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupTypeEx(Groups[i]) = gtRanged ) then begin
 			fUnit:=States.GroupMember(Groups[i], 0);
 			DX := X - States.UnitPositionX(fUnit);
 			DY := Y - States.UnitPositionY(fUnit);
@@ -329,7 +329,7 @@ begin
 				if AI[j].State = 0 then begin 						//idle
 				
 				end else if AI[j].State = 1 then begin				//POKING
-					if States.GroupType(aA[k]) = 2 then begin //ranged
+					if States.GroupTypeEx(aA[k]) = gtRanged then begin //ranged
 						if ClosestEnemyGroup(p, x, y, AI_SMELL_RADIUS-5) > 0 then
 							Actions.GroupOrderWalk(aA[k], States.HousePositionX(AI[j].Base), States.HousePositionY(AI[j].Base)+1, 4)
 						else
@@ -347,7 +347,7 @@ begin
 									Actions.GroupOrderWalk(aA[k], States.HousePositionX(AI[j].Base), States.HousePositionY(AI[j].Base)+1, 4);
 								
 				end else if AI[j].State = 2 then begin				//ATTACKING
-					if States.GroupType(aA[k]) = 2 then begin //ranged
+					if States.GroupTypeEx(aA[k]) = gtRanged then begin //ranged
 						if ClosestEnemyGroup(p, x, y, AI_SMELL_RADIUS-7) > 0 then
 							Actions.GroupOrderWalk(aA[k], States.HousePositionX(AI[j].Base), States.HousePositionY(AI[j].Base)+1, 4)
 						else
@@ -361,7 +361,7 @@ begin
 								AttackHouse(aA[k], PLAYER[AI[j].Enemy].Tower);
 								
 				end else if AI[j].State = 3 then begin				//DEFENDING
-					if States.GroupType(aA[k]) = 2 then begin //ranged
+					if States.GroupTypeEx(aA[k]) = gtRanged then begin //ranged
 						if AttackGroup(aA[k], ClosestEnemyGroupType(p, 2, States.HousePositionX(AI[j].Base), States.HousePositionY(AI[j].Base), 12)) then
 							Actions.GroupOrderWalk(aA[k], States.HousePositionX(AI[j].Base), States.HousePositionY(AI[j].Base)+1, 4);
 					end else 								  //melee

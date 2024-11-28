@@ -26,7 +26,7 @@
 	  begin 
 	    Groups := States.PlayerGetAllGroups(I);
 		  for K := 0 to length(Groups) - 1 do
-		    if States.GroupType(Groups[K]) <> 2 then
+		    if States.GroupTypeEx(Groups[K]) <> gtRanged then
 		    begin
 			  if States.KaMRandomI(2) = 0 then
 			    TargetPlayer := 0

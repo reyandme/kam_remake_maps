@@ -255,7 +255,7 @@ begin
 			if( States.PlayerAllianceCheck(aPlayer, j) <> true ) then begin
 				Groups := States.PlayerGetAllGroups(j);
 				for i := 0 to Length(Groups) -1 do begin
-					if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupType(Groups[i]) = 2 ) then begin
+					if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupTypeEx(Groups[i]) = gtRanged ) then begin
 						fUnit:=States.GroupMember(Groups[i], 0);
 						DX := X - States.UnitPositionX(fUnit);
 						DY := Y - States.UnitPositionY(fUnit);
@@ -283,7 +283,7 @@ begin
 			y:= States.UnitPositionY(States.GroupMember(aA[k], 0));
 			p:= States.GroupOwner(aA[k]);
 			pass:= true;
-			if States.GroupType(aA[k]) = 2 then begin // RANGED
+			if States.GroupTypeEx(aA[k]) = gtRanged then begin // RANGED
 				eg:= ClosestEnemyGroupType(p, 2, x, y, AI_SMELL_RADIUS-4);
 				if eg > 0 then
 					Actions.GroupOrderAttackUnit(aA[k], States.GroupMember(eg, 0))
