@@ -609,3 +609,11 @@ Version 0.9.9c (25.04.2022)
 
 TBK12: Version 1.1c (25.04.2022)
 - Reinforcement Wave once again start with 32 Soldiers
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Version 0.9.9.1 (11.04.2023)
+- Upgdated scripts in Scripts-Folder
+- Changed MAX_HANDS from 18 to 28
+- Missing Polish Translation added (Thanks to donttalk for his effort)
