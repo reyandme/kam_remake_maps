@@ -1559,7 +1559,7 @@ begin
       begin 
         Addition := Actions.GiveGroup(Owner, States.KaMRandomI(2) + 17, States.HousePositionX(Barracks[Owner]), States.HousePositionY(Barracks[Owner]) + 1, 4, 1, 1);
         Actions.GroupHungerSet(Addition, States.UnitMaxHunger);
-        G1 := FindClosestGroup(Owner, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 2, AUTOLINK_RADIUS);
+        G1 := FindClosestGroup(Owner, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), gtRanged, AUTOLINK_RADIUS);
         if G1 > 0 then
         begin
           F := States.GroupColumnCount(G1);
@@ -1586,7 +1586,7 @@ begin
   if States.UnitType(aUnitID) = 14 then
     if States.KaMRandom < (ROGUE_CHANCE / DifficultyFactor) then
     begin
-      G1 := FindClosestGroup(States.UnitOwner(aUnitID), States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 2, AUTOLINK_RADIUS * 2);
+      G1 := FindClosestGroup(States.UnitOwner(aUnitID), States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), gtRanged, AUTOLINK_RADIUS * 2);
       Rogue := Actions.GiveGroup(States.UnitOwner(aUnitID), 25, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID) + 1, 4, 1, 1);
       Actions.GroupHungerSet(Rogue, States.UnitMaxHunger);
       if G1 > 0 then
