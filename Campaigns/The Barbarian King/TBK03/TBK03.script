@@ -102,7 +102,8 @@ end;
 procedure OnTick();
 var
 	iX, iY, i: Byte;
-	iEnemyLeader, iLeader, iType: Integer;
+	iEnemyLeader, iLeader: Integer;
+	iType: TKMGroupType;
 begin
 	//Add additional Groups for Enemy
 	if States.GameTime() = 450 then
@@ -124,18 +125,18 @@ begin
 					if States.GroupIdle(aGroups[i]) then
 					begin
 						//If Group is Mounted -> Attack Bowman
-						if States.GroupType(aGroups[i]) = 3 then
+						if States.GroupTypeEx(aGroups[i]) = gtMounted then
 						begin
-							iType := 2;
+							iType := gtRanged;
 						end else
-							iType := -1;
+							iType := gtNone;
 						//Milita-Group targeting Lancers
 						if i = 3 then
-							iType := 2;
+							iType := gtAntiHorse;
 						iEnemyLeader := States.GroupMember(aGroups[i], 0);
 						iX := States.UnitPositionX(iEnemyLeader);
 						iY := States.UnitPositionY(iEnemyLeader);
-						iLeader := States.GroupMember(States.ClosestGroup(0, iX, iY, iType), 0);
+						iLeader := States.GroupMember(States.ClosestGroupEx(0, iX, iY, iType), 0);
 						Actions.GroupOrderAttackUnit(aGroups[i], iLeader);
 					end;
 				end else

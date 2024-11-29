@@ -160,7 +160,7 @@ begin
 		end;
 	end;
 end;
-function ClosestEnemyUnitGType(aPlayer, gType, X, Y, radius:Integer): Integer; 
+function ClosestEnemyUnitGType(aPlayer: Integer; gType: TKMGroupType; X, Y, radius:Integer): Integer; 
 var 
 Units: array of Integer; 
 i, j, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
@@ -171,7 +171,7 @@ begin
 			if( States.PlayerAllianceCheck(aPlayer, j) <> true ) then begin
 				Units := States.PlayerGetAllUnits(j);
 				for i := 0 to Length(Units) -1 do begin
-					if InRange(States.UnitType(Units[i]), 14, 27) and ( States.UnitDead(Units[i]) = false ) and (States.GroupType(States.UnitsGroup(Units[i])) = gType ) then begin
+					if InRange(States.UnitType(Units[i]), 14, 27) and ( States.UnitDead(Units[i]) = false ) and (States.GroupTypeEx(States.UnitsGroup(Units[i])) = gType ) then begin
 						DX := X - States.UnitPositionX(Units[i]);
 						DY := Y - States.UnitPositionY(Units[i]);
 						ThisDistanceSqr := (DX*DX) + (DY*DY);
@@ -185,7 +185,7 @@ begin
 		end;
 	end;
 end;
-function ClosestPlayerGroupType(aPlayer, gType, X, Y, radius:Integer): Integer; 
+function ClosestPlayerGroupType(aPlayer: Integer; gType: TKMGroupType: X, Y, radius:Integer): Integer; 
 var 
 Groups: array of Integer; 
 i, BestDistanceSqr, ThisDistanceSqr, DX, DY, fUnit: Integer;
@@ -193,7 +193,7 @@ begin
 	Result := -1;
 	Groups := States.PlayerGetAllGroups(aPlayer);
 	for i := 0 to Length(Groups) -1 do begin
-		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupType(Groups[i]) = gType ) then begin
+		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupTypeEx(Groups[i]) = gType ) then begin
 			fUnit:=States.GroupMember(Groups[i], 0);
 			DX := X - States.UnitPositionX(fUnit);
 			DY := Y - States.UnitPositionY(fUnit);
@@ -309,9 +309,9 @@ begin
 			x:= States.UnitPositionX(States.GroupMember(g, 0));
 			y:= States.UnitPositionY(States.GroupMember(g, 0));
 			p:= States.GroupOwner(g);
-			if States.GroupType(g) = 2 then begin //ranged
+			if States.GroupTypeEx(g) = gtRanged then begin //ranged
 				if RetreatRange(g, AI_RETREAT_RADIUS) then
-					if AttackGroup(g, ClosestEnemyUnitGType(p, 2, x, y, AI_SMELL_RADIUS-4)) then
+					if AttackGroup(g, ClosestEnemyUnitGType(p, gtRanged, x, y, AI_SMELL_RADIUS-4)) then
 						if AttackHouse(g, ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS)) then
 							if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SMELL_RADIUS-7)) then
 								AttackHouse(g, ClosestEnemyHouse(p, x, y, 100));
@@ -320,7 +320,7 @@ begin
 					if AttackHouse(g, ClosestEnemyHouse(p, x, y, AI_SNIFF_RADIUS+1)) then begin
 						h:= ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS+3);
 						if h > 0 then
-							CoverGroup(g, ClosestPlayerGroupType(p, 2, x, y, AI_COVER_RADIUS))
+							CoverGroup(g, ClosestPlayerGroupType(p, gtRanged, x, y, AI_COVER_RADIUS))
 						else
 							if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SMELL_RADIUS-4)) then
 								AttackHouse(g, ClosestEnemyHouse(p, x, y, 100));

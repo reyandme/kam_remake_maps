@@ -183,8 +183,8 @@ type
     OwnerRight:              Integer;                                     //Owner of teleported unit (right side)
     UnitLeft:                Integer;                                     //ID of teleported unit (left side)
     UnitRight:               Integer;                                     //ID of teleported unit (right side)
-    GroupTypeLeft:           Integer;                                     //Type of teleported group (left side)
-    GroupTypeRight:          Integer;                                     //Type of teleported group (right side)
+    GroupTypeLeft:           TKMGroupType;                                //Type of teleported group (left side)
+    GroupTypeRight:          TKMGroupType;                                //Type of teleported group (right side)
   end;
 
 
@@ -1011,8 +1011,8 @@ begin
   Teleport.GroupRight             := -1;              //We did not teleport any groups from right to left side yet
   Teleport.TypeLeft               := -1;              //We did not teleport any groups from left to right side yet
   Teleport.TypeRight              := -1;              //We did not teleport any groups from right to left side yet
-  Teleport.GroupTypeLeft          := -1;              //We did not teleport any groups from left to right side yet
-  Teleport.GroupTypeRight         := -1;              //We did not teleport any groups from right to left side yet
+  Teleport.GroupTypeLeft          := gtNone;          //We did not teleport any groups from left to right side yet
+  Teleport.GroupTypeRight         := gtNone;          //We did not teleport any groups from right to left side yet
   Teleport.OwnerLeft              := -1;              //We did not teleport any groups from left to right side yet
   Teleport.OwnerRight             := -1;              //We did not teleport any groups from right to left side yet
   Teleport.UnitLeft               := -1;              //We did not teleport any groups from left to right side yet
@@ -1462,7 +1462,7 @@ begin
           if AI.Groups[J] <> 0 then
             if not (States.GroupDead(AI.Groups[J]))
             and (AI.Groups[J] <> -1) then
-              if States.GroupType(AI.Groups[J]) <> 2 then            //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
+              if States.GroupTypeEx(AI.Groups[J]) <> gtRanged then   //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
                 Actions.GroupOrderAttackUnit(AI.Groups[J], UnitID);  //Repeat attacks until enemy troop died
       end;
     end;
@@ -1487,7 +1487,7 @@ begin
           if AI.Groups[J] <> 0 then
             if not (States.GroupDead(AI.Groups[J]))
             and (AI.Groups[J] <> -1) then
-              if States.GroupType(AI.Groups[J]) = 2 then             //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
+              if States.GroupTypeEx(AI.Groups[J]) = gtRanged then    //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
                Actions.GroupOrderAttackUnit(AI.Groups[J], UnitID);   //Repeat attacks until enemy troop died
       end;
     end;
@@ -1509,7 +1509,7 @@ begin
           if not States.GroupDead(AI.Groups[J]) then
             if (States.UnitPositionX(States.GroupMember(AI.Groups[J], 0)) <> AI.PosX[J])
             or (States.UnitPositionY(States.GroupMember(AI.Groups[J], 0)) <> AI.PosY[J]) then
-              if States.GroupType(AI.Groups[J]) <> 2 then                                          //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
+              if States.GroupTypeEx(AI.Groups[J]) <> gtRanged then                                 //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
                 Actions.GroupOrderWalk(AI.Groups[J], AI.PosX[J], AI.PosY[J], AI.Direction[J]);     //Go back to the positions if enemy troop is killed
   end;
 end;
@@ -1528,7 +1528,7 @@ begin
           if not States.GroupDead(AI.Groups[J]) then
             if (States.UnitPositionX(States.GroupMember(AI.Groups[J], 0)) <> AI.PosX[J])
             or (States.UnitPositionY(States.GroupMember(AI.Groups[J], 0)) <> AI.PosY[J]) then
-              if States.GroupType(AI.Groups[J]) = 2 then                                           //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
+              if States.GroupTypeEx(AI.Groups[J]) = gtRanged then                                  //For ranged we need longer delay between enemy choosing. Otherwise they behave crazy...
                 Actions.GroupOrderWalk(AI.Groups[J], AI.PosX[J], AI.PosY[J], AI.Direction[J]);     //Go back to the positions if enemy troop is killed
   end;
 end;
@@ -5514,7 +5514,7 @@ end;
 //Function to make groups link to closest group
 
 
-function FindClosestGroup(aPlayer, aX, aY, aType, aRadius: Integer): Integer; 
+function FindClosestGroup(aPlayer, aX, aY:Integer; aType: TKMGroupType; aRadius: Integer): Integer; 
 var 
   Groups: array of Integer;
   G, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
@@ -5531,7 +5531,7 @@ begin
     and (Abs(DY) < aRadius))
     and ((Result = -1)
     or (ThisDistanceSqr< BestDistanceSqr))
-    and (States.GroupType(G) = aType) then
+    and (States.GroupTypeEx(G) = aType) then
     begin
       BestDistanceSqr := ThisDistanceSqr;
       Result := Groups[I];
@@ -5556,7 +5556,7 @@ begin
   begin
     Teleport.TypeLeft := States.UnitType(States.UnitAt(4, 133));
     Teleport.OwnerLeft := States.GroupOwner(Teleport.GroupLeft);
-    Teleport.GroupTypeLeft := States.GroupType(Teleport.GroupLeft);
+    Teleport.GroupTypeLeft := States.GroupTypeEx(Teleport.GroupLeft);
     Actions.UnitKill(States.UnitAt(4, 133), True);
     Teleport.UnitLeft := Actions.GiveGroup(Teleport.OwnerLeft, Teleport.TypeLeft, 148, 130, 6, 1, 1);
     Teleport.NewGroupLeft := FindClosestGroup(Teleport.OwnerLeft, 148, 130, Teleport.GroupTypeLeft, TELEPORTS_LINK_RADIUS);
@@ -5574,7 +5574,7 @@ begin
   begin
     Teleport.TypeRight := States.UnitType(States.UnitAt(154, 133));
     Teleport.OwnerRight := States.GroupOwner(Teleport.GroupRight);
-    Teleport.GroupTypeRight := States.GroupType(Teleport.GroupRight);
+    Teleport.GroupTypeRight := States.GroupTypeEx(Teleport.GroupRight);
     Actions.UnitKill(States.UnitAt(154, 133), True);
     Teleport.UnitRight := Actions.GiveGroup(Teleport.OwnerRight, Teleport.TypeRight, 9, 131, 2, 1, 1);
     Teleport.NewGroupRight := FindClosestGroup(Teleport.OwnerRight, 9, 131, Teleport.GroupTypeRight, TELEPORTS_LINK_RADIUS);

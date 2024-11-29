@@ -532,7 +532,7 @@ var
 	aWalk: atWalkPar;
 begin
 	if (aGroupID > 0) AND (not States.GroupDead(aGroupID)) then begin //Group exists and is alive
-		if States.GroupType(aGroupID) = 2 then begin //For ranged units, individual soldiers must be checked and a Walk command needs to be issued
+		if States.GroupTypeEx(aGroupID) = gtRanged then begin //For ranged units, individual soldiers must be checked and a Walk command needs to be issued
 			if aHalfIdle(aGroupID) then begin //More than half of the troop is idle? Then walk towards the enemy
 				aTarget := States.ClosestGroup(aEnemy, States.UnitPositionX(States.GroupMember(aGroupID, 0)), States.UnitPositionY(States.GroupMember(aGroupID, 0)), -1);
 				aTarget := States.GroupMember(aTarget, 0);
@@ -582,10 +582,10 @@ begin
 					if States.GroupMemberCount(aArmy[v1].aStats[v2].aID[aQuadrant]) > 1 then aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1] := Actions.GroupOrderSplitUnit(aArmy[v1].aStats[v2].aID[aQuadrant], States.GroupMember(aArmy[v1].aStats[v2].aID[aQuadrant], v3))
 					else aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1] := aArmy[v1].aStats[v2].aID[aQuadrant];
 					
-					if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupType(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]) = 0) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]);
+					if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupTypeEx(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]) = gtMelee) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aUnits[aQuadrant][Length(aArmy[v1].aStats[v2].aUnits[aQuadrant])-1]);
 				end;
 			end else begin
-				if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupType(aArmy[v1].aStats[v2].aID[aQuadrant]) = 0) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aID[aQuadrant]);
+				if aChoices[aChoice(v1, v2)].aAllowStorming AND (States.GroupTypeEx(aArmy[v1].aStats[v2].aID[aQuadrant]) = gtMelee) then Actions.GroupOrderStorm(aArmy[v1].aStats[v2].aID[aQuadrant]);
 			end;
 		end;
 
