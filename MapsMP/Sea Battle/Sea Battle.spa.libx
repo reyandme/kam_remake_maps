@@ -1,0 +1,33 @@
+﻿0:Coloca tu Acorazado
+1:Coloca tu Crucero
+2:Coloca tu Destructor
+3:Coloca tu Barco
+4:Puedes colocar tus barcos de forma aleatoria. Utiliza el modo construcción y inserta el Mercado
+5:Puedes colocar tus barcos de forma horizontal o vertical. Coloca el campo de trigo (de izquierda a derecha) o el plano del campo de viñedos (de arriba hacia abajo).
+6:¿Listo? Coloque el Cuartel para empezar
+7:su turno
+8:Ganaste.
+9:Tú pierdes.
+10:Esperando al oponente...
+11:Para comenzar un nuevo juego, coloca en construcción la Atalaya.
+12:Para atacar a los barcos enemigos, coloque en construcción una losa de camino
+13:Prepárate
+14:Puntuación
+15:Tus barcos:
+16:Barcos enemigos:
+17:Juego terminado. El ganador es
+18:Tiempo restante:
+19:Para cancelar la colocación de todos los barcos, coloque el almacén.
+20:Para deshacer la colocación de los barcos un paso hacia atrás, coloque la Escuela
+21:Batalla naval clásica. Ahora también en KaM :D||Ingresa el comando [$6BD0FA]/help[] en el chat para obtener más información||Puedes colocar tus barcos de manera horizontal o vertical. Coloca el campo de trigo (de izquierda a derecha) o el plano del campo de viñedos (de arriba hacia abajo).||Puedes colocar tus barcos al azar. Usa el Mercado o el comando [$6BD0FA]/random[].||Coloca el plan de Barracones o usa [$6BD0FA]/ready[] para prepararte.||Para atacar a los barcos enemigos, coloca el plan de camino.||Para comenzar un nuevo juego, coloca el plan de Atalaya o ingresa [$6BD0FA]/new[].||Coloca el Cuartel o usa [$6BD0FA]/clear[] o [$6BD0FA]/undo 10[] para cancelar la colocación de todos los barcos.||Coloca la Escuela o usa [$6BD0FA]/undo 1[] para deshacer la colocación de los barcos un paso hacia atrás.||Usa el comando [$6BD0FA]/gameformat[] para establecer el formato del juego. Solo establece la cantidad de rondas victoriosas necesarias. Por ejemplo, el comando [$6BD0FA]/gameformat 2[] establecerá el formato del juego al mejor de 3
+22:o
+23:Ingrese un comando de consola en el chat:
+24:Cambiar la ubicación de los barcos de forma aleatoria
+25:Puede cancelar cualquier número de pasos del 1 al 10, por ejemplo
+26:commando
+27:cancelará 5 pasos
+28:Para cambiar el formato del juego (cuentan las rondas ganadas),
+29:Se ha cambiado el formato del juego. ¡Tienes que ganar %d rondas para conseguir la victoria!
+30:Se establecerá el formato de juego al mejor de 3
+31:Por ejemplo,
+32:Formato del juego

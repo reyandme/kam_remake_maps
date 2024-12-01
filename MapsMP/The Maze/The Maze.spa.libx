@@ -1,0 +1,120 @@
+﻿0:Tiempo restante:
+1:¡Aún no has encontrado esta ubicación!
+2:¡Has perdido el control sobre esta ubicación!
+3:¡Destruye primero el complejo militar!
+4:La tarea se completará en
+5:Completado!
+6:de
+7:Enviar tropas para ayudar a los aliados:
+8:Llegan refuerzos en
+9:¡Se alcanzó el límite!
+10:[$%s]%s[]: %d/%d
+11:Puntuación del equipo:
+12:Losas secretas encontradas:
+17:|===BONIFICACIONES DISPONIBLES===|
+18:|===TAREAS ACTUALES===|
+19:|===TAREA ADICIONAL===|
+20:|===LOGROS===|
+21:Logros del equipo
+22:Logros individuales
+23:|===PUNTUACIONES===|
+25:¡Los piratas enviaron refuerzos!
+26:¡Han llegado refuerzos!
+27:Según los informes de nuestros exploradores, el enemigo está equipando a nuevos soldados. Debes darte prisa, de lo contrario, la captura del castillo será una tarea difícil.
+28:¡La patrulla del castillo nos ha descubierto! El enemigo probablemente ya haya reforzado la defensa, así que será mejor que esperes a que lleguen refuerzos antes de atacar.
+29:Puedes teletransportar algunas tropas hacia tus aliados cuando necesiten ayuda. Solo envía tu tropa al puente y espera. La tropa aparecerá en el lado opuesto del mapa.
+30:Puedes ocultar las estadísticas: bloquea la entrega de piedras en tu torre de vigilancia. Para mostrar las estadísticas, desbloquea la entrega. Para mostrar los logros, habilita la reparación.
+31:¡Se han cambiado las tareas! Se ha añadido una nueva tarea:
+32:NOTA: ¡No dejes que tus generales mueran y no los teletransportes hacia tus aliados!
+33:Obtienes un nuevo logro:
+34:Recompensa:
+35:Obtendrás un nuevo bono: %s, por %d puntos.
+36:¡Has encontrado %d mosaicos secretos!
+37:Cuando intentes capturar una ubicación estratégica, el enemigo te atacará. ¡Ten cuidado!
+50:Toma el control del puesto avanzado occidental:
+51:Toma el control del Puesto Avanzado Oriental:
+52:Toma el control del Puesto de Avanzada del Sur:
+53:Toma el control del puesto avanzado del Norte:
+54:Toma el control del Castillo:
+55:Derrotar a los soldados enemigos:
+56:Destruir minas de hierro:
+57:Destruir minas de oro:
+58:Destruir minas de carbón:
+59:Destruir complejos militares:
+60:Destruir almacenes:
+75:Destruye todos los edificios enemigos
+76:Captura el castillo sin destruir ninguna torre enemiga.
+77:Mantén vivos a tus generales
+78:Envía 30 unidades montadas al Castillo
+79:Envía 30 unidades a distancia al Castillo
+80:Envía 15 bárbaros al Castillo
+81:Envía 30 unidades cuerpo a cuerpo al Castillo
+82:Envía 30 unidades anticaballo al Castillo
+83:No deberías perder más de 1600 soldados.
+84:Matar a todos los ciudadanos enemigos
+95:NOTA: Colócalos donde estaba el cuartel enemigo.
+96:¡Los vagabundos no cuentan!
+97:¡Los rebeldes no cuentan!
+98:¡Los honderos no cuentan!
+99:¡La milicia y los guerreros no cuentan!
+125:Explorador novato
+126:Explorador Profesional
+127:Contrainteligencia
+128:Carrera contra el reloj
+129:Picadora de carne
+130:Asesino
+131:Demoledor
+132:Caballero
+133:¡Caballos!
+134:Tirador
+135:¡A por las lanzas!
+136:Guardián de infantería
+137:Jefe de los bárbaros
+138:Variedad
+139:Hombre de Acero
+140:Hombre de cuero
+141:Piratas
+142:Rebelde
+143:301 Espartanos
+144:Segunda oportunidad
+150:por revelar %d%s del mapa.
+151:por revelar %d%s del mapa.
+152:por derrotar a todas las patrullas.
+153:Has llegado al Castillo más rápido que en 1:20
+154:por matar a %d soldados enemigos.
+155:Por matar %d ciudadanos enemigos.
+156:por destruir %d edificios enemigos.
+157:Tienes más de %d Caballeros a la vez.
+158:Tienes más de %d unidades montadas a la vez.
+159:Tienes más de %d unidades a distancia a la vez.
+160:Tienes más de %d unidades anticaballo a la vez.
+161:Tienes más de %d unidades cuerpo a cuerpo a la vez.
+162:Tienes más de %d bárbaros a la vez.
+163:Tienes %d soldados de cada tipo.
+164:Tienes más de %d soldados con armadura de hierro a la vez.
+165:Tienes más de %d soldados con armadura de cuero a la vez.
+166:para capturar los barcos enemigos.
+167:Tienes más de %d mercenarios a la vez.
+168:Tienes %d soldados a la vez.
+169:Perdiste casi todas las tropas.
+175:%d Vigías
+176:%d Soldados con espada, %d Arqueros y %d Caballeros
+177:%d Caballeros
+178:%d Bárbaros
+179:%d Arqueros
+180:%d Caballeros y %d Vigías
+181:%d Ballesteros
+182:%d Piqueros
+183:%d Soldados con hacha y %d Soldados con espada
+184:%d Guerreros
+185:%d Arqueros y %d Bárbaros
+186:%d Soldados con espada
+187:%d Soldados con hacha
+188:Los piratas enviarán pequeños refuerzos a partir de ahora. Revisen los barcos de vez en cuando.
+189:%d Rebeldes
+190:%d Caballeros y %d Soldados con espada
+191:%d Soldados con hacha y %d Arqueros
+200:¡Obtendrás una tropa extra!
+201:¡El contador de teletransportes ha sido revertido!
+202:¡El tiempo se invertirá durante los próximos 2 minutos! ¡Cada segundo te da tiempo extra!
+203:¡El tiempo se detiene durante los próximos 5 minutos!

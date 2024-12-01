@@ -1,0 +1,17 @@
+﻿0:¡Bienvenidos! Para elegir tu bonificación, inserta un edificio. Las bonificaciones son: Supervivientes (Comedor); Ingeniería (Aserradero); Ricos (Fundición de oro); Exploradores (Establo); Maestros ppartesanos (Fundición de hierro); Gente dura (Cuartel); Francotiradores (Atalaya); Retribución (Mercado).
+1:¡Has elegido a los maestros artesanos! Tu pueblo es de un tipo ingenioso, cuya habilidad para fabricar objetos es legendaria. Por este motivo, la cantidad de armas y armaduras que fabrican ha aumentado.
+2:¡Has elegido gente dura! Tu gente es muy dura, forjada por el duro entorno de su tierra natal; por eso, todas tus fuerzas de milicia son bárbaros poderosos. Sin embargo, para crear su propia arma, necesitarán combinar dos hachas de mano.
+3:¡Elegiste ser rico! Tu gente son hábiles comerciantes; gracias a ellos, tus reservas de oro son casi ilimitadas y obtienes el doble de recursos comerciando en el Mercado.
+4:¡Elegiste tener a los francotiradores! Tu gente son tiradores expertos, orgullosos de su puntería... y con razón. Todas tus unidades a distancia son letales y tienen un 15 % de posibilidades de matar a cualquier objetivo que alcancen con un único pero poderoso tiro en la cabeza.
+5:¡Elegiste Venganza! Tu pueblo es de una estirpe poderosa y derramar su sangre invoca una maldición que tiene un 5 % de probabilidades de matar a quien se atreva a hacerlo.
+6:¡Tú elegiste a los Exploradores! Excelentes criadores de caballos y hábiles exploradores, la dura vida en la naturaleza les enseñó mucho sobre cómo construir y mantener su refugio, y pueden aplicar este conocimiento cada vez que su hogar se daña, reparándolo lentamente
+7:¡Tú elegiste a los supervivientes! Los largos años que pasaron vagando por el desierto le dieron a tu gente una resistencia asombrosa a la hambruna. Pueden comer lo que encuentren en el bosque y sobrevivir con ello; como resultado, tu gente nunca pasa hambre.
+8:¡Has elegido Ingeniería! Los conocimientos y la comprensión de tus trabajadores son excelentes, y su destreza manual les permite sacar el máximo partido de ello. Puedes construir cualquier cosa desde el principio y tus trabajadores pueden levantar cualquier edificio en la mitad del tiempo habitual.
+9:[$%s]%s[] ¡eligió tener a los maestros artesanos!
+10:[$%s]%s[] ¡eligió tener gente dura!
+11:[$%s]%s[] ¡eligió ser rico!
+12:[$%s]%s[] ¡eligió tener los francotiradores!
+13:[$%s]%s[] ¡eligió tener Venganza!
+14:[$%s]%s[] ¡eligió tener a los Exploradores!
+15:[$%s]%s[] ¡eligió tener a los Supervivientes!
+16:[$%s]%s[] ¡eligió Ingeniería!

@@ -1,0 +1,36 @@
+﻿1:[$00FF00]Guerreros Furiosos[]
+2:[$%s]%s[]: %d
+3:[$00D7FF]Oro[]: %d
+4:[$00D7FF]Derrotados[]:
+5: +[$00FF00]%d[]
+6: /[$00D7FF]%d[]
+7: +[$32CD32]%d[]
+8:[$E6D8AD]Élite[]: %d/%d
+9: - [$E6D8AD]%d[]
+10:¡No hay suficientes monedas! Necesitas [$00FF00]%d[] para comprar este plan ( [$00FF00]%s[] ).
+11:Ya tienes la cantidad máxima de Atalayas que es %d.
+12: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]%s[]
+13: - [$FAFFF5]%s[]([$20A5DA]%d[])
+14: - [$FAFFF5]%s[]([$20A5DA]%d[][$32CD32]+%d[]) -> [$FAFFF5]mejorar a tropas de hierro[]
+15:¡No hay suficientes monedas! Necesitas [$00FF00]%d[] para comprar este plan
+16: <- [$00FF00]%d[]
+17:[$B48246]([][$EE687B]@[][$B48246])[]
+18:[$EE687B]([][$000000]O[][$EE687B])[]
+19:[$000000](o)[]
+20:[$F0FFFF]Día[] %d
+21:[$%s]Guerreros Furiosos[]
+22: +[$0000FF]%d[]
+23:[$F0FFFF]Día[] [$0000FF]%d[]
+24:[$E6D8AD]Atalaya[]/%d
+25:[$F0FFFF]Día[] [$00FF00]%d[]
+26:[$E6D8AD]Bárbaros[]/%d
+27: <- Primera [$2222B2]Sangre[]!
+28: <- [$F5F5F5]Bárbaro[]!
+30:[$00FF00]Consejo 1/6[] - Los guerreros montados a caballo atacarán primero a las unidades a distancia y intentarán ignorar a las tropas cuerpo a cuerpo.
+31:[$00FF00]Tip 2/6[] - Cada casa aumenta ligeramente el número de unidades de defensa y aumenta la magia negra.
+32:[$00FF00]Tip 3/6[] - Habilite la reparación de la casa y luego la entrega para liberar a todos los guerreros del mismo tipo.
+33:[$00FF00]Tip 5/6[] - Active en la casa las órdenes de reparación para liberar a todos los guerreros del mismo tipo cuando finalice la producción.
+34:[$00FF00]Tip 6/6[] - Coloque el mercado para ver la lista de casas durante 30 segundos.
+50:[$8CE6F0]modo_test[]
+51:[$32CD32]Hora de reembolso[]... %d
+52:¡Capturaste a tu primer bárbaro! Construye una escuela para mantenerlos en la batalla. Costo [$00FF00]%d[] Oro.
