@@ -1,4 +1,7 @@
+﻿BigDesc
+README!||Place houses to get units. Release units with open the door. Enable repair after open door release all troops from the same type of building.|To release every troops click on Tower's door.||Build and Get|Road:      Elite Bow/Xbow|FarmF:   Elite AxeF/SwordM|VineF:    Bomb|Market:   Price list about the house/units||[$FCA395]-To buy the wine for 2000 gold, [$FCA395]just click on the auto-repair [$FCA395]icon in the storehouse.[$FFFFFF]|-The maximum number of the barbarians is limited to 40.|-There is an unlimited number of the elites.|-The damage caused to the buildings is increased.||T4.0|Fixed butcher limit(12).|Fixed School limit(1)|Piggy:350->480G|StoreH:350->500G|Changed map layout||Original Map by [$00D7FF]dicsoupcan[$FFFFFF], script by [$00D7FF]Random Lyrics[$FFFFFF] / [$00D7FF]Randziu[$FFFFFF], script and map editing by [$00F071]Toxic[$FFFFFF], script editing for 15122+ version by Ritter des Todes.
+
 SetSpecial
+
 BlockPeacetime
-BigDesc
-README!||Place houses to get units. Release units with open the door. Enable repair after open door release all troops from the same type of building.|To release every troops click on Tower's door.||Build and Get|Road:      Elite Bow/Xbow|FarmF:   Elite AxeF/SwordM|VineF:    Bomb|Market:   Price list about the house/units||[$FCA395]-To buy the wine for 2000 gold, [$FCA395]just click on the auto-repair [$FCA395]icon in the storehouse.[$FFFFFF]|-The maximum number of the barbarians is limited to 40.|-There is an unlimited number of the elites.|-The damage caused to the buildings is increased.||T4.0|Fixed butcher limit(12).|Fixed School limit(1)|Piggy:350->480G|StoreH:350->500G|Changed map layout||Original Map by [$00D7FF]dicsoupcan[$FFFFFF], script by [$00D7FF]Random Lyrics[$FFFFFF] / [$00D7FF]Randziu[$FFFFFF], script and map edit by [$00F071]Toxic[$FFFFFF], script addited for 15122+ version by Ritter des Todes.
+
