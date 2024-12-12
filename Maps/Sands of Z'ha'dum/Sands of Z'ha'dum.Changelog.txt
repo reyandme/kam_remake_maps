@@ -69,3 +69,9 @@ v0.7.1b (29.10.2022):
 - Removed "dynamicmap.script" as it's important procedures are now part of "tools.script"
 - Cleaned up main script
 - Visual changes to overlay
+
+1.2 (12.12.2024)
+- Reworked story and mission briefings
+- Fixed a bug in libx file
+- Updated scripts to their newest version
+- Removed obsolete scripts

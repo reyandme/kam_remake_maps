@@ -2,7 +2,7 @@ Author
 Strangelove
 
 Version
-1.1 (18.11.2024)
+1.2 (12.12.2024)
 
 SmallDescLIBX
 98
@@ -12,4 +12,3 @@ BigDescLIBX
 
 DifficultyLevels
 mdEasy1,mdNormal,mdHard1
-

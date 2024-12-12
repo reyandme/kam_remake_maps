@@ -1,18 +1,18 @@
-0:Due to blind faith and hubris, only now did the Sultan give the order to construct defenses around the gold veins. We should strike before they are able to erect their fortifications!
-1:The Sultan did not anticipate our swift action and left his gold supplies in the east lightly guarded. We should strike before they can strengthen their defenses!
-2:The Sultan is as clever as he is cruel. The fortifications around his gold supplies have been strengthened before we even arrived. It will not be easy to claim them!
-3:We have destroyed the Sultan's mining camp and claimed the valuable gold veins for the kingdom!
-4:Upon completing the construction of a new gold mine our workers discovered a hidden stash of weapons in an old mining shaft. We have delivered them to our barracks.
-4:While finishing a new mine, one of our labourers discovered a hidden stash of weapons in an old mining shaft. They have been brought to our storehouse.
+﻿0:Blinded by hubris, the Sultan has only now begun ordering the construction of defenses around the gold veins. We must strike before their fortifications are completed!
+1:The Sultan did not anticipate our swift action and left their gold supplies in the east lightly guarded. We must strike quickly before they have a chance to strengthen their defenses!
+2:The Sultan is as cunning as he is cruel. Our initial intelligence indicated only light defenses at his outpost, but they were clearly reinforced well before our arrival. Still, we have no choice but to press forward.
+3:We've destroyed the Sultan's outpost and claimed the gold veins for the kingdom. This victory secures vital resources and weakens the enemy at the same time.
+4:While completing the construction of a new gold mine, our workers uncovered a hidden stash of weapons in an old mining shaft. They have been transported to our barracks to strengthen our forces for the battles ahead.
+5:As we finished work on a new mine, one of our laborers uncovered a hidden stash of weapons in an old shaft. These have been moved to our storehouse for future use.
 10:Mission Objectives
 11:Destroy all important enemy buildings
 12:Rid the land of the Sultan's forces
 13:Bonus Objectives
-14:Destroy the Sultan's gold mining camp before recruiting additional soldiers
+14:Destroy the Sultan's outpost before recruiting additional soldiers
 15:Build a gold mine on the other side of the river
 98:A Single Player Mission by Strangelove
-99:The neighboring Sultan has been violating the borders of the crown's lands for some time now. Recently, he vowed to either kill or enslave anyone who would not convert to his faith.||Since our main forces are still engaged in other border disputes across the kingdom, not many forces could be mustered.|We should make haste to recruit as many soldiers as possible and defend the land against the Sultan's hordes.
+99:The Crownlands of our kingdom have long suffered under the shadow of Sultan Malak ibn Rahim's relentless ambition. His repeated violations of our borders and threats to our citizens have proven his ruthlessness. Such acts of barbarity cannot and will not go unanswered.||A direct engagement with his main host would be costly. Our first move must be strategic: a swift strike on his lightly defended outpost in the East. This position is vital to his supply chain, his control over the surrounding region, and home to rich veins of gold. Capturing it will disrupt his logistics, deprive him of resources, and grant us strategic footholds.||Once secured, we will focus on his stronghold in the North to further divide his forces, weaken his influence, and eliminate his ability to threaten our lands. The Crown will not bow to his threats. The cost of crossing our borders will be his to pay.
 101:Sultan's vassals
 102:Sultan's forces
 103:Sultan's forces
-104:Mining camp
+104:Sultan's outpost
