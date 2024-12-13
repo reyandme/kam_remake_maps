@@ -2,7 +2,7 @@ Author
 DontTalk
 
 Version
-1.2 Defence Radius Adjustments
+1.3 Script Fixes
 
 SmallDesc
 A Mission By DontTalk

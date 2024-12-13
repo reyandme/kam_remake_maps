@@ -6,6 +6,8 @@ var
 	DifficultySetting: TKMMissionDifficulty;
 	PortDestroyed, AIattack, Timer, ShipAttack, ShipAssault: Boolean;
 	TimerStart, TimerDifficulty, Countdown, ShipStrike: Integer;
+	AIMarket: array[0..2] of Integer;
+	pointxy: TKMPoint;
 
 Procedure Kill_All_Units_Of_Player(player: Integer);
 var g, u: Integer; allUnits, allGroups: Array of Integer;
@@ -43,6 +45,9 @@ DifficultySetting := S.MissionDifficulty();
 A.GroupOrderStorm(S.GroupAt(68, 97));
 A.GroupOrderStorm(S.GroupAt(68, 104));
 A.GroupOrderStorm(S.GroupAt(68, 111));
+AIMarket[0]:= S.HouseAt(21, 79);
+AIMarket[1]:= S.HouseAt(29, 96);
+AIMarket[2]:= S.HouseAt(19, 134);
     case DifficultySetting of
 	    mdEasy1:
         begin
@@ -310,10 +315,21 @@ end;
 
 if (States.GameTime MOD 18000 = 0) then
 	begin
-    Actions.MarketSetTrade((States.HouseAt(21, 79)), WARE_GOLD, WARE_CORN, 25);
-	Actions.MarketSetTrade((States.HouseAt(29, 96)), WARE_GOLD, WARE_CORN, 25);
-	Actions.MarketSetTrade((States.HouseAt(19, 134)), WARE_GOLD, WARE_CORN, 25);
-	end;
+    if (AIMarket[0] <> -1) and (S.HouseDestroyed(AIMarket[0]) = false) and (S.HouseType(AIMarket[0]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[0]), WARE_GOLD, WARE_CORN, 25);
+        end;
+    
+    if (AIMarket[1] <> -1) and (S.HouseDestroyed(AIMarket[1]) = false) and (S.HouseType(AIMarket[1]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[1]), WARE_GOLD, WARE_CORN, 25);
+        end;
+		
+	if (AIMarket[2] <> -1) and (S.HouseDestroyed(AIMarket[2]) = false) and (S.HouseType(AIMarket[2]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[2]), WARE_GOLD, WARE_CORN, 25);
+        end;	
+    end;
 //////////////////////////////////////////////CLOCK/////////////////////////////////////////////////////////////
 if S.GameTime = (TimerStart + 9000) then
     begin
@@ -401,6 +417,9 @@ if ((S.StatArmyCount(5) > 219) or (S. StatArmyCount(5) = 219)) and (AIattack = t
 	A.AIDefencePositionRemove(5, 83, 52);
 	A.AIDefencePositionRemove(5, 84, 62);
 	A.AIDefencePositionRemove(5, 89, 57);
+	A.AIAttackAdd(5, True, 1, 1, 1, 0, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(5, True, 1, 1, 0, 1, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(5, True, 1, 1, 0, 0, 1, 0, false, attClosestUnit, pointxy);
 	end;	
 	
 if (S.StatArmyCount(5) < 160) and (AIattack = true) and (S.GameTime MOD 10 = 0) then
@@ -412,6 +431,7 @@ if (S.StatArmyCount(5) < 160) and (AIattack = true) and (S.GameTime MOD 10 = 0) 
 	A.AIDefencePositionAdd(5, 36, 17, DIRECTION_N, GROUP_MELEE, 30, 0);
 	A.AIDefencePositionAdd(5, 28, 38, DIRECTION_N, GROUP_ANTIHORSE, 30, 0);
 	A.AIDefencePositionAdd(5, 39, 15, DIRECTION_W, GROUP_ANTIHORSE, 28, 0);
+	A.AIAttackRemoveAll(5);
 	AIattack:= false;
 	end;
 end;
