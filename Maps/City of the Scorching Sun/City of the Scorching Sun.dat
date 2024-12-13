@@ -1,4 +1,4 @@
-!SET_MAP "data\mission\smaps\City Of The Scorching Sun.map"
+!SET_MAP "data\mission\smaps\City of the Scorching Sun.map"
 !SET_MAX_PLAYER 13
 !SET_HUMAN_PLAYER 0
 
@@ -2178,4 +2178,4 @@
 !SET_UNIT 25 150 17 50
 !SET_UNIT 25 145 65 50
 
-//This mission was made with KaM Remake Map Editor version r15122 at 24.11.2024 13:29:51
+//This mission was made with KaM Remake Map Editor version r15122 at 13.12.2024 15:23:40
