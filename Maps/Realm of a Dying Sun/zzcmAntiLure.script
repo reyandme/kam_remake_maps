@@ -1,6 +1,6 @@
-{$IFNDEF zzcmAntiLure}{$DEFINE zzcmAntiLure} Const DEF = -1; YES = 1; NO = 0; //<---PLEASE DO NOT CHANGE THESE!
+Const DEF = -1; YES = 1; NO = 0; //<---PLEASE DO NOT CHANGE THESE!
 
-(*"Anti-Lure" . . . A script by cmowla (June 10, 2023). [Last updated on November 8, 2024] (v3.9b ... Minimal Lag version)
+(*"Anti-Lure" (AL) . . . A script by cmowla (June 10, 2023). [Last updated on December 4, 2024] (v4.3b ... Minimal Lag version)
 - Tested on r15122.
 - Special thanks to DontTalk and Klaas (KW) for helping me test this during development!
 
@@ -75,9 +75,9 @@ Set all 4 of these = 0 if you don't want to return to their posts based on time 
 - Due to ranged units' vulnerability to flanking, it may be ideal to set a shorter delay for them to pursue.
 - (It may be helpful to know that mounted units move about 1.66 times as fast as foot soldiers when setting the times.)
 - All values represent SECONDS.*)
-RANGED_DELAY = 5;
-ANTIHORSE_DELAY = 7;
-MELEE_DELAY = 7;
+RANGED_DELAY = 6;
+ANTIHORSE_DELAY = 8;
+MELEE_DELAY = 8;
 MOUNTED_DELAY = 12;
 
 
@@ -343,12 +343,12 @@ end;Result:=linkBeforeDead;end;
 (*-------------------------------------------
 |____________CODE STARTS NOW________________|
 --------------------------------------------*)
-Var aiPlayers, humanPlayers: Array of Integer;
+Var aiPlayersAL, humanPlayersAL: Array of Integer;
 
 //---------------------
 //Debugging Subroutines
 //---------------------
-	Function GroupType_String(groupType: TKMGroupType): String;
+	Function AL__GroupType_String(groupType: TKMGroupType): String;
 	begin //Called in Player_Get_All_Defending_Groups
 		Case groupType of
 			gtMelee : Result := 'Melee';
@@ -358,47 +358,49 @@ Var aiPlayers, humanPlayers: Array of Integer;
 		end;
 	end;
 
-	Procedure Print(str: String);
+	Procedure AL__Print(str: String);
 	begin
-		A.Log(str);
+		Actions.Log(str);
 	end;
 
-	Procedure Print_I(num: Integer);
+	Procedure  AL__PrintI(description: String; num: Integer);
 	begin
-		A.Log(IntToStr(num));
+		Actions.Log(description + ':  ' + IntToStr(num));
 	end;
 
-	Procedure Print_B(bool: Boolean);
+	Procedure AL__PrintB(description: String; bool: Boolean);
 	begin
-		If bool Then A.Log('True') Else A.Log('False');
+		If bool Then Actions.Log(description + ':  (True)') Else Actions.Log(description + ':  (False)');
 	end;
 
-	Procedure Print_Array(arr: Array of Integer);
+	Procedure AL__Print_ArrayI(description: String; arr: Array of Integer);
 	var i: Integer; str: String;
 	begin
 		For i := Low(arr) to High(arr) do begin
 			str := str + IntToStr(arr[i]);
 			If i < High(arr) Then str := str + '|';
 		end;
-		A.Log(str);
+		Actions.Log(description + ':');
+		Actions.Log(str);
 	end;
 
-	Procedure Print_Array_2D(arr: Array of Array of Integer);
-	var i, j: Integer; str: String;
+	Procedure AL__Print_ArrayI_2D(description: String; arr: Array of Array of Integer);
+	var i, j: Integer; str, str2: String;
 	begin
 		For i := Low(arr) to High(arr) do begin
 			str := '';
 			For j := Low(arr[i]) to High(arr[i]) do str := str + IntToStr(arr[i][j]) + ',';
-			A.Log(' ');
-			A.Log(Copy(str, 1, Length(str) - 1));
+			str2 := str2 + Copy(str, 1, Length(str) - 1) + '|';
 		end;
+		Actions.Log(description + ':');
+		Actions.Log(str2);
 	end;
 
-	Procedure Quit;
+	Procedure AL__Quit;
 	var i: Integer;
-	begin //It's good to put "Quit; Exit;" as a line in any given procedure/function when using this.
-		For i := Low(aiPlayers) to High(aiPlayers) do Actions.PlayerDefeat(aiplayers[i]);
-		For i := Low(humanPlayers) to High(humanPlayers) do Actions.PlayerDefeat(humanPlayers[i]);
+	begin //It's good to put "AL__Quit; Exit;" as a line in any given procedure/function when using this.
+		For i := Low(aiPlayersAL) to High(aiPlayersAL) do Actions.PlayerDefeat(aiPlayersAL[i]);
+		For i := Low(humanPlayersAL) to High(humanPlayersAL) do Actions.PlayerDefeat(humanPlayersAL[i]);
 	end;
 
 
@@ -409,7 +411,6 @@ Var
 	unitDistances, buildingDistances, villagerDistances, defensePositionDistances,
 	randomDelayMultipliers, randomDistanceMultipliers, resetTimers, linkBeforeDeads: Array of Integer;
 	weights, defenderDefensePositions: Array of Array of Integer;
-	defPosInfoArray: Array of String; //|player#, index#, player#, index#,...|player#, index#, player#, index#,...|
 	mapWidth: Integer;
 
 Const
@@ -427,7 +428,7 @@ Const
 	LINK_BEFORE_DEAD_ALLOWED_ = 11;
 
 
-Procedure Initialize_CONSTANTS;
+Procedure AL__Initialize_CONSTANTS;
 var i, locCnt: Integer;
 begin
 	locCnt := S.LocationCount;
@@ -559,24 +560,24 @@ Const
 
 
 Var
+	recentlyAttackTiles, defenseLocationTiles, recentlyChasedOffSingleLeaders, humAICompAL: Array of Integer;
 	attacks: Array of Array of Array of Integer;
-	recentlyAttackTiles, defenseLocationTiles, recentlyChasedOffSingleLeaders: Array of Integer;
 	groupTypes: Array of TKMGroupType;
-	currentlyTaggedGroups: String;
+	currentlyTaggedGroups, aiPlayerStrAL: String;
 	neutralTiles: Array of String;
 
 
 //---------
 //Utilities
 //---------
-	Function Append_Int(arr: Array of Integer; value: Integer): Array of Integer;
+
+	Procedure AL__Append_I(var arr: Array of Integer; value: Integer);
 	begin //Append Integer to an array.
 		SetLength(arr, Length(arr) + 1);
 		arr[High(arr)] := value;
-		Result := arr;
 	end;
 
-	Function Position_Int(arr: Array of Integer; element: Integer): Integer;
+	Function AL__Position_I(arr: Array of Integer; element: Integer): Integer;
 	var	i: Integer; //Return index of first occurrence of an integer in an array.
 	begin
 		For i := Low(arr) to High(arr) do begin
@@ -588,32 +589,17 @@ Var
 		Result := -1; //The element is not in ar.
 	end;
 
-	Function Remove_Int_2D(arr: Array of Array of Integer; position: Integer): Array of Array of Integer;
+	Procedure AL__Remove_I_2D(var arr: Array of Array of Integer; position: Integer);
 	begin //To remove an array from an array for when order doesnt matter.
 		arr[position] := arr[High(arr)];
 		SetLength(arr, Length(arr) - 1);
-		Result := arr;
 	end;
 
-	Function Substring(str: String; start, finish: Integer): String;
+	Function AL__Split_I(str, delimeter: String): Array of Integer;
+	var i: Integer; //NOTE:  This is tailored to the input.  (Not a generalized Split_I!
 	begin
-		Result := Copy(str, start, finish - start + 1);
-	end;
-
-	Function Split_I(str, delimeter: String): Array of Integer;
-	var i, occurrence: Integer; arr: Array of Integer;
-	begin
-		SetLength(arr, Length(str));
-		occurrence := Pos(delimeter, str);
-		While occurrence > 0 do begin
-			arr[i] := StrToInt64(Substring(str, 1, occurrence - 1));
-			str := Substring(str, occurrence + 1, Length(str));
-			occurrence := Pos(delimeter, str);
-			i := i + 1;
-		end;
-		arr[i] := StrToInt64(str);
-		SetLength(arr, i + 1);
-		Result := arr;
+		SetLength(Result, (Length(str) + 1) / 5);
+		For i := 0 to High(Result) do Result[i] := StrToInt(Copy(str, 5 * i + 1, 4));
 	end;
 
 	Function KaM_Distance(x1, y1, x2, y2: Integer): Single;
@@ -628,35 +614,37 @@ Var
 		Result := (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	end;
 
-	Function Floor(num: Single): Integer;
-	begin
-		If (num < 0) And (-num - Int(-num) > 0) Then Result := -Trunc(-num) - 1 Else Result := Trunc(num);
-	end;
 
-	Function Modulous(a, b: Single): Integer;
-	begin
-		Result := Trunc(a - b * Floor(a / b));
-	end;
 //----------
 //KaM States
 //----------
-	Function Unit_Is_Dead(unitID: Integer): Boolean;
+	Function AL__Player_Is_AI(player: Integer): Boolean;
 	begin
-		Result := S.UnitTypeEx(unitID) = utNone;
+		Result := Pos('|' + IntToStr(player) + '|', aiPlayerStrAL) > 0;
 	end;
 
-	Function Unit_Is_Ranged(unitID: Integer): Boolean;
+	Function AL__Unit_Is_Ranged(unitID: Integer): Boolean;
 	begin //Used instead of S.GroupTypeEx = gtRanged because of situations with unitID does not exist.
-		Result := U.ArrayHasElementI(S.UnitType(unitID), [17,18,25]);
+		Result := Pos('|' + IntToStr(S.UnitType(unitID)) + '|', '|17|18|25|') > 0;
 	end;
 
-	Function Get_All_Players(findAIPlayers: Boolean): Array of Integer;
+	Function AL__Unit_Is_Dead(unitID: Integer): Boolean;
+	begin
+		Result := unitID < 0;
+	end;
+	
+	Function AL__Group_Is_Dead(groupID: Integer): Boolean;
+	begin
+		Result := (groupID > 0) And (S.GroupTypeEx(groupID) = gtNone);
+	end;
+	
+	Function AL__Get_All_Players(findAIPlayers: Boolean): Array of Integer;
 	var playerNumber: Integer;
-	begin //Pass True to get an array of aiPlayers and False to get an array of human players.
+	begin //Pass True to get an array of AI Players and False to get an array of human players.
 		For playerNumber := 0 to S.LocationCount - 1 do
-			If S.PlayerEnabled(playerNumber) Then
-				If S.PlayerIsAI(playerNumber) = findAIPlayers
-				Then Result := Append_Int(Result, playerNumber);
+			If S.PlayerEnabled(playerNumber)
+			And (S.PlayerIsAI(playerNumber) = findAIPlayers)
+			Then AL__Append_I(Result, playerNumber);
 	end;
 
 	Function In_Defense_Radius(tileX, tileY, groupID, groupMember: Integer; defenseRadius: Single): Boolean;
@@ -686,20 +674,21 @@ Var
 	Function Player_Get_All_Defending_Groups(attackedPlayer, tileX, tileY, rangedAttackStatus: Integer): Array of Integer;
 	var i, g, player, indexx: Integer; potentialDefendingGroups, defendingGroups: Array of Integer; defense: TKMDefencePositionInfo; groupDefendsXY: Boolean;
 	begin //Doesn't consider if human attacks another human in which the AI defends.(When would that be the case anyway?)
-		//The index of tile (x,y) in allMapTiles is defined by:  (S.MapWidth - 1) * (y - 1) + x
-		//x = Modulous(k, mapWidth) and y = -Floor(-k / mapWidth).
+	//The index of tile (x,y) in allMapTiles is defined by:  (S.MapWidth - 1) * (y - 1) + x
 		indexx := mapWidth * (tileY - 1) + tileX;
 		If (defPosInfoArray[indexx] = '') Then Exit;
-		potentialDefendingGroups := Split_I(defPosInfoArray[indexx], ',');
+		potentialDefendingGroups := AL__Split_I(defPosInfoArray[indexx], ',');
 		While i < Length(potentialDefendingGroups) do begin
 			player := potentialDefendingGroups[i] - 1;
 			indexx := potentialDefendingGroups[i + 1] - 1;
-			If S.PlayerAllianceCheck(player, attackedPlayer) Then begin
+			If (S.PlayerAllianceCheck(player, attackedPlayer))
+			And (indexx < S.StatAIDefencePositionsCount(player))
+			Then begin
 				defense := S.AIDefencePositionGetByIndex(player, indexx);
 				If (defense.groupID > 0) //group ID exists
 				And (S.GroupTypeEx(defense.groupID) <> gtNone) //How can a groupID exist and the group doesn't?
-				//Prevent scheduled attackNearestUnit waves from being disrupted.
-				//(To ensure that groups will not be halted multiple times in a short period of time.)
+			//Prevent scheduled attackNearestUnit waves from being disrupted.
+			//(To ensure that groups will not be halted multiple times in a short period of time.)
 				And (Pos('|' + IntToStr(defense.groupID) + '|', currentlyTaggedGroups) = 0) //Group isn't tagged already.
 				Then begin
 					groupDefendsXY := False;
@@ -747,7 +736,7 @@ Var
 						defendingGroups[High(defendingGroups) - 0] := defense.y;
 						currentlyTaggedGroups := currentlyTaggedGroups + '|' + IntToStr(defense.groupID) + '|';
 						// A.Log('(' + IntToStr(tileX) + ', ' + IntToStr(tileY) + ')' + ' is within player ' +
-						// IntToStr(player + 1) + '''s ' + GroupType_String(defense.groupType) + ' group''s defense radius of ' +
+						// IntToStr(player + 1) + '''s ' + AL__GroupType_String(defense.groupType) + ' group''s defense radius of ' +
 						// IntToStr(defense.radius) + '.  Group location: (' + IntToStr(defense.x) + ', ' + IntToStr(defense.y) + ').');
 					end;
 				end;
@@ -816,7 +805,7 @@ Var
 
 	Function Continue_To_Monitor_Decoys_And_Pursuing_Groups(humanDecoyGroupID, pursuingGroupID: Integer): Boolean;
 	begin
-		If S.GroupDead(humanDecoyGroupID) Or S.GroupDead(pursuingGroupID) //Either group is dead
+		If AL__Group_Is_Dead(humanDecoyGroupID) Or AL__Group_Is_Dead(pursuingGroupID) //Either group is dead
 		Then Result := True
 		Else If S.GroupOrder(pursuingGroupID) = goAttackUnit Then Result := True; //Both groups are alive,
 	end;
@@ -848,18 +837,25 @@ Var
 		end;
 	end;
 
-	Procedure Record_Attack(targetUnitOrHouseID, attackerUnitID: Integer; typeAttacked: String; aiAttackedHuman, haltGroupsImmediately: Boolean);
+Const
+	HOUSE_ = -6;
+	UNIT_ = -7;
+
+	Procedure Record_Attack(targetUnitOrHouseID, attackerUnitID, typeAttacked, aiAttackedHuman, haltGroupsImmediately: Integer);
 	var i, indexx, rangedAttackStatus: Integer; attack, groupIDsToHalt: Array of Integer; preferedGroupType: TKMGroupType; groupChosen: Boolean;
 	begin
 		SetLength(attack, GROUP_IDS_TO_HALT_ + 1);
 		//The "ATTACKER" is considered the human (regarding defense radii), no matter what.
 		//The "TARGETED PLAYER" is considered the AI (...).
-		If aiAttackedHuman Then begin //If AI attacks a human player's SOLDIER ONLY!
-			//(This procedure will not be called if the AI attacks a human player's villager or house.)
-			//Coordinates are wherever the human player's unit was in contact with the enemy.
-			If S.GroupDead(S.UnitsGroup(targetUnitOrHouseID)) Then Exit; //No need to record if human player's bowmen gets killed before his arrow hits a tower, for example.
+		If aiAttackedHuman = YES Then begin //If AI attacks a human player's SOLDIER ONLY!
+		//(This procedure will not be called if the AI attacks a human player's villager or house.)
+
+		//Coordinates are wherever the human player's unit was in contact with the enemy.
 			attack[X__] := S.UnitPositionX(targetUnitOrHouseID);
 			attack[Y__] := S.UnitPositionY(targetUnitOrHouseID);
+
+		//No need to record if human player's bowmen gets killed before his arrow hits a tower, for example.
+			If attack[X__] = -1 Then Exit;
 			If Tile_XY_Was_Recently_Attacked(attack[X__], attack[Y__]) Then Exit; //Major Optimization Line!
 			attack[ATTACKER_UNIT_ID_] := targetUnitOrHouseID;
 			attack[ATTACKER_GROUP_ID_] := S.UnitsGroup(targetUnitOrHouseID);
@@ -868,60 +864,67 @@ Var
 			attack[TARGETED_GROUP_ID_] := S.UnitsGroup(attackerUnitID);
 			attack[TARGETED_UNIT_TYPE_] := S.UnitType(attackerUnitID);
 		end Else begin //Human Attacked AI's villager, soldier, or house.
-			//Coordinates are STILL wherever the human player's unit was in contact with the enemy.
-			If S.GroupDead(S.UnitsGroup(attackerUnitID)) Then Exit; //No need to record if human player's bowmen gets killed before his arrow hits a tower, for example.
+
+		//Coordinates are STILL wherever the human player's unit was in contact with the enemy.
 			attack[X__] := S.UnitPositionX(attackerUnitID);
 			attack[Y__] := S.UnitPositionY(attackerUnitID);
+
+		//No need to record if AI's villager dies before a recording can be made.
+			If attack[X__] = -1 Then Exit;
 			If Tile_XY_Was_Recently_Attacked(attack[X__], attack[Y__]) Then Exit; //Major Optimization Line!
 			attack[ATTACKER_UNIT_ID_] := attackerUnitID;
 			attack[ATTACKER_GROUP_ID_] := S.UnitsGroup(attackerUnitID);
 			attack[ATTACKER_PLAYER_] := S.UnitOwner(attackerUnitID);
-			If typeAttacked = 'unit' Then begin
+			If typeAttacked = UNIT_ Then begin
 				attack[TARGETED_UNIT_TYPE_] := S.UnitType(targetUnitOrHouseID);
 				attack[TARGETED_PLAYER_] := S.UnitOwner(targetUnitOrHouseID);
 				If attack[TARGETED_UNIT_TYPE_] > 13 Then begin //Only if unit is a soldier.
 					attack[TARGETED_GROUP_ID_] := S.UnitsGroup(targetUnitOrHouseID)
-					If Unit_Is_Ranged(targetUnitOrHouseID) Then begin //AI ranged,
-						If Unit_Is_Ranged(attackerUnitID)
+					If AL__Unit_Is_Ranged(targetUnitOrHouseID) Then begin //AI ranged,
+						If AL__Unit_Is_Ranged(attackerUnitID)
 						Then rangedAttackStatus := RANGED_ATTACKED_BY_RANGED  //was attacked by human ranged,
 						Else rangedAttackStatus := RANGED_ATTACKED_BY_NONRANGED;//was attacked by human non-ranged,
 					end;
 				end;
 			end Else begin
-				attack[TYPE_ATTACKED_] := 1;
+				attack[TYPE_ATTACKED_] := HOUSE_;
 				attack[TARGETED_PLAYER_] := S.HouseOwner(targetUnitOrHouseID);
 			end;
 		end;
 
 		groupIDsToHalt := Player_Get_All_Defending_Groups(attack[TARGETED_PLAYER_], attack[X__], attack[Y__], rangedAttackStatus);
 
-		//If Human player is using very few units (maybe even just a single leader) to lure,
-		If haltGroupsImmediately Then begin
-			indexx := Position_Int(recentlyChasedOffSingleLeaders, attack[ATTACKER_GROUP_ID_]);
+	//If Human player is using very few units (maybe even just a single leader) to lure,
+		If haltGroupsImmediately = YES Then begin
+			indexx := AL__Position_I(recentlyChasedOffSingleLeaders, attack[ATTACKER_GROUP_ID_]);
 			If indexx > -1 Then begin //If human ranged group is already being tracked,
 				If Continue_To_Monitor_Decoys_And_Pursuing_Groups(recentlyChasedOffSingleLeaders[indexx], recentlyChasedOffSingleLeaders[indexx + 1]) Then begin
 					groupChosen := True;
 					preferedGroupType := S.GroupTypeEx(recentlyChasedOffSingleLeaders[indexx + 1]);
-				end Else preferedGroupType := Get_Preferred_Available_Group(groupIDsToHalt, attack[ATTACKER_GROUP_ID_]); //Get one group to go after him (or them).
-			end Else preferedGroupType := Get_Preferred_Available_Group(groupIDsToHalt, attack[ATTACKER_GROUP_ID_]); //Get one group to go after him (or them).
+
+			 //Get one group to go after him (or them).
+				end Else preferedGroupType := Get_Preferred_Available_Group(groupIDsToHalt, attack[ATTACKER_GROUP_ID_]);
+
+			//Get one group to go after him (or them).
+			end Else preferedGroupType := Get_Preferred_Available_Group(groupIDsToHalt, attack[ATTACKER_GROUP_ID_]);
 
 			If preferedGroupType = gtNone Then Exit; //There are no available groups in range.  Exit.
 
 			While i <= Length(groupIDsToHalt) - 2 do begin
 				If (S.GroupTypeEx(groupIDsToHalt[i]) = preferedGroupType) And (groupChosen = False)	Then begin
-					//Keep track of the human archer decoy and the AI pursing group.
+				//Keep track of the human archer decoy and the AI pursing group.
 					SetLength(recentlyChasedOffSingleLeaders, Length(recentlyChasedOffSingleLeaders) + 2);
 					recentlyChasedOffSingleLeaders[High(recentlyChasedOffSingleLeaders) - 1] := attack[ATTACKER_GROUP_ID_];
 					recentlyChasedOffSingleLeaders[High(recentlyChasedOffSingleLeaders)] := groupIDsToHalt[i];
 					i := i + 3;
 					groupChosen := True;
 				end	Else begin
-					//Halt all other groups IF they are on their defense locations.
+				//Halt all other groups IF they are on their defense locations.
 					If GroupLeader_Is_On_A_Defense_Location_XY(groupIDsToHalt[i]) Then begin
 						A.GroupOrderHalt(groupIDsToHalt[i]);
 
-						//Remove them from the currently tagged groups list so that they can potentially be
-						//recorded in the next attack, as they will NOT be recorded in this attack's recording.
+					//Remove them from the currently tagged groups list so that they can potentially be
+					//recorded in the next attack, as they will NOT be recorded in this attack's recording.
 						currentlyTaggedGroups := U.StringReplace(currentlyTaggedGroups, '|' + IntToStr(groupIDsToHalt[i]) + '|', '', True, False);
 						groupIDsToHalt[i] := groupIDsToHalt[High(groupIDsToHalt) - 2];
 						groupIDsToHalt[i + 1] := groupIDsToHalt[High(groupIDsToHalt) - 1];
@@ -931,14 +934,14 @@ Var
 				end;
 			end;
 
-			//If group has already been chosen the following will be the case.
-			//Do NOT mark off the tile as neutral!
+		//If group has already been chosen the following will be the case.
+		//Do NOT mark off the tile as neutral!
 			If Length(groupIDsToHalt) = 0 Then Exit;
 		end;
 
 		attack[GROUP_IDS_TO_HALT_] := Length(groupIDsToHalt);
 		If (attack[GROUP_IDS_TO_HALT_] = 0) Then begin
-			If aiAttackedHuman
+			If aiAttackedHuman = YES
 			Then Mark_Off_Neutral_Tile(targetUnitOrHouseID)
 			Else Mark_Off_Neutral_Tile(attackerUnitID);
 			Exit; //Don't record the attack if it happened outside of all AI groups' defense circles.
@@ -949,7 +952,7 @@ Var
 
 		attack[TIME__] := S.GameTime;
 
-		If haltGroupsImmediately = False Then begin
+		If haltGroupsImmediately = NO Then begin
 			SetLength(recentlyAttackTiles, Length(recentlyAttackTiles) + 3);
 			recentlyAttackTiles[High(recentlyAttackTiles) - 2] := attack[X__];
 			recentlyAttackTiles[High(recentlyAttackTiles) - 1] := attack[Y__];
@@ -959,75 +962,119 @@ Var
 		SetLength(attacks[attack[TARGETED_PLAYER_]], Length(attacks[attack[TARGETED_PLAYER_]]) + 1);
 		attacks[attack[TARGETED_PLAYER_]][High(attacks[attack[TARGETED_PLAYER_]])] := attack;
 	end;
-		Procedure AntiLure__OnUnitAttacked(targetUnitID, attackerUnitID: Integer);
-		var aiAttackedHuman, haltGroupsImmediately: Boolean;
+		Procedure AL__OnUnitAttacked(targetUnitID, attackerUnitID: Integer);
+		var minimumGroupSize, humanGroupID, aiGroupID, aiAttackedHuman, haltGroupsImmediately: Integer;
 		begin
-		//In the case when human player attempts to use very few (like just 1) unit to lure,
-			If S.PlayerIsAI(S.UnitOwner(targetUnitID)) //If AI unit got attacked
-			And (S.PlayerIsAI(S.UnitOwner(attackerUnitID)) = False) //by a human player's unit
-			Then begin
-				If Unit_Is_Ranged(attackerUnitID) Then begin
-					If (S.GroupMemberCount(S.UnitsGroup(attackerUnitID)) < RANGED_DECOY_COUNT + 1)
-					And GroupLeader_Is_On_A_Defense_Location_XY(S.UnitsGroup(targetUnitID))
-					And (S.GroupOrder(S.UnitsGroup(targetUnitID)) = goAttackUnit)
-					Then haltGroupsImmediately := True;
-				end Else begin
-					If (S.GroupMemberCount(S.UnitsGroup(attackerUnitID)) < NONRANGED_DECOY_COUNT + 1)
-					And GroupLeader_Is_On_A_Defense_Location_XY(S.UnitsGroup(targetUnitID))
-					And (S.GroupOrder(S.UnitsGroup(targetUnitID)) = goAttackUnit)
-					Then haltGroupsImmediately := True;
+		//Don't ask why.  (It's a mystery!)
+			If (attackerUnitID < 1) Or (targetUnitID < 1) Then Exit;
+
+		//If tower recruit attacked,
+			If S.UnitType(attackerUnitID) = 13 Then Exit; //Don't record.
+
+		//If player's own ranged units' arrows damaged its own unit, GET OUTTA HERE!
+			If S.UnitOwner(attackerUnitID) = S.UnitOwner(targetUnitID) Then Exit;
+
+		//Group won't exist even when a soldier does in at least one situation.
+		//For example, in the case when a unit WITHOUT A FLAG is the first to come out of a barracks and the barracks is being "choked" https://youtu.be/Jau7nBztYZo?t=2779.
+		//Or perhaps if a group's leader gets killed.
+			humanGroupID := S.UnitsGroup(attackerUnitID);
+			aiGroupID := S.UnitsGroup(targetUnitID);
+			If (humanGroupID < 1) Or (aiGroupID < 1) Then Exit;
+
+		//For all other cases,
+			Case humAICompAL[S.UnitOwner(targetUnitID)] - humAICompAL[S.UnitOwner(attackerUnitID)] of
+			//If (a human player got attacked by a human player) or (AI player got attacked by AI player),
+				0: begin
+					Exit; //Don't record
+				end;
+
+			//If an AI player got attacked by a human player,
+				1: begin
+				//If a human player's soldier attacked, see how large its group is.
+					If AL__Unit_Is_Ranged(attackerUnitID)
+					Then minimumGroupSize := RANGED_DECOY_COUNT + 1
+					Else minimumGroupSize := NONRANGED_DECOY_COUNT + 1;
+
+				//If human player's group is small enough to consider having just ONE AI group pursue it,
+					If (S.GroupMemberCount(humanGroupID) < minimumGroupSize) Then begin
+
+					//If AI Unit is a solder (this check is to prevent error messages from inquiring about a "villager's group"),
+						If S.UnitType(targetUnitID) > 13 Then begin
+
+						//If group was on their defense location right before the human player's offense,
+						//chances are that surrounding groups were on THEIR defense locations as well.
+							If GroupLeader_Is_On_A_Defense_Location_XY(aiGroupID)
+							And (S.GroupOrder(aiGroupID) = goAttackUnit)
+							Then haltGroupsImmediately := YES;
+						end Else haltGroupsImmediately := YES; //If AI villager was attacked.
+					end;
+				end;
+
+			//If a human player got attacked by an AI player.
+				-1: begin
+				//Attacked by AI ranged unit,
+					If AL__Unit_Is_Ranged(attackerUnitID) Then begin
+
+					//And if it's the opposite case to "if AI ranged unit is on his way to attack a human player's soldier",
+					//That is, the opposite of the condition:
+					//((S.UnitType(targetUnitID) > 13) And (S.WarriorInFight(attackerUnitID, False) = False))
+					//That, if (AI ranged is attacking human player's villager) OR (AI ranged is already firing human player's soldier),
+						If (S.UnitType(targetUnitID) < 14) Or S.WarriorInFight(attackerUnitID, False)
+
+					//That's not going to trigger the AI groups who defend tiles to go after the human player's unit, no matter what.
+					//Clearly the ranged group has not just been lured (so other defending groups will not be lured either).
+						Then Exit; //Don't record
+
+				//Attacked by AI non-ranged unit.
+					end Else begin
+
+					//Don't record if a human player's villager got attacked by an AI's non-ranged unit
+						If S.UnitType(targetUnitID) < 14 Then Exit;
+
+					 //If there's actual contact, the true tile of "offense" is the one the human player's unit is on.
+						If S.WarriorInFight(attackerUnitID, False) Then aiAttackedHuman := YES;
+					end;
 				end;
 			end;
 
-		//As you can see from comments below, there is no support for when AI attacks AI unit.
-			If (S.PlayerIsAI(S.UnitOwner(targetUnitID)) = False) Then begin//If a human player got attacked
-				If (S.PlayerIsAI(S.UnitOwner(attackerUnitID)) = False) //by a human player
-				Then Exit; //Don't record
+		//If the tile has already been determined to not be in any defense radius, don't record.
+			If Tile_Is_Neutral(targetUnitID) Then Exit;
 
-				If Unit_Is_Ranged(attackerUnitID) //by an AI player's ranged unit.
-				And S.WarriorInFight(attackerUnitID, False)
-				Then Exit; //Don't record
-			end;
+		//Attempt to record attack if gotten this far.
+			Record_Attack(targetUnitID, attackerUnitID, UNIT_, aiAttackedHuman, haltGroupsImmediately);
 
-			If (S.PlayerIsAI(S.UnitOwner(targetUnitID)) = False) //If a human player got attacked
-			And (S.PlayerIsAI(S.UnitOwner(attackerUnitID))) //by an AI player
-			And S.WarriorInFight(attackerUnitID, False) //And there's actual contact
-			Then begin
-				//Don't record if a human player's villager got attacked, as they don't trigger AI defense.
-				If S.UnitType(targetUnitID) < 14 Then Exit;
+		end; {$EVENT evtUnitAttacked:AL__OnUnitAttacked}
 
-				aiAttackedHuman := True;
-				//The true tile of "offense" is the one the human player's unit is on.
-				//If the tile has already been determined to not be in any defense radius, don't record.
-				If Tile_Is_Neutral(targetUnitID) Then Exit;
-			end Else If Tile_Is_Neutral(attackerUnitID) Then Exit;
+		Procedure AL__OnHouseDamaged(targetHouseID, attackerUnitID: Integer);
+		var humanGroupID, haltGroupsImmediately: Integer;
+		begin //As you can see from comments below, there is no support for when AI attacks AI house!
+		//Don't ask why.  (It's a mystery!)
+			If (targetHouseID < 1) Or (attackerUnitID < 1) Then Exit;
 
-			Record_Attack(targetUnitID, attackerUnitID, 'unit', aiAttackedHuman, haltGroupsImmediately);
-		end; {$EVENT evtUnitAttacked:AntiLure__OnUnitAttacked}
+		//If player's own ranged units' arrows damaged its own house, GET OUTTA HERE!
+			If S.UnitOwner(attackerUnitID) = S.HouseOwner(targetHouseID) Then Exit;
+			humanGroupID := S.UnitsGroup(attackerUnitID);
+			If humanGroupID < 1 Then Exit;
 
-		Procedure AntiLure__OnHouseDamaged(targetHouseID, attackerUnitID: Integer);
-		var haltGroupsImmediately: Boolean;
-		begin //As you can see from comments below, there is no support for when AI attacks AI house.
-			If S.PlayerIsAI(S.HouseOwner(targetHouseID)) //House owned by AI player.
-			And (S.PlayerIsAI(S.UnitOwner(attackerUnitID)) = False) //House was attacked by human player.
+		//If AI player's house was attacked by a human player's unit
+			If (humAICompAL[S.HouseOwner(targetHouseID)] - humAICompAL[S.UnitOwner(attackerUnitID)] = 1)
 			And (Tile_Is_Neutral(attackerUnitID) = False) //Tile is potentially in defense radius territory.
 			Then begin
-				If Unit_Is_Ranged(attackerUnitID) Then begin
-					If (S.GroupMemberCount(S.UnitsGroup(attackerUnitID)) < RANGED_DECOY_COUNT + 1)
-					Then haltGroupsImmediately := True;
+				If AL__Unit_Is_Ranged(attackerUnitID) Then begin
+					If (S.GroupMemberCount(humanGroupID) < RANGED_DECOY_COUNT + 1)
+					Then haltGroupsImmediately := YES;
 				end Else begin
-					If (S.GroupMemberCount(S.UnitsGroup(attackerUnitID)) < NONRANGED_DECOY_COUNT + 1)
-					Then haltGroupsImmediately := True;
+					If (S.GroupMemberCount(humanGroupID) < NONRANGED_DECOY_COUNT + 1)
+					Then haltGroupsImmediately := YES;
 				end;
-				Record_Attack(targetHouseID, attackerUnitID, 'house', False, haltGroupsImmediately);
+				Record_Attack(targetHouseID, attackerUnitID, HOUSE_, NO, haltGroupsImmediately);
 			end;
-		end; {$EVENT evtHouseDamaged:AntiLure__OnHouseDamaged}
-
+		end; {$EVENT evtHouseDamaged:AL__OnHouseDamaged}
 
 	Function Attacker_Moved_Far_Enough_Away(player: Integer; attack: Array of Integer; randI: Single; group: Integer): Boolean;
 	var closestHouseID: Integer;
 	begin
-		If Unit_Is_Dead(attack[ATTACKER_UNIT_ID_]) Then begin
+		If AL__Unit_Is_Dead(attack[ATTACKER_UNIT_ID_]) Then begin
 			Result := True; //Prevents a lot of log file error messages!
 			Exit;
 		end;
@@ -1040,8 +1087,8 @@ Var
 			Result := True;
 			Exit;
 		end;
-		If attack[TYPE_ATTACKED_] = 0 Then begin //If unit was attacked
-			If attack[TARGETED_UNIT_TYPE_] < 14 Then begin //Unit WAS a villager.
+		If attack[TYPE_ATTACKED_] = UNIT_ Then begin
+			If attack[TARGETED_UNIT_TYPE_] < 14 Then begin //If unit WAS a villager.
 				closestHouseID := S.ClosestHouse(attack[TARGETED_PLAYER_], attack[X__], attack[Y__], -1);
 				If closestHouseID > 0 Then begin
 					Result := KaM_Distance(
@@ -1052,7 +1099,7 @@ Var
 					) >= weights[VILLAGER_DISTANCE_][player] * randI;
 				end;
 			end	Else begin //A soldier was attacked.
-				If S.GroupDead(attack[TARGETED_GROUP_ID_]) Then begin
+				If AL__Group_Is_Dead(attack[TARGETED_GROUP_ID_]) Then begin
 					//If the group he attacked is DEAD, consider the tile (x,y) where the attack happened.
 					Result := KaM_Distance(
 						attack[X__],
@@ -1071,7 +1118,7 @@ Var
 				end;
 			end;
 		end	Else begin
-			//A building/house was attacked.  Consider where the tile (x,y) were the attack happened.
+		//A building/house was attacked.  Consider where the tile (x,y) were the attack happened.
 			Result := KaM_Distance(
 				attack[X__],
 				attack[Y__],
@@ -1083,12 +1130,12 @@ Var
 
 	Function Link_Before_Dead_Is_Being_Attempted(attack: Array of Integer): Boolean;
 	begin
-		Result := Unit_Is_Dead(attack[ATTACKER_UNIT_ID_])
-		And (S.GroupDead(attack[ATTACKER_GROUP_ID_]) = False)
+		Result := AL__Unit_Is_Dead(attack[ATTACKER_UNIT_ID_])
+		And (AL__Group_Is_Dead(attack[ATTACKER_GROUP_ID_]) = False)
 		And (S.GroupInFight(attack[ATTACKER_GROUP_ID_], False) = False);
 	end;
 
-	Procedure Remove_Group(player, attack, group: Integer);
+	Procedure AL__Remove_Group(player, attack, group: Integer);
 	begin
 		currentlyTaggedGroups := U.StringReplace(currentlyTaggedGroups, '|' + IntToStr(attacks[player][attack][group]) + '|', '', True, False);
 		attacks[player][attack][group] := -1;
@@ -1097,14 +1144,14 @@ Var
 	Procedure Halt_Group_If_Applicable(player, attack, group: Integer);
 	begin
 		If S.GroupOrder(attacks[player][attack][group]) = goAttackHouse
-		Then Remove_Group(player, attack, group) //Don't halt a group attacking a house (no matter what).
+		Then AL__Remove_Group(player, attack, group) //Don't halt a group attacking a house (no matter what).
 		Else begin
-			//Halting a group in a fight may cause lag.
-			//But it also causes volunterabilites to the LBD trick.
-			//So we don't halt them when they are in a fight!  (We save the halt for a time when they have finished fighting... should at least one of the members in the group still be alive at that time.)
+		//Halting a group in a fight may cause lag.
+		//But it also causes volunterabilites to the LBD trick.
+		//So we don't halt them when they are in a fight!  (We save the halt for a time when they have finished fighting... should at least one of the members in the group still be alive at that time.)
 			If (S.GroupInFight(attacks[player][attack][group], False) = False) Then begin
 				A.GroupOrderHalt(attacks[player][attack][group]);
-				Remove_Group(player, attack, group);
+				AL__Remove_Group(player, attack, group);
 			end
 		end;
 	end;
@@ -1123,19 +1170,19 @@ Var
 	Procedure Halt_Groups;
 	var player, attack, group, groupType, firstGroup, lastGroup, randI: Integer;
 	begin
-		For player := aiPlayers[0] to aiPlayers[High(aiPlayers)] do begin
+		For player := aiPlayersAL[0] to aiPlayersAL[High(aiPlayersAL)] do begin
 			For attack := Low(attacks[player]) to High(attacks[player]) do begin
 				firstGroup := GROUP_IDS_TO_HALT_ + 1;
 				lastGroup := High(attacks[player][attack]) - 2;
 				If All_Groups_Have_Been_Halted(attacks[player][attack], firstGroup, lastGroup)
 				Or (Link_Before_Dead_Is_Being_Attempted(attacks[player][attack]) And (weights[LINK_BEFORE_DEAD_ALLOWED_][player] = YES))
-				Then attacks[player] := Remove_Int_2D(attacks[player], attack) //Remove attack
+				Then AL__Remove_I_2D(attacks[player], attack) //Remove attack
 				Else begin
 					group := firstGroup;
 					While group <= lastGroup do begin
 						If attacks[player][attack][group] <> -1 Then begin
-							If S.GroupDead(attacks[player][attack][group])
-							Then Remove_Group(player, attack, group)
+							If AL__Group_Is_Dead(attacks[player][attack][group])
+							Then AL__Remove_Group(player, attack, group)
 							Else begin
 								For groupType := 0 to 3 do begin
 									If S.GroupTypeEx(attacks[player][attack][group]) = groupTypes[groupType] Then begin
@@ -1163,161 +1210,128 @@ Var
 		end;
 	end;
 
-	//We don't want any given tile (x,y) that an attack was recorded to remain
-	//for too long, because if a new attack is made on that same tile, all AI
-	//groups that respond to THAT attack will be vulnerable to lure.
-		Procedure Remove_Recent_Attacked_Tiles;
-		var i, newLow, gameTime: Integer; arr: Array of Integer; //str: String;
-		begin
-			gameTime := S.GameTime;
-			i := High(recentlyAttackTiles);
-			While i >= 0 do begin
-				If gameTime - recentlyAttackTiles[i] >= 100 Then Break;
-				i := i - 3;
-			end;
-			If i = -1 Then Exit;
-			newLow := i + 1;
-
-			// A.Log('-------------------------------------------');
-			// A.Log('Before');
-			// i := 0;
-			// While i <= High(recentlyAttackTiles) - 2 do begin
-				// str := str + IntToStr(recentlyAttackTiles[i]) + ',';
-				// str := str + IntToStr(recentlyAttackTiles[i + 1]) + ',';
-				// str := str + IntToStr(recentlyAttackTiles[i + 2]) + '|';
-				// i := i + 3;
-			// end;
-			// A.Log(str);
-
-			// A.Log('gameTime: ' + IntToStr(gameTime) + ', newLow: ' + IntToStr(newLow));
-			// (0,1,2),(3,4,5),(6,7,8),(9,10,11),(12,13,14),(15,16,17),......
-
-			SetLength(arr, High(recentlyAttackTiles) - newLow + 1);
-			For i := newLow to High(recentlyAttackTiles) do arr[i - newLow] := recentlyAttackTiles[i];
-			recentlyAttackTiles := arr;
-
-			// A.Log('After');
-			// i := 0;
-			// str := '';
-			// While i <= High(recentlyAttackTiles) - 2 do begin
-				// str := str + IntToStr(recentlyAttackTiles[i]) + ',';
-				// str := str + IntToStr(recentlyAttackTiles[i + 1]) + ',';
-				// str := str + IntToStr(recentlyAttackTiles[i + 2]) + '|';
-				// i := i + 3;
-			// end;
-			// A.Log(str);
-		end;
+	(*We don't want any given tile (x,y) that an attack was recorded to remain
+	 for too long, because if a new attack is made on that same tile, all AI
+	 groups that respond to THAT attack will be vulnerable to lure.*)
+	Procedure Remove_Recently_Attacked_Tiles;
+	var i, newLow, gameTime: Integer; arr: Array of Integer;
+	begin //recentlyAttackTiles is a 1D array of the form: [x, y, gameTime, x, y, gameTime, ...].
+		gameTime := S.GameTime;
+		While i < High(recentlyAttackTiles) do If gameTime - recentlyAttackTiles[i + 2] >= 100 Then i := i + 3 Else Break;
+		If i = 0 Then Exit; //If not enough time has passed to remove any recently attacked tiles, don't continue.
+		newLow := i;
+		SetLength(arr, Length(recentlyAttackTiles) - newLow);
+		For i := newLow to High(recentlyAttackTiles) do arr[i - newLow] := recentlyAttackTiles[i];
+		recentlyAttackTiles := arr;
+	end;
 
 	Procedure Halt_All_Ranged_Defender_Groups_Not_Recorded;
 	var i, j: Integer; defense: TKMDefencePositionInfo;
 	begin
-		For i := 0 to High(aiPlayers) do begin
-			For j := 0 to High(defenderDefensePositions[aiPlayers[i]]) do begin
-				defense := S.AIDefencePositionGetByIndex(aiPlayers[i], defenderDefensePositions[aiPlayers[i]][j]);
-				If (defense.groupID > 0) //Group exists.
-				And (defense.groupType <> gtNone) //Yeah, again, but I don't know why.
-				And (Pos('|' + IntToStr(defense.groupID) + '|', currentlyTaggedGroups) = 0) //Group isn't tagged.
-				Then A.GroupOrderHalt(defense.groupID);
-			end;
+		For i := 0 to High(aiPlayersAL) do begin
+			If S.PlayerDefeated(aiPlayersAL[i]) = False Then
+				For j := 0 to High(defenderDefensePositions[aiPlayersAL[i]]) do begin
+					If (defenderDefensePositions[aiPlayersAL[i]][j] < S.StatAIDefencePositionsCount(aiPlayersAL[i])) Then begin
+						defense := S.AIDefencePositionGetByIndex(aiPlayersAL[i], defenderDefensePositions[aiPlayersAL[i]][j]);
+						If (defense.groupID > 0) //Group exists.
+						And (defense.groupType <> gtNone) //Yeah, again, but I don't know why.
+						And (Pos('|' + IntToStr(defense.groupID) + '|', currentlyTaggedGroups) = 0) //Group isn't tagged.
+						Then A.GroupOrderHalt(defense.groupID);
+					end;
+				end;
 		end;
 	end;
 
-	Procedure AntiLure__OnTick;
+	Procedure AL__OnTick;
 	begin
 		If S.GameTime Mod 10 = 0 Then begin
 			Halt_Groups;
 			Mark_Off_Human_Ranged_Decoy_And_AI_Pursuing_Group;
 			If S.GameTime Mod 100 = 0 Then begin
-				Remove_Recent_Attacked_Tiles;
+				Remove_Recently_Attacked_Tiles;
 				Halt_All_Ranged_Defender_Groups_Not_Recorded;
 			end;
 		end;
-	end; {$EVENT evtTick:AntiLure__OnTick}
+	end; {$EVENT evtTick:AL__OnTick}
 
-	Procedure Remove_AutoAttackRange;
+	Procedure AL__Remove_AutoAttackRange;
 	var i: Integer;
 	begin
-		For i := 0 to High(aiPlayers) do A.AIAutoAttackRange(aiPlayers[i], 1);
+		For i := 0 to High(aiPlayersAL) do A.AIAutoAttackRange(aiPlayersAL[i], 1);
 	end;
 
 	Procedure Get_All_Starting_Defense_Location_Tiles;
 	var i, j, len, previousLen: Integer; defense: TKMDefencePositionInfo;
 	begin(*
-		Get all put all defense tiles XY into an array so that we can check to see that if any AI group's leader is on one of those tiles (or tiles within a certain radius distance from those tiles... due to fast moving units like mounted), then HALT all groups.  (This is for when 1 bowmen trigger them to move.)*)
+	Get all put all defense tiles XY into an array so that we can check to see that if any AI group's leader is on one of those tiles (or tiles within a certain radius distance from those tiles... due to fast moving units like mounted), then HALT all groups.  (This is for when 1 bowmen trigger them to move.)*)
 		SetLength(defenderDefensePositions, S.LocationCount);
-		For i := Low(aiPlayers) to High(aiPlayers) do begin
-			len := len + 2 * S.StatAIDefencePositionsCount(aiPlayers[i]);
+		For i := Low(aiPlayersAL) to High(aiPlayersAL) do begin
+			len := len + 2 * S.StatAIDefencePositionsCount(aiPlayersAL[i]);
 			SetLength(defenseLocationTiles, len);
 			j := 0;
 			While j <= len - previousLen - 1 do begin
-				defense := S.AIDefencePositionGetByIndex(aiPlayers[i], j / 2);
+				defense := S.AIDefencePositionGetByIndex(aiPlayersAL[i], j / 2);
 				defenseLocationTiles[previousLen + j] := defense.x;
 				defenseLocationTiles[previousLen + j + 1] := defense.y;
 				If (defense.PositionType = dtFrontLine)//If it's a defender group
-				Then defenderDefensePositions[aiPlayers[i]] := Append_Int(defenderDefensePositions[aiPlayers[i]] , j / 2);
+				Then AL__Append_I(defenderDefensePositions[aiPlayersAL[i]] , j / 2);
 				j := j + 2;
 			end;
 			previousLen := len;
 		end;
 	end;
 
-	Function Split_S(spacing: Integer; str: String): Array of String;
-	var i: Integer; arr: Array of String;
-	begin (*
-		The index of tile (x,y) in allMapTiles is defined by:  (S.MapWidth - 1) * (y - 1) + x
-
-		x = Modulous(k, mapWidth) and y = -Floor(-k / mapWidth).
-
-		zzcmDefencePositionInfoArray.script contains (well, when it's generated by my "Script Updater.hta" app) a string array whose elements are all equal in string length.  Each element is an array of integers, but not all elements have the same number of arguments.  Therefore, in order for all elements to be the same string length, most have blank spaces at the end to "fill in the gaps".  Hence why Trim() is used below AND that "spacing" is a parameter of this Function.
-
-		A normal SplitString function will of course search for the next occurrence of the delimeter in the string, but by us having a string array whose elements are all made the same length (by adding extra spaces to all so that they are all equal in length to the largest element's length), we don't have to use Pos() or additional assignments to slow down the split.  Trim() takes care of the rest.
-
-		This is important, because this is called in OnMissionStart.  For a big map, it can take up to 40 seconds for the game to start!  But with this method, it may take just 1 additional second (at most), even for very large maps like "Border of Life".*)
-		SetLength(arr, Length(str));
-		For i := 1 to (S.MapHeight - 1) * mapWidth + 1 do begin
-			arr[i] := Trim(Substring(str, (i - 1) * (spacing + 1) + 1,  (i - 1) * (spacing + 1) + spacing));
-		end;
-		SetLength(arr, i - 1);
-		Result := arr;
+	//A procedure to optimize AL__OnUnitAttacked and AL__OnHouseDamaged.
+	Procedure AL__Make_HumanPlayer_AIPlayer_Comparison_Array;
+	var p: Integer;
+	begin
+		SetLength(humAICompAL, S.LocationCount);
+		For p := 0 to S.LocationCount - 1 do
+			If S.PlayerEnabled(p) And S.PlayerISAI(p) Then humAICompAL[p] := 1;
 	end;
 
-	Procedure Remove_AI_Players_To_Ignore(aiPlayersToIgnore: Array of Integer);
+	Procedure AL__Remove_AI_Players_To_Ignore(aiPlayersToIgnore: Array of Integer);
 	var i: Integer; str: String;
 	begin
 		str := '|';
 		For i := 0 to High(aiPlayersToIgnore) do str := str + IntToStr(aiPlayersToIgnore[i]) + '|';
 		i := 0;
-		While i <= High(aiPlayers) do begin
-			If Pos('|' + IntToStr(aiPlayers[i]) + '|', str) > 0
-			Then aiPlayers := U.ArrayRemoveIndexI(i, aiPlayers)
+		While i <= High(aiPlayersAL) do begin
+			If Pos('|' + IntToStr(aiPlayersAL[i]) + '|', str) > 0
+			Then aiPlayersAL := U.ArrayRemoveIndexI(i, aiPlayersAL)
 			Else i := i + 1;
+		end;
+	//For my custom "S.PlayerIsAI" function only.
+		aiPlayerStrAL := '|';
+		For i := 0 to High(aiPlayersAL) do begin
+			aiPlayerStrAL := aiPlayerStrAL + IntToStr(aiPlayersAL[i]) + '|';
 		end;
 	end;
 
-	Procedure AntiLure__OnMissionStart;
+	Procedure AL__OnMissionStart;
 	var aiPlayersToIgnoreDefensePositions: Array of Integer;
 	begin
 		aiPlayersToIgnoreDefensePositions := [1, 2];
 		SetLength(neutralTiles, 1);
-		aiPlayers := Get_All_Players(True);
-		humanPlayers := Get_All_Players(False);
-		Remove_AI_Players_To_Ignore(aiPlayersToIgnoreDefensePositions);
+		aiPlayersAL := AL__Get_All_Players(True);
+		humanPlayersAL := AL__Get_All_Players(False);
+		AL__Remove_AI_Players_To_Ignore(aiPlayersToIgnoreDefensePositions);
+		mapWidth := S.MapWidth - 1;
 
-		//For the main halting procedure.
+	//For the main halting procedure.
 		SetLength(attacks, S.LocationCount);
 		groupTypes := [gtRanged, gtAntiHorse, gtMelee, gtMounted];
 
-		//For user settings,
-		If REMOVE_AUTO_ATTACK_RANGE = YES Then Remove_AutoAttackRange;
-		Initialize_CONSTANTS;
+	//For user settings,
+		If REMOVE_AUTO_ATTACK_RANGE = YES Then AL__Remove_AutoAttackRange;
+		AL__Initialize_CONSTANTS;
 
-		 //This allows us to halt all defender groups periodically.
+	 //This allows us to halt all defender groups periodically.
 		Get_All_Starting_Defense_Location_Tiles;
 
-		//For a major optimization.  Elliminates the need to loop through all defensive locations of all players to see which group defends a random tile that happens to be where an assault by (or to) a human player's unit in AI territory.
-		mapWidth := S.MapWidth - 1;
-		defPosInfoArray := Split_S(largestElm, mapTileDefPosInfo);
-		// A.Log(defPosInfoArray[High(defPosInfoArray)]);
-		mapTileDefPosInfo := ''; //Very important... game crashes at random (from "out of range error") otherwise!
-	end; {$EVENT evtMissionStart:AntiLure__OnMissionStart}
-{$ENDIF}
+	//A procedure in the supporting script, "zzcmDefencePositionInfoArray.script" generated by "Defence Position Info Array Updater.hta" (after you put that HTA in the map folder and double click on it).
+		Get_Starting_Defense_Position_Info
+
+	//A procedure to optimize AL__OnUnitAttacked and AL__OnHouseDamaged.
+		AL__Make_HumanPlayer_AIPlayer_Comparison_Array;
+	end; {$EVENT evtMissionStart:AL__OnMissionStart}

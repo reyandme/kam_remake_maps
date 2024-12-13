@@ -1,7 +1,7 @@
 //-- Improve Static AI --//
 //By Strangelove
-//v0.6.1
-//16.10.2024
+//v0.6.1c
+//09.12.2024
 //Developed for r8754
 //Last modified on r15122
 //Requires r14281+ to work
@@ -156,9 +156,11 @@ begin
 	//Use any Housetype if not found
 	if iClosestHouse = -1 then
 		iClosestHouse := States.ClosestHouse(Player, X, Y, -1);
-	//New house plan not connected? Connect to closest house
-	if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
-		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
+    //Is there another House to connect to?
+	if iClosestHouse <> -1 then
+	    //New house plan not connected? Connect to closest house
+	    if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
+		    Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
 end;
 
 
@@ -269,31 +271,25 @@ end;
 
 
 
-function GetRandomHungerLevel(): Integer;
-var
-	UnitMaxHunger: Integer;
-begin
-	UnitMaxHunger := States.UnitMaxHunger();
-	Result := Utils.RandomRangeI(UnitMaxHunger/2, UnitMaxHunger);
-end;
-
-
 //Sets the HungerLevel of AI Players to a random amount
 procedure UnitsRandomHungerSet();
 var
 	aUnits, aGroups: array of Integer;
 	i, p: Integer;
+	UnitMaxHunger: Integer;
 begin
+    UnitMaxHunger := States.UnitMaxHunger();
+
 	for p := 0 to States.StatPlayerCount() -1 do
 		if States.PlayerIsAI(p) then
 		begin
 			aUnits := States.PlayerGetAllUnits(p);
 			for i := 0 to High(aUnits) do
 				if States.UnitsGroup(aUnits[i]) = -1 then
-					Actions.UnitHungerSet(aUnits[i], GetRandomHungerLevel());
+					Actions.UnitHungerSet(aUnits[i], Utils.RandomRangeI(UnitMaxHunger/5, UnitMaxHunger));
 			aGroups := States.PlayerGetAllGroups(p);
 			for i := 0 to High(aGroups) do
-				Actions.GroupHungerSet(aGroups[i], GetRandomHungerLevel());	
+				Actions.GroupHungerSet(aGroups[i], Utils.RandomRangeI(UnitMaxHunger/4, UnitMaxHunger));
 		end;
 end;
 
@@ -980,3 +976,11 @@ end;
 - Replenish Rate is now dynamic and depends on Recruit Rate of AIs
 - Refactoring code of new features
 - Switched OnHouseAfterDestroyed to OnHouseAfterDestroyedEx version}
+
+{Changelog v0.6.1b 08.11.2024
+- UnitsRandomHungerSet procedure now sets hunger level from 20 to 100% for citizens and 25 to 100% for soldiers (instead of 50 to 100% regardless of type)
+}
+
+{Changelog v0.6.1c 09.12.2024
+- Fixed a bug where the script produced errors when there was no house to connect to for procedure "ConnectToClosestHouse"
+}
