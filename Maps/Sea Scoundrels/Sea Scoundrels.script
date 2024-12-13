@@ -1,0 +1,840 @@
+var Barbarians, Barbarians2, Bowmens, Bowmens2, Barbarians3, Barbarians4, Bowmens3, Bowmens4, Player8Tower, Player8Tower2, Player8Recruit, Player8Recruit2, Player8Knights, Player8Knights2, Player8Knights3, Player8Bowmens, Player8Bowmens2, Player8Bowmens3, AllianceTroops, AllianceTroops2, AllianceTroops3, AllianceTroops4, AllianceTroops5, AllianceTroops6, AllianceTroops7, AllianceTroops8, AllianceTroops9, AllianceTroops10, Player2Tower, Player2Tower2, Player2Tower3, Player2Butcher, Player2Inn, Player2Storehouse, Player2Carpenter, Player2Vineyard, Player2Quarry, Player2Farm, MainPlayerTower, MainPlayerTower2, MainPlayerTower3, MainPlayerButcher, MainPlayerInn, MainPlayerStorehouse, MainPlayerCarpenter, MainPlayerVineyard, MainPlayerQuarry, MainPlayerFarm, Laborer, Laborer2, Laborer3, Laborer4, NorthernVillageTower, NorthernVillageTower2, NorthernVillageTower3, NorthernVillageTower4, NorthernVillageFarm, NorthernVillageFarm2, NorthernVillageInn, NorthernVillageStorehouse, NorthernVillageVineyard, NorthernVillageSchool, NorthernVillageBakery, NorthernVillageBakery2, NorthernVillageSwineFarm, NorthernVillageButcher, NorthernVillageMill, NorthernVillageFishermanHut, RecruitOnIsland, Player7GoldMine, Player7GoldMine2, Player7GoldMine3, Player7GoldMine4, Player7GoldMine5, Player7GoldMine6, Player7GoldMine7, Player7GoldMine8, Player6MarketplaceForWineTrade, Player6Storehouse, Player7Recruit, Player7Recruit2, Player7Recruit3, Player7Recruit4, Player7Recruit5, Player7Recruit6, Player7Tower, Player7Tower2, Player7Tower3, Player7Tower4, Player7Tower5, Player7Tower6, DockGuard, DockGuard2, DockGuard3, DockGuard4, DockAnimalBreeder, DockSerf, DockSerf2, DockRecruit, DockWoodcutter, DockPeasant, Player4Recruit, Player4Recruit2, Player4Recruit3, Player4Recruit4, Player4Tower, Player4Tower2, Player4Tower3, Player4Tower4, Player3Recruit, Player3Recruit2, Player3Recruit3, Player3Recruit4, Player3Recruit5, Player3Tower, Player3Tower2, Player3Tower3, Player3Tower4, Player3Tower5, Player3MarketplaceForPigTrade, EasternVillageGoldMine, EasternVillageGoldMine2, EasternVillageMint, EasternVillageMint2, EasternVillageStorehouse, EasternVillageInn, EasternVillageSchool, EasternVillageMarketplace, EasternVillageBakery, EasternVillageButcher, Knights, Knights2, Knights3, MainEnemyStorehouse, MainEnemyStorehouse2, MainEnemyStorehouse3, EndKnights, EndKnights2, EndKnights3, EndKnights4, EndKnights5, EndWarriors, EndWarriors2, EndCrossbowmans, EndCrossbowmans2, EndCrossbowmans3, EndScouts, EndScouts2, Player16GoldMine, Player16GoldMine2, Player16GoldMine3, Player16Miner, Player16Miner2, Player16Miner3, Player17CoalMine, Player17CoalMine2, Player17CoalMine3, Player17Miner, Player17Miner2, Player17Miner3, TroopsToDelete, TroopsToDelete2, TroopsToDelete3, TroopsToDelete4, Knights4, Knights5, Knights6: Integer;
+
+var EventABCTime: Cardinal;
+	EventsTime: array[0 .. 3] of Cardinal;
+
+var NorthernVillageConquest, NorthernVillageBakeryDestroyed, NorthernVillageBakery2Destroyed, NorthernVillageButcherDestroyed, NorthernVillageFarmDestroyed, NorthernVillageFarm2Destroyed, NorthernVillageFishermanHutDestroyed, NorthernVillageInnDestroyed, NorthernVillageMillDestroyed, NorthernVillageSchoolDestroyed, NorthernVillageStorehouseDestroyed, NorthernVillageSwineFarmDestroyed, NorthernVillageVineyardDestroyed, EasternVillageConquest, EasternVillageBakeryDestroyed, EasternVillageButcherDestroyed, EasternVillageGoldMineDestroyed, EasternVillageGoldMine2Destroyed, EasternVillageInnDestroyed, EasternVillageMarketplaceDestroyed, EasternVillageMintDestroyed, EasternVillageMint2Destroyed, EasternVillageSchoolDestroyed, EasternVillageStorehouseDestroyed, KnightsKilled, 
+Retaliation, Win, Attack, SideQuestCompleted, AttackDead: Boolean;
+
+const TIME_TO_COUNTERATTACK = 36000;
+
+//Rekrutacja barbarzyńców dla gracza
+procedure OnWarriorEquipped(UnitID,aGroupID: Integer);
+var aBarracks: Integer;
+	aX, aY, aDir, aType, aOwner : integer;
+begin
+	aX:= S.UnitPositionX(UnitID);
+	aY:= S.UnitPositionY(UnitID);
+	aDir:= S.UnitDirection(UnitID);
+	aType:= S.UnitType(UnitID);
+	aOwner:= S.UnitOwner(UnitID);
+	aBarracks:= S.HouseAt(aX, aY-1);	
+	if S.HouseRepair(aBarracks) then 
+	begin
+		If aType = 14 then
+			If S.HouseResourceAmount(aBarracks, 20) >= 3 then
+			begin
+				A.HouseTakeWaresFrom(aBarracks, 20, 3)
+				A.UnitKill(UnitID, true);
+				A.GroupOrderLink(A.GiveGroup(aOwner, 23, aX, aY, aDir, 1, 1),aGroupID);
+				A.GroupOrderWalk(aGroupID, S.HouseBarracksRallyPointX(aBarracks), S.HouseBarracksRallyPointY(aBarracks), aDir);
+			end;
+	end;
+end;
+
+Procedure OnMissionStart;
+begin
+	A.CinematicStart(0);
+	Barbarians:= S.GroupAt(56, 153);
+	Barbarians2:= S.GroupAt(60, 154);
+	Bowmens:= S.GroupAt(57, 157);
+	Bowmens2:= S.GroupAt(62, 155);
+	Player8Recruit:= S.UnitAt(72, 66);
+	Player8Recruit2:= S.UnitAt(80, 68);
+	Player8Tower:= S.HouseAt(72, 65);
+	Player8Tower2:= S.HouseAt(80, 67);
+	Player8Bowmens:= S.GroupAt(82, 66);
+	Player8Bowmens2:= S.GroupAt(77, 64);
+	Player8Bowmens3:= S.GroupAt(72, 61);
+	Player8Knights:= S.GroupAt(83, 62);
+	Player8Knights2:= S.GroupAt(79, 60);
+	Player8Knights3:= S.GroupAt(74, 58);
+	AllianceTroops:= S.GroupAt(122, 121);
+	AllianceTroops2:= S.GroupAt(123, 123);
+	AllianceTroops3:= S.GroupAt(124, 125);
+	AllianceTroops4:= S.GroupAt(119, 123);
+	AllianceTroops5:= S.GroupAt(117, 124);
+	Player2Butcher:= S.HouseAt(37, 122);
+	Player2Carpenter:= S.HouseAt(30, 114);
+	Player2Farm:= S.HouseAt(37, 113);
+	Player2Inn:= S.HouseAt(41, 120);
+	Player2Quarry:= S.HouseAt(41, 109);
+	Player2Storehouse:= S.HouseAt(37, 117);
+	Player2Tower:= S.HouseAt(36, 126);
+	Player2Tower2:= S.HouseAt(46, 123);
+	Player2Tower3:= S.HouseAt(35, 108);
+	Player2Vineyard:= S.HouseAt(43, 114);
+	NorthernVillageBakery:= S.HouseAt(25, 49);
+	NorthernVillageBakery2:= S.HouseAt(30, 39);
+	NorthernVillageButcher:= S.HouseAt(35, 52);
+	NorthernVillageFarm:= S.HouseAt(30, 43);
+	NorthernVillageFarm2:= S.HouseAt(38, 42);
+	NorthernVillageFishermanHut:= S.HouseAt(32, 33);
+	NorthernVillageInn:= S.HouseAt(43, 48);
+	NorthernVillageMill:= S.HouseAt(30, 46);
+	NorthernVillageSchool:= S.HouseAt(39, 46);
+	NorthernVillageStorehouse:= S.HouseAt(34, 48);
+	NorthernVillageSwineFarm:= S.HouseAt(31, 50);
+	NorthernVillageTower:= S.HouseAt(32, 59);
+	NorthernVillageTower2:= S.HouseAt(25, 58);
+	NorthernVillageTower3:= S.HouseAt(23, 38);
+	NorthernVillageTower4:= S.HouseAt(37, 31);
+	NorthernVillageVineyard:= S.HouseAt(25, 45);
+	RecruitOnIsland:= S.UnitAt(123, 24);
+	Player6MarketplaceForWineTrade:= S.HouseAt(100, 16);
+	Player7GoldMine:= S.HouseAt(79, 19);
+	Player7GoldMine2:= S.HouseAt(76, 18);
+	Player7GoldMine3:= S.HouseAt(73, 17);
+	Player7GoldMine4:= S.HouseAt(70, 18);
+	Player7GoldMine5:= S.HouseAt(67, 20);
+	Player7GoldMine6:= S.HouseAt(63, 24);
+	Player7GoldMine7:= S.HouseAt(53, 23);
+	Player7GoldMine8:= S.HouseAt(50, 22);	
+	Player6Storehouse:= S.HouseAt(103, 19);	
+	Player7Recruit:= S.UnitAt(70, 48);
+	Player7Recruit2:= S.UnitAt(76, 51);
+	Player7Recruit3:= S.UnitAt(83, 50);
+	Player7Recruit4:= S.UnitAt(94, 50);
+	Player7Recruit5:= S.UnitAt(104, 46);
+	Player7Recruit6:= S.UnitAt(112, 44);	
+	Player7Tower:= S.HouseAt(70, 47);
+	Player7Tower2:= S.HouseAt(76, 50);
+	Player7Tower3:= S.HouseAt(83, 49);
+	Player7Tower4:= S.HouseAt(94, 49);
+	Player7Tower5:= S.HouseAt(104, 45);
+	Player7Tower6:= S.HouseAt(112, 43);	
+	DockGuard:= S.GroupAt(98, 17);
+	DockGuard2:= S.GroupAt(101, 15);
+	DockGuard3:= S.GroupAt(105, 8);
+	DockGuard4:= S.GroupAt(114, 13);
+	DockAnimalBreeder:= A.GiveUnit(13, 3, 100, 6, 1);
+	DockPeasant:= A.GiveUnit(13, 4, 107, 13, 4);
+	DockRecruit:= A.GiveUnit(13, 13, 109, 10, 6);
+	DockSerf:= A.GiveUnit(13, 0, 108, 14, 6);
+	DockSerf2:= A.GiveUnit(13, 0, 106, 14, 2);
+	DockWoodcutter:= A.GiveUnit(13, 1, 107, 15, 0);	
+	Player4Recruit:= S.UnitAt(25, 59);	
+	Player4Recruit2:= S.UnitAt(32, 60);	
+	Player4Recruit3:= S.UnitAt(23, 39);	
+	Player4Recruit4:= S.UnitAt(37, 32);	
+	Player4Tower:= S.HouseAt(25, 58);	
+	Player4Tower2:= S.HouseAt(32, 59);
+	Player4Tower3:= S.HouseAt(23, 38);
+	Player4Tower4:= S.HouseAt(37, 31);	
+	Player3Recruit:= S.UnitAt(98, 93);	
+	Player3Recruit2:= S.UnitAt(96, 103);	
+	Player3Recruit3:= S.UnitAt(110, 111);	
+	Player3Recruit4:= S.UnitAt(123, 104);	
+	Player3Recruit5:= S.UnitAt(129, 93);	
+	Player3Tower:= S.HouseAt(98, 92);
+	Player3Tower2:= S.HouseAt(96, 102);
+	Player3Tower3:= S.HouseAt(110, 110);
+	Player3Tower4:= S.HouseAt(123, 103);
+	Player3Tower5:= S.HouseAt(129, 92);
+	Player3MarketplaceForPigTrade:= S.HouseAt(123, 97);	
+	EasternVillageBakery:= S.HouseAt(104, 99);
+	EasternVillageButcher:= S.HouseAt(116, 93);
+	EasternVillageGoldMine:= S.HouseAt(106, 90);
+	EasternVillageGoldMine2:= S.HouseAt(118, 89);
+	EasternVillageInn:= S.HouseAt(114, 102);
+	EasternVillageMarketplace:= S.HouseAt(123, 97);
+	EasternVillageMint:= S.HouseAt(109, 95);
+	EasternVillageMint2:= S.HouseAt(119, 106);
+	EasternVillageSchool:= S.HouseAt(108, 100);
+	EasternVillageStorehouse:= S.HouseAt(113, 97);
+	Knights:= S.GroupAt(118, 93);
+	Knights2:= S.GroupAt(125, 90);
+	Knights3:= S.GroupAt(132, 92);
+	MainEnemyStorehouse:= S.HouseAt(103, 19);
+	MainEnemyStorehouse2:= S.HouseAt(73, 22);
+	MainEnemyStorehouse3:= S.HouseAt(72, 30);
+	Player16Miner:= S.UnitAt(51, 103);
+	Player16Miner2:= S.UnitAt(53, 107);
+	Player16Miner3:= S.UnitAt(58, 105);
+	Player16GoldMine:= S.HouseAt(51, 101);
+	Player16GoldMine2:= S.HouseAt(56, 102);
+	Player16GoldMine3:= S.HouseAt(61, 103);	
+	Player17Miner:= S.UnitAt(62, 108);
+	Player17Miner2:= S.UnitAt(68, 112);
+	Player17Miner3:= S.UnitAt(76, 108);
+	Player17CoalMine:= S.HouseAt(66, 108);
+	Player17CoalMine2:= S.HouseAt(70, 109);
+	Player17CoalMine3:= S.HouseAt(74, 107);	
+	TroopsToDelete:= S.GroupAt(74, 40);
+	TroopsToDelete2:= S.GroupAt(81, 39);
+	TroopsToDelete3:= S.GroupAt(89, 41);
+	TroopsToDelete4:= S.GroupAt(103, 38);	
+	Knights4:= S.GroupAt(100, 57);
+	Knights5:= S.GroupAt(104, 54);
+	Knights6:= S.GroupAt(104, 58);
+end;
+
+Procedure OnTick;
+begin
+	If EventsTime[0] = 0 then 
+		If S.GameTime = 50 then
+		begin
+			A.CinematicPanTo(0, 58, 155, 10);
+			EventsTime[0]:= S.GameTime;
+		end;
+	
+	If S.GameTime = 80 then
+	begin
+		//Pozbycie się odddziałów sojusznika
+		A.GroupKillAll(AllianceTroops, true);
+		A.GroupKillAll(AllianceTroops2, true);
+		A.GroupKillAll(AllianceTroops3, true);
+		A.GroupKillAll(AllianceTroops4, true);
+		A.GroupKillAll(AllianceTroops5, true);
+		//Przeniesienie odddziałów sojusznika
+		AllianceTroops6:= A.GiveGroup(12, 23, 121, 111, 7, 8, 4);
+		AllianceTroops7:= A.GiveGroup(12, 23, 126, 110, 0, 8, 4);
+		AllianceTroops8:= A.GiveGroup(12, 23, 131, 111, 0, 8, 4);
+		AllianceTroops9:= A.GiveGroup(12, 15, 125, 113, 0, 8, 4);
+		AllianceTroops10:= A.GiveGroup(12, 15, 130, 114, 0, 8, 4);
+	end;
+	
+	If S.GameTime = 100 then
+	begin
+		A.CinematicPanTo(0, 124, 111, 10);
+	end;
+	
+	If S.GameTime = 130 then
+	begin
+		//Szturm sojusznika
+		A.GroupOrderStorm(AllianceTroops7);
+		A.GroupOrderStorm(AllianceTroops8);
+		//Pozbycie się odddziałów gracza 1
+		A.GroupKillAll(Barbarians, true);
+		A.GroupKillAll(Barbarians2, true);
+		A.GroupKillAll(Bowmens, true);
+		A.GroupKillAll(Bowmens2, true);
+		//Przeniesienie oddziałów gracza 1
+		Barbarians3:= A.GiveGroup(0, 23, 45, 141, 7, 12, 3);
+		Barbarians4:= A.GiveGroup(0, 23, 51, 137, 7, 12, 4);
+		Bowmens3:= A.GiveGroup(0, 17, 50, 144, 7, 8, 4);
+		Bowmens4:= A.GiveGroup(0, 17, 54, 141, 7, 8, 4);
+		//Zburzenie budynków gracza 2	
+		A.HouseDestroy(Player2Butcher, true);
+		A.HouseDestroy(Player2Carpenter, true);
+		A.HouseDestroy(Player2Farm, true);
+		A.HouseDestroy(Player2Inn, true);
+		A.HouseDestroy(Player2Quarry, true);
+		A.HouseDestroy(Player2Storehouse, true);
+		A.HouseDestroy(Player2Tower, true);
+		A.HouseDestroy(Player2Tower2, true);
+		A.HouseDestroy(Player2Tower3, true);
+		A.HouseDestroy(Player2Vineyard, true);
+	end;
+	
+	If S.GameTime = 131 then
+	begin	
+		MainPlayerButcher:= A.GiveHouse(0, 24, 37, 122);
+		MainPlayerCarpenter:= A.GiveHouse(0, 0, 30, 114);
+		MainPlayerFarm:= A.GiveHouse(0, 8, 37, 113);
+		MainPlayerInn:= A.GiveHouse(0, 27, 41, 120);
+		MainPlayerQuarry:= A.GiveHouse(0, 14, 41, 109);
+		MainPlayerStorehouse:= A.GiveHouse(0, 11, 37, 117);
+		MainPlayerTower:= A.GiveHouse(0, 17, 36, 126);
+		MainPlayerTower2:= A.GiveHouse(0, 17, 46, 123);
+		MainPlayerTower3:= A.GiveHouse(0, 17, 35, 108);
+		MainPlayerVineyard:= A.GiveHouse(0, 28, 43, 114);
+	end;
+	
+	If S.GameTime = 132 then
+	begin
+		A.HouseAddDamage(MainPlayerButcher, 80);
+		A.HouseAddDamage(MainPlayerTower, 110);
+		A.HouseAddDamage(MainPlayerTower2, 160);
+		A.HouseAddDamage(MainPlayerInn, 40);
+		A.GiveWares(0, 0, 8);
+		A.GiveWares(0, 1, 85);
+		A.GiveWares(0, 2, 70);
+		A.GiveWares(0, 7, 65);
+		A.GiveWares(0, 8, 45);
+		A.GiveWares(0, 9, 12);
+		A.GiveWares(0, 10, 60);
+		A.GiveWares(0, 13, 40);
+		A.GiveWares(0, 14, 6);
+		A.GiveWares(0, 20, 18);
+	end;
+	
+	If S.GameTime = 150 then
+	begin
+		A.CinematicPanTo(0, 123, 105, 40);
+		A.GroupOrderWalk(Barbarians3, 35, 123, 7);
+		A.GroupOrderWalk(Barbarians4, 45, 124, 7);
+		A.GroupOrderWalk(Bowmens3, 49, 129, 7);
+		A.GroupOrderWalk(Bowmens4, 39, 132, 0);
+	end;
+	
+	If S.GameTime = 300 then
+	begin
+		A.CinematicEnd(0);
+	end;
+	
+	If S.GameTime = 330 then
+	begin
+		A.ShowMsg(0, '<$3>');
+	end;
+	
+	If KnightsKilled = false then
+	If (S.GroupDead(Knights4) and S.GroupDead(Knights5) and S.GroupDead(Knights6)) then
+	begin
+	KnightsKilled:= true;
+		A.ShowMsg(0, '<$4>');
+		A.ShowMsg(0, '<$16>');
+		A.OverlayTextSet(0, '<$13>');
+	end;
+	
+	If S.GameTime = 500 then
+	begin
+		//Pomocnicy
+		A.GiveUnit(0, 0, 55, 155, 0);
+		A.GiveUnit(0, 0, 57, 155, 0);
+		A.GiveUnit(0, 0, 59, 155, 0);
+		A.GiveUnit(0, 0, 61, 155, 0);
+		A.GiveUnit(0, 0, 55, 156, 0);
+		A.GiveUnit(0, 0, 57, 156, 0);
+		A.GiveUnit(0, 0, 59, 156, 0);
+		A.GiveUnit(0, 0, 61, 156, 0);
+		//Kopacze
+		Laborer:= A.GiveUnit(0, 9, 55, 157, 0);
+		Laborer2:= A.GiveUnit(0, 9, 57, 157, 0);
+		Laborer3:= A.GiveUnit(0, 9, 59, 157, 0);
+		Laborer4:= A.GiveUnit(0, 9, 61, 157, 0);
+	end;
+	
+	If S.GameTime = 501 then
+	begin
+		A.UnitOrderWalk(Laborer, 40, 127)
+		A.UnitOrderWalk(Laborer2, 42, 126)
+		A.UnitOrderWalk(Laborer3, 43, 128)
+		A.UnitOrderWalk(Laborer4, 41, 130)
+	end;
+	
+	If S.GameTime = 1100 then
+	begin
+		A.GroupOrderWalk(Knights, 100, 50, 0);
+		A.GroupOrderWalk(Knights2, 100, 50, 0);
+		A.GroupOrderWalk(Knights3, 100, 50, 0);
+	end;
+	
+	If S.GameTime = 1250 then
+	begin
+		A.GroupKillAll(Knights, true);
+		A.GroupKillAll(Knights2, true);
+		A.GroupKillAll(Knights3, true);
+	end;
+	
+	//Warunki przegranej gracza
+	If ((S.GameTime > 510) and (S.StatHouseCount(0)=0)) then
+	begin
+		A.PlayerDefeat(0);
+	end;
+	
+		//Kontratak wroga
+		If S.GameTime = 41105 then
+		begin
+			A.ShowMsg(0, '<$7>');
+		end;
+		
+		//Kontratak wroga 2
+		If S.GameTime = 73020 then
+		begin
+			A.ShowMsg(0, '<$2>');
+		end;
+	
+	If S.GameTime mod 600 = 0 then
+	begin
+		//Kamienie do wież
+		A.HouseAddWaresTo(Player8Tower, 1, 5);
+		A.HouseAddWaresTo(Player8Tower2, 1, 5);
+		A.HouseAddWaresTo(Player7Tower, 1, 5);
+		A.HouseAddWaresTo(Player7Tower2, 1, 5);
+		A.HouseAddWaresTo(Player7Tower3, 1, 5);
+		A.HouseAddWaresTo(Player7Tower4, 1, 5);
+		A.HouseAddWaresTo(Player7Tower5, 1, 5);
+		A.HouseAddWaresTo(Player7Tower6, 1, 5);
+		A.HouseAddWaresTo(Player4Tower, 1, 5);
+		A.HouseAddWaresTo(Player4Tower2, 1, 5);
+		A.HouseAddWaresTo(Player4Tower3, 1, 5);
+		A.HouseAddWaresTo(Player4Tower4, 1, 5);
+		A.HouseAddWaresTo(Player3Tower, 1, 5);
+		A.HouseAddWaresTo(Player3Tower2, 1, 5);
+		A.HouseAddWaresTo(Player3Tower3, 1, 5);
+		A.HouseAddWaresTo(Player3Tower4, 1, 5);
+		A.HouseAddWaresTo(Player3Tower5, 1, 5);
+		//Automatyczne karmienie
+		A.UnitHungerSet(Player8Recruit, 27000);
+		A.UnitHungerSet(Player8Recruit2, 27000);
+		A.GroupHungerSet(Player8Bowmens, 27000);	
+		A.GroupHungerSet(Player8Bowmens2, 27000);	
+		A.GroupHungerSet(Player8Bowmens3, 27000);	
+		A.GroupHungerSet(Player8Knights, 27000);	
+		A.GroupHungerSet(Player8Knights2, 27000);	
+		A.GroupHungerSet(Player8Knights3, 27000);	
+		A.UnitHungerSet(RecruitOnIsland, 27000);
+		A.UnitHungerSet(Player7Recruit, 27000);
+		A.UnitHungerSet(Player7Recruit2, 27000);
+		A.UnitHungerSet(Player7Recruit3, 27000);
+		A.UnitHungerSet(Player7Recruit4, 27000);
+		A.UnitHungerSet(Player7Recruit5, 27000);
+		A.UnitHungerSet(Player7Recruit6, 27000);		
+		A.UnitHungerSet(DockAnimalBreeder, 27000);
+		A.UnitHungerSet(DockGuard, 27000);
+		A.UnitHungerSet(DockGuard2, 27000);
+		A.UnitHungerSet(DockGuard3, 27000);
+		A.UnitHungerSet(DockGuard4, 27000);
+		A.UnitHungerSet(DockPeasant, 27000);
+		A.UnitHungerSet(DockRecruit, 27000);
+		A.UnitHungerSet(DockSerf, 27000);
+		A.UnitHungerSet(DockSerf2, 27000);
+		A.UnitHungerSet(DockWoodcutter, 27000);
+		A.UnitHungerSet(Player4Recruit, 27000);
+		A.UnitHungerSet(Player4Recruit2, 27000);
+		A.UnitHungerSet(Player4Recruit3, 27000);
+		A.UnitHungerSet(Player4Recruit4, 27000);		
+		A.UnitHungerSet(Player3Recruit, 27000);
+		A.UnitHungerSet(Player3Recruit2, 27000);
+		A.UnitHungerSet(Player3Recruit3, 27000);
+		A.UnitHungerSet(Player3Recruit4, 27000);
+		A.UnitHungerSet(Player3Recruit5, 27000);		
+		A.UnitHungerSet(Player16Miner, 27000);
+		A.UnitHungerSet(Player16Miner2, 27000);
+		A.UnitHungerSet(Player16Miner3, 27000);		
+		A.UnitHungerSet(Player17Miner, 27000);
+		A.UnitHungerSet(Player17Miner2, 27000);
+		A.UnitHungerSet(Player17Miner3, 27000);
+		//Handel
+		A.MarketSetTrade(Player6MarketplaceForWineTrade, 4, 8, 500);
+		A.MarketSetTrade(Player3MarketplaceForPigTrade, 7, 14, 500);
+	end;
+	
+		//Grabież północnej wioski
+	
+		If NorthernVillageBakeryDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageBakery) then
+		begin
+		NorthernVillageBakeryDestroyed:= true;
+			A.GiveWares(0, 10, 15);
+			A.GiveWares(0, 11, 5);
+		end;
+		
+		If NorthernVillageBakery2Destroyed = false then
+		If S.HouseDestroyed(NorthernVillageBakery2) then
+		begin
+		NorthernVillageBakery2Destroyed:= true;
+			A.GiveWares(0, 10, 15);
+			A.GiveWares(0, 11, 5);
+		end;
+		
+		If NorthernVillageButcherDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageButcher) then
+		begin
+		NorthernVillageButcherDestroyed:= true;
+			A.GiveWares(0, 13, 9);
+			A.GiveWares(0, 14, 4);
+		end;
+		
+		If NorthernVillageSwineFarmDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageSwineFarm) then
+		begin
+		NorthernVillageSwineFarmDestroyed:= true;
+			A.GiveWares(0, 14, 7);
+			A.GiveWares(0, 15, 8);
+		end;
+		
+		If NorthernVillageMillDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageMill) then
+		begin
+		NorthernVillageMillDestroyed:= true;
+			A.GiveWares(0, 9, 8);
+			A.GiveWares(0, 11, 9);
+		end;
+		
+		If NorthernVillageVineyardDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageVineyard) then
+		begin
+		NorthernVillageVineyardDestroyed:= true;
+			A.GiveWares(0, 8, 18);
+		end;
+		
+		If NorthernVillageFarmDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageFarm) then
+		begin
+		NorthernVillageFarmDestroyed:= true;
+			A.GiveWares(0, 9, 10);
+		end;
+		
+		If NorthernVillageFarm2Destroyed = false then
+		If S.HouseDestroyed(NorthernVillageFarm2) then
+		begin
+		NorthernVillageFarm2Destroyed:= true;
+			A.GiveWares(0, 9, 10);
+		end;
+		
+		If NorthernVillageFishermanHutDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageFishermanHut) then
+		begin
+		NorthernVillageFishermanHutDestroyed:= true;
+			A.GiveWares(0, 27, 16);
+		end;
+		
+		If NorthernVillageSchoolDestroyed = false then
+		If S.HouseDestroyed(NorthernVillageSchool) then
+		begin
+		NorthernVillageSchoolDestroyed:= true;
+			A.GiveWares(0, 7, 12);
+		end;
+	
+	If NorthernVillageConquest = false then
+	If (S.StatHouseCount(3)=0) then
+	begin
+	NorthernVillageConquest:= true;
+		A.ShowMsg(0, '<$5>');
+		A.GiveWares(0, 2, 40);
+		A.GiveWares(0, 13, 31);
+		A.GiveWares(0, 8, 42);
+		A.GiveWares(0, 20, 30);
+		A.AIDefencePositionRemove(6, 89, 41);
+		A.AIDefencePositionRemove(6, 103, 38);
+		A.GroupKillAll(TroopsToDelete3, true);
+		A.GroupKillAll(TroopsToDelete4, true);
+	end;
+	
+		//Grabież wschodniej wioski
+		
+		If EasternVillageBakeryDestroyed = false then
+		If S.HouseDestroyed(EasternVillageBakery) then
+		begin
+		EasternVillageBakeryDestroyed:= true;
+			A.GiveWares(0, 10, 14);
+			A.GiveWares(0, 11, 7);
+		end;
+		
+		If EasternVillageButcherDestroyed = false then
+		If S.HouseDestroyed(EasternVillageButcher) then
+		begin
+		EasternVillageButcherDestroyed:= true;
+			A.GiveWares(0, 13, 11);
+			A.GiveWares(0, 14, 4);
+		end;
+		
+		If EasternVillageGoldMineDestroyed = false then
+		If S.HouseDestroyed(EasternVillageGoldMine) then
+		begin
+		EasternVillageGoldMineDestroyed:= true;
+			A.GiveWares(0, 2, 9);
+			A.GiveWares(0, 1, 7);
+		end;
+		
+		If EasternVillageGoldMine2Destroyed = false then
+		If S.HouseDestroyed(EasternVillageGoldMine2) then
+		begin
+		EasternVillageGoldMine2Destroyed:= true;
+			A.GiveWares(0, 2, 6);
+			A.GiveWares(0, 1, 8);
+		end;
+		
+		If EasternVillageSchoolDestroyed = false then
+		If S.HouseDestroyed(EasternVillageSchool) then
+		begin
+		EasternVillageSchoolDestroyed:= true;
+			A.GiveWares(0, 7, 16);
+		end;
+		
+		If EasternVillageInnDestroyed = false then
+		If S.HouseDestroyed(EasternVillageInn) then
+		begin
+		EasternVillageInnDestroyed:= true;
+			A.GiveWares(0, 8, 5);
+			A.GiveWares(0, 10, 5);
+			A.GiveWares(0, 13, 5);
+			A.GiveWares(0, 27, 5);
+		end;
+				
+		If EasternVillageMintDestroyed = false then
+		If S.HouseDestroyed(EasternVillageMint) then
+		begin
+		EasternVillageMintDestroyed:= true;
+			A.GiveWares(0, 7, 6);
+			A.GiveWares(0, 2, 5);
+			A.GiveWares(0, 1, 9);
+		end;
+
+		If EasternVillageMint2Destroyed = false then
+		If S.HouseDestroyed(EasternVillageMint2) then
+		begin
+		EasternVillageMint2Destroyed:= true;
+			A.GiveWares(0, 7, 7);
+			A.GiveWares(0, 2, 10);
+			A.GiveWares(0, 1, 8);
+		end;
+		
+		If EasternVillageStorehouseDestroyed = false then
+		If S.HouseDestroyed(EasternVillageStorehouse) then
+		begin
+		EasternVillageStorehouseDestroyed:= true;
+			A.GiveWares(0, 8, 16);
+			A.GiveWares(0, 2, 35);
+			A.GiveWares(0, 20, 18);
+			A.GiveWares(0, 12, 19);
+		end;
+		
+		If EasternVillageMarketplaceDestroyed = false then
+		If S.HouseDestroyed(EasternVillageMarketplace) then
+		begin
+		EasternVillageMarketplaceDestroyed:= true;
+			A.GiveWares(0, 7, 13);
+		end;
+		
+	If EasternVillageConquest = false then
+	If (S.StatHouseCount(2)=0) then
+	begin
+	EasternVillageConquest:= true;
+		A.ShowMsg(0, '<$6>');
+		A.GiveWares(0, 19, 9);
+		A.GiveWares(0, 23, 9);
+		A.GiveWares(0, 20, 15);
+		A.PlayerUnitTypeCanTrain(0, utPikeman, true);
+		A.AIDefencePositionRemove(6, 74, 40);
+		A.AIDefencePositionRemove(6, 81, 39);
+		A.GroupKillAll(TroopsToDelete, true);
+		A.GroupKillAll(TroopsToDelete2, true);
+	end;
+				
+				If S.GameTime mod 10 = 0 then
+				begin
+					//Nieskończone złoto
+					A.MapTileSet(65, 17, 307, 3);
+					A.MapTileSet(66, 16, 307, 2);
+					A.MapTileSet(67, 16, 307, 1);
+					A.MapTileSet(74, 15, 307, 3);
+					A.MapTileSet(75, 16, 307, 2);
+					A.MapTileSet(76, 16, 307, 1);
+					A.MapTileSet(50, 20, 307, 3);
+					A.MapTileSet(52, 21, 307, 0);				
+					A.MapTileSet(103, 88, 307, 1);
+					A.MapTileSet(104, 88, 307, 1);
+					A.MapTileSet(117, 88, 307, 2);
+					A.MapTileSet(117, 84, 307, 3);					
+					A.MapTileSet(118, 48, 307, 3);
+					A.MapTileSet(128, 49, 307, 2);
+					A.MapTileSet(131, 49, 307, 0);
+					A.MapTileSet(134, 49, 307, 1);					
+					A.MapTileSet(51, 99, 307, 3);
+					A.MapTileSet(55, 100, 307, 2);
+					A.MapTileSet(59, 101, 307, 1);
+					//Nieskończony węgiel
+					A.MapTileSet(127, 67, 155, 1);
+					A.MapTileSet(126, 67, 155, 2);
+					A.MapTileSet(126, 66, 155, 0);
+					A.MapTileSet(123, 56, 155, 3);
+					A.MapTileSet(124, 53, 155, 1);					
+					A.MapTileSet(66, 108, 155, 1);
+					A.MapTileSet(69, 109, 155, 2);
+					A.MapTileSet(72, 107, 155, 3);
+				end;
+				
+		//Wykonanie zadania pobocznego
+		
+		If SideQuestCompleted = false then
+		If NorthernVillageConquest = true then
+		If EasternVillageConquest = true then
+		begin
+		SideQuestCompleted:= true;
+			A.OverlayTextSet(0, '<$15>');
+		end;
+						
+		//Kopalnie złota gracza 7
+				
+		If (S.HouseResourceAmount(Player7GoldMine, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine2, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine2, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine3, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine3, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine4, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine4, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine5, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine5, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine6, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine6, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine7, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine7, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player7GoldMine8, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player7GoldMine8, 4, 1);
+			A.GiveWares(5, 4, 1);
+		end;
+		
+		//Wymiana gracza 6 na wino
+		
+		If (S.HouseResourceAmount(Player6Storehouse, 8)>=1) then
+		begin
+			A.HouseTakeWaresFrom(Player6Storehouse, 8, 1);
+			A.GiveWares(6, 8, 1);
+		end;
+		
+		//Złoto dla gracza 
+		
+		If (S.HouseResourceAmount(Player16GoldMine, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player16GoldMine, 4, 1);
+			A.GiveWares(0, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player16GoldMine2, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player16GoldMine2, 4, 1);
+			A.GiveWares(0, 4, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player16GoldMine3, 4)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player16GoldMine3, 4, 1);
+			A.GiveWares(0, 4, 1);
+		end;
+		
+		//Węgiel dla gracza
+		
+		If (S.HouseResourceAmount(Player17CoalMine, 5)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player17CoalMine, 5, 1);
+			A.GiveWares(0, 5, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player17CoalMine2, 5)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player17CoalMine2, 5, 1);
+			A.GiveWares(0, 5, 1);
+		end;
+		
+		If (S.HouseResourceAmount(Player17CoalMine3, 5)=1) then
+		begin
+			A.HouseTakeWaresFrom(Player17CoalMine3, 5, 1);
+			A.GiveWares(0, 5, 1);
+		end;
+		
+	//Wygrana przed czasem
+	If Retaliation = false then
+	If Win = false then
+	If (S.HouseDestroyed(MainEnemyStorehouse) and S.HouseDestroyed(MainEnemyStorehouse2) and S.HouseDestroyed(MainEnemyStorehouse3)) then
+	begin
+	Win:= true;
+		A.ShowMsg(0, '<$11>');
+	end;
+	
+		If EventsTime[1] = 0 then 
+			If Win = true then
+			begin
+				EventsTime[1]:= S.GameTime;
+			end;
+		
+			If EventsTime[1] <> 0 then
+			begin
+				If S.GameTime = EventsTime[1] + 150 then
+				begin
+					A.PlayerWin([0], true);
+				end;
+			end;
+	
+	//Wygrana po upłynięciu czasu
+	If EventsTime[2] = 0 then 
+		If Win = false then
+		If Retaliation = false then
+		If S.GameTime = 86000 then
+		begin
+		Retaliation:= true;
+			EventsTime[2]:= S.GameTime;
+			EndKnights:= A.GiveGroup(14, 22, 19, 90, 3, 9, 3);
+			EndKnights2:= A.GiveGroup(14, 22, 14, 91, 3, 9, 3);
+			EndKnights3:= A.GiveGroup(14, 22, 16, 86, 2, 9, 2);
+			EndScouts:= A.GiveGroup(14, 21, 11, 87, 3, 9, 3);
+			EndScouts2:= A.GiveGroup(14, 21, 13, 83, 3, 9, 2);
+			EndKnights4:= A.GiveGroup(14, 22, 21, 85, 3, 9, 2);
+			EndKnights5:= A.GiveGroup(14, 22, 17, 82, 3, 9, 2);		
+			EndWarriors:= A.GiveGroup(14, 26, 6, 87, 4, 12, 3);
+			EndWarriors2:= A.GiveGroup(14, 26, 11, 80, 4, 12, 3);		
+			EndCrossbowmans:= A.GiveGroup(14, 18, 4, 84, 5, 10, 3);
+			EndCrossbowmans2:= A.GiveGroup(14, 18, 3, 79, 5, 10, 2);
+			EndCrossbowmans3:= A.GiveGroup(14, 18, 7, 78, 5, 10, 2);	
+			A.ShowMsg(0, '<$9>');
+			A.OverlayTextSet(0, '<$14>');
+			A.CinematicStart(0);
+		end;
+		
+			If EventsTime[2] <> 0 then
+			begin
+				If S.GameTime = EventsTime[2] + 10 then
+				begin
+					A.CinematicPanTo(0, 15, 86, 50);
+				end;
+				
+				If S.GameTime = EventsTime[2] + 120 then
+				begin
+					A.CinematicEnd(0);
+				end;
+			
+				If Attack = false then
+				If S.GameTime = EventsTime[2] + 600 then
+				begin
+				Attack:= true;
+					A.AIAttackAdd(14, true, 1, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, U.KMPoint(0, 0));
+				end;
+			end;
+							
+					If Attack = true then
+					If AttackDead = false then
+					If (S.GroupDead(EndKnights) and S.GroupDead(EndKnights2) and S.GroupDead(EndKnights3) and S.GroupDead(EndKnights4) and S.GroupDead(EndKnights5) and S.GroupDead(EndScouts) and S.GroupDead(EndScouts2) and S.GroupDead(EndWarriors) and S.GroupDead(EndWarriors2) and S.GroupDead(EndCrossbowmans) and S.GroupDead(EndCrossbowmans2) and S.GroupDead(EndCrossbowmans3)) then
+					begin
+						AttackDead:= true;					
+					end;
+					
+					If EventsTime[3] = 0 then 
+						If AttackDead = true then
+						If Win = false then
+						If (S.HouseDestroyed(MainEnemyStorehouse) and S.HouseDestroyed(MainEnemyStorehouse2) and S.HouseDestroyed(MainEnemyStorehouse3)) then
+						begin
+						Win:= true;						
+							A.ShowMsg(0, '<$12>');
+							EventsTime[3]:= S.GameTime;
+						end;
+						
+							If EventsTime[3] <> 0 then
+							begin
+								If S.GameTime = EventsTime[3] + 150 then
+								begin
+									A.PlayerWin([0], true);
+								end;
+							end;
+end;
