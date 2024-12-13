@@ -1,0 +1,40 @@
+{$EVENT evtTick:TownHallUnitOnTick}
+
+var
+    AI3, AI6, AI7: Integer;
+	AI4: array[0..1] of Integer;
+	Difficulty: array[0..3] of Integer;
+	KrBr: Integer;
+	
+procedure TownHallUnitOnTick();
+begin		
+	if (S.GameTime > AI4[0]) and (S.PlayerDefeated(3) = false) and (S.HouseAt(81, 130)<> -1) and (S.HouseOwner(S.HouseAt(81, 130)) = 3) and (S.StatUnitTypeCount(3, UNIT_BARBARIAN) < 48) then
+	    begin
+	    A.HouseTownHallEquip(States.HouseAt(81, 130), UNIT_BARBARIAN, 1);
+        AI4[0]:= (S.GameTime + Difficulty[0]);
+		end;
+	
+	if (S.GameTime > AI4[1]) and (S.PlayerDefeated(3) = false) and (S.HouseAt(81, 130)<> -1) and (S.HouseOwner(S.HouseAt(81, 130)) = 3) and (S.StatUnitTypeCount(3, UNIT_BOWMAN) < 48) then
+	    begin
+	    A.HouseTownHallEquip(States.HouseAt(81, 130), UNIT_ROGUE, 1);
+        AI4[1]:= (S.GameTime + Difficulty[0]);
+		end;	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if (S.GameTime > AI3) and (S.PlayerDefeated(2) = false) and (S.HouseAt(76, 75)<> -1) and (S.HouseOwner(S.HouseAt(76, 75)) = 2) and (S.StatUnitTypeCount(2, UNIT_BARBARIAN) < 24) then
+	    begin
+	    A.HouseTownHallEquip(States.HouseAt(76, 75), UNIT_BARBARIAN, 1);
+        AI3:= (S.GameTime + Difficulty[1]);
+		end;
+////////////////////////////////////////////////////////////////////////////////////////////////////////		
+    if (S.GameTime > AI6) and (S.PlayerDefeated(5) = false) and (S.HouseAt(52, 14)<> -1) and (S.HouseOwner(S.HouseAt(52, 14)) = 5) and (S.StatUnitTypeCount(5, UNIT_BARBARIAN) < 60) then
+	    begin
+	    A.HouseTownHallEquip(States.HouseAt(52, 14), UNIT_BARBARIAN, 1);
+        AI6:= (S.GameTime + Difficulty[2]);
+		end;
+////////////////////////////////////////////////////////////////////////////////////////////////////////				
+    if (S.GameTime > AI7) and (S.PlayerDefeated(6) = false) and (S.HouseAt(104, 19)<> -1) and (S.HouseOwner(S.HouseAt(104, 19)) = 6) and (S.StatUnitTypeCount(6, UNIT_BARBARIAN) < KrBr) then
+	    begin
+	    A.HouseTownHallEquip(States.HouseAt(104, 19), UNIT_BARBARIAN, 1);
+        AI7:= (S.GameTime + Difficulty[3]);
+		end;
+end;	

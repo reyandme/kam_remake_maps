@@ -1,0 +1,361 @@
+{$I improvestaticai.script}  /// By Strangelove
+{$I constants.script}  /// By Greeny
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I THrecruitment.script}
+
+var 
+    DifficultySetting: TKMMissionDifficulty;
+	AIattack6: Boolean;
+	AIattack7: Boolean;
+	Level: array [0..1] of Integer;
+	Msg: Boolean;
+	pointxy: TKMPoint;
+	
+procedure OnMissionStart();
+begin
+A.ShowMsg(0, '<$1>');
+DifficultySetting:= States.MissionDifficulty();
+AI3:= 430;
+AI4[0]:= 12050;
+AI4[1]:= 12100;
+AI6:= 870;
+AI7:= 1250;
+KrBr:= 60;
+Msg:= false;
+Actions.PlayerShareFogCompliment(0, 1, False);
+Actions.FogCoverAll(0)
+Actions.FogRevealCircle(0, 31, 137, 28);
+/////////////////////////////////
+A.GiveHouse(3, HOUSE_WATCHTOWER, 94, 133);
+A.GiveHouse(3, HOUSE_WOODCUTTERS, 96, 140);
+A.GiveHouse(3, HOUSE_SAWMILL, 83, 137);
+A.GiveHouse(3, HOUSE_INN, 78, 126);
+A.GiveHouse(3, HOUSE_MARKETPLACE, 77, 132);
+A.GiveHouse(3, HOUSE_SCHOOL, 86, 129);
+/////////////////////////////////
+A.GiveHouse(5, HOUSE_FARM, 45, 32);
+A.GiveHouse(5, HOUSE_FARM, 50, 36);
+A.GiveHouse(5, HOUSE_SCHOOL, 56, 36);
+A.GiveHouse(5, HOUSE_SCHOOL, 59, 17);
+A.GiveHouse(5, HOUSE_SCHOOL, 45, 20);
+A.GiveHouse(5, HOUSE_MARKETPLACE, 45, 15);
+A.GiveHouse(5, HOUSE_WATCHTOWER, 38, 27);
+A.GiveHouse(5, HOUSE_WATCHTOWER, 62, 9);
+A.GiveHouse(5, HOUSE_WATCHTOWER, 50, 18);
+A.GiveHouse(5, HOUSE_WATCHTOWER, 67, 15);
+A.GiveHouse(5, HOUSE_MILL, 44, 28);
+A.GiveHouse(5, HOUSE_MILL, 51, 30);
+A.GiveHouse(5, HOUSE_BAKERY, 60, 30);
+A.GiveHouse(5, HOUSE_BAKERY, 56, 20);
+A.GiveHouse(5, HOUSE_INN, 53, 27);
+A.GiveHouse(5, HOUSE_WEAPON_SMITHY, 57, 12);
+A.GiveHouse(5, HOUSE_WEAPON_SMITHY, 56, 23);
+A.GiveHouse(5, HOUSE_ARMOR_SMITHY, 61, 25);
+A.GiveHouse(5, HOUSE_ARMOR_SMITHY, 57, 7);
+//////////////////////////////////
+A.GiveHouse(6, HOUSE_FARM, 97, 48);
+A.GiveHouse(6, HOUSE_FARM, 94, 43);
+A.GiveHouse(6, HOUSE_WOODCUTTERS, 124, 3);
+A.GiveHouse(6, HOUSE_SAWMILL, 126, 13);
+A.GiveHouse(6, HOUSE_WEAPON_SMITHY, 108, 23);
+A.GiveHouse(6, HOUSE_WEAPON_SMITHY, 121, 35);
+A.GiveHouse(6, HOUSE_ARMOR_SMITHY, 107, 39);
+A.GiveHouse(6, HOUSE_ARMOR_SMITHY, 109, 31);
+A.GiveHouse(6, HOUSE_SCHOOL, 104, 33);
+A.GiveHouse(6, HOUSE_SCHOOL, 117, 36);
+A.GiveHouse(6, HOUSE_SCHOOL, 105, 28);
+A.GiveHouse(6, HOUSE_SCHOOL, 120, 23);
+A.GiveHouse(6, HOUSE_INN, 112, 27);
+A.GiveHouse(6, HOUSE_STABLES, 112, 36);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 111, 51);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 107, 50);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 113, 47);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 95, 38);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 91, 33);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 93, 25);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 102, 22);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 117, 24);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 126, 21);
+A.GiveHouse(6, HOUSE_WATCHTOWER, 120, 14);
+A.GiveHouse(6, HOUSE_MARKETPLACE, 99, 32);
+A.GiveHouse(6, HOUSE_IRON_SMITHY, 117, 32);
+A.GiveHouse(6, HOUSE_IRON_SMITHY, 103, 36);
+A.GiveHouse(6, HOUSE_MILL, 103, 41);
+A.GiveHouse(6, HOUSE_BAKERY, 108, 44); 
+A.GiveHouse(6, HOUSE_VINEYARD, 119, 28);
+A.GiveHouse(6, HOUSE_VINEYARD, 112, 17);
+///////////////////////////////////
+case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 80);
+		A.GiveWares(0, WARE_STONES, 100);
+		A.GiveWares(0, WARE_TIMBER, 70);
+		A.GiveWares(0, WARE_WINE, 80);
+		A.GiveWares(0, WARE_SAUSAGES, 35);
+		A.GiveWares(0, WARE_LOAVES, 50);
+		A.GiveWares(0, WARE_FISH, 25);
+		//TH EQ RATES
+		Difficulty[0]:= 1050; 
+		Difficulty[1]:= 1000; 
+		Difficulty[2]:= 900; 
+		Difficulty[3]:= 700; 
+		//BARRACKS EQ RATES
+		A.AIEquipRate(2, 0, 600);
+		A.AIEquipRate(4, 0, 550);
+		A.AIEquipRate(5, 1, 425);
+		A.AIEquipRate(6, 1, 350);
+		//ATTACK DELAYS FOR AI6 AND AI 7
+		Level[0]:= 92000;
+		Level[1]:= 112000;
+		//STARTING UNITS
+		A.GiveGroup(0, UNIT_PIKEMAN, 23, 133, DIRECTION_NW, 9, 3);
+		A.GiveGroup(0, UNIT_AXE_FIGHTER, 40, 135, DIRECTION_NE, 15, 5);
+		A.GiveGroup(0, UNIT_BOWMAN, 31, 142, DIRECTION_N, 9, 3);
+		A.GiveGroup(0, UNIT_SCOUT, 31, 130, DIRECTION_N, 6, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 70);
+		A.GiveWares(0, WARE_STONES, 90);
+		A.GiveWares(0, WARE_TIMBER, 60);
+		A.GiveWares(0, WARE_WINE, 70);
+		A.GiveWares(0, WARE_SAUSAGES, 30);
+		A.GiveWares(0, WARE_LOAVES, 40);
+		A.GiveWares(0, WARE_FISH, 20);
+		//TH EQ RATES
+		Difficulty[0]:= 850; 
+		Difficulty[1]:= 700; 
+		Difficulty[2]:= 600; 
+		Difficulty[3]:= 500; 
+		//BARRACKS EQ RATES
+		A.AIEquipRate(2, 0, 375);
+		A.AIEquipRate(4, 0, 350);
+		A.AIEquipRate(5, 1, 325);
+		A.AIEquipRate(6, 1, 275);
+		//ATTACK DELAYS FOR AI6 AND AI 7
+		Level[0]:= 75000;
+		Level[1]:= 102000;
+		//STARTING UNITS
+		A.GiveGroup(0, UNIT_PIKEMAN, 23, 133, DIRECTION_NW, 9, 3);
+		A.GiveGroup(0, UNIT_MILITIA, 40, 135, DIRECTION_NE, 20, 5);
+		A.GiveGroup(0, UNIT_BOWMAN, 31, 142, DIRECTION_N, 6, 3);
+		A.GiveGroup(0, UNIT_SCOUT, 31, 130, DIRECTION_N, 6, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 60);
+		A.GiveWares(0, WARE_STONES, 80);
+		A.GiveWares(0, WARE_TIMBER, 50);
+		A.GiveWares(0, WARE_WINE, 60);
+		A.GiveWares(0, WARE_SAUSAGES, 25);
+		A.GiveWares(0, WARE_LOAVES, 35);
+		A.GiveWares(0, WARE_FISH, 15);
+		//TH EQ RATES
+		Difficulty[0]:= 650; 
+		Difficulty[1]:= 500; 
+		Difficulty[2]:= 450; 
+		Difficulty[3]:= 300; 
+		//BARRACKS EQ RATES
+		A.AIEquipRate(2, 0, 275);
+		A.AIEquipRate(4, 0, 250);
+		A.AIEquipRate(5, 1, 225);
+		A.AIEquipRate(6, 1, 150);
+		//ATTACK DELAYS FOR AI6 AND AI 7
+		Level[0]:= 65000;
+		Level[1]:= 80000;
+		//STARTING UNITS
+		A.GiveGroup(0, UNIT_PIKEMAN, 23, 133, DIRECTION_NW, 9, 3);
+		A.GiveGroup(0, UNIT_MILITIA, 40, 135, DIRECTION_NE, 20, 5);
+		A.GiveGroup(0, UNIT_SCOUT, 31, 130, DIRECTION_N, 6, 3);
+        end;
+    end;
+end;
+
+procedure OnTick();
+begin
+
+if States.GameTime = 33000 then
+	begin
+	A.ShowMsg(0, '<$2>');
+	end;
+
+if States.GameTime = 36000 then
+	begin
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 123, 32);
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 136, 37);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 111, 43);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 115, 39);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 120, 40);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 125, 38);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 130, 37);
+	end;
+if (Msg = false) then
+    if States.GameTime > (Level[0] - 1200) then
+	begin
+	A.ShowMsg(0, '<$3>');
+	Msg:= true;
+	end;
+if States.GameTime = (Level[0] - 1000) then
+	begin
+	A.AIDefencePositionAdd(5, 66, 25, DIRECTION_E, GROUP_MOUNTED, 40, 0);
+	end;
+	
+if States.GameTime = (Level[1] - 1000) then
+	begin
+	A.AIDefencePositionAdd(6, 97, 35, DIRECTION_W, GROUP_MOUNTED, 42, 0);
+	A.AIDefencePositionAdd(6, 94, 53, DIRECTION_S, GROUP_MELEE, 13, 0);
+	KrBr:= 72;
+	end;
+		
+	
+//////////////////////////////////////////////////////////////////////////////////////////
+if (S.StatArmyCount(5) > 217) and (AIattack6 = false) and (S.GameTime > Level[0]) and (S.GameTime MOD 10 = 0) then
+    begin
+    A.AIDefencePositionRemove(5, 66, 25);
+	A.AIDefencePositionRemove(5, 57, 36);
+	A.AIDefencePositionRemove(5, 63, 28);
+	A.AIDefencePositionRemove(5, 48, 40);
+	A.AIDefencePositionRemove(5, 43, 35);
+	A.AIDefencePositionRemove(5, 50, 22);
+	A.AIDefencePositionRemove(5, 48, 15);
+	A.AIDefencePositionRemove(5, 58, 3);
+	A.AIDefencePositionAdd(5, 44, 80, DIRECTION_S, GROUP_ANTIHORSE, 15, 0);
+	A.AIDefencePositionAdd(5, 49, 80, DIRECTION_S, GROUP_ANTIHORSE, 15, 0);
+	A.AIDefencePositionAdd(5, 54, 79, DIRECTION_S, GROUP_MELEE, 15, 0);
+	A.AIDefencePositionAdd(5, 39, 79, DIRECTION_S, GROUP_MELEE, 15, 0);
+	A.AIDefencePositionAdd(5, 35, 80, DIRECTION_S, GROUP_MOUNTED, 20, 0);
+	A.AIDefencePositionAdd(5, 59, 80, DIRECTION_S, GROUP_MOUNTED, 20, 0);
+	A.AIDefencePositionAdd(5, 43, 75, DIRECTION_S, GROUP_RANGED, 20, 0);
+	A.AIDefencePositionAdd(5, 50, 75, DIRECTION_S, GROUP_RANGED, 20, 0);
+	AIattack6:= true;
+	end;
+	
+if ((S.StatArmyCount(5) > 222) or (S. StatArmyCount(5) = 222)) and (AIattack6 = true) and (S.GameTime > Level[0]) and (S.GameTime MOD 10 = 0) then
+    begin
+	A.AIDefencePositionRemove(5, 44, 80);
+	A.AIDefencePositionRemove(5, 49, 80);
+	A.AIDefencePositionRemove(5, 54, 79);
+	A.AIDefencePositionRemove(5, 39, 79);
+	A.AIDefencePositionRemove(5, 35, 80);
+	A.AIDefencePositionRemove(5, 59, 80);
+	A.AIDefencePositionRemove(5, 43, 75);
+	A.AIDefencePositionRemove(5, 50, 75);
+	A.AIAttackAdd(5, True, 1, 1, 1, 1, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(5, True, 1, 1, 0, 0, 1, 1, false, attClosestUnit, pointxy);
+	end;	
+	
+if (S.StatArmyCount(5) < 175) and (AIattack6 = true) and (S.GameTime > Level[0]) and (S.GameTime MOD 10 = 0) then
+    begin
+    A.AIDefencePositionAdd(5, 63, 28, DIRECTION_E, GROUP_ANTIHORSE, 29, 0);
+	A.AIDefencePositionAdd(5, 58, 3, DIRECTION_E, GROUP_ANTIHORSE, 35, 0);
+	A.AIDefencePositionAdd(5, 48, 15, DIRECTION_S, GROUP_MELEE, 28, 0);
+	A.AIDefencePositionAdd(5, 50, 22, DIRECTION_S, GROUP_MELEE, 31, 0);
+	A.AIDefencePositionAdd(5, 57, 36, DIRECTION_SE, GROUP_MOUNTED, 30, 0);
+	A.AIDefencePositionAdd(5, 66, 25, DIRECTION_E, GROUP_MOUNTED, 40, 0);
+	A.AIDefencePositionAdd(5, 48, 40, DIRECTION_S, GROUP_RANGED, 12, 0);
+	A.AIDefencePositionAdd(5, 43, 35, DIRECTION_SW, GROUP_RANGED, 15, 0);
+	A.AIAttackRemoveAll(5);
+	AIattack6:= false;
+	end;
+///////////////////////////////////////////////////////////////////////////////////////////
+if (S.StatArmyCount(6) > 295) and (AIattack7 = false) and (S.GameTime > Level[1]) and (S.GameTime MOD 10 = 0) then
+    begin
+    A.AIDefencePositionRemove(6, 130, 22);
+	A.AIDefencePositionRemove(6, 107, 16);
+	A.AIDefencePositionRemove(6, 98, 10);
+	A.AIDefencePositionRemove(6, 128, 33);
+	A.AIDefencePositionRemove(6, 116, 14);
+	A.AIDefencePositionRemove(6, 94, 53);
+	A.AIDefencePositionRemove(6, 90, 43);
+	A.AIDefencePositionRemove(6, 90, 49);
+	A.AIDefencePositionRemove(6, 121, 45);
+	A.AIDefencePositionRemove(6, 128, 42);
+	A.AIDefencePositionRemove(6, 132, 14);
+	A.AIDefencePositionRemove(6, 98, 22);
+	A.AIDefencePositionRemove(6, 97, 35);
+	A.AIDefencePositionAdd(6, 109, 107, DIRECTION_SW, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(6, 113, 110, DIRECTION_SW, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(6, 116, 114, DIRECTION_SW, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(6, 91, 93, DIRECTION_SW, GROUP_MELEE, 40, 0);
+	A.AIDefencePositionAdd(6, 95, 96, DIRECTION_SW, GROUP_MELEE, 40, 0);
+	A.AIDefencePositionAdd(6, 98, 100, DIRECTION_SW, GROUP_MELEE, 40, 0);
+	A.AIDefencePositionAdd(6, 96, 90, DIRECTION_SW, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(6, 118, 110, DIRECTION_SW, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(6, 111, 104, DIRECTION_SW, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(6, 101, 95, DIRECTION_SW, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(6, 116, 106, DIRECTION_SW, GROUP_MOUNTED, 50, 0);
+	A.AIDefencePositionAdd(6, 95, 86, DIRECTION_SW, GROUP_MOUNTED, 50, 0);
+	A.AIDefencePositionAdd(6, 106, 97, DIRECTION_SW, GROUP_MOUNTED, 50, 0);
+	AIattack7:= true;
+	end;
+	
+if ((S.StatArmyCount(6) > 309) or (S. StatArmyCount(6) = 309)) and (AIattack7 = true) and (S.GameTime > Level[1]) and (S.GameTime MOD 10 = 0) then
+    begin
+	A.AIDefencePositionRemove(6, 109, 107);
+	A.AIDefencePositionRemove(6, 113, 110);
+	A.AIDefencePositionRemove(6, 116, 114);
+	A.AIDefencePositionRemove(6, 91, 93);
+	A.AIDefencePositionRemove(6, 95, 96);
+	A.AIDefencePositionRemove(6, 98, 100);
+	A.AIDefencePositionRemove(6, 96, 90);
+	A.AIDefencePositionRemove(6, 118, 110);
+	A.AIDefencePositionRemove(6, 111, 104);
+	A.AIDefencePositionRemove(6, 101, 95);
+	A.AIDefencePositionRemove(6, 116, 106);
+	A.AIDefencePositionRemove(6, 95, 86);
+	A.AIDefencePositionRemove(6, 106, 97);
+	A.AIAttackAdd(6, True, 1, 1, 1, 1, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(6, True, 1, 1, 0, 0, 1, 0, false, attClosestUnit, pointxy);
+	A.AIAttackAdd(6, True, 1, 1, 0, 0, 0, 1, false, attClosestUnit, pointxy);
+	end;	
+	
+if (S.StatArmyCount(6) < 200) and (AIattack7 = true) and (S.GameTime > Level[1]) and (S.GameTime MOD 10 = 0) then
+    begin
+    A.AIDefencePositionAdd(6, 130, 22, DIRECTION_SW, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(6, 107, 16, DIRECTION_S, GROUP_ANTIHORSE, 27, 0);
+	A.AIDefencePositionAdd(6, 98, 10, DIRECTION_SW, GROUP_ANTIHORSE, 18, 0);
+	A.AIDefencePositionAdd(6, 128, 33, DIRECTION_S, GROUP_MELEE, 30, 0);
+	A.AIDefencePositionAdd(6, 116, 14, DIRECTION_S, GROUP_MELEE, 38, 0);
+	A.AIDefencePositionAdd(6, 94, 53, DIRECTION_S, GROUP_MELEE, 13, 0);
+	A.AIDefencePositionAdd(6, 90, 43, DIRECTION_W, GROUP_RANGED, 14, 0);
+	A.AIDefencePositionAdd(6, 90, 49, DIRECTION_W, GROUP_RANGED, 15, 0);
+	A.AIDefencePositionAdd(6, 121, 45, DIRECTION_S, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(6, 128, 42, DIRECTION_S, GROUP_RANGED, 15, 0);
+	A.AIDefencePositionAdd(6, 132, 14, DIRECTION_SW, GROUP_MOUNTED, 60, 0);
+	A.AIDefencePositionAdd(6, 98, 22, DIRECTION_W, GROUP_MOUNTED, 25, 0);
+	A.AIDefencePositionAdd(6, 97, 35, DIRECTION_W, GROUP_MOUNTED, 45, 0);
+	A.AIAttackRemoveAll(6);
+	AIattack7:= false;
+	end;
+end;
+
+procedure OnWarriorEquipped(aUnitID : Integer; aGroupID : Integer);
+var tempX : Integer;
+var tempY : Integer;
+var temporary : Integer;
+var typeU : Integer;
+begin
+	typeU := States.UnitType(aUnitID);
+	if (typeU = UNIT_ROGUE) and (States.UnitOwner(aUnitID) = 3) then
+	begin
+		tempX := States.UnitPositionX(aUnitID);
+		tempY := States.UnitPositionY(aUnitID);
+		Actions.UnitKill(aUnitID, True);
+		if typeU = UNIT_ROGUE then
+		begin
+			typeU := UNIT_BOWMAN;
+			temporary := Actions.GiveGroup(3, UNIT_BOWMAN, tempX, tempY, 4, 1, 1);
+		end;
+	end;
+end;
+
+procedure OnHouseAfterDestroyed(aHouseType: Integer; aOwner: Integer; aX, aY: Integer);
+begin
+if ((S.HouseDestroyed(S.HouseAt(48, 26)) = true) and (S.HouseAt(48, 26)<> -1) and (Msg = false)) then
+    begin
+    Msg:= true;
+	end;
+end;

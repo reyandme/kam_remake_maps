@@ -1,13 +1,12 @@
 //-- Return of the King --//
 //By Strangelove
-//v0.7.1c
-//19.03.2024
+//v1.0
+//12.12.2024
 //Developed for KaM Remake r15122
 
 
-{$I difficulty.script}
+{$I tools.script}
 {$I improvestaticai.script}
-{$I dynamicmap.script}
 {$I player1.script}
 
 
@@ -20,6 +19,11 @@ const
 	ALLY_PLAYER = 1;
 	KING_PLAYER = 6;
 
+	REQUIRED_WINE = 120;
+	REQUIRED_BREAD = 90;
+	REQUIRED_SAUSAGES = 60;
+
+
 
 var
 	DifficultySetting: TKMMissionDifficulty;
@@ -28,29 +32,32 @@ var
 	AttackUnitCount, BalanceShift: Word;
 	
 	KingID: Integer;
-	bKingArrived, bAllyMsg, bKingsGuardMsg: Boolean;
-
+	bKingArrived, bAllyMsg, bKingsGuardMsg, bFoodMsg: Boolean;
+	
 	aCustomPosition: TKMPoint;
 	
-	
+	bShowBonusObjective: array[0..2] of Boolean;
+	dmod: Single;
+	RequiredAmountOfFood: Integer;
+	FoodType: TKMWareType;
+	MainGoal_EnemyHousesDestroyed, MainGoal_EnemyUnitsDestroyed, MainGoal_ProtectKing: Integer;
+	BonusGoal_AllyDeathCounter, BonusGoal_GatherFood: Integer;
+	AllyDeathCounter, AllyDeathCounterMax: Integer;
 
-function MinToTick(Minutes: Cardinal): Cardinal;
+
+
+function TotalFoodAmountByType(Player: Integer; FoodType: TKMWareType): Integer; //Check all Storehouses and Inns of iPlayer for iType Resource
+var
+	h, Amount: Integer;
+	aHouses: array of Integer;
 begin
-	Result := Minutes *600;
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to High(aHouses) do
+		if (States.HouseTypeEx(aHouses[h]) = htStore) then
+			Amount := Amount +States.HouseWareAmount(aHouses[h], FoodType);
+	Result := Amount;
 end;
 
-
-function Randomize(Value: Integer; Percentage: Single): Integer;
-begin
-	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
-end;
-
-
-procedure IronEquipRate(Player: Byte; Rate: Word);
-begin
-	Actions.AIEquipRate(Player, 1, Rate);
-	Actions.AIEquipRate(Player, 0, Rate);
-end;
 
 
 procedure KingDiscovered();
@@ -74,7 +81,7 @@ begin
 	aCustomPosition := Utils.KMPoint(States.UnitPositionX(KingID), States.UnitPositionY(KingID));
 	AddAIAttack(5, true, 0, 2, 1, 0, 2, attCustomPosition, aCustomPosition); //60 Units
 	//Speed up Recruit Rate to double of ALLY_PLAYER
-	IronEquipRate(5, 100);
+	SetEqualEquipRate(5, 100);
 	//Inform Player
 	Actions.ShowMsg(HUMAN_PLAYER, '<$5>');
 end;
@@ -84,17 +91,20 @@ end;
 procedure OnMissionStart();
 begin
 	DifficultySetting := States.MissionDifficulty();
-	
+
 	Actions.UnitKill(States.UnitAt(24, 22), true); //Kill KING_PLAYER Activation Unit
 
 	case DifficultySetting of
 		mdEasy1:
 		begin
+			AllyDeathCounterMax := 150;
+			dmod := 0.7;
+		
 			//Player2: Player Side North
 			Actions.AIWorkerLimit(2, 4);
 			Actions.AIRecruitLimit(2, 10);
 			Actions.AIRecruitDelay(2, MinToTick(36));
-			IronEquipRate(2, Randomize(790, 1));
+			SetEqualEquipRate(2, Randomize(790, 1));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(2, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(2, 1, 9, 3); //Anti-Horse
@@ -123,7 +133,7 @@ begin
 			Actions.AIRecruitLimit(3, 10);
 			Actions.AIDefendAllies(3, false); //Dont defend allys on Easy (leave defence radius the same as on normal)
 			Actions.AIRecruitDelay(3, MinToTick(54));
-			IronEquipRate(3, Randomize(790, 1));
+			SetEqualEquipRate(3, Randomize(790, 1));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(3, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(3, 1, 12, 4); //Anti-Horse
@@ -152,7 +162,7 @@ begin
 			Actions.AIWorkerLimit(4, 4);
 			Actions.AIRecruitLimit(4, 10);
 			Actions.AIRecruitDelay(4, MinToTick(81));
-			IronEquipRate(4, Randomize(660, 1));
+			SetEqualEquipRate(4, Randomize(660, 1));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(4, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(4, 1, 12, 4); //Anti-Horse
@@ -184,8 +194,7 @@ begin
 			Actions.AIRecruitDelay(5, MinToTick(48));
 			EquipRate := 300;
 			Actions.AIArmyType(5, atLeather);
-			Actions.AIEquipRate(5, 0, EquipRate); //Leather
-			Actions.AIEquipRate(5, 1, EquipRate); //Iron
+			SetEqualEquipRate(5, EquipRate);
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(5, 0, 15, 5); //Melee
 			Actions.AIGroupsFormationSet(5, 1, 12, 4); //Anti-Horse
@@ -214,11 +223,14 @@ begin
 		
 		mdNormal:
 		begin
+			AllyDeathCounterMax := 125;
+			dmod := 0.85;
+
 			//Player2: Player Side North
 			Actions.AIWorkerLimit(2, 6);
 			Actions.AIRecruitLimit(2, 15);
 			Actions.AIRecruitDelay(2, MinToTick(35));
-			IronEquipRate(2, Randomize(505, 2));
+			SetEqualEquipRate(2, Randomize(505, 2));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(2, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(2, 1, 9, 3); //Anti-Horse
@@ -248,7 +260,7 @@ begin
 			Actions.AIWorkerLimit(3, 6);
 			Actions.AIRecruitLimit(3, 15);
 			Actions.AIRecruitDelay(3, MinToTick(49));
-			IronEquipRate(3, Randomize(505, 2));
+			SetEqualEquipRate(3, Randomize(505, 2));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(3, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(3, 1, 12, 4); //Anti-Horse
@@ -280,7 +292,7 @@ begin
 			Actions.AIWorkerLimit(4, 6);
 			Actions.AIRecruitLimit(4, 15);
 			Actions.AIRecruitDelay(4, MinToTick(56));
-			IronEquipRate(4, Randomize(515, 2));
+			SetEqualEquipRate(4, Randomize(515, 2));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(4, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(4, 1, 12, 4); //Anti-Horse
@@ -313,8 +325,7 @@ begin
 			Actions.AIRecruitDelay(5, MinToTick(48));
 			EquipRate := 250;
 			Actions.AIArmyType(5, atLeather);
-			Actions.AIEquipRate(5, 0, EquipRate); //Leather
-			Actions.AIEquipRate(5, 1, EquipRate); //Iron
+			SetEqualEquipRate(5, EquipRate);
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(5, 0, 15, 5); //Melee
 			Actions.AIGroupsFormationSet(5, 1, 12, 4); //Anti-Horse
@@ -343,11 +354,14 @@ begin
 		
 		mdHard1:
 		begin
+			AllyDeathCounterMax := 100;
+			dmod := 1;
+
 			//Player2: Player Side North
 			Actions.AIWorkerLimit(2, 8);
 			Actions.AIRecruitLimit(2, 20);
 			Actions.AIRecruitDelay(2, MinToTick(25));
-			IronEquipRate(2, Randomize(360, 3));
+			SetEqualEquipRate(2, Randomize(360, 3));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(2, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(2, 1, 9, 3); //Anti-Horse
@@ -377,7 +391,7 @@ begin
 			Actions.AIWorkerLimit(3, 8);
 			Actions.AIRecruitLimit(3, 20);
 			Actions.AIRecruitDelay(3, MinToTick(35));
-			IronEquipRate(3, Randomize(360, 3));
+			SetEqualEquipRate(3, Randomize(360, 3));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(3, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(3, 1, 12, 4); //Anti-Horse
@@ -410,7 +424,7 @@ begin
 			Actions.AIWorkerLimit(4, 8);
 			Actions.AIRecruitLimit(4, 20);
 			Actions.AIRecruitDelay(4, MinToTick(45));
-			IronEquipRate(4, Randomize(365, 3));
+			SetEqualEquipRate(4, Randomize(365, 3));
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(4, 0, 12, 4); //Melee
 			Actions.AIGroupsFormationSet(4, 1, 12, 4); //Anti-Horse
@@ -445,8 +459,7 @@ begin
 			Actions.AIRecruitDelay(5, MinToTick(48));
 			EquipRate := 200;
 			Actions.AIArmyType(5, atLeather);
-			Actions.AIEquipRate(5, 0, EquipRate); //Leather
-			Actions.AIEquipRate(5, 1, EquipRate); //Iron
+			SetEqualEquipRate(5, EquipRate);
 			//Soldier Formation
 			Actions.AIGroupsFormationSet(5, 0, 15, 5); //Melee
 			Actions.AIGroupsFormationSet(5, 1, 12, 4); //Anti-Horse
@@ -472,9 +485,9 @@ begin
 			//Amount of Army Units assigned to DefencePositions: 192
 			AddAIAttack(5, true, 0, 1, 1, 0, 1, attClosestBuildingFromStartPos, aCustomPosition); //36
 			//Add more Towers
-			GiveHouseAndConnect(5, 17, 19, 108);
-			GiveHouseAndConnect(5, 17, 25, 100);
-			GiveHouseAndConnect(5, 17, 33, 96);
+			GiveHouseAndConnectEx(5, htWatchTower, 19, 108);
+			GiveHouseAndConnectEx(5, htWatchTower, 25, 100);
+			GiveHouseAndConnectEx(5, htWatchTower, 33, 96);
 			//Connect Villages of Player4 and Player5
 			Actions.GiveRoad(5, 11, 117);
 			Actions.GiveRoad(5, 12, 117);
@@ -489,6 +502,49 @@ begin
 			Actions.GiveRoad(5, 26, 105);
 		end;
 	end;
+
+    //Random food gathering goal
+    case Utils.RandomRangeI(0, 5) of
+        0: begin
+            FoodType := wtWine;
+            RequiredAmountOfFood := Utils.RoundTo(REQUIRED_WINE *dMod, 5);
+        end;
+        1, 2: begin
+            FoodType := wtBread;
+            RequiredAmountOfFood := Utils.RoundTo(REQUIRED_BREAD *dMod, 5);
+        end;
+        3..5: begin
+            FoodType := wtSausage;
+            RequiredAmountOfFood := Utils.RoundTo(REQUIRED_SAUSAGES *dMod, 5);
+        end;
+    end;
+
+    //Dont cheat the bonus goal
+    Actions.PlayerTradeAllowed(HUMAN_PLAYER, FoodType, false);
+end;
+
+
+procedure OnHouseBuilt(aHouse: Integer);
+var
+	HouseOwner: Integer;
+	HouseTypeEx: TKMHouseType;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+	HouseTypeEx := States.HouseTypeEx(aHouse);
+	
+	if IsImportantBuilding(HouseTypeEx) then
+		if States.PlayerIsAI(HouseOwner) then
+			MainGoal_EnemyHousesDestroyed := 0;
+	
+	if HouseOwner = HUMAN_PLAYER then
+		case HouseTypeEx of
+			htVineyard, htBakery, htFishermans, htButchers:
+			begin
+				bShowBonusObjective[2] := true;
+				if not bFoodMsg then
+					Actions.ShowMsg(HUMAN_PLAYER, '<$7>');
+			end;
+		end;
 end;
 
 
@@ -527,14 +583,112 @@ begin
 			//Actions.ShowMsg(HUMAN_PLAYER, 'BalanceShift: ' +inttostr(BalanceShift) +'| Leather Equip Rate: ' +inttostr(States.AIEquipRate(5, 0)) +'| Iron Equip Rate: ' +inttostr(States.AIEquipRate(5, 1)));
 		end;
 	end;
+	
+	if States.PlayerIsAI(States.UnitOwner(aUnit)) then
+		MainGoal_EnemyUnitsDestroyed := 0;
+end;
+
+
+procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+begin
+	if States.UnitOwner(aUnit) = ALLY_PLAYER then
+	begin
+		Inc(AllyDeathCounter);
+		if not bAllyMsg then
+			if AllyDeathCounter = Round(AllyDeathCounterMax *0.8) then
+			begin
+				Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$4>'); //Warning Message to player
+				bAllyMsg := true;
+			end;
+		if AllyDeathCounter >= AllyDeathCounterMax then
+		begin
+			BonusGoal_AllyDeathCounter := 2;
+		end;
+	end;
+
+	if aUnit = KingID then
+	begin
+		Actions.PlayerDefeat(HUMAN_PLAYER); //Defeat if King is killed (Additional Defeat/Victory Conditions set in MapEd)
+		MainGoal_ProtectKing := 2;
+	end;
+end;
+
+
+procedure OnUnitWounded(aUnit: Integer; aAttacker: Integer);
+begin
+	if not bKingsGuardMsg then
+		if States.UnitOwner(aUnit) = KING_PLAYER then
+		begin
+			Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$6>'); //Inform Player that Kings Guard is in Battle
+			bKingsGuardMsg := true;
+		end;
+end;
+
+
+procedure OnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, aX, aY: Integer);
+var
+	p, h: Integer;
+	aHouses: array of Integer;
+begin
+	if IsImportantBuilding(aHouseType) then
+		if States.PlayerIsAI(aOwner) then
+		begin
+			MainGoal_EnemyHousesDestroyed := 1;
+			for p := 2 to 5 do
+			begin
+				aHouses := States.PlayerGetAllHouses(p);
+				for h := 0 to High(aHouses) do
+					if IsImportantBuilding(States.HouseTypeEx(aHouses[h])) then
+					begin
+						MainGoal_EnemyHousesDestroyed := 0;
+						break;
+					end;
+			end;
+		end;
+end;
+
+
+procedure OnUnitAfterDiedEx(aUnitType: TKMUnitType; aOwner, aX, aY: Integer);
+var
+	p: Integer;
+	aGroups: array of Integer;
+begin
+	if States.PlayerIsAI(aOwner) then
+		if IsWarrior(aUnitType) then
+		begin
+			MainGoal_EnemyUnitsDestroyed := 1;
+			for p := 2 to 5 do
+			begin
+				aGroups := States.PlayerGetAllGroups(p);
+				if Length(aGroups) > 0 then
+				begin
+					MainGoal_EnemyUnitsDestroyed := 0;
+					break;
+				end;
+			end;
+		end;
+end;
+
+
+procedure OnPlayerVictory(aPlayer: Integer);
+begin
+	if aPlayer = HUMAN_PLAYER then
+	begin
+		MainGoal_ProtectKing := 1;	
+				
+		if TotalFoodAmountByType(HUMAN_PLAYER, FoodType) < RequiredAmountOfFood then
+			BonusGoal_GatherFood := 2;
+	end;
 end;
 
 
 procedure OnTick();
 var
-	GameTime: Cardinal;
+	GameTime: Integer;
 	aKingGroups: array of Integer;
 	g: Integer;
+	UnitMaxHunger: Integer;
+	GatheredFood: Integer;
 begin 
 	GameTime := States.GameTime();
 	
@@ -546,11 +700,10 @@ begin
 		if GameTime mod MinToTick(20) = 0 then
 		begin
 			aKingGroups := States.PlayerGetAllGroups(KING_PLAYER);
-			
 			for g := 0 to High(aKingGroups) do
 				Actions.GroupHungerSet(aKingGroups[g], States.UnitMaxHunger());
 		end;
-	
+		
 	//Schedule Game Events
 	if GameTime = 80 then
 		Actions.ShowMsg(HUMAN_PLAYER, '<$0>');
@@ -558,11 +711,13 @@ begin
 	if GameTime = MinToTick(32) then
 	begin
 		Actions.ShowMsgGoto(HUMAN_PLAYER, 25, 5, '<$1>');
+		bShowBonusObjective[1] := true;
+		UnitMaxHunger := States.UnitMaxHunger();
 		//Reinforcements for AllyAi
-		Actions.GiveGroupEx(ALLY_PLAYER, utAxeFighter, 20, 3, dirS, 9, 3);
-		Actions.GiveGroupEx(ALLY_PLAYER, utRebel, 25, 5, dirS, 15, 5);
-		Actions.GiveGroupEx(ALLY_PLAYER, utBowman, 25, 2, dirS, 6, 3);
-		Actions.GiveGroupEx(ALLY_PLAYER, utMilitia, 30, 3, dirS, 12, 4);
+		Actions.GroupHungerSet(Actions.GiveGroupEx(ALLY_PLAYER, utAxeFighter, 20, 3, dirS, Utils.RandomRangeI(8, 12), 3), Utils.RandomRangeI(UnitMaxHunger /2, UnitMaxHunger));
+		Actions.GroupHungerSet(Actions.GiveGroupEx(ALLY_PLAYER, utRebel, 25, 5, dirS, Utils.RandomRangeI(10, 15), 5), Utils.RandomRangeI(UnitMaxHunger /2, UnitMaxHunger));
+		Actions.GroupHungerSet(Actions.GiveGroupEx(ALLY_PLAYER, utBowman, 25, 2, dirS, 6, 3), Utils.RandomRangeI(UnitMaxHunger /2, UnitMaxHunger));
+		Actions.GroupHungerSet(Actions.GiveGroupEx(ALLY_PLAYER, utMilitia, 30, 3, dirS, 12, 4), Utils.RandomRangeI(UnitMaxHunger /2, UnitMaxHunger));
 	end;
 	
 	if GameTime = MinToTick(68) then
@@ -599,32 +754,29 @@ begin
 				FinalStage();
 		end;
 	end;
-end;
-
-
-procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
-begin
-	if not bAllyMsg then
-		if States.UnitOwner(aUnit) = ALLY_PLAYER then
-		begin
-			if States.StatArmyCount(ALLY_PLAYER) < 25 then
-			begin
-				Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$4>'); //Warning Message to player
-				bAllyMsg := true;
-			end;
-		end;
-
-	if aUnit = KingID then
-		Actions.PlayerDefeat(HUMAN_PLAYER); //Defeat if King is killed (Additional Defeat/Victory Conditions set in MapEd)
-end;
-
-
-procedure OnUnitWounded(aUnit: Integer; aAttacker: Integer);
-begin
-	if not bKingsGuardMsg then
-		if States.UnitOwner(aUnit) = KING_PLAYER then
-		begin
-			Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$6>'); //Inform Player that Kings Guard is in Battle
-			bKingsGuardMsg := true;
-		end;
+	
+	//Display Goals
+	Actions.OverlayTextSet(HUMAN_PLAYER, '[$33FFF3]<$10>:[$FFFFFF]');
+	DisplayGoals(HUMAN_PLAYER, MainGoal_EnemyHousesDestroyed, '<$11>');
+	DisplayGoals(HUMAN_PLAYER, MainGoal_EnemyUnitsDestroyed, '<$12>');
+	if bKingArrived then
+		DisplayGoals(HUMAN_PLAYER, MainGoal_ProtectKing, '<$13>');
+	
+	//Display Bonus Goals
+	if bShowBonusObjective[1] or bShowBonusObjective[2] then
+		bShowBonusObjective[0] := true;
+	
+	GatheredFood := TotalFoodAmountByType(HUMAN_PLAYER, FoodType);
+	if GatheredFood >= RequiredAmountOfFood then
+	begin
+		BonusGoal_GatherFood := 1;
+	end else
+		BonusGoal_GatherFood := 0;
+		
+	if bShowBonusObjective[0] then
+		Actions.OverlayTextAppend(HUMAN_PLAYER, '||[$33FFF3]<$14>:[$FFFFFF]');
+	if bShowBonusObjective[1] then
+		DisplayGoals(HUMAN_PLAYER, BonusGoal_AllyDeathCounter, '<$15> (' +inttostr(AllyDeathCounter) +'/' +inttostr(AllyDeathCounterMax) +')');
+	if bShowBonusObjective[2] then
+		DisplayGoals(HUMAN_PLAYER, BonusGoal_GatherFood, '<$16>: (' +inttostr(GatheredFood) +'/' +inttostr(RequiredAmountOfFood) +') ' +States.WareTypeNameEx(FoodType));
 end;

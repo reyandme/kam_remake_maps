@@ -39,3 +39,20 @@ v0.7.2 (20.03.2024)
 - Rephrased confusing ingame Messages
 - Fixed Recruitment Rate of AI Player 5; AI was recruiting too fast on 'normal' and too slow on 'hard'
 - Changed trigger for Message4
+
+v0.8.0 (19.10.2024)
+- Ally reinforcing groups now have random hunger level and a slightly randomized group sizes
+- Ally school construction site has random progress level
+- Added main and bonus objectives display
+- Updated improvestaticai.script to newest version
+- tools.script added, which is an updated, leaner version of difficulty.script; difficulty.script removed
+- Refactoring of main script
+- Refactoring of dynamicmap.script
+
+v1.0 (12.12.2024)
+- Reworked story and mission briefing
+- removed unnecessary scripts
+- updated scripts to their newest version
++ bonus missions:
+  - greatly reduced the amount of units the ally can use on all difficulty settings
+  - changed food goal from any food type to specific food item, which is chosen randomly and the amount dependent on difficulty setting

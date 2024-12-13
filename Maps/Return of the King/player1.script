@@ -317,7 +317,7 @@ begin
 			PlanAddHouseAndConnect(Player, 20, 16, 15); //Armory Workshop #3
 		end;
 		25: begin
-			PlanAddHouseAndConnect(Player, 3, 46, 30); //Coal Mine #2\
+			PlanAddHouseAndConnect(Player, 3, 46, 30); //Coal Mine #2
 		end;
 		26: begin
 			PlanAddHouseAndConnect(Player, 5, 53, 26); //Gold Mine #2
@@ -384,22 +384,19 @@ end;
 
 
 procedure Player1OnTick();
-{var
-	aHouses: array of Integer;
-	h: Integer;}
 begin
 	if States.GameTime() = 1 then
 	begin
-		Actions.HouseAddBuildingProgressEx(SchoolID, 75);
+		Actions.HouseAddBuildingProgressEx(SchoolID, Utils.RandomRangeI(75, 100));
 	end;
 
+	//Start building process
 	if States.GameTime() mod 351 = 0 then
 	begin
 		if not States.PlayerDefeated(PLAYER) then
 			Construction(PLAYER);
 	end;
 end;
-
 
 
 procedure Player1OnHouseBuilt(aHouse: Integer);
@@ -409,4 +406,3 @@ begin
 		Actions.HouseWoodcutterChopOnly(aHouse, true);	
 	end;
 end;
-

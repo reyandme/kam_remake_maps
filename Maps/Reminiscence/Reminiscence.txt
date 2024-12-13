@@ -1,14 +1,14 @@
 Author
-Strangelove
+DontTalk
 
 Version
-1.0 (12.12.2024)
+1.3 Bug Fixes
 
-SmallDescLIBX
-98
+SmallDesc
+A Mission by DontTalk
 
 BigDescLIBX
-99
+0
 
 DifficultyLevels
 mdEasy1,mdNormal,mdHard1
