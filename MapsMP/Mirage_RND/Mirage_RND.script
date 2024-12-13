@@ -1,0 +1,84 @@
+{$INCLUDE RandomStorehouse.script}
+
+procedure InitPlayer(playerId, xMin, xMax, yMin, yMax: integer);
+var
+  serfs: integer;
+  workers: integer;
+  slow: boolean;
+
+begin
+
+case States.KamRandomI(4) of
+    0:
+      begin
+        serfs := 7;
+        workers := 6;
+      end;
+    1:
+      begin
+        serfs := 6;
+        workers := 5;
+      end;
+    2:
+      begin
+        serfs := 5;
+        workers := 4;
+      end;
+    3:
+      begin
+        serfs := 4;
+        workers := 3;
+      end;
+  end;
+
+  slow := States.KamRandomI(5) = 0;
+
+  RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
+
+  case States.KamRandomI(2) of
+    0:
+      if (not slow) then
+      begin
+        RNST_SetUnlockedBuildingTypes(playerId, [htQuarry]);
+      end;
+    1:
+      RNST_SetUnlockedBuildingTypes(playerId, [htWoodcutters]);
+  end;
+
+  if  (States.KamRandomI(2) = 0) then
+  begin
+    RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
+  end;
+
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, 80 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 3 + States.KamRandomI(3));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 50 + States.KamRandomI(11));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, 56 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, 30 + States.KamRandomI(40));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, 20 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 10 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, 10 + States.KamRandomI(21));
+end;
+
+procedure InitPlayers();
+begin
+
+  RNST_SightRadius := 50;
+  RNST_IsAllowedToPlaceAtCoal := true;
+
+  InitPlayer(0,11,48,11,70);
+  InitPlayer(1,11,48,100,159);
+  InitPlayer(2,11,48,186,245);
+  InitPlayer(3,80,117,186,245);
+
+  RNST_InitBoundPlayer(4,1,207,244,100,159);
+  RNST_InitBoundPlayer(5,0,208,245,186,245);
+  RNST_InitBoundPlayer(6,3,139,175,11,70);
+  RNST_InitBoundPlayer(7,2,207,244,11,90);
+end;
+
+procedure OnMissionStart;
+begin
+  InitPlayers();
+end;
+
