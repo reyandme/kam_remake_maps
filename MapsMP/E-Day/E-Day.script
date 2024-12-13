@@ -1,0 +1,384 @@
+//Random Storehouse placement script
+//version 1.7.    2024.01.30.
+//written by ThundEEr[Beer]
+
+//the storehouse is going to be placed randomly in the selected area
+
+const
+//values for the wares in the STOREHOUSES
+ST= 80;	//stone
+TM= 64;	//timber
+GC= 63;	//goldchest
+WB= 62;  //winebarrel
+BR= 61;	//bread
+SO= 10;	//sousage
+FI= 20;	//fish
+//---------------------------------------------------------------------
+//numbers of the players
+PP= 8;  //loc count //numbers of the players
+//---------------------------------------------------------------------
+RADD=10;	//Radius for vision after the storehouse placed
+//---------------------------------------------------------------------
+CIN=80; //Cinematix ends after as much waiting time. CIN/10 seconds. Currently it takes 8seconds.
+//---------------------------------------------------------------------
+var
+XZ: array [0..7] of integer;	//random generated
+YZ: array [0..7] of integer;	//random generated
+
+procedure OnMissionStart;
+var 
+P: Integer;
+XMIN: array [0..7] of Integer;	//coordinates
+XMAX: array [0..7] of Integer;	//coordinates
+YMIN: array [0..7] of integer;	//coordinates
+YMAX: array [0..7] of integer;	//coordinates
+XR: array [0..7] of integer;	//random generated
+YR: array [0..7] of integer;	//random generated
+H: array [0..7] of integer;		//counter for the placed House
+TR: array [0..7] of integer;	//Treecounter before house placement
+// for the special tile
+XT: Integer;	
+YT: Integer;
+RT, RA, RB: Integer; //rotation	
+TPX, TPY, TRO:Integer;	//for the treecoordinate check
+
+begin
+
+//switch off the logging
+//Actions.LogLinesMaxCnt(0);  // available after r12989
+
+RT:= 0;
+//Destroy and remove the current ones; Ths version not have any started building, script is adding everything
+
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+//selected area with the four coordinates to each avaiable locations. Selected area is going to be rectangular. 
+//please select the areas without overlaps as the script can not handle that!
+
+//the coordinates of the rectangular area
+//XMIN,YMIN---------------------------------XMAX,YMIN
+//   I                                           I
+//   I                                           I
+//   I                                           I
+//   I                                           I
+//   I                                           I
+//   I                                           I
+//XMIN,YMAX---------------------------------XMAX,YMAX
+
+
+//         -------------------
+//		   I     I     I     I  
+//		   I     I     I     I  
+//         -------------------
+//		   I     I     I     I  
+//		   I     I     I     I  
+//        --------------------
+//		   I     I Xr  I     I  
+//		   I     I Yr  I     I  
+//        --------------------
+//		Store house coordnate
+//
+
+//location 1
+XMIN[0]:= 32;
+XMAX[0]:= 54;
+YMIN[0]:= 157;
+YMAX[0]:= 173;
+H[0]:= -1;
+TR[0]:=0;
+
+//location 2
+XMIN[1]:= 17;
+XMAX[1]:= 42;
+YMIN[1]:= 210;
+YMAX[1]:= 231;
+H[1]:= -1;
+TR[1]:=0;
+
+//location 3
+XMIN[2]:= 67;
+XMAX[2]:= 91;
+YMIN[2]:= 211;
+YMAX[2]:= 229;
+H[2]:= -1;
+TR[2]:=0;
+
+//location 4
+XMIN[3]:= 203;
+XMAX[3]:= 226;
+YMIN[3]:= 88;
+YMAX[3]:= 104;
+H[3]:= -1;
+TR[3]:=0;
+
+//location 5
+XMIN[4]:= 214;
+XMAX[4]:= 236;
+YMIN[4]:= 33;
+YMAX[4]:= 54;
+H[4]:= -1;
+TR[4]:=0;
+
+//location 6
+XMIN[5]:= 161;
+XMAX[5]:= 185;
+YMIN[5]:= 34;
+YMAX[5]:= 52;
+H[5]:= -1;
+TR[5]:=0;
+
+//location 7
+XMIN[6]:= 30;
+XMAX[6]:= 55;
+YMIN[6]:= 28;
+YMAX[6]:= 49;
+H[6]:= -1;
+TR[6]:=0;
+
+//location 8
+XMIN[7]:= 202;
+XMAX[7]:= 226;
+YMIN[7]:= 203;
+YMAX[7]:= 228;
+H[7]:= -1;
+TR[7]:=0;
+
+//loc3,4,5,6,7...on the same way
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+	For P := 0 to PP - 1 do
+	
+	if States.PlayerEnabled(P) then // and (H[P] < 0) and (States.StatCitizenCount(P) = 0 ) then
+		begin
+			//XR[P]:= XMIN[P]+ (XMAX[P]-XMIN[P]);
+			//YR[P]:= YMIN[P]+ (YMAX[P]-YMIN[P]);
+			//H[P]:= -1;
+			XR[P]:= XMIN[P]+ (States.KamRandomI((XMAX[P]-XMIN[P])));
+			YR[P]:= YMIN[P]+ (States.KamRandomI((YMAX[P]-YMIN[P])));
+				
+
+			// This would be the TREECOUNTER before the Stroehouse is placed, but it is not working atm...how hard can it be?
+			For TPX:= (XR[P]-1) to (XR[P]+1) do
+						begin
+							For TPY:= (YR[P]-2) to YR[P] do
+								begin
+									TRO:= States.MapTileObject(TPX,TPY);
+									case TRO of
+									88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,123,124,125,49,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172: inc(TR[P]);
+									else end;
+								end;
+						end;
+			//------------------------------				
+			
+			//add house
+			Actions.GiveHouse(P,11,XR[P],YR[P]);
+			
+			Actions.GiveRoad(P,(XR[P]),(YR[P]+1));
+			Actions.GiveRoad(P,(XR[P]+1),(YR[P]+1));
+			Actions.GiveRoad(P,(XR[P]-1),(YR[P]+1));
+			Actions.GiveRoad(P,(XR[P]-2),(YR[P]));
+			Actions.GiveRoad(P,(XR[P]-2),(YR[P]+1));
+			Actions.GiveRoad(P,(XR[P]-2),(YR[P]-1));
+			Actions.GiveRoad(P,(XR[P]-2),(YR[P]-2));
+			Actions.GiveRoad(P,(XR[P]+2),(YR[P]));
+			Actions.GiveRoad(P,(XR[P]+2),(YR[P]+1));
+			Actions.GiveRoad(P,(XR[P]+2),(YR[P]-1));
+			Actions.GiveRoad(P,(XR[P]+2),(YR[P]-2));
+						
+			//check is the house built
+			H[P]:= States.HouseAt(XR[P],YR[P]);	
+			
+		//if there is no house and one of the tiles are not walkabe then start the cícle again
+		//if (Actions.GiveHouse(P,11,XR[P],YR[P]) = (-1)) then
+		if (H[P] = (-1)) then		//if there is no storehouse
+			begin
+			
+			//remove the roads
+				Actions.RemoveRoad((XR[P]),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]+1),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]-1),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]-2),(YR[P]));			
+				Actions.RemoveRoad((XR[P]-2),(YR[P]+1));					
+				Actions.RemoveRoad((XR[P]-2),(YR[P]-1));				
+				Actions.RemoveRoad((XR[P]-2),(YR[P]-2));
+				Actions.RemoveRoad((XR[P]+2),(YR[P]));			
+				Actions.RemoveRoad((XR[P]+2),(YR[P]+1));					
+				Actions.RemoveRoad((XR[P]+2),(YR[P]-1));				
+				Actions.RemoveRoad((XR[P]+2),(YR[P]-2));
+				//dec(P);
+				
+				//here reset the Treecounter also
+				TR[P]:= 0;
+				
+				P:= P-1 ;		//if not then repeat the cycle
+			
+			end else	
+			
+				//if there is no house and one of the tiles are not walkabe then start the cícle again
+		//if (H[P] = (-1)) and ((States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]-1,YR[P]+1) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+1,YR[P]+1) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]+1)= False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]-1) = False)) then
+		//	begin
+		//	//dec(P);
+		//	P:= P-1;		//if not then repeat the cycle
+		//	end;
+		
+//-------------------------------------------------
+			//Add some more exceptions to this part if there is a built storehouse...
+			//-road can not be placed in fornt of the store etc...
+			//-if there is house but one of the tiles are not walkable in front of the storehouse (2 lines) or any type of coalfield below corners of the storeH then destroy the house and start again
+			//-If there is iron or goldmine slot for blocking, then destroy the store. Tile types checked at top corners at store. Tiles are 172,173,174,168,169,170,167,175
+			//Added the stone hill edge also because that can block cutting stone... 139
+			
+			
+			//check for stone hill edge, good example to use it for other type of tiles also. It might be handy for 15xxx ++++
+			//or (States.MapTileType(XR[P]-1,YR[P]-3) = 139) or (States.MapTileType(XR[P]+1,YR[P]-3) = 139) or (States.MapTileType(XR[P]-2,YR[P]-3) = 139) or (States.MapTileType(XR[P]+2,YR[P]-3) = 139)
+					
+		if (H[P] > -1) and ((States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]-1,YR[P]+1) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+1,YR[P]+1) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]+1)= False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]-1) = False) or (States.MapTileType(XR[P]-1,YR[P]) = 155) or (States.MapTileType(XR[P]-1,YR[P]) = 154) or (States.MapTileType(XR[P]-1,YR[P]) = 153) or (States.MapTileType(XR[P]-1,YR[P]) = 152) or (States.MapTileType(XR[P]-1,YR[P]-2) = 155) or (States.MapTileType(XR[P]-1,YR[P]-2) = 154) or (States.MapTileType(XR[P]-1,YR[P]-2) = 153) or (States.MapTileType(XR[P]-1,YR[P]-2) = 152) or (States.MapTileType(XR[P]+1,YR[P]) = 155) or (States.MapTileType(XR[P]+1,YR[P]) = 154) or (States.MapTileType(XR[P]+1,YR[P]) = 153) or (States.MapTileType(XR[P]+1,YR[P]) = 152) or (States.MapTileType(XR[P]+1,YR[P]-2) = 155) or (States.MapTileType(XR[P]+1,YR[P]-2) = 154) or (States.MapTileType(XR[P]+1,YR[P]-2) = 153) or (States.MapTileType(XR[P]+1,YR[P]-2) = 152) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]-1,YR[P]+2) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+1,YR[P]+2) = False) or (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P],YR[P]+2) = False)	or (States.MapTileType(XR[P]-1,YR[P]-3) = 167) or (States.MapTileType(XR[P]+1,YR[P]-3) = 167) or (States.MapTileType(XR[P]-1,YR[P]-3) = 168) or (States.MapTileType(XR[P]+1,YR[P]-3) = 168) or (States.MapTileType(XR[P]-1,YR[P]-3) = 169) or (States.MapTileType(XR[P]+1,YR[P]-3) = 169) or (States.MapTileType(XR[P]-1,YR[P]-3) = 170) or (States.MapTileType(XR[P]+1,YR[P]-3) = 170) or (States.MapTileType(XR[P]-1,YR[P]-3) = 172) or (States.MapTileType(XR[P]+1,YR[P]-3) = 172) or (States.MapTileType(XR[P]-1,YR[P]-3) = 173) or (States.MapTileType(XR[P]+1,YR[P]-3) = 173)	or (States.MapTileType(XR[P]-1,YR[P]-3) = 174) or (States.MapTileType(XR[P]+1,YR[P]-3) = 174) or (States.MapTileType(XR[P]-1,YR[P]-3) = 175) or (States.MapTileType(XR[P]+1,YR[P]-3) = 175)	or (States.MapTileType(XR[P]-2,YR[P]-3) = 167) or (States.MapTileType(XR[P]+2,YR[P]-3) = 167) or (States.MapTileType(XR[P]-2,YR[P]-3) = 168) or (States.MapTileType(XR[P]+2,YR[P]-3) = 168) or (States.MapTileType(XR[P]-2,YR[P]-3) = 169) or (States.MapTileType(XR[P]+2,YR[P]-3) = 169) or (States.MapTileType(XR[P]-2,YR[P]-3) = 170) or (States.MapTileType(XR[P]+2,YR[P]-3) = 170)	or (States.MapTileType(XR[P]-2,YR[P]-3) = 172) or (States.MapTileType(XR[P]+2,YR[P]-3) = 172) or (States.MapTileType(XR[P]-2,YR[P]-3) = 173) or (States.MapTileType(XR[P]+2,YR[P]-3) = 173) or (States.MapTileType(XR[P]-2,YR[P]-3) = 174) or (States.MapTileType(XR[P]+2,YR[P]-3) = 174) or (States.MapTileType(XR[P]-2,YR[P]-3) = 175) or (States.MapTileType(XR[P]+2,YR[P]-3) = 175) or (States.MapTileType(XR[P]-1,YR[P]-3) = 139) or (States.MapTileType(XR[P]+1,YR[P]-3) = 139) or (States.MapTileType(XR[P]-2,YR[P]-3) = 139) or (States.MapTileType(XR[P]+2,YR[P]-3) = 139)	or (States.IsRoadAt(P,(XR[P]-2),(YR[P]))=False) or (States.IsRoadAt(P,(XR[P]-2),(YR[P]+1))=False) or (states.IsRoadAt(P,(XR[P]-2),(YR[P]-1))=False) or (States.IsRoadAt(P,(XR[P]-2),(YR[P]-2))=False) or (States.IsRoadAt(P,(XR[P]+2),(YR[P]))=False) or (States.IsRoadAt(P,(XR[P]+2),(YR[P]+1))=False) or (states.IsRoadAt(P,(XR[P]+2),(YR[P]-1))=False) or (States.IsRoadAt(P,(XR[P]+2),(YR[P]-2))=False)) then
+			
+			
+			
+			begin
+			Actions.HouseDestroy(H[P],True);
+			
+			//remove the given roads roads from tests
+				Actions.RemoveRoad((XR[P]),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]+1),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]-1),(YR[P]+1));
+				Actions.RemoveRoad((XR[P]-2),(YR[P]));			
+				Actions.RemoveRoad((XR[P]-2),(YR[P]+1));					
+				Actions.RemoveRoad((XR[P]-2),(YR[P]-1));				
+				Actions.RemoveRoad((XR[P]-2),(YR[P]-2));	
+				Actions.RemoveRoad((XR[P]+2),(YR[P]));			
+				Actions.RemoveRoad((XR[P]+2),(YR[P]+1));					
+				Actions.RemoveRoad((XR[P]+2),(YR[P]-1));				
+				Actions.RemoveRoad((XR[P]+2),(YR[P]-2));				
+			
+			//dec(P);
+			P:= P-1 ;		//if not then repeat the cycle
+			end else
+		
+			//add the road and  wares to the storehouse and the citizens if tiles are walkable
+		If (H[P] > -1) and (States.StatCitizenCount(P) = 0 ) and (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]-1,YR[P]+1) = True) and (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+1,YR[P]+1) = True) and (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]+1)= True) and (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]) = True) and (States.ConnectedByWalking(XR[P],YR[P]+1,XR[P]+2,YR[P]-1) = True) then
+			begin
+			Actions.GiveRoad(P,XR[P],(YR[P]+1));		//roads in fornt of
+			Actions.GiveRoad(P,XR[P]+1,(YR[P]+1));
+			Actions.GiveRoad(P,XR[P]-1,(YR[P]+1));
+			
+			Actions.RemoveRoad((XR[P]-2),(YR[P]));		//left side
+			Actions.RemoveRoad((XR[P]-2),(YR[P]+1));
+			Actions.RemoveRoad((XR[P]-2),(YR[P]-1));
+			Actions.RemoveRoad((XR[P]-2),(YR[P]-2));
+			Actions.RemoveRoad((XR[P]+2),(YR[P]));		//rigth side
+			Actions.RemoveRoad((XR[P]+2),(YR[P]+1));
+			Actions.RemoveRoad((XR[P]+2),(YR[P]-1));
+			Actions.RemoveRoad((XR[P]+2),(YR[P]-2));
+			
+			Actions.GiveWares(P,1,ST);
+			Actions.GiveWares(P,7,GC);
+			Actions.GiveWares(P,2,TM);
+			Actions.GiveWares(P,8,WB);
+			Actions.GiveWares(P,10,BR);
+			Actions.GiveWares(P,13,SO);
+			Actions.GiveWares(P,27,FI);
+			
+			Actions.GiveWares(P,0,TR[P]);				//the bonus tree trunks
+			
+			//add citizens serfs and labourers
+			Actions.GiveUnit(P, 0, XR[P], (YR[P]+1), 4);		//serfs
+			Actions.GiveUnit(P, 0, (XR[P]-1), (YR[P]+1), 4);
+			Actions.GiveUnit(P, 0, (XR[P]+1), (YR[P]+1), 4);
+				//Actions.GiveUnit(P, 0, XR[P]-2, (YR[P]+1), 4);       //serfs  //from the bonus part
+				//Actions.GiveUnit(P, 0, XR[P]-2, (YR[P]), 4);       //serfs	//from the bonus part
+			
+			
+			Actions.GiveUnit(P, 9, (XR[P]+2), (YR[P]-1), 4);	//labourers
+			Actions.GiveUnit(P, 9, (XR[P]+2), YR[P], 4);
+			Actions.GiveUnit(P, 9, (XR[P]+2), (YR[P]+1), 4);	
+				//Actions.GiveUnit(P, 9, (XR[P]-2), (YR[P]-1), 4);   //labourers  //from the bonus part
+				//Actions.GiveUnit(P, 9, (XR[P]-2), (YR[P]-2), 4);   //labourers  //from the bonus part
+			
+			
+			//Remove the object in front of the store
+			Actions.MapTileObjectSet(XR[P],(YR[P]+1),255);		//remove object from roads in fornt of the store
+			Actions.MapTileObjectSet(XR[P]+1,(YR[P]+1),255);
+			Actions.MapTileObjectSet(XR[P]-1,(YR[P]+1),255);
+			
+			//Actions.HouseUnlock(P, 14); 					 //unlock quarry
+			//Actions.HouseUnlock(P, 9); 						//unlock cutter
+			
+			//Reveal huge area for vision
+			Actions.FogRevealCircle(P,XR[P],YR[P],RADD); 		//set vision after the store is placed
+			
+			
+			XZ[P]:=XR[P];
+			YZ[P]:=YR[P];
+			//inc(P);
+			
+			
+			//power loc boosts
+			if (P= 7) or (P= 6) then begin						//only do this for loc 7 and 8
+				Actions.GiveUnit(P, 0, XR[P]-2, (YR[P]+1), 4);       //serfs
+				Actions.GiveUnit(P, 0, XR[P]-2, (YR[P]), 4);       //serfs
+				
+				Actions.GiveUnit(P, 9, (XR[P]-2), (YR[P]-1), 4);   //labourers
+				Actions.GiveUnit(P, 9, (XR[P]-2), (YR[P]-2), 4);   //labourers
+				
+				Actions.HouseUnlock(P, 14); 					 //unlock quarry
+				Actions.HouseUnlock(P, 9); 						//unlock cutter
+			
+			
+			end;		
+			end;
+	
+	
+end;
+
+// bridge
+
+	For XT := 57 to 62 do
+	begin
+		For YT := 109 to 114 do
+		begin
+		
+			Actions.MapTileSet(XT,YT,246,RT);
+			RA:= XT mod 2;
+			RB:= YT mod 2;
+			if RA = RB then
+			RT:= 2;
+			
+			if RA <> RB then
+			RT:= 0; 
+						
+		end;
+	end;	
+
+	end;
+
+procedure OnTick;
+var I: Integer;
+begin
+	
+	if States.GameTime = 2 then 
+		begin
+
+		for I := 0 to  (PP - 1) do
+			if States.PlayerEnabled(I) then
+				Actions.CinematicStart(I);
+		end;
+
+		
+	if States.GameTime = 30 then 
+		begin
+
+		for I := 0 to  (PP - 1) do
+			if (States.PlayerEnabled(I) and (XZ[I] > 0) and (YZ[I] > 0) )then
+				Actions.CinematicPanTo(I,XZ[I],YZ[I],4);
+				//Actions.CinematicPanTo(I,125,125,1);
+		end;
+
+	if States.GameTime = CIN then 
+		begin
+		for I := 0 to  (PP - 1) do
+			if States.PlayerEnabled(I) then
+				Actions.CinematicEnd(I);
+		end;
+end;

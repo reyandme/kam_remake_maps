@@ -13,6 +13,9 @@ To make a brand new map with this gamemode (no programming knowledge needed!):
 - done :)
 
 Changes:
+v1.01
+- minor visual tweaks, make overlay more visible by adding black background on the left
+- translations support
 v1.0
 - small fixes for new Remake version
 - extended to 12P
@@ -477,7 +480,7 @@ function GetPlayerOnHillName(Player: Integer) : string;
 begin
     //Result := States.UnitOwner(States.UnitAt(X, Y));
     case Player of
-        -1: Result := 'none';
+        -1: Result := '<$6>';
         else Result := '[$' + States.PlayerColorText(Player) + ']' + States.PlayerName(Player) + '[]';
     end;
 end;
@@ -575,10 +578,10 @@ begin
                         if (iTime[I] + AFK_TIME < States.GameTime) then
                             Actions.UnitKill(iUnitID[I], false);
                     end;                
-                Actions.OverlayTextSet(I,'|Round: ' + inttostr(iCurrentRound+1) + '||Round Time: ' + inttostr((States.GameTime - iRoundStart)/10) + '|| Hill 1: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX1, HillY1)) + '| Hill 2: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX2, HillY2)) + '| Hill 3: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX3, HillY3)) + '||');
+                Actions.OverlayTextSet(I,'|<$1>: ' + inttostr(iCurrentRound+1) + '||<$2>: ' + inttostr((States.GameTime - iRoundStart)/10) + '|| <$3> 1: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX1, HillY1)) + '| <$3> 2: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX2, HillY2)) + '| <$3> 3: ' + GetPlayerOnHillName(GetPlayerOnHill(HillX3, HillY3)) + '||');
                 for J := 0 to (NR_OF_PLAYERS - 1) do
                     if States.PlayerEnabled(J) = true then
-                        Actions.OverlayTextAppend(I,'[$' + States.PlayerColorText(J) + ']' + States.PlayerName(J) + '[]' + ': ' + IntToStr(iPoints[J]) + '||');
+                        Actions.OverlayTextAppend(I,'[$' + States.PlayerColorText(J) + ']' + States.PlayerName(J) + '[]' + ': ' + IntToStr(iPoints[J]) + '|');
             end;
         end;
 end;
