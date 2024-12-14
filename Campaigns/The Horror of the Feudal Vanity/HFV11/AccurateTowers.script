@@ -1,0 +1,249 @@
+//Towers always kill. Tower kill stats for players.
+//Made by Ritter des Todes.
+//23.02.2024.
+//Version 1.1.
+//Developed for r15122+
+
+//To import script use {$I AccurateTowers.script}
+
+//Description.
+
+//To get player kills with script for getting correct stat use  AT_GetPlayerTowerKills(playerId) finction and plus it with States.StatUnitKilledMultipleTypesCount()
+
+{$EVENT evtUnitAttacked:AT_OnUnitAttacked}
+{$EVENT evtTick:AT_OnTick}
+{$EVENT evtUnitDied:AT_OnUnitDied}
+
+//{$DEFINE AT_DEBUG}
+
+const
+  TicksPerTile = 1.5;
+
+type AT_Player_Stat =
+record
+  PlayerId: integer;
+  TowerKills: integer;
+end;
+
+type AT_UnitKillTask =
+record
+  Id: integer;
+  LivingTime: integer;
+  KillerPlayerId: integer;
+end;
+
+var AT_UnitKillTasks: array of AT_UnitKillTask;
+var AT_PlayerStats: array of AT_Player_Stat;
+
+function AT_FindPlayerStatIndex(playerId: integer): integer;
+var
+  i: integer;
+begin
+
+  result := -1;
+  for i:=0 to Length(AT_PlayerStats)-1 do
+  begin
+    if (AT_PlayerStats[i].PlayerId = playerId) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+procedure AT_AddPlayerStat(playerId: integer);
+var
+  playerStatIndex: integer;
+  count : integer;
+  newPlayerStat : AT_Player_Stat;
+begin
+
+  playerStatIndex := AT_FindPlayerStatIndex(playerId);
+
+  //Player stat already exists.
+  if (playerStatIndex >= 0) then
+  begin
+    exit;
+  end;
+
+  count := Length(AT_PlayerStats);
+  newPlayerStat.PlayerId := playerId;
+  newPlayerStat.TowerKills := 0;
+  setLength(AT_PlayerStats, count + 1);
+  AT_PlayerStats[count] := newPlayerStat;
+end;
+
+procedure AT_IncPlayerTowerKills(playerId: integer);
+var
+  playerStatIndex: integer;
+begin
+
+  AT_AddPlayerStat(playerId);
+  playerStatIndex := AT_FindPlayerStatIndex(playerId);
+  Inc(AT_PlayerStats[playerStatIndex].TowerKills);
+
+end;
+
+function AT_FindUnitKillTaskIndex(aUnit: integer): integer;
+var
+  i: integer;
+begin
+
+  result := -1;
+  for i:=0 to Length(AT_UnitKillTasks)-1 do
+  begin
+    if (AT_UnitKillTasks[i].Id = aUnit) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+procedure AT_AddUnitKillTask(aUnit: integer; killerPlayerId: integer; distance: integer);
+var
+  unitIndex: integer;
+  count : integer;
+  newUnit : AT_UnitKillTask;
+begin
+
+  unitIndex := AT_FindUnitKillTaskIndex(aUnit);
+
+  //Unit is already doomed.
+  if (unitIndex >= 0) then
+  begin
+    exit;
+  end;
+
+  count := Length(AT_UnitKillTasks);
+  newUnit.Id := aUnit;
+  newUnit.LivingTime := round(distance * TicksPerTile);
+  newUnit.KillerPlayerId := killerPlayerId;
+  setLength(AT_UnitKillTasks, count + 1);
+  AT_UnitKillTasks[count] := newUnit;
+end;
+
+procedure AT_RemoveUnitKillTask(unitIndex: integer);
+var
+  i: integer;
+  count : integer;
+begin
+  count:= Length(AT_UnitKillTasks);
+  for i:= unitIndex to count - 2 do
+  begin
+    AT_UnitKillTasks[i]:= AT_UnitKillTasks[i+1];
+  end;
+  SetLength(AT_UnitKillTasks, count - 1);
+end;
+
+function AT_Hypotenuse(a: extended; b: extended): integer;
+begin
+  result:= round(U.Power(U.Sqr(a) + U.Sqr(b), 0.5));
+end;
+
+{$IFDEF AT_DEBUG}
+procedure ShowOverlay();
+var
+i: integer;
+str: string;
+begin
+
+  for i:=0 to Length(AT_PlayerStats)-1 do
+  begin
+    str := str + 'Player' + IntToStr(AT_PlayerStats[i].PlayerId) + ' towers killed ' + IntToStr(AT_PlayerStats[i].TowerKills) + '|';
+  end;
+
+
+  for i:=0 to Length(AT_UnitKillTasks)-1 do
+  begin
+    str := str + IntToStr(AT_UnitKillTasks[i].Id) + ' ' + IntToStr(AT_UnitKillTasks[i].LivingTime) + '|';
+  end;
+
+  A.OverlayTextSet(-1, str);
+end;
+{$ENDIF}
+
+//Public interface-----------------------------------------------------------------
+
+function AT_GetPlayerTowerKills(playerId: integer):integer;
+var
+  playerStatIndex: integer;
+begin
+
+  playerStatIndex := AT_FindPlayerStatIndex(playerId);
+
+  //Player stat already exists.
+  if (playerStatIndex < 0) then
+  begin
+    result:= 0;
+    exit;
+  end;
+
+  result:= AT_PlayerStats[playerStatIndex].TowerKills;
+
+end;
+
+//Events---------------------------------------------------------------------------
+
+procedure AT_OnUnitAttacked(aUnit: Integer; aAttacker: Integer);
+var
+  attackerType : TKMUnitType;
+  attackerOwner : integer;
+  throwerLocation : TKMPoint;
+  unitLocation : TKMPoint;
+  distance : integer;
+begin
+
+  attackerType := S.UnitTypeEx(aAttacker);
+  if (attackerType = utRecruit) then
+  begin
+
+    throwerLocation := S.UnitPosition(aAttacker);
+    unitLocation := S.UnitPosition(aUnit);
+    distance := AT_Hypotenuse(throwerLocation.X - unitLocation.X, throwerLocation.Y - unitLocation.Y);
+    attackerOwner := S.UnitOwner(aAttacker);
+    AT_AddUnitKillTask(aUnit, attackerOwner, distance);
+
+  end;
+end;
+
+procedure AT_OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+var
+i: integer;
+begin
+
+  for i:=0 to Length(AT_UnitKillTasks)-1 do
+  begin
+    if (AT_UnitKillTasks[i].Id = aUnit) then
+    begin
+      AT_RemoveUnitKillTask(i);
+      break;
+    end;
+  end;
+
+end;
+
+procedure AT_OnTick;
+var
+  i: integer;
+  count : integer;
+begin
+
+  count:= Length(AT_UnitKillTasks);
+  for i:=0 to count-1 do
+  begin
+    AT_UnitKillTasks[i].LivingTime := AT_UnitKillTasks[i].LivingTime - 1;
+    if (AT_UnitKillTasks[i].LivingTime <= 0) then
+    begin
+      AT_IncPlayerTowerKills(AT_UnitKillTasks[i].KillerPlayerId);
+      A.UnitKill(AT_UnitKillTasks[i].Id, false);
+      count := count - 1;
+      i := i - 1;
+    end;
+  end;
+
+  {$IFDEF AT_DEBUG}
+  ShowOverlay();
+  {$ENDIF}
+end;
+

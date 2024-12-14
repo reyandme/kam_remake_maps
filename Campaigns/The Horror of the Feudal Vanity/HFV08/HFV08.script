@@ -1,0 +1,78 @@
+var
+Time: Integer;
+Mistvol: Integer;
+
+{$I DamageCloseBuildings.script}
+{$I AccurateTowers.script}
+
+procedure OnMissionStart;
+begin
+   DCB_Mode:= DCB_ALL;
+   case States.MissionDifficulty of
+   mdHard1:
+   begin
+   Mistvol:= 1;
+   Time:= 1000000;
+   end;
+   mdHard3:
+   begin
+           Mistvol:= 1;
+           Time:= 47600;
+   end;
+end;
+end;
+      procedure OnUnitDied(MistvolID: Integer; KillMistvolOwner: Integer);
+begin
+case States.MissionDifficulty of
+mdHard1: begin
+      if States.UnitType(MistvolID) = 21 then
+      if (KillMistvolOwner = 1) or (KillMistvolOwner = 2) or (KillMistvolOwner = 3) then
+      if States.UnitOwner(MistvolID) = 0 then
+           Mistvol := Mistvol - 1;
+end;
+mdHard3: begin
+      if States.UnitType(MistvolID) = 21 then
+      if (KillMistvolOwner = 1) or (KillMistvolOwner = 2) or (KillMistvolOwner = 3) then
+      if States.UnitOwner(MistvolID) = 0 then
+           Mistvol := Mistvol - 1;
+end;
+end;
+end;
+      procedure OnTick;
+begin
+
+  begin
+       if States.GameTime = 50 then
+           Actions.ShowMsg(0, '<$0>');
+       if States.GameTime = 100 then
+           Actions.ShowMsg(0, '<$1>');
+       if (Time > 0) and ((Mistvol = 0) = false) and (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+           Time:= Time - 1;
+  end;
+
+  begin
+       if (Time = 0) or (Mistvol = 0) and (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+   begin
+           Actions.PlayerDefeat(0);
+           Actions.ShowMsg(0, '<$3>');
+   end;
+  end;
+
+  begin
+
+       if States.GameTime = 34200 then
+           Actions.ShowMsg(0, '<$2>');
+  end;
+
+   case States.MissionDifficulty of
+   mdHard3:
+    begin
+
+       if Time > 0 then
+           Actions.OverlayTextSet(-1, '|<$4>: ' + '[$FAE16B]'+Utils.TimeToString(Time)+'[$ffffff]');
+       if Time = 0 then
+           Actions.OverlayTextSet(-1, ' ');
+    end;
+  end;
+
+end;

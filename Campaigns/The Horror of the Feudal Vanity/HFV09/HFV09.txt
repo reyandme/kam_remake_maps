@@ -1,0 +1,15 @@
+Author
+Classic, FROST
+
+Version
+1.5.3
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdHard1,mdHard3
+

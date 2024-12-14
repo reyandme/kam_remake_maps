@@ -1,0 +1,14 @@
+Author
+Classic
+
+Version
+1.5.3
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+

@@ -1,0 +1,111 @@
+var
+Units1: Integer;
+Units2: Integer;
+Units3: Integer;
+Units4: Integer;
+Units5: Integer;
+random_number_type1: Integer;
+random_number_type2: Integer;
+random_number_type3: Integer;
+random_number_type4: Integer;
+random_number_type5: Integer;
+n: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+DCB_Mode:= DCB_ALL;
+n:= 1;
+end;
+
+function randomnumber1: Integer;
+begin
+  case States.KamRandomI(8) of
+    0:result:=16;
+    1:result:=15;
+    2:result:=21;
+    3:result:=27;
+    4:result:=19;
+    5:result:=17;
+    6:result:=18;
+    7:result:=22;
+  end;
+end;
+
+function randomnumber2: Integer;
+begin
+  case States.KamRandomI(8) of
+    0:result:=16;
+    1:result:=15;
+    2:result:=21;
+    3:result:=27;
+    4:result:=19;
+    5:result:=17;
+    6:result:=18;
+    7:result:=22;
+  end;
+end;
+
+function randomnumber3: Integer;
+begin
+  case States.KamRandomI(8) of
+    0:result:=16;
+    1:result:=15;
+    2:result:=21;
+    3:result:=27;
+    4:result:=19;
+    5:result:=17;
+    6:result:=18;
+    7:result:=22;
+  end;
+end;
+
+function randomnumber4: Integer;
+begin
+  case States.KamRandomI(6) of
+    0:result:=16;
+    1:result:=15;
+    2:result:=21;
+    3:result:=27;
+    4:result:=19;
+    5:result:=22;
+  end;
+end;
+
+function randomnumber5: Integer;
+begin
+  case States.KamRandomI(6) of
+    0:result:=16;
+    1:result:=15;
+    2:result:=21;
+    3:result:=27;
+    4:result:=19;
+    5:result:=22;
+  end;
+end;
+
+procedure OnTick;
+begin
+
+         begin
+        if States.GameTime = 10 then
+        Actions.ShowMsg(0, '<$0>');
+         end;
+
+        random_number_type1:= randomnumber1;
+        random_number_type2:= randomnumber2;
+        random_number_type3:= randomnumber3;
+        random_number_type4:= randomnumber4;
+        random_number_type5:= randomnumber5;
+        if (States.GameTime = (1350+420*n)) and (n <= 4) then
+         begin
+        Units1:= Actions.GiveGroup(4, random_number_type1, 9, 78, 1, Utils.RandomRangeI(7,10), 3);
+        Units2:= Actions.GiveGroup(4, random_number_type2, 28, 18, 3, Utils.RandomRangeI(7,10), 3);
+        Units3:= Actions.GiveGroup(4, random_number_type3, 62, 94, 1, Utils.RandomRangeI(7,10), 3);
+        Units4:= Actions.GiveGroup(5, random_number_type4, 122, 73, 1, Utils.RandomRangeI(7,10), 3);
+        Units5:= Actions.GiveGroup(5, random_number_type5, 120, 33, 1, Utils.RandomRangeI(7,10), 3);
+         n:= n + 1;
+         end;
+
+end;

@@ -1,0 +1,17 @@
+Author
+Classic, FROST
+
+Version
+1.5.3
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdHard1,mdHard3
+

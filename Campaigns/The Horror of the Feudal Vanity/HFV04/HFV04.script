@@ -1,0 +1,314 @@
+var
+Towers: Integer;
+Citizens: Integer;
+Tolein: Integer;
+Mistvol: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+var P: Integer;
+StUnPl: Integer;
+begin
+begin
+  DCB_Mode:= DCB_ALL;
+  case States.MissionDifficulty of
+  mdHard1:
+  begin
+   Tolein:= Actions.GiveGroup(0,27,22,12,3,1,1);
+   Mistvol:= Actions.GiveGroup(0,22,116,132,5,1,1);
+   StUnPl:= Actions.GiveUnit(0,0,19,14,5);
+   StUnPl:= Actions.GiveUnit(0,0,19,15,5);
+   StUnPl:= Actions.GiveUnit(0,9,19,16,5);
+   StUnPl:= Actions.GiveUnit(0,9,19,17,5);
+   StUnPl:= Actions.GiveUnit(0,0,115,125,5);
+   StUnPl:= Actions.GiveUnit(0,0,115,126,5);
+   StUnPl:= Actions.GiveUnit(0,9,115,127,5);
+   StUnPl:= Actions.GiveUnit(0,9,115,128,5);
+  end;
+  mdHard3:
+  begin
+   Actions.UnitBlock(4, 15, true);
+   Actions.UnitBlock(2, 14, true);
+   Actions.UnitBlock(2, 15, true);
+   Actions.UnitBlock(3, 14, true);
+   Actions.UnitBlock(3, 15, true);
+   Actions.AIEquipRate(1, 0, 220);
+   Actions.AIEquipRate(1, 1, 310);
+   Actions.AIEquipRate(2, 0, 220);
+   Actions.AIEquipRate(2, 1, 310);
+   Actions.AIEquipRate(3, 0, 220);
+   Actions.AIEquipRate(3, 1, 310);
+   Actions.AIEquipRate(4, 0, 120);
+   Towers:= 0;
+   Tolein:= Actions.GiveGroup(0,27,22,12,3,1,1);
+   Mistvol:= Actions.GiveGroup(0,22,116,132,5,1,1);
+   StUnPl:= Actions.GiveUnit(0,0,19,15,5);
+   StUnPl:= Actions.GiveUnit(0,9,19,16,5);
+   StUnPl:= Actions.GiveUnit(0,0,115,126,5);
+   StUnPl:= Actions.GiveUnit(0,9,115,127,5);
+   end;
+  end;
+begin
+  for P := 0 to 5 do
+    if States.PlayerEnabled(P) then
+    begin
+        Actions.HouseAllow(P, 27, False);
+        Actions.HouseAllow(P, 14, False);
+        Actions.HouseAllow(P, 9, False);
+    end;
+  end;
+ end;
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 13 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 27, True);
+  if States.HouseType(aHouse) = 27 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 14, True);
+  if States.HouseType(aHouse) = 14 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 9, True);
+  if States.HouseType(aHouse) = 17 then
+  Towers:= Towers + 1;
+end;
+
+procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+if (States.HouseType(aHouse) = 17) and (States.HouseOwner(aHouse) = 0) and ((States.UnitOwner(aDestroyerIndex) = 1) or (States.UnitOwner(aDestroyerIndex) = 2) or (States.UnitOwner(aDestroyerIndex) = 3) or (States.UnitOwner(aDestroyerIndex) = 4) or (States.UnitOwner(aDestroyerIndex) = 5) or (States.UnitOwner(aDestroyerIndex) = -1)) and ((States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false)) and (Towers > 0) and (States.HouseIsComplete(aHouse) = true) then
+Towers:= Towers - 1;
+end;
+
+procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+var
+N: Integer;
+begin
+
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+begin
+   begin
+    for N:= 0 to 13 do
+    if (States.UnitType(aUnit) = N) and (States.UnitOwner(aUnit) = 0) and ((States.UnitOwner(aKillerOwner) = 1) or (States.UnitOwner(aKillerOwner) = 2) or (States.UnitOwner(aKillerOwner) = 3) or (States.UnitOwner(aKillerOwner) = 4) or (States.UnitOwner(aKillerOwner) = 5) or (States.UnitOwner(aKillerOwner) = -1)) and ((States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false)) then
+    Citizens:= Citizens + 1;
+   end;
+ end;
+ end;
+end;
+
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+var
+P: Integer;
+begin
+
+ begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 2) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 15) and (States.UnitOwner(aUnit) = 2) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 16) and (States.UnitOwner(aUnit) = 2) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 3) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 15) and (States.UnitOwner(aUnit) = 3) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 16) and (States.UnitOwner(aUnit) = 3) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 4) and (Utils.RandomRangeI(1,100) < 41) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 15, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 21) and (States.UnitOwner(aUnit) = 4) and (Utils.RandomRangeI(1,100) < 19) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 22, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+          begin
+          if (States.UnitType(aUnit) = 19) and (States.UnitOwner(aUnit) = 4) and (Utils.RandomRangeI(1,100) < 36) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 20, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+           end;
+          end;
+         end;
+        end;
+       end;
+      end;
+     end;
+    end;
+   end;
+  end;
+ end;
+end;
+
+
+procedure OnTick;
+var
+Soldiers: Integer;
+J: Integer;
+begin
+
+     begin
+      if States.GameTime mod 10 = 0 then
+        begin
+          Actions.AIStartPosition(2, Utils.RandomRangeI(90,150), Utils.RandomRangeI(100,150));
+          Actions.AIStartPosition(3, Utils.RandomRangeI(90,150), Utils.RandomRangeI(100,150));
+        end;
+     end;
+
+
+  if States.GameTime = 30 then
+    Actions.ShowMsg(0, '<$0>');
+  if States.GameTime = 200 then
+    Actions.ShowMsg(0, '<$1>');
+  if States.GameTime = 350 then
+    Actions.ShowMsg(0, '<$2>');
+  if States.GameTime = 500 then
+    Actions.ShowMsg(0, '<$3>');
+  if States.GameTime = 30600 then
+    Actions.ShowMsg(0, '<$4>');
+
+  if States.GameTime < 45000 then
+  J:= 0;
+  if States.GameTime >= 45000 then
+  J:= 1;
+
+  begin
+  case States.MissionDifficulty of
+  mdHard3:
+  begin
+
+    begin
+    Soldiers:= States.StatArmyCount(0);
+    if (J = 0) and (Towers < 5) and (Citizens < 65) and (Soldiers >= 0) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65');
+     end else
+     if (J = 0) and (Towers >= 5) and (Citizens < 65) and (Soldiers >= 0) and (States.PlayerVictorious(0) = false)  then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'[$0909F6]' + '|<$5>: ' + IntToStr(Towers) + '/4' + '[$ffffff]' + '|<$6>: ' + IntToStr(Citizens) + '/65');
+     end else
+     if (J = 0) and (Towers < 5) and (Citizens > 64) and (Soldiers >= 0) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'|<$5>: ' + IntToStr(Towers) + '/4' + '[$0909F6]' +  '|<$6>: ' + IntToStr(Citizens) + '/65' + '[$ffffff]');
+     end else
+     if (J = 0) and (Towers >= 5) and (Citizens > 64) and (Soldiers >= 0) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'[$0909F6]' +  '|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '[$ffffff]');
+     end else
+     if (J = 1) and (Towers < 5) and (Citizens < 65) and (Soldiers > 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '|<$7>: ' + IntToStr(Soldiers) + '/80');
+     end else
+     if (J = 1) and (Towers >= 5) and (Citizens < 65) and (Soldiers > 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '[$0909F6]' + '|<$5>: ' + IntToStr(Towers) + '/4' + '[$ffffff]' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '|<$7>: ' + IntToStr(Soldiers) + '/80');
+     end else
+     if (J = 1) and (Towers < 5) and (Citizens >= 65) and (Soldiers > 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '|<$5>: ' + IntToStr(Towers) + '/4' + '[$0909F6]' +  '|<$6>: ' + IntToStr(Citizens) + '/65' + '[$ffffff]' + '|<$7>: ' + IntToStr(Soldiers) + '/80');
+     end else
+     if (J = 1) and (Towers < 5) and (Citizens < 65) and (Soldiers <= 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '[$0909F6]' + '|<$7>: ' + IntToStr(Soldiers) + '/80' + '[$ffffff]');
+     end else
+     if (J = 1) and (Towers >= 5) and (Citizens >= 65) and (Soldiers > 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '[$0909F6]' + '|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65'  + '[$ffffff]' + '|<$7>: ' + IntToStr(Soldiers) + '/80');
+     end else
+     if (J = 1) and (Towers >= 5) and (Citizens < 65) and (Soldiers <= 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '[$0909F6]' + '|<$5>: ' + IntToStr(Towers) + '/4' + '[$ffffff]' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '[$0909F6]' + '|<$7>: ' + IntToStr(Soldiers) + '/80' + '[$ffffff]');
+     end else
+     if (J = 1) and (Towers < 5) and (Citizens >= 65) and (Soldiers <= 79) and (States.PlayerVictorious(0) = false) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '|<$5>: ' + IntToStr(Towers) + '/4' + '[$0909F6]'  + '|<$6>: ' + IntToStr(Citizens) + '/65' + '|<$7>: ' + IntToStr(Soldiers) + '/80' + '[$ffffff]');
+     end else
+     if (J = 1) and (Towers >= 5) and (Citizens >= 65) and (Soldiers <= 79) and (States.PlayerVictorious(0) = false)  then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0, '[$0909F6]' + '|<$5>: ' + IntToStr(Towers) + '/4' + '|<$6>: ' + IntToStr(Citizens) + '/65' + '|<$7>: ' + IntToStr(Soldiers) + '/80' + '[$ffffff]');
+     end else
+     if (J = 1) and (Towers < 5) and (Citizens < 65) and (Soldiers > 79) and (States.PlayerVictorious(0) = true) then
+     begin
+     Soldiers:= States.StatArmyCount(0);
+     Actions.OverlayTextSet(0,'|<$5>: ' + '[$41F841]' + IntToStr(Towers) + '/4' + '[$ffffff]' + '|<$6>: ' + '[$41F841]' + IntToStr(Citizens) + '/65' + '[$ffffff]' + '|<$7>: ' + '[$41F841]' + IntToStr(Soldiers) + '/80' + '[$ffffff]');
+     end;
+
+
+  end;
+
+  begin
+   if (Towers > 4) or (Citizens > 64) and ((States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false)) then
+    begin
+    Actions.PlayerDefeat(0);
+    end else
+    if (Soldiers < 80) and (States.GameTime > 45000) and ((States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false)) then
+    begin
+    Actions.PlayerDefeat(0);
+  end;
+  end;
+  end;
+  end;
+  end;
+end;

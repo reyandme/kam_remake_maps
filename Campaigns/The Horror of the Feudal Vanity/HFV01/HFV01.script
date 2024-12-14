@@ -1,0 +1,156 @@
+var
+Time: Integer;
+AtOne: Integer;
+
+{$I DamageCloseBuildings.script}
+{$I AccurateTowers.script}
+
+procedure OnMissionStart;
+var
+GrB5: Integer;
+begin
+   DCB_Mode:= DCB_ALL;
+  case States.MissionDifficulty of
+   mdHard3:
+   begin
+   Time:= 54000;
+   Actions.AIAttackRemoveAll(4);
+   GrB5 := Actions.GiveGroup(4, 14, 42, 14, 4, 12,4);
+   GrB5 := Actions.GiveGroup(4, 14, 42, 24, 4, 12,4);
+   GrB5 := Actions.GiveGroup(4, 14, 42, 34, 4, 12,4);
+   Actions.AIEquipRate(1, 0, 200);
+   end;
+   end;
+end;
+
+function number: Integer;
+begin
+  case States.KamRandomI(10) of
+    0:result:=1;
+    1:result:=2;
+    2:result:=3;
+    3:result:=4;
+    4:result:=5;
+    5:result:=6;
+    6:result:=7;
+    7:result:=8;
+    8:result:=9;
+    9:result:=10;
+  end;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+var
+UnR: Integer;
+Bar: Integer;
+P: Integer;
+
+begin
+
+ begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 4) and (number < 6) then
+            begin
+              P := Actions.GiveGroup(States.UnitOwner(aUnit), 15, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(P, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 14) and (States.UnitOwner(aUnit) = 1) and (number < 3) then
+            begin
+              Bar := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(Bar, aGroup);
+              Actions.UnitKill(aUnit, true);
+            end;
+
+
+
+          begin
+          if (States.UnitType(aUnit) = 17) and (States.UnitOwner(aUnit) = 1) and (number < 5) then
+            begin
+              UnR := Actions.GiveGroup(States.UnitOwner(aUnit), 25, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(UnR, aGroup);
+            end;
+
+          begin
+          if (States.UnitType(aUnit) = 15) and (States.UnitOwner(aUnit) = 1) and (number < 3) and (Utils.RandomRangeI(1,2) = 1) then
+            begin
+              Bar := Actions.GiveGroup(States.UnitOwner(aUnit), 23, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 4, 1, 1);
+              Actions.GroupOrderLink(UnR, aGroup);
+            end;
+
+          end;
+        end;
+       end;
+      end;
+     end;
+    end;
+ end;
+
+procedure OnTick;
+var
+Pos: TKMPoint;
+begin
+     case States.MissionDifficulty of
+     mdHard1:
+     begin
+     if States.GameTime = 50 then
+      Actions.ShowMsg(0, '<$0>');
+     if States.GameTime = 80 then
+      Actions.ShowMsg(0, '<$1>');
+     if States.GameTime = 15000 then
+      Actions.ShowMsg(0, '<$2>');
+     end;
+     mdHard3:
+     begin
+     if States.GameTime = 50 then
+      Actions.ShowMsg(0, '<$0>');
+     if States.GameTime = 80 then
+      Actions.ShowMsg(0, '<$1>');
+     if States.GameTime = 15000 then
+      Actions.ShowMsg(0, '<$2>');
+     if (Time > 0) and (States.PlayerVictorious(0) = false) then
+      Time := Time - 1;
+     if States.GameTime = 10 then
+     begin
+     Pos.X:= 0;
+     Pos.Y:= 0;
+     Actions.AIAttackAdd(4, false, 36000, 30, 3, 1, 0, 0, false, attClosestBuildingFromArmy, Pos);
+     Actions.AIAttackAdd(4, false, 43200, 30, 3, 1, 0, 0, false, attClosestBuildingFromArmy, Pos);
+     Actions.AIAttackAdd(4, false, 51000, 30, 3, 1, 0, 0, false, attClosestBuildingFromArmy, Pos);
+     end;
+
+      if (Time > 27000) and
+         (Time <= 54000) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$41F841]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time > 9000) and
+         (Time <= 27000) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$6BFAF1]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time > 0) and
+         (Time <= 9000) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+      if (Time = 0) then
+      Actions.OverlayTextSet(-1, '|<$3>: ' + '[$2727F7]'+Utils.TimeToString(Time)+'[$ffffff]');
+
+
+      if Time = 0 then
+      Actions.PlayerDefeat(0);
+     end;
+end;
+     begin
+      if States.GameTime = 17500 then
+      AtOne:= Actions.GiveGroup(5, 14, 103, 96, 6, 12, 4);
+     end;
+
+     begin
+      if States.GameTime mod 10 = 0 then
+        begin
+          Actions.AIStartPosition(1, Utils.RandomRangeI(1,55), Utils.RandomRangeI(75,120));
+        end;
+     end;
+
+end;
+
