@@ -583,7 +583,7 @@ begin
   DCB_GroupOrders[orderIndex].Location.Y := 0;
 end;
 
-procedure DCB_OnGroupOrderMove(aGroup: Integer; aX: Integer; aY: Integer);
+procedure DCB_OnGroupOrderMove(aGroup: Integer; aX: Integer; aY: Integer; aDir: TKMDirection);
 var
   orderIndex: integer;
 
