@@ -89,7 +89,7 @@ record
 end;
 
 const 
-  DCB_DefaultHouseDamage = 1;
+  DCB_DefaultHouseDamage = 7;
 var
   DCB_HouseDamage: integer;
   DCB_Mode: DCB_Settings;
@@ -583,7 +583,7 @@ begin
   DCB_GroupOrders[orderIndex].Location.Y := 0;
 end;
 
-procedure DCB_OnGroupOrderMove(aGroup: Integer; aX: Integer; aY: Integer);
+procedure DCB_OnGroupOrderMove(aGroup: Integer; aX: Integer; aY: Integer; aDir: TKMDirection);
 var
   orderIndex: integer;
 
