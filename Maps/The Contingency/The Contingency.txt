@@ -1,0 +1,15 @@
+Author
+DontTalk
+
+Version
+2.0 Updated Setup
+
+SmallDesc
+A Fight Mission By DontTalk
+
+BigDescLIBX
+2
+
+DifficultyLevels
+mdEasy1,mdNormal
+
