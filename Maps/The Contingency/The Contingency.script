@@ -1,0 +1,110 @@
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	Defeat1, Defeat2, Defeat3: Boolean;
+	Mother1, Mother2, Mother3, Mother4, Mother5, Mother6, Mother7, Mother8: Integer;
+	Father1, Father2, Father3, Father4, Father5, Father6, Father7, Father8: Integer;
+	Child1, Child2, Child3, Child4, Child5, Child6, Child7, Child8: Integer;
+
+procedure OnMissionStart;
+begin
+     Defeat1:= false;
+	 Defeat2:= false;
+	 Defeat3:= false;
+     DifficultySetting := States.MissionDifficulty();
+     Actions.ShowMsg(0, '<$1>');
+     Actions.CinematicStart(0);
+	 	case DifficultySetting of
+	    mdEasy1:
+        begin		
+        Actions.GiveGroup(0, 14, 70, 78, 0, 6, 3);
+		Actions.GiveGroup(0, 14, 81, 78, 0, 6, 3);
+		Actions.GiveGroup(0, 14, 41, 162, 0, 6, 3);
+		Actions.GiveGroup(0, 14, 54, 162, 0, 6, 3);	
+		Actions.GiveGroup(0, 14, 172, 85, 6, 6, 3);
+		Actions.GiveGroup(0, 14, 172, 96, 6, 6, 3);
+        end;
+		end;
+		
+	Mother1:= S.ClosestGroup(0, 66, 77, -1);
+	Mother2:= S.ClosestGroup(0, 72, 75, -1);
+	Mother3:= S.ClosestGroup(0, 76, 75, -1);
+	Mother4:= S.ClosestGroup(0, 80, 75, -1);
+	Mother5:= S.ClosestGroup(0, 70, 78, -1);
+	Mother6:= S.ClosestGroup(0, 81, 78, -1);
+	Mother7:= S.ClosestGroup(0, 74, 78, -1);
+	Mother8:= S.ClosestGroup(0, 78, 78, -1);
+	
+	Father1:= S.ClosestGroup(0, 37, 161, -1);
+	Father2:= S.ClosestGroup(0, 43, 159, -1);
+	Father3:= S.ClosestGroup(0, 48, 159, -1);
+	Father4:= S.ClosestGroup(0, 53, 159, -1);
+	Father5:= S.ClosestGroup(0, 41, 162, -1);
+	Father6:= S.ClosestGroup(0, 54, 162, -1);
+	Father7:= S.ClosestGroup(0, 45, 162, -1);
+	Father8:= S.ClosestGroup(0, 51, 162, -1);
+	
+	Child1:= S.ClosestGroup(0, 169, 86, -1);
+	Child2:= S.ClosestGroup(0, 169, 90, -1);
+	Child3:= S.ClosestGroup(0, 169, 94, -1);
+	Child4:= S.ClosestGroup(0, 171, 101, -1);
+	Child5:= S.ClosestGroup(0, 172, 85, -1);
+	Child6:= S.ClosestGroup(0, 172, 96, -1);
+	Child7:= S.ClosestGroup(0, 172, 88, -1);
+	Child8:= S.ClosestGroup(0, 172, 92, -1);
+end;
+
+procedure OnTick;
+begin	
+if States.GameTime = 10 then
+	begin
+		Actions.CinematicPanTo(0, 47, 160, 3);
+	end;
+if States.GameTime = 30 then
+    begin
+	     Actions.CinematicPanTo(0, 170, 91, 3);
+		 end;
+if States.GameTime = 40 then
+    begin
+         Actions.CinematicEnd(0);
+    end;
+end;
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+if (States.StatArmyCount(1) = 0) and (States.StatArmyCount(2) = 0) and (States.StatArmyCount(3) = 0) and (Defeat1 = false) then
+begin
+Actions.ShowMsg(0, '<$3>');
+Defeat1:= true;
+end;
+
+if (States.StatArmyCount(4) = 0) and (States.StatArmyCount(5) = 0) and (States.StatArmyCount(6) = 0) and (Defeat2 = false) then
+begin
+Actions.ShowMsg(0, '<$4>');
+Defeat2:= true;
+end;
+
+if (States.StatArmyCount(7) = 0) and (States.StatArmyCount(8) = 0) and (States.StatArmyCount(9) = 0) and (Defeat3 = false) then
+begin
+Actions.ShowMsg(0, '<$5>');
+Defeat3:= true;
+end;
+end;
+
+procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+begin
+if ((S.GroupDead(Mother1) = true) and (S.GroupDead(Mother2) = true) and (S.GroupDead(Mother3) = true) and (S.GroupDead(Mother4) = true) and (S.GroupDead(Mother5) = true) and (S.GroupDead(Mother6) = true) and (S.GroupDead(Mother7) = true) and (S.GroupDead(Mother8) = true)) then
+begin
+ 	Actions.PlayerDefeat(0);
+end;
+
+if ((S.GroupDead(Father1) = true) and (S.GroupDead(Father2) = true) and (S.GroupDead(Father3) = true) and (S.GroupDead(Father4) = true) and (S.GroupDead(Father5) = true) and (S.GroupDead(Father6) = true) and (S.GroupDead(Father7) = true) and (S.GroupDead(Father8) = true)) then
+begin
+ 	Actions.PlayerDefeat(0);
+end;
+
+if ((S.GroupDead(Child1) = true) and (S.GroupDead(Child2) = true) and (S.GroupDead(Child3) = true) and (S.GroupDead(Child4) = true) and (S.GroupDead(Child5) = true) and (S.GroupDead(Child6) = true) and (S.GroupDead(Child7) = true) and (S.GroupDead(Child8) = true)) then
+begin
+ 	Actions.PlayerDefeat(0);
+end;
+end;
