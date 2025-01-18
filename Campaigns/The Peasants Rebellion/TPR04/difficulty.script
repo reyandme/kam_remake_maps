@@ -25,7 +25,7 @@
 
 
 const
-	AUTOMATIC = true; //Turn automatic appliance of script ON/OFF
+	AUTOMATIC = false; //Turn automatic appliance of script ON/OFF
 	
 var
 	EquipRateMod, RecruitDelayMod, RecruitLimitMod, WorkerLimitMod: array of Single;
@@ -301,6 +301,5 @@ begin
 						end;
 			end;
 		end;
-	end else
-		Actions.ShowMsg(-1, 'Error in "difficulty.script". Please check if Difficulty level has been enabled in the Map Editor!');
+	end
 end;
