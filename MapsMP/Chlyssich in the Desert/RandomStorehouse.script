@@ -18,20 +18,24 @@
 //RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workersCount, serfsCount: integer);
 
 //Bind two players. Same Bound players have mirrored locations of storehouses.
-//Players should have same random coordinates range and it should be possible to place storehouse mirrored at map. Actually map should be mirrored. Good examples of maps will be Chaotica/Mercury mission.
+//Players should have same random coordinates range and it should be possible to place storehouse mirrored at map. Actually map should be mirrored. 
+//Good examples of maps will be Mercury mission/Chlyssich in the Desert.
 //RNST_BindPlayers(first, second: integer);
 
 //Creates a player who will have same settings as other player except randomization rectangle. This players will be bound and will have mirrored storehouse placement.
 //RNST_InitBoundPlayer(playerId, boundPlayerId, xMin, xMax, yMin, yMax: integer);
 
-//Sets setting for script to add some units at start after storehouse will be placed. Works only foe citizens!!! Don't add any warriors here.
+//Creates setting for script to add some units at start after storehouse will be placed. Works only foe citizens!!! Don't add any warriors here.
 //RNST_SetPlayerCitizensAtStart(playerId: integer; unitType: TKMUnitType; count: integer);
 
-//Sets setting for script to add some resources to starting store house for all players if they have no custom settings.
+//Creates setting for script to add some resources to starting store house for all players if they have no custom settings.
 //RNST_SetWaresAtStart(wareType: TKMWareType; count: integer);
 
-//Sets custom setting for script to add some resources to starting store house for exact player.
+//Creates custom setting for script to add some resources to starting store house for exact player.
 //RNST_SetPlayerWaresAtStart(playerId: integer; wareType: TKMWareType; count: integer);
+
+//Adds count to existing custom setting for player starting storehouse resources. If setting does not exists works as RNST_SetPlayerWaresAtStart().
+//RNST_AddPlayerWaresAtStart(playerId: integer; wareType: TKMWareType; count: integer);
 
 //Unlock building types for player at start.
 //RNST_SetUnlockedBuildingTypes(playerId: integer; houseTypes : TKMHouseTypeSet);
@@ -80,6 +84,9 @@
 
   //Setting custom resource amount for player 0. He will have 100 fish instead of 10.
   //RNST_SetPlayerWaresAtStart(0, wtFish, 100);
+
+  //Adding more fish. He will have 120 fish instead of 100.
+  //RNST_AddPlayerWaresAtStart(0, wtFish, 20);
 
   //Giving player 0 two additional farmers at start.
   //RNST_SetPlayerCitizensAtStart(0, utFarmer,2);
@@ -664,7 +671,7 @@ begin
     //If there is no bound player or bound player still has no storehouse.
     if ((x = 0) and (y = 0))then
     begin
-      x := player.XMIN + (States.KamRandomI((player.XMAX-player.XMIN)))
+      x := player.XMIN + (States.KamRandomI((player.XMAX-player.XMIN)));
       y := player.YMIN + (States.KamRandomI((player.YMAX-player.YMIN)));
     end;
 
@@ -717,7 +724,7 @@ begin
   RNST_Players[secondPlayerIndex].BoundPlayers := RNST_AddTIntegerElement(RNST_Players[secondPlayerIndex].BoundPlayers, first);
 end;
 
-//Sets setting for script to add some units at start after storehouse will be placed. Works only foe citizens!!! Don't add any warriors here.
+//Creates setting for script to add some units at start after storehouse will be placed. Works only foe citizens!!! Don't add any warriors here.
 //playerId - id of player, that will have this units at start.
 //unitType - type of units you want to add.
 //count - the amount of units.
@@ -752,7 +759,7 @@ begin
   end;
 end;
 
-//Sets custom setting for script to add some resources to starting store house for exact player.
+//Creates custom setting for script to add some resources to starting store house for exact player.
 //playerId - id of player, that will have this units at start.
 //wareType - type of resource you want to add.
 //count - the amount of units.
@@ -776,7 +783,7 @@ begin
 
   if (settingIndex >= 0) then
   begin
-    RNST_Players[playerIndex].StartingUnits[settingIndex].Count := count;
+    RNST_Players[playerIndex].StartingResourses[settingIndex].Count := count;
   end else
   begin
     settingsCount := Length(RNST_Players[playerIndex].StartingResourses);
@@ -787,7 +794,42 @@ begin
   end;
 end;
 
-//Sets setting for script to add some resources to starting store house for all players if they have no custom settings.
+//Adds count to existing custom setting for player starting storehouse resources. If setting does not exists works as RNST_SetPlayerWaresAtStart().
+//playerId - id of player, that will have this units at start.
+//wareType - type of resource you want to add.
+//count - the amount of units.
+procedure RNST_AddPlayerWaresAtStart(playerId: integer; wareType: TKMWareType; count: integer);
+var
+  playerIndex : integer;
+  settingIndex : integer;
+  settingsCount : integer;
+  newSetting : RNST_WareSetting;
+
+begin
+
+  playerIndex := RNST_FindPlayerIndex(playerId);
+
+  if (playerIndex = -1) then
+  begin
+    exit;
+  end;
+
+  settingIndex := RNST_FindWareSettingIndex(RNST_PLayers[playerIndex].StartingResourses, wareType);
+
+  if (settingIndex >= 0) then
+  begin
+    RNST_Players[playerIndex].StartingResourses[settingIndex].Count := RNST_Players[playerIndex].StartingResourses[settingIndex].Count + count;
+  end else
+  begin
+    settingsCount := Length(RNST_Players[playerIndex].StartingResourses);
+    newSetting.WareType := wareType;
+    newSetting.Count := count;
+    setLength(RNST_Players[playerIndex].StartingResourses, settingsCount + 1);
+    RNST_Players[playerIndex].StartingResourses[settingsCount] := newSetting;
+  end;
+end;
+
+//Creates setting for script to add some resources to starting store house for all players if they have no custom settings.
 //wareType - type of resource you want to add.
 //count - the amount of units.
 procedure RNST_SetWaresAtStart(wareType: TKMWareType; count: integer);
@@ -926,7 +968,7 @@ begin
   end;
 
   RNST_SetUnlockedBuildingTypes(playerId, RNST_Players[boundIndex].UnlockedBuildings);
-  RNST_SetPlayerSightRadius(playerId, RNST_Players[boundIndex].SightRadius)
+  RNST_SetPlayerSightRadius(playerId, RNST_Players[boundIndex].SightRadius);
 
   RNST_BindPlayers(playerId, boundPlayerId);
 end;
@@ -1037,11 +1079,11 @@ begin
     begin
 
 			if S.PlayerEnabled(i) then
-			begin;
+			begin
       	A.CinematicEnd(i);
       end;
     end;
-	end;
+    end;
 end;
 
 procedure RNST_OnHouseBuilt(aHouse: Integer);

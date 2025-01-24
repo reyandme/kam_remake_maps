@@ -164,7 +164,7 @@ begin
     end;
   end;
 
-  A.MapTilesArraySet(MCP_Tiles, false, false);
+  A.MapTilesArraySet(MCP_Tiles, false, true);
 
   for i:= 0 to High(MCP_Units) do
   begin
