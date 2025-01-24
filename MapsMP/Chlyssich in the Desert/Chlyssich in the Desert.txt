@@ -1,9 +1,12 @@
-Author
+﻿Author
 Classic
 
 Version
-1.08a
+1.09.2
 
 BigDescLIBX
 0
+
+DifficultyLevels
+mdEasy3,mdEasy2,mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
 

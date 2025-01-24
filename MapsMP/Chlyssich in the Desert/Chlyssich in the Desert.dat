@@ -1,4 +1,4 @@
-!SET_MAP "data\mission\smaps\Chlyssich in the Desert r15122+.map"
+!SET_MAP "data\mission\smaps\Chlyssich in the Desert.map"
 !SET_MAX_PLAYER 8
 !SET_HUMAN_PLAYER 0
 
@@ -695,4 +695,4 @@
 !SET_UNIT 28 151 99
 !SET_UNIT 28 111 110
 
-//This mission was made with KaM Remake Map Editor version r15122 at 24.11.2024 13:16:42
+//This mission was made with KaM Remake Map Editor version r15379 at 21.01.2025 20:22:20

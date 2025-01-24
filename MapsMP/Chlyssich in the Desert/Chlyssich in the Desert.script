@@ -1,6 +1,130 @@
 {$INCLUDE RandomStorehouse.script}
 {$INCLUDE MapInitializer.script}
 
+var 
+  PeaceTime : integer;
+
+procedure TryToUnlockAllBuildings(playerId: integer);
+var
+  houseType: TKMHouseType;
+
+begin
+  if (S.KamRandomI(100) > 1) then
+  begin
+    exit;
+  end;
+
+  RNST_SetUnlockedBuildingTypes(playerId, [htArmorSmithy, htArmorWorkshop, htBakery, htBarracks, htButchers, htCoalMine, htFarm, htFishermans, htGoldMine, htInn, htIronMine, htIronSmithy, htMarket, htMetallurgists, htMill, htQuarry, htSawmill, htSchool, htStables, htStore, htSwine, htTannery, htTownHall, htWatchTower, htWeaponSmithy, htWeaponWorkshop, htVineyard, htWoodcutters]);
+  RNST_SetPlayerCitizensAtStart(playerId, utBuilder, 10);
+  RNST_SetPlayerCitizensAtStart(playerId, utSerf, 10);
+  RNST_AddPlayerWaresAtStart(playerId, wtStone, 45);
+  RNST_AddPlayerWaresAtStart(playerId, wtTimber, 20);
+end;
+
+procedure TryToGiveAdditionalResource(playerId: integer); 
+begin
+  if (S.KamRandomI(100) > 9) then
+  begin
+    exit;
+  end;
+
+  case S.KamRandomI(7) of
+    0:
+      RNST_SetPlayerWaresAtStart(playerId, wtIronOre, 5 + S.KamRandomI(16));
+    1:
+      RNST_SetPlayerWaresAtStart(playerId, wtGoldOre, 10 + S.KamRandomI(16));
+    2:
+      RNST_SetPlayerWaresAtStart(playerId, wtCoal, 20 + S.KamRandomI(21));
+    3:
+      RNST_SetPlayerWaresAtStart(playerId, wtIron, 1 + S.KamRandomI(20));
+    4:
+      RNST_SetPlayerWaresAtStart(playerId, wtCorn, 10 + S.KamRandomI(26));
+    5:
+      RNST_SetPlayerWaresAtStart(playerId, wtSkin, 1 + S.KamRandomI(15));
+    6:
+      RNST_SetPlayerWaresAtStart(playerId, wtHorse, 1 + S.KamRandomI(10));
+  end;
+end;
+
+procedure InitPlayer35(playerId, xMin, xMax, yMin, yMax: integer);
+var
+  serfs: integer;
+  workers: integer;
+  slow: boolean;
+
+begin
+
+case States.KamRandomI(4) of
+    0:
+      begin
+        serfs := 8;
+        workers := 8;
+      end;
+    1:
+      begin
+        serfs := 7;
+        workers := 7;
+      end;
+    2:
+      begin
+        serfs := 6;
+        workers := 6;
+      end;
+    3:
+      begin
+        serfs := 5;
+        workers := 5;
+      end;
+  end;
+
+  slow := States.KamRandomI(10) = 0;
+
+  RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
+
+  case States.KamRandomI(2) of
+    0:
+      if (not slow) then
+      begin
+        RNST_SetUnlockedBuildingTypes(playerId, [htQuarry]);
+      end;
+    1:
+      RNST_SetUnlockedBuildingTypes(playerId, [htWoodcutters]);
+  end;
+
+  if  (States.KamRandomI(2) = 0) then
+  begin
+    RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
+  end;
+
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, 80 + States.KamRandomI(11));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 5 + States.KamRandomI(3));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 40 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, 60 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, 45 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, 25 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 15 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, 15 + States.KamRandomI(11));
+
+  TryToGiveAdditionalResource(playerId);
+  TryToUnlockAllBuildings(playerId);
+end;
+
+procedure TryTownHallDisable(playerId: integer);
+var
+  houseType: TKMHouseType;
+  houseLock: TKMHandHouseLock;
+
+begin
+
+  if (S.MissionDifficulty = mdHard3) then
+  begin
+    for playerId:= 0 to S.LocationCount do
+      if S.PlayerEnabled(playerId) = true then
+        A.PlayerHouseTypeLock(playerId, htTownHall, hlBlocked);
+  end;
+
+end;
+
 procedure InitPlayer(playerId, xMin, xMax, yMin, yMax: integer);
 var
   serfs: integer;
@@ -9,7 +133,13 @@ var
 
 begin
 
-case States.KamRandomI(5) of
+  if (S.MissionDifficulty = mdEasy3) or (S.MissionDifficulty = mdEasy2) or (S.MissionDifficulty = mdEasy1) then
+  begin
+    InitPlayer35(playerId, xMin, xMax, yMin, yMax);
+    exit;
+  end;
+
+  case S.KamRandomI(5) of
     0:
       begin
         serfs := 8;
@@ -37,11 +167,11 @@ case States.KamRandomI(5) of
       end;
   end;
 
-  slow := States.KamRandomI(5) = 0;
+  slow := S.KamRandomI(5) = 0;
 
   RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
 
-  case States.KamRandomI(2) of
+  case S.KamRandomI(2) of
     0:
       if (not slow) then
       begin
@@ -51,19 +181,23 @@ case States.KamRandomI(5) of
       RNST_SetUnlockedBuildingTypes(playerId, [htWoodcutters]);
   end;
 
-  if  (States.KamRandomI(2) = 0) then
+  if  (S.KamRandomI(2) = 0) then
   begin
     RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
   end;
 
-  RNST_SetPlayerWaresAtStart(playerId, wtStone, 80 + States.KamRandomI(11));
-  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 5 + States.KamRandomI(3));
-  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 34 + States.KamRandomI(13));
-  RNST_SetPlayerWaresAtStart(playerId, wtGold, 45 + States.KamRandomI(35));
-  RNST_SetPlayerWaresAtStart(playerId, wtWine, 10 + States.KamRandomI(61));
-  RNST_SetPlayerWaresAtStart(playerId, wtBread, 5 + States.KamRandomI(56));
-  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 2 + States.KamRandomI(19));
-  RNST_SetPlayerWaresAtStart(playerId, wtFish, 2 + States.KamRandomI(14));
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, 76 + S.KamRandomI(12));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 4 + S.KamRandomI(3));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 37 + S.KamRandomI(12));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, 45 + S.KamRandomI(35));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, 10 + S.KamRandomI(61));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, 0 + S.KamRandomI(56));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 2 + S.KamRandomI(19));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, 2 + S.KamRandomI(14));
+
+  TryToGiveAdditionalResource(playerId);
+  TryToUnlockAllBuildings(playerId);
+  TryTownHallDisable(playerId);
 end;
 
 procedure InitPlayers();
@@ -87,10 +221,51 @@ procedure OnMissionStart;
 begin
   InitPlayers();
   RNST_FogAroundStoreHouseDisabled := true;
-  MI_InitMap(States.KamRandomI(8));
+  MI_InitMap(States.KamRandomI(7));
 
-  Actions.PlayOGGLooped(-1, 'Desert', 0.2);
-  Actions.PlayOGGLooped(-1, 'Desert2', 0.3);
+  Actions.PlayOGGLooped(-1, 'Desert', 0.25);
+  Actions.PlayOGGLooped(-1, 'Desert2', 0.35);
 
+  case S.MissionDifficulty of
+    mdEasy3:
+      A.PeaceTime(35 * 600);
+    mdEasy2, mdEasy1:
+      begin
+        PeaceTime:= U.RandomRangeI(33,36) * 600 + S.KamRandomI(60) * 10;
+        A.PeaceTime(120 * 600);
+      end;
+    mdHard1, mdHard2, mdHard3:
+      begin
+        PeaceTime:= U.RandomRangeI(50,62) * 600 + S.KamRandomI(60) * 10;  
+        A.PeaceTime(120 * 600);
+      end;
+       
+  end;
 end;
 
+procedure OnTick();
+begin
+
+  if (PeaceTime = S.GameTime) then
+  begin
+    A.PeaceTime(PeaceTime div 600);
+    Actions.PlayOGG(-1, 'End', 1);
+    Actions.GameSpeed(1);
+    exit;
+  end;
+
+  if (((S.MissionDifficulty = mdEasy1) or (S.MissionDifficulty = mdHard2) or (S.MissionDifficulty = mdHard3)) and (S.GameTime = PeaceTime - 20 * 10)) then
+  begin
+    Actions.PlayOGG(-1, 'PTend', 1);
+  end;  
+
+  if (((S.MissionDifficulty = mdEasy2) or (S.MissionDifficulty = mdHard1)) and (S.GameTime < PeaceTime)) then
+  begin
+    A.OverlayTextSet(-1, U.TimeToString(PeaceTime - S.GameTime));
+  end else
+  begin
+    A.OverlayTextSet(-1, '');
+  end; 
+
+   
+end;
