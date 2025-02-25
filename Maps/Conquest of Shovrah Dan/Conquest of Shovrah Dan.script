@@ -1,0 +1,2921 @@
+{$I improvestaticai.script}  /// By Strangelove
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	OrangeSpecialAttack, RedSpecialAttack, GarnetSpecialAttack: Boolean;
+	OrangeDead2, OrangeDead3, OrangeDead4: Boolean;
+	RedDead5, RedDead6, RedDead7: Boolean;
+	GarnetDead8, GarnetDead9, GarnetDead10: Boolean;
+	Might: Integer;
+	M1, M2, M3, M4, M5, M6, M7, M8, M9: Boolean;
+	S1, S2, S3, S4, S5, S6, L1, L2, L3, L4: Integer;
+	AntiMessageRepeat1, AntiMessageRepeat2, AntiMessageRepeat3: Boolean;
+	
+	
+procedure OnMissionStart;
+begin
+     DifficultySetting := States.MissionDifficulty();
+	 OrangeSpecialAttack:= false;
+	 RedSpecialAttack:= false;
+	 GarnetSpecialAttack:= false;
+	 OrangeDead2:= false;
+	 OrangeDead3:= false;
+	 OrangeDead4:= false;
+	 RedDead5:= false;
+	 RedDead6:= false;
+	 RedDead7:= false;
+	 GarnetDead8:= false;
+	 GarnetDead9:= false;
+	 GarnetDead10:= false;
+	 M1:= false;
+	 M2:= false;
+	 M3:= false;
+	 M4:= false;
+	 M5:= false;
+	 M6:= false;
+	 M7:= false;
+	 M8:= false;
+	 M9:= false;
+	 AntiMessageRepeat1:= false;
+	 AntiMessageRepeat2:= false;
+	 AntiMessageRepeat3:= false;
+	 Might:= 0;
+	 Actions.ShowMsg(0, '<$1>');
+	 	case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.GiveWares(0, 1, 80);
+		Actions.GiveWares(0, 2, 70);
+		Actions.GiveWares(0, 8, 60);
+		Actions.GiveWares(0, 10, 60);
+		Actions.GiveWares(0, 13, 40);
+		Actions.GiveWares(0, 27, 30);
+        Actions.GiveWares(0, 7, 80);
+		Actions.GiveWares(0, 9, 15);
+		Actions.GiveGroup(1, 19, 136, 20, 1, 6, 3);
+        Actions.GiveGroup(1, 15, 140, 24, 1, 6, 3);
+		Actions.GiveGroup(1, 19, 144, 28, 1, 6, 3);
+		Actions.AIEquipRate(2, 0, 700);
+	    Actions.AIEquipRate(3, 0, 700);
+	    Actions.AIEquipRate(4, 0, 700);
+	    Actions.AIEquipRate(5, 0, 700);
+	    Actions.AIEquipRate(6, 0, 700);
+		Actions.AIEquipRate(7, 0, 700);
+	    Actions.AIEquipRate(8, 0, 700);
+		Actions.AIEquipRate(9, 0, 700);
+	    Actions.AIEquipRate(10, 0, 700);
+		Actions.AIEquipRate(2, 1, 1200);
+	    Actions.AIEquipRate(3, 1, 1200);
+	    Actions.AIEquipRate(4, 1, 1200);
+	    Actions.AIEquipRate(5, 1, 1200);
+	    Actions.AIEquipRate(6, 1, 1200);
+		Actions.AIEquipRate(7, 1, 1200);
+	    Actions.AIEquipRate(8, 1, 1200);
+		Actions.AIEquipRate(9, 1, 1200);
+	    Actions.AIEquipRate(10, 1, 1200);
+		A.AIRecruitDelay(9, 9000);
+		A.AIRecruitDelay(10, 9000);
+		A.AIRecruitDelay(6, 9000);
+		A.AIRecruitDelay(7, 9000);
+		A.AIRecruitDelay(3, 6000);
+		A.AIRecruitDelay(4, 6000);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.GiveWares(0, 1, 70);
+		Actions.GiveWares(0, 2, 60);
+		Actions.GiveWares(0, 8, 60);
+		Actions.GiveWares(0, 10, 60);
+		Actions.GiveWares(0, 13, 30);
+		Actions.GiveWares(0, 27, 20);
+        Actions.GiveWares(0, 7, 70);
+		Actions.GiveWares(0, 9, 10);
+		Actions.GiveGroup(1, 19, 136, 20, 1, 9, 3);
+        Actions.GiveGroup(1, 15, 140, 24, 1, 9, 3);
+		Actions.GiveGroup(1, 19, 144, 28, 1, 9, 3);
+		Actions.AIEquipRate(2, 0, 550);
+	    Actions.AIEquipRate(3, 0, 550);
+	    Actions.AIEquipRate(4, 0, 550);
+	    Actions.AIEquipRate(5, 0, 550);
+	    Actions.AIEquipRate(6, 0, 550);
+		Actions.AIEquipRate(7, 0, 550);
+	    Actions.AIEquipRate(8, 0, 550);
+		Actions.AIEquipRate(9, 0, 550);
+	    Actions.AIEquipRate(10, 0, 550);
+		Actions.AIEquipRate(2, 1, 950);
+	    Actions.AIEquipRate(3, 1, 950);
+	    Actions.AIEquipRate(4, 1, 950);
+	    Actions.AIEquipRate(5, 1, 950);
+	    Actions.AIEquipRate(6, 1, 950);
+		Actions.AIEquipRate(7, 1, 950);
+	    Actions.AIEquipRate(8, 1, 950);
+		Actions.AIEquipRate(9, 1, 950);
+	    Actions.AIEquipRate(10, 1, 950);
+		A.AIRecruitDelay(9, 6000);
+		A.AIRecruitDelay(10, 6000);
+		A.AIRecruitDelay(6, 6000);
+		A.AIRecruitDelay(7, 6000);
+		A.AIRecruitDelay(3, 3000);
+		A.AIRecruitDelay(4, 3000);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.GiveWares(0, 1, 60);
+		Actions.GiveWares(0, 2, 50);
+		Actions.GiveWares(0, 8, 60);
+		Actions.GiveWares(0, 10, 50);
+		Actions.GiveWares(0, 13, 30);
+		Actions.GiveWares(0, 27, 20);
+        Actions.GiveWares(0, 7, 60);
+		Actions.GiveWares(0, 9, 5);
+		Actions.GiveGroup(1, 19, 136, 20, 1, 12, 4);
+        Actions.GiveGroup(1, 15, 140, 24, 1, 9, 3);
+		Actions.GiveGroup(1, 19, 144, 28, 1, 12, 4);
+		Actions.AIEquipRate(2, 0, 400);
+	    Actions.AIEquipRate(3, 0, 400);
+	    Actions.AIEquipRate(4, 0, 400);
+	    Actions.AIEquipRate(5, 0, 400);
+	    Actions.AIEquipRate(6, 0, 400);
+		Actions.AIEquipRate(7, 0, 400);
+	    Actions.AIEquipRate(8, 0, 400);
+		Actions.AIEquipRate(9, 0, 400);
+	    Actions.AIEquipRate(10, 0, 400);
+		Actions.AIEquipRate(2, 1, 800);
+	    Actions.AIEquipRate(3, 1, 800);
+	    Actions.AIEquipRate(4, 1, 800);
+	    Actions.AIEquipRate(5, 1, 800);
+	    Actions.AIEquipRate(6, 1, 800);
+		Actions.AIEquipRate(7, 1, 800);
+	    Actions.AIEquipRate(8, 1, 800);
+		Actions.AIEquipRate(9, 1, 800);
+	    Actions.AIEquipRate(10, 1, 800);
+        end;
+        end;
+end;
+
+procedure OnUnitTrained(aUnit: Integer);
+begin
+if (S.StatArmyCount(2) > 84) and (OrangeSpecialAttack = false) then
+    begin
+    Actions.AIDefencePositionRemoveAll(2);
+	Actions.AIDefencePositionAdd(2, 91, 19, 2, 0, 10, 0);
+	Actions.AIDefencePositionAdd(2, 91, 25, 2, 0, 10, 0);
+	Actions.AIDefencePositionAdd(2, 87, 19, 2, 1, 10, 0);
+	Actions.AIDefencePositionAdd(2, 87, 25, 2, 1, 10, 0);
+	Actions.AIDefencePositionAdd(2, 83, 19, 2, 2, 10, 0);
+	Actions.AIDefencePositionAdd(2, 83, 25, 2, 2, 10, 0);
+	Actions.AIDefencePositionAdd(2, 79, 19, 2, 3, 10, 0);
+	Actions.AIDefencePositionAdd(2, 79, 24, 2, 3, 10, 0);
+	OrangeSpecialAttack:= true;
+	end;
+	
+if ((S.StatArmyCount(2) > 90) or (S. StatArmyCount(2) = 90)) and (OrangeSpecialAttack = true) then
+    begin
+    Actions.AIDefencePositionRemoveAll(2);
+	end;	
+	
+if (S.StatArmyCount(2) < 45) and (OrangeSpecialAttack = true) then
+    begin
+	Actions.AIDefencePositionRemoveAll(2);
+    Actions.AIDefencePositionAdd(2, 9, 28, 2, 0, 10, 0);
+	Actions.AIDefencePositionAdd(2, 22, 46, 2, 0, 10, 0);
+	Actions.AIDefencePositionAdd(2, 16, 23, 2, 1, 10, 0);
+	Actions.AIDefencePositionAdd(2, 23, 17, 4, 1, 10, 0);
+	Actions.AIDefencePositionAdd(2, 19, 17, 4, 2, 10, 0);
+	Actions.AIDefencePositionAdd(2, 9, 32, 2, 2, 10, 0);
+	Actions.AIDefencePositionAdd(2, 12, 38, 2, 3, 10, 0);
+	Actions.AIDefencePositionAdd(2, 19, 37, 2, 3, 10, 0);
+	OrangeSpecialAttack:= false;
+	end;	
+	
+if (S.StatArmyCount(5) > 81) and (RedSpecialAttack = false) then
+    begin
+    Actions.AIDefencePositionRemoveAll(2);
+    Actions.AIDefencePositionAdd(5, 88, 53, 1, 0, 10, 0);
+	Actions.AIDefencePositionAdd(5, 89, 53, 1, 0, 10, 0);
+	Actions.AIDefencePositionAdd(5, 85, 48, 1, 1, 10, 0);
+	Actions.AIDefencePositionAdd(5, 93, 57, 1, 1, 10, 0);
+	Actions.AIDefencePositionAdd(5, 88, 58, 1, 2, 10, 0);
+	Actions.AIDefencePositionAdd(5, 84, 54, 1, 2, 10, 0);
+	Actions.AIDefencePositionAdd(5, 92, 57, 1, 3, 10, 0);
+	Actions.AIDefencePositionAdd(5, 84, 48, 1, 3, 10, 0);
+	RedSpecialAttack:= true;
+	end;
+	
+if ((S.StatArmyCount(5) > 90) or (S. StatArmyCount(5) = 90)) and (RedSpecialAttack = true) then
+    begin
+    Actions.AIDefencePositionRemoveAll(5);
+	end;	
+	
+if (S.StatArmyCount(5) < 45) and (RedSpecialAttack = true) then
+    begin
+	Actions.AIDefencePositionRemoveAll(5);
+    Actions.AIDefencePositionAdd(5, 34, 145, 2, 0, 10, 0);
+	Actions.AIDefencePositionAdd(5, 23, 142, 0, 0, 10, 0);
+	Actions.AIDefencePositionAdd(5, 29, 122, 0, 1, 10, 0);
+	Actions.AIDefencePositionAdd(5, 13, 136, 0, 1, 10, 0);
+	Actions.AIDefencePositionAdd(5, 30, 141, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(5, 13, 131, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(5, 35, 132, 0, 3, 10, 0);
+	Actions.AIDefencePositionAdd(5, 18, 126, 0, 3, 10, 0);
+	RedSpecialAttack:= false;
+	end;	
+	
+if (S.StatArmyCount(8) > 82) and (GarnetSpecialAttack = false) then
+    begin
+    Actions.AIDefencePositionRemoveAll(8);
+    Actions.AIDefencePositionAdd(8, 133, 76, 0, 0, 10, 0);
+	Actions.AIDefencePositionAdd(8, 147, 76, 0, 0, 10, 0);
+	Actions.AIDefencePositionAdd(8, 138, 75, 0, 1, 10, 0);
+	Actions.AIDefencePositionAdd(8, 142, 75, 0, 1, 10, 0);
+	Actions.AIDefencePositionAdd(8, 138, 79, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(8, 142, 79, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(8, 133, 80, 0, 3, 10, 0);
+	Actions.AIDefencePositionAdd(8, 146, 80, 0, 3, 10, 0);
+	GarnetSpecialAttack:= true;
+	end;
+	
+if ((S.StatArmyCount(8) > 90) or (S. StatArmyCount(8) = 90)) and (GarnetSpecialAttack = true) then
+    begin
+    Actions.AIDefencePositionRemoveAll(8);
+	end;	
+	
+if (S.StatArmyCount(8) < 45) and (GarnetSpecialAttack = true) then
+    begin
+	Actions.AIDefencePositionRemoveAll(8);
+    Actions.AIDefencePositionAdd(8, 159, 158, 0, 0, 10, 0);
+	Actions.AIDefencePositionAdd(8, 165, 139, 6, 0, 10, 0);
+	Actions.AIDefencePositionAdd(8, 164, 144, 6, 1, 10, 0);
+	Actions.AIDefencePositionAdd(8, 123, 167, 0, 1, 10, 0);
+	Actions.AIDefencePositionAdd(8, 165, 154, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(8, 114, 164, 0, 2, 10, 0);
+	Actions.AIDefencePositionAdd(8, 143, 163, 0, 3, 10, 0);
+	Actions.AIDefencePositionAdd(8, 146, 163, 0, 3, 10, 0);
+	GarnetSpecialAttack:= false;
+	end;		
+	
+end;
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+if  (aIndex = 1) then
+    begin
+	Actions.ShowMsg(0, '<$2>');
+	S1:= Actions.GiveUnit(0, 0, 173, 1, 0);
+	S2:= Actions.GiveUnit(0, 0, 174, 1, 0);
+	S3:= Actions.GiveUnit(0, 0, 175, 1, 0);
+	S4:= Actions.GiveUnit(0, 0, 173, 2, 0);
+	S5:= Actions.GiveUnit(0, 0, 174, 2, 0);
+	S6:= Actions.GiveUnit(0, 0, 175, 2, 0);	
+	L1:= Actions.GiveUnit(0, 9, 171, 1, 0);
+	L2:= Actions.GiveUnit(0, 9, 172, 1, 0);
+	L3:= Actions.GiveUnit(0, 9, 171, 2, 0);
+	L4:= Actions.GiveUnit(0, 9, 172, 2, 0);
+	Actions.UnitOrderWalk (S1, 143, 21);
+	Actions.UnitOrderWalk (S2, 143, 22);
+	Actions.UnitOrderWalk (S3, 145, 21);
+	Actions.UnitOrderWalk (S4, 145, 22);
+	Actions.UnitOrderWalk (S5, 147, 21);	
+	Actions.UnitOrderWalk (S6, 147, 22);
+	Actions.UnitOrderWalk (L1, 144, 21);
+	Actions.UnitOrderWalk (L2, 144, 22);
+	Actions.UnitOrderWalk (L3, 146, 21);
+	Actions.UnitOrderWalk (L4, 146, 22);
+	end;
+end;
+
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+
+///orange
+if ((aHouseID = States.HouseAt(31, 30)) or (aHouseID = States.HouseAt(26, 37)) or ((aHouseID = States.HouseAt(25, 42)) and (aHouseID = States.HouseAt(21, 37))) or (S.StatUnitTypeCount(2, 0) = 0) or (States.PlayerDefeated(2))) and (OrangeDead2 = false) then
+    begin
+	Might:= Might + 1;
+	OrangeDead2:= true;
+	end;
+
+if ((aHouseID = States.HouseAt(56, 13)) or (aHouseID = States.HouseAt(44, 20)) or ((aHouseID = States.HouseAt(46, 26)) and (aHouseID = States.HouseAt(47, 14))) or (S.StatUnitTypeCount(3, 0) = 0) or (States.PlayerDefeated(3))) and (OrangeDead3 = false) then
+    begin
+	Might:= Might + 1;
+	OrangeDead3:= true;
+	end;
+	
+if ((aHouseID = States.HouseAt(35, 54)) or (aHouseID = States.HouseAt(36, 49)) or ((aHouseID = States.HouseAt(41, 52)) and (aHouseID = States.HouseAt(37, 44))) or (S.StatUnitTypeCount(4, 0) = 0) or (States.PlayerDefeated(4))) and (OrangeDead4 = false) then
+    begin
+	Might:= Might + 1;
+	OrangeDead4:= true;
+	end;	
+	
+///red
+if ((aHouseID = States.HouseAt(22, 129)) or (aHouseID = States.HouseAt(25, 135)) or ((aHouseID = States.HouseAt(22, 125)) and (aHouseID = States.HouseAt(31, 130))) or (S.StatUnitTypeCount(5, 0) = 0) or (States.PlayerDefeated(5))) and (RedDead5 = false) then
+    begin
+	Might:= Might + 1;
+	RedDead5:= true;
+	end;
+
+if ((aHouseID = States.HouseAt(37, 116)) or (aHouseID = States.HouseAt(31, 115)) or ((aHouseID = States.HouseAt(43, 119)) and (aHouseID = States.HouseAt(48, 119))) or (S.StatUnitTypeCount(6, 0) = 0) or (States.PlayerDefeated(6))) and (RedDead6 = false) then
+    begin
+	Might:= Might + 1;
+	RedDead6:= true;
+	end;
+	
+if ((aHouseID = States.HouseAt(56, 128)) or (aHouseID = States.HouseAt(53, 136)) or ((aHouseID = States.HouseAt(44, 131)) and (aHouseID = States.HouseAt(49, 134))) or (S.StatUnitTypeCount(7, 0) = 0) or (States.PlayerDefeated(7))) and (RedDead7 = false) then
+    begin
+	Might:= Might + 1;
+	RedDead7:= true;
+	end;
+
+///garnet
+if ((aHouseID = States.HouseAt(136, 148)) or (aHouseID = States.HouseAt(126, 150)) or ((aHouseID = States.HouseAt(122, 151)) and (aHouseID = States.HouseAt(132, 148))) or (S.StatUnitTypeCount(8, 0) = 0) or (States.PlayerDefeated(8))) and (GarnetDead8 = false) then
+    begin
+	Might:= Might + 1;
+	GarnetDead8:= true;
+	end;
+
+if ((aHouseID = States.HouseAt(137, 136)) or (aHouseID = States.HouseAt(139, 131)) or ((aHouseID = States.HouseAt(135, 142)) and (aHouseID = States.HouseAt(142, 136))) or (S.StatUnitTypeCount(9, 0) = 0) or (States.PlayerDefeated(9))) and (GarnetDead9 = false) then
+    begin
+	Might:= Might + 1;
+	GarnetDead9:= true;
+	end;
+	
+if ((aHouseID = States.HouseAt(155, 124)) or (aHouseID = States.HouseAt(160, 127)) or ((aHouseID = States.HouseAt(156, 136)) and (aHouseID = States.HouseAt(148, 128))) or (S.StatUnitTypeCount(10, 0) = 0) or (States.PlayerDefeated(10))) and (GarnetDead10 = false) then
+    begin
+	Might:= Might + 1;
+	GarnetDead10:= true;
+	end;		
+end;
+
+procedure OnTick;
+begin
+if ((Might = 1) and (M1 = false)) then
+    begin
+	M1:= true;
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 0, 650);
+	    Actions.AIEquipRate(3, 0, 650);
+	    Actions.AIEquipRate(4, 0, 650);
+	    Actions.AIEquipRate(5, 0, 650);
+	    Actions.AIEquipRate(6, 0, 650);
+		Actions.AIEquipRate(7, 0, 650);
+	    Actions.AIEquipRate(8, 0, 650);
+		Actions.AIEquipRate(9, 0, 650);
+	    Actions.AIEquipRate(10, 0, 650);
+		Actions.AIEquipRate(2, 1, 1000);
+	    Actions.AIEquipRate(3, 1, 1000);
+	    Actions.AIEquipRate(4, 1, 1000);
+	    Actions.AIEquipRate(5, 1, 1000);
+	    Actions.AIEquipRate(6, 1, 1000);
+		Actions.AIEquipRate(7, 1, 1000);
+	    Actions.AIEquipRate(8, 1, 1000);
+		Actions.AIEquipRate(9, 1, 1000);
+	    Actions.AIEquipRate(10, 1, 1000);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 0, 515);
+	    Actions.AIEquipRate(3, 0, 515);
+	    Actions.AIEquipRate(4, 0, 515);
+	    Actions.AIEquipRate(5, 0, 515);
+	    Actions.AIEquipRate(6, 0, 515);
+		Actions.AIEquipRate(7, 0, 515);
+	    Actions.AIEquipRate(8, 0, 515);
+		Actions.AIEquipRate(9, 0, 515);
+	    Actions.AIEquipRate(10, 0, 515);
+		Actions.AIEquipRate(2, 1, 800);
+	    Actions.AIEquipRate(3, 1, 800);
+	    Actions.AIEquipRate(4, 1, 800);
+	    Actions.AIEquipRate(5, 1, 800);
+	    Actions.AIEquipRate(6, 1, 800);
+		Actions.AIEquipRate(7, 1, 800);
+	    Actions.AIEquipRate(8, 1, 800);
+		Actions.AIEquipRate(9, 1, 800);
+	    Actions.AIEquipRate(10, 1, 800);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 0, 375);
+	    Actions.AIEquipRate(3, 0, 375);
+	    Actions.AIEquipRate(4, 0, 375);
+	    Actions.AIEquipRate(5, 0, 375);
+	    Actions.AIEquipRate(6, 0, 375);
+		Actions.AIEquipRate(7, 0, 375);
+	    Actions.AIEquipRate(8, 0, 375);
+		Actions.AIEquipRate(9, 0, 375);
+	    Actions.AIEquipRate(10, 0, 375);
+		Actions.AIEquipRate(2, 1, 650);
+	    Actions.AIEquipRate(3, 1, 650);
+	    Actions.AIEquipRate(4, 1, 650);
+	    Actions.AIEquipRate(5, 1, 650);
+	    Actions.AIEquipRate(6, 1, 650);
+		Actions.AIEquipRate(7, 1, 650);
+	    Actions.AIEquipRate(8, 1, 650);
+		Actions.AIEquipRate(9, 1, 650);
+	    Actions.AIEquipRate(10, 1, 650);
+        end;
+        end;
+	end;
+	
+if ((Might = 2) and (M2 = false)) then
+    begin
+	M2:= true;
+	Actions.GiveWeapons(2, 25, 100);
+	Actions.GiveWeapons(2, 23, 100);
+	Actions.GiveWeapons(2, 21, 100);
+	Actions.GiveWeapons(2, 19, 300);
+	Actions.GiveWeapons(2, 17, 100);
+	Actions.GiveWeapons(3, 25, 100);
+	Actions.GiveWeapons(3, 23, 100);
+	Actions.GiveWeapons(3, 21, 100);
+	Actions.GiveWeapons(3, 19, 300);
+	Actions.GiveWeapons(3, 17, 100);
+	Actions.GiveWeapons(4, 25, 100);
+	Actions.GiveWeapons(4, 23, 100);
+	Actions.GiveWeapons(4, 21, 100);
+	Actions.GiveWeapons(4, 19, 300);
+	Actions.GiveWeapons(4, 17, 100);
+	Actions.GiveWeapons(5, 25, 100);
+	Actions.GiveWeapons(5, 23, 100);
+	Actions.GiveWeapons(5, 21, 100);
+	Actions.GiveWeapons(5, 19, 300);
+	Actions.GiveWeapons(5, 17, 100);
+	Actions.GiveWeapons(6, 25, 100);
+	Actions.GiveWeapons(6, 23, 100);
+	Actions.GiveWeapons(6, 21, 100);
+	Actions.GiveWeapons(6, 19, 300);
+	Actions.GiveWeapons(6, 17, 100);
+	Actions.GiveWeapons(7, 25, 100);
+	Actions.GiveWeapons(7, 23, 100);
+	Actions.GiveWeapons(7, 21, 100);
+	Actions.GiveWeapons(7, 19, 300);
+	Actions.GiveWeapons(7, 17, 100);
+	Actions.GiveWeapons(8, 25, 100);
+	Actions.GiveWeapons(8, 23, 100);
+	Actions.GiveWeapons(8, 21, 100);
+	Actions.GiveWeapons(8, 19, 300);
+	Actions.GiveWeapons(8, 17, 100);
+	Actions.GiveWeapons(9, 25, 100);
+	Actions.GiveWeapons(9, 23, 100);
+	Actions.GiveWeapons(9, 21, 100);
+	Actions.GiveWeapons(9, 19, 300);
+	Actions.GiveWeapons(9, 17, 100);
+	Actions.GiveWeapons(10, 25, 100);
+	Actions.GiveWeapons(10, 23, 100);
+	Actions.GiveWeapons(10, 21, 100);
+	Actions.GiveWeapons(10, 19, 300);
+	Actions.GiveWeapons(10, 17, 100);
+	    case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 0, 590);
+	    Actions.AIEquipRate(3, 0, 590);
+	    Actions.AIEquipRate(4, 0, 590);
+	    Actions.AIEquipRate(5, 0, 590);
+	    Actions.AIEquipRate(6, 0, 590);
+		Actions.AIEquipRate(7, 0, 590);
+	    Actions.AIEquipRate(8, 0, 590);
+		Actions.AIEquipRate(9, 0, 590);
+	    Actions.AIEquipRate(10, 0, 590);
+		Actions.AIEquipRate(2, 1, 900);
+	    Actions.AIEquipRate(3, 1, 900);
+	    Actions.AIEquipRate(4, 1, 900);
+	    Actions.AIEquipRate(5, 1, 900);
+	    Actions.AIEquipRate(6, 1, 900);
+		Actions.AIEquipRate(7, 1, 900);
+	    Actions.AIEquipRate(8, 1, 900);
+		Actions.AIEquipRate(9, 1, 900);
+	    Actions.AIEquipRate(10, 1, 900);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 0, 480);
+	    Actions.AIEquipRate(3, 0, 480);
+	    Actions.AIEquipRate(4, 0, 480);
+	    Actions.AIEquipRate(5, 0, 480);
+	    Actions.AIEquipRate(6, 0, 480);
+		Actions.AIEquipRate(7, 0, 480);
+	    Actions.AIEquipRate(8, 0, 480);
+		Actions.AIEquipRate(9, 0, 480);
+	    Actions.AIEquipRate(10, 0, 480);
+		Actions.AIEquipRate(2, 1, 720);
+	    Actions.AIEquipRate(3, 1, 720);
+	    Actions.AIEquipRate(4, 1, 720);
+	    Actions.AIEquipRate(5, 1, 720);
+	    Actions.AIEquipRate(6, 1, 720);
+		Actions.AIEquipRate(7, 1, 720);
+	    Actions.AIEquipRate(8, 1, 720);
+		Actions.AIEquipRate(9, 1, 720);
+	    Actions.AIEquipRate(10, 1, 720);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 0, 350);
+	    Actions.AIEquipRate(3, 0, 350);
+	    Actions.AIEquipRate(4, 0, 350);
+	    Actions.AIEquipRate(5, 0, 350);
+	    Actions.AIEquipRate(6, 0, 350);
+		Actions.AIEquipRate(7, 0, 350);
+	    Actions.AIEquipRate(8, 0, 350);
+		Actions.AIEquipRate(9, 0, 350);
+	    Actions.AIEquipRate(10, 0, 350);
+		Actions.AIEquipRate(2, 1, 550);
+	    Actions.AIEquipRate(3, 1, 550);
+	    Actions.AIEquipRate(4, 1, 550);
+	    Actions.AIEquipRate(5, 1, 550);
+	    Actions.AIEquipRate(6, 1, 550);
+		Actions.AIEquipRate(7, 1, 550);
+	    Actions.AIEquipRate(8, 1, 550);
+		Actions.AIEquipRate(9, 1, 550);
+	    Actions.AIEquipRate(10, 1, 550);
+        end;
+        end;
+	end;
+
+if ((Might = 3) and (M3 = false)) then
+    begin
+	M3:= true;
+	Actions.GiveWeapons(2, 25, 200);
+	Actions.GiveWeapons(2, 23, 200);
+	Actions.GiveWeapons(2, 21, 200);
+	Actions.GiveWeapons(2, 19, 600);
+	Actions.GiveWeapons(2, 17, 200);
+	Actions.GiveWeapons(3, 25, 200);
+	Actions.GiveWeapons(3, 23, 200);
+	Actions.GiveWeapons(3, 21, 200);
+	Actions.GiveWeapons(3, 19, 600);
+	Actions.GiveWeapons(3, 17, 200);
+	Actions.GiveWeapons(4, 25, 200);
+	Actions.GiveWeapons(4, 23, 200);
+	Actions.GiveWeapons(4, 21, 200);
+	Actions.GiveWeapons(4, 19, 600);
+	Actions.GiveWeapons(4, 17, 200);
+	Actions.GiveWeapons(5, 25, 200);
+	Actions.GiveWeapons(5, 23, 200);
+	Actions.GiveWeapons(5, 21, 200);
+	Actions.GiveWeapons(5, 19, 600);
+	Actions.GiveWeapons(5, 17, 200);
+	Actions.GiveWeapons(6, 25, 200);
+	Actions.GiveWeapons(6, 23, 200);
+	Actions.GiveWeapons(6, 21, 200);
+	Actions.GiveWeapons(6, 19, 600);
+	Actions.GiveWeapons(6, 17, 200);
+	Actions.GiveWeapons(7, 25, 200);
+	Actions.GiveWeapons(7, 23, 200);
+	Actions.GiveWeapons(7, 21, 200);
+	Actions.GiveWeapons(7, 19, 600);
+	Actions.GiveWeapons(7, 17, 200);
+	Actions.GiveWeapons(8, 25, 200);
+	Actions.GiveWeapons(8, 23, 200);
+	Actions.GiveWeapons(8, 21, 200);
+	Actions.GiveWeapons(8, 19, 600);
+	Actions.GiveWeapons(8, 17, 200);
+	Actions.GiveWeapons(9, 25, 200);
+	Actions.GiveWeapons(9, 23, 200);
+	Actions.GiveWeapons(9, 21, 200);
+	Actions.GiveWeapons(9, 19, 600);
+	Actions.GiveWeapons(9, 17, 200);
+	Actions.GiveWeapons(10, 25, 200);
+	Actions.GiveWeapons(10, 23, 200);
+	Actions.GiveWeapons(10, 21, 200);
+	Actions.GiveWeapons(10, 19, 600);
+	Actions.GiveWeapons(10, 17, 200);
+		case DifficultySetting of
+	    mdEasy1:
+        begin	
+		Actions.AIEquipRate(2, 0, 540);
+	    Actions.AIEquipRate(3, 0, 540);
+	    Actions.AIEquipRate(4, 0, 540);
+	    Actions.AIEquipRate(5, 0, 540);
+	    Actions.AIEquipRate(6, 0, 540);
+		Actions.AIEquipRate(7, 0, 540);
+	    Actions.AIEquipRate(8, 0, 540);
+		Actions.AIEquipRate(9, 0, 540);
+	    Actions.AIEquipRate(10, 0, 540);
+		Actions.AIEquipRate(2, 1, 825);
+	    Actions.AIEquipRate(3, 1, 825);
+	    Actions.AIEquipRate(4, 1, 825);
+	    Actions.AIEquipRate(5, 1, 825);
+	    Actions.AIEquipRate(6, 1, 825);
+		Actions.AIEquipRate(7, 1, 825);
+	    Actions.AIEquipRate(8, 1, 825);
+		Actions.AIEquipRate(9, 1, 825);
+	    Actions.AIEquipRate(10, 1, 825);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 0, 440);
+	    Actions.AIEquipRate(3, 0, 440);
+	    Actions.AIEquipRate(4, 0, 440);
+	    Actions.AIEquipRate(5, 0, 440);
+	    Actions.AIEquipRate(6, 0, 440);
+		Actions.AIEquipRate(7, 0, 440);
+	    Actions.AIEquipRate(8, 0, 440);
+		Actions.AIEquipRate(9, 0, 440);
+	    Actions.AIEquipRate(10, 0, 440);
+		Actions.AIEquipRate(2, 1, 670);
+	    Actions.AIEquipRate(3, 1, 670);
+	    Actions.AIEquipRate(4, 1, 670);
+	    Actions.AIEquipRate(5, 1, 670);
+	    Actions.AIEquipRate(6, 1, 670);
+		Actions.AIEquipRate(7, 1, 670);
+	    Actions.AIEquipRate(8, 1, 670);
+		Actions.AIEquipRate(9, 1, 670);
+	    Actions.AIEquipRate(10, 1, 670);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 0, 300);
+	    Actions.AIEquipRate(3, 0, 300);
+	    Actions.AIEquipRate(4, 0, 300);
+	    Actions.AIEquipRate(5, 0, 300);
+	    Actions.AIEquipRate(6, 0, 300);
+		Actions.AIEquipRate(7, 0, 300);
+	    Actions.AIEquipRate(8, 0, 300);
+		Actions.AIEquipRate(9, 0, 300);
+	    Actions.AIEquipRate(10, 0, 300);
+		Actions.AIEquipRate(2, 1, 525);
+	    Actions.AIEquipRate(3, 1, 525);
+	    Actions.AIEquipRate(4, 1, 525);
+	    Actions.AIEquipRate(5, 1, 525);
+	    Actions.AIEquipRate(6, 1, 525);
+		Actions.AIEquipRate(7, 1, 525);
+	    Actions.AIEquipRate(8, 1, 525);
+		Actions.AIEquipRate(9, 1, 525);
+	    Actions.AIEquipRate(10, 1, 525);
+        end;
+        end;
+	end;
+
+if ((Might = 4) and (M4 = false)) then
+    begin
+	M4:= true;
+	Actions.GiveWeapons(2, 25, 200);
+	Actions.GiveWeapons(2, 23, 200);
+	Actions.GiveWeapons(2, 21, 200);
+	Actions.GiveWeapons(2, 19, 600);
+	Actions.GiveWeapons(2, 17, 200);
+	Actions.GiveWeapons(3, 25, 200);
+	Actions.GiveWeapons(3, 23, 200);
+	Actions.GiveWeapons(3, 21, 200);
+	Actions.GiveWeapons(3, 19, 600);
+	Actions.GiveWeapons(3, 17, 200);
+	Actions.GiveWeapons(4, 25, 200);
+	Actions.GiveWeapons(4, 23, 200);
+	Actions.GiveWeapons(4, 21, 200);
+	Actions.GiveWeapons(4, 19, 600);
+	Actions.GiveWeapons(4, 17, 200);
+	Actions.GiveWeapons(5, 25, 200);
+	Actions.GiveWeapons(5, 23, 200);
+	Actions.GiveWeapons(5, 21, 200);
+	Actions.GiveWeapons(5, 19, 600);
+	Actions.GiveWeapons(5, 17, 200);
+	Actions.GiveWeapons(6, 25, 200);
+	Actions.GiveWeapons(6, 23, 200);
+	Actions.GiveWeapons(6, 21, 200);
+	Actions.GiveWeapons(6, 19, 600);
+	Actions.GiveWeapons(6, 17, 200);
+	Actions.GiveWeapons(7, 25, 200);
+	Actions.GiveWeapons(7, 23, 200);
+	Actions.GiveWeapons(7, 21, 200);
+	Actions.GiveWeapons(7, 19, 600);
+	Actions.GiveWeapons(7, 17, 200);
+	Actions.GiveWeapons(8, 25, 200);
+	Actions.GiveWeapons(8, 23, 200);
+	Actions.GiveWeapons(8, 21, 200);
+	Actions.GiveWeapons(8, 19, 600);
+	Actions.GiveWeapons(8, 17, 200);
+	Actions.GiveWeapons(9, 25, 200);
+	Actions.GiveWeapons(9, 23, 200);
+	Actions.GiveWeapons(9, 21, 200);
+	Actions.GiveWeapons(9, 19, 600);
+	Actions.GiveWeapons(9, 17, 200);
+	Actions.GiveWeapons(10, 25, 200);
+	Actions.GiveWeapons(10, 23, 200);
+	Actions.GiveWeapons(10, 21, 200);
+	Actions.GiveWeapons(10, 19, 600);
+	Actions.GiveWeapons(10, 17, 200);
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 1, 700);
+	    Actions.AIEquipRate(3, 1, 700);
+	    Actions.AIEquipRate(4, 1, 700);
+	    Actions.AIEquipRate(5, 1, 700);
+	    Actions.AIEquipRate(6, 1, 700);
+		Actions.AIEquipRate(7, 1, 700);
+	    Actions.AIEquipRate(8, 1, 700);
+		Actions.AIEquipRate(9, 1, 700);
+	    Actions.AIEquipRate(10, 1, 700);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 1, 600);
+	    Actions.AIEquipRate(3, 1, 600);
+	    Actions.AIEquipRate(4, 1, 600);
+	    Actions.AIEquipRate(5, 1, 600);
+	    Actions.AIEquipRate(6, 1, 600);
+		Actions.AIEquipRate(7, 1, 600);
+	    Actions.AIEquipRate(8, 1, 600);
+		Actions.AIEquipRate(9, 1, 600);
+	    Actions.AIEquipRate(10, 1, 600);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 1, 450);
+	    Actions.AIEquipRate(3, 1, 450);
+	    Actions.AIEquipRate(4, 1, 450);
+	    Actions.AIEquipRate(5, 1, 450);
+	    Actions.AIEquipRate(6, 1, 450);
+		Actions.AIEquipRate(7, 1, 450);
+	    Actions.AIEquipRate(8, 1, 450);
+		Actions.AIEquipRate(9, 1, 450);
+	    Actions.AIEquipRate(10, 1, 450);
+        end;
+        end;
+	end;
+
+if ((Might = 5) and (M5 = false)) then
+    begin
+	M5:= true;
+	Actions.GiveWeapons(2, 25, 300);
+	Actions.GiveWeapons(2, 23, 300);
+	Actions.GiveWeapons(2, 21, 300);
+	Actions.GiveWeapons(2, 19, 900);
+	Actions.GiveWeapons(2, 17, 300);
+	Actions.GiveWeapons(3, 25, 300);
+	Actions.GiveWeapons(3, 23, 300);
+	Actions.GiveWeapons(3, 21, 300);
+	Actions.GiveWeapons(3, 19, 900);
+	Actions.GiveWeapons(3, 17, 300);
+	Actions.GiveWeapons(4, 25, 300);
+	Actions.GiveWeapons(4, 23, 300);
+	Actions.GiveWeapons(4, 21, 300);
+	Actions.GiveWeapons(4, 19, 900);
+	Actions.GiveWeapons(4, 17, 300);
+	Actions.GiveWeapons(5, 25, 300);
+	Actions.GiveWeapons(5, 23, 300);
+	Actions.GiveWeapons(5, 21, 300);
+	Actions.GiveWeapons(5, 19, 900);
+	Actions.GiveWeapons(5, 17, 300);
+	Actions.GiveWeapons(6, 25, 300);
+	Actions.GiveWeapons(6, 23, 300);
+	Actions.GiveWeapons(6, 21, 300);
+	Actions.GiveWeapons(6, 19, 900);
+	Actions.GiveWeapons(6, 17, 300);
+	Actions.GiveWeapons(7, 25, 300);
+	Actions.GiveWeapons(7, 23, 300);
+	Actions.GiveWeapons(7, 21, 300);
+	Actions.GiveWeapons(7, 19, 900);
+	Actions.GiveWeapons(7, 17, 300);
+	Actions.GiveWeapons(8, 25, 300);
+	Actions.GiveWeapons(8, 23, 300);
+	Actions.GiveWeapons(8, 21, 300);
+	Actions.GiveWeapons(8, 19, 900);
+	Actions.GiveWeapons(8, 17, 300);
+	Actions.GiveWeapons(9, 25, 300);
+	Actions.GiveWeapons(9, 23, 300);
+	Actions.GiveWeapons(9, 21, 300);
+	Actions.GiveWeapons(9, 19, 900);
+	Actions.GiveWeapons(9, 17, 300);
+	Actions.GiveWeapons(10, 25, 300);
+	Actions.GiveWeapons(10, 23, 300);
+	Actions.GiveWeapons(10, 21, 300);
+	Actions.GiveWeapons(10, 19, 900);
+	Actions.GiveWeapons(10, 17, 300);
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 1, 650);
+	    Actions.AIEquipRate(3, 1, 650);
+	    Actions.AIEquipRate(4, 1, 650);
+	    Actions.AIEquipRate(5, 1, 650);
+	    Actions.AIEquipRate(6, 1, 650);
+		Actions.AIEquipRate(7, 1, 650);
+	    Actions.AIEquipRate(8, 1, 650);
+		Actions.AIEquipRate(9, 1, 650);
+	    Actions.AIEquipRate(10, 1, 650);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 1, 550);
+	    Actions.AIEquipRate(3, 1, 550);
+	    Actions.AIEquipRate(4, 1, 550);
+	    Actions.AIEquipRate(5, 1, 550);
+	    Actions.AIEquipRate(6, 1, 550);
+		Actions.AIEquipRate(7, 1, 550);
+	    Actions.AIEquipRate(8, 1, 550);
+		Actions.AIEquipRate(9, 1, 550);
+	    Actions.AIEquipRate(10, 1, 550);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 1, 400);
+	    Actions.AIEquipRate(3, 1, 400);
+	    Actions.AIEquipRate(4, 1, 400);
+	    Actions.AIEquipRate(5, 1, 400);
+	    Actions.AIEquipRate(6, 1, 400);
+		Actions.AIEquipRate(7, 1, 400);
+	    Actions.AIEquipRate(8, 1, 400);
+		Actions.AIEquipRate(9, 1, 400);
+	    Actions.AIEquipRate(10, 1, 400);
+        end;
+        end;
+	end;
+
+if ((Might = 6) and (M6 = false)) then
+    begin
+	M6:= true;
+	Actions.GiveWeapons(2, 25, 1200);
+	Actions.GiveWeapons(2, 23, 1200);
+	Actions.GiveWeapons(2, 21, 1200);
+	Actions.GiveWeapons(2, 19, 3600);
+	Actions.GiveWeapons(2, 17, 1200);
+	Actions.GiveWeapons(3, 25, 1200);
+	Actions.GiveWeapons(3, 23, 1200);
+	Actions.GiveWeapons(3, 21, 1200);
+	Actions.GiveWeapons(3, 19, 3600);
+	Actions.GiveWeapons(3, 17, 1200);
+	Actions.GiveWeapons(4, 25, 1200);
+	Actions.GiveWeapons(4, 23, 1200);
+	Actions.GiveWeapons(4, 21, 1200);
+	Actions.GiveWeapons(4, 19, 3600);
+	Actions.GiveWeapons(4, 17, 1200);
+	Actions.GiveWeapons(5, 25, 1200);
+	Actions.GiveWeapons(5, 23, 1200);
+	Actions.GiveWeapons(5, 21, 1200);
+	Actions.GiveWeapons(5, 19, 3600);
+	Actions.GiveWeapons(5, 17, 1200);
+	Actions.GiveWeapons(6, 25, 1200);
+	Actions.GiveWeapons(6, 23, 1200);
+	Actions.GiveWeapons(6, 21, 1200);
+	Actions.GiveWeapons(6, 19, 3600);
+	Actions.GiveWeapons(6, 17, 1200);
+	Actions.GiveWeapons(7, 25, 1200);
+	Actions.GiveWeapons(7, 23, 1200);
+	Actions.GiveWeapons(7, 21, 1200);
+	Actions.GiveWeapons(7, 19, 3600);
+	Actions.GiveWeapons(7, 17, 1200);
+	Actions.GiveWeapons(8, 25, 1200);
+	Actions.GiveWeapons(8, 23, 1200);
+	Actions.GiveWeapons(8, 21, 1200);
+	Actions.GiveWeapons(8, 19, 3600);
+	Actions.GiveWeapons(8, 17, 1200);
+	Actions.GiveWeapons(9, 25, 1200);
+	Actions.GiveWeapons(9, 23, 1200);
+	Actions.GiveWeapons(9, 21, 1200);
+	Actions.GiveWeapons(9, 19, 3600);
+	Actions.GiveWeapons(9, 17, 1200);
+	Actions.GiveWeapons(10, 25, 1200);
+	Actions.GiveWeapons(10, 23, 1200);
+	Actions.GiveWeapons(10, 21, 1200);
+	Actions.GiveWeapons(10, 19, 3600);
+	Actions.GiveWeapons(10, 17, 1200);
+		case DifficultySetting of
+	    mdEasy1:
+        begin
+		Actions.AIArmyType(2, atIron);
+		Actions.AIArmyType(3, atIron);
+		Actions.AIArmyType(4, atIron);
+		Actions.AIArmyType(5, atIron);
+		Actions.AIArmyType(6, atIron);
+		Actions.AIArmyType(7, atIron);
+		Actions.AIArmyType(8, atIron);
+		Actions.AIArmyType(9, atIron);
+		Actions.AIArmyType(10, atIron);	
+		Actions.AIEquipRate(2, 1, 325);
+	    Actions.AIEquipRate(3, 1, 325);
+	    Actions.AIEquipRate(4, 1, 325);
+	    Actions.AIEquipRate(5, 1, 325);
+	    Actions.AIEquipRate(6, 1, 325);
+		Actions.AIEquipRate(7, 1, 325);
+	    Actions.AIEquipRate(8, 1, 325);
+		Actions.AIEquipRate(9, 1, 325);
+	    Actions.AIEquipRate(10, 1, 325);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIArmyType(2, atIron);
+		Actions.AIArmyType(3, atIron);
+		Actions.AIArmyType(4, atIron);
+		Actions.AIArmyType(5, atIron);
+		Actions.AIArmyType(6, atIron);
+		Actions.AIArmyType(7, atIron);
+		Actions.AIArmyType(8, atIron);
+		Actions.AIArmyType(9, atIron);
+		Actions.AIArmyType(10, atIron);
+		Actions.AIEquipRate(2, 1, 225);
+	    Actions.AIEquipRate(3, 1, 225);
+	    Actions.AIEquipRate(4, 1, 225);
+	    Actions.AIEquipRate(5, 1, 225);
+	    Actions.AIEquipRate(6, 1, 225);
+		Actions.AIEquipRate(7, 1, 225);
+	    Actions.AIEquipRate(8, 1, 225);
+		Actions.AIEquipRate(9, 1, 225);
+	    Actions.AIEquipRate(10, 1, 225);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIArmyType(2, atIron);
+		Actions.AIArmyType(3, atIron);
+		Actions.AIArmyType(4, atIron);
+		Actions.AIArmyType(5, atIron);
+		Actions.AIArmyType(6, atIron);
+		Actions.AIArmyType(7, atIron);
+		Actions.AIArmyType(8, atIron);
+		Actions.AIArmyType(9, atIron);
+		Actions.AIArmyType(10, atIron);
+		Actions.AIEquipRate(2, 1, 125);
+	    Actions.AIEquipRate(3, 1, 125);
+	    Actions.AIEquipRate(4, 1, 125);
+	    Actions.AIEquipRate(5, 1, 125);
+	    Actions.AIEquipRate(6, 1, 125);
+		Actions.AIEquipRate(7, 1, 125);
+	    Actions.AIEquipRate(8, 1, 125);
+		Actions.AIEquipRate(9, 1, 125);
+	    Actions.AIEquipRate(10, 1, 125);
+        end;
+        end;
+	end;
+
+if ((Might = 7) and (M7 = false)) then
+    begin
+	Actions.GiveWeapons(2, 25, 1500);
+	Actions.GiveWeapons(2, 23, 1500);
+	Actions.GiveWeapons(2, 21, 1500);
+	Actions.GiveWeapons(2, 19, 4500);
+	Actions.GiveWeapons(2, 17, 1500);
+	Actions.GiveWeapons(3, 25, 1500);
+	Actions.GiveWeapons(3, 23, 1500);
+	Actions.GiveWeapons(3, 21, 1500);
+	Actions.GiveWeapons(3, 19, 4500);
+	Actions.GiveWeapons(3, 17, 1500);
+	Actions.GiveWeapons(4, 25, 1500);
+	Actions.GiveWeapons(4, 23, 1500);
+	Actions.GiveWeapons(4, 21, 1500);
+	Actions.GiveWeapons(4, 19, 4500);
+	Actions.GiveWeapons(4, 17, 1500);
+	Actions.GiveWeapons(5, 25, 1500);
+	Actions.GiveWeapons(5, 23, 1500);
+	Actions.GiveWeapons(5, 21, 1500);
+	Actions.GiveWeapons(5, 19, 4500);
+	Actions.GiveWeapons(5, 17, 1500);
+	Actions.GiveWeapons(6, 25, 1500);
+	Actions.GiveWeapons(6, 23, 1500);
+	Actions.GiveWeapons(6, 21, 1500);
+	Actions.GiveWeapons(6, 19, 4500);
+	Actions.GiveWeapons(6, 17, 1500);
+	Actions.GiveWeapons(7, 25, 1500);
+	Actions.GiveWeapons(7, 23, 1500);
+	Actions.GiveWeapons(7, 21, 1500);
+	Actions.GiveWeapons(7, 19, 4500);
+	Actions.GiveWeapons(7, 17, 1500);
+	Actions.GiveWeapons(8, 25, 1500);
+	Actions.GiveWeapons(8, 23, 1500);
+	Actions.GiveWeapons(8, 21, 1500);
+	Actions.GiveWeapons(8, 19, 4500);
+	Actions.GiveWeapons(8, 17, 1500);
+	Actions.GiveWeapons(9, 25, 1500);
+	Actions.GiveWeapons(9, 23, 1500);
+	Actions.GiveWeapons(9, 21, 1500);
+	Actions.GiveWeapons(9, 19, 4500);
+	Actions.GiveWeapons(9, 17, 1500);
+	Actions.GiveWeapons(10, 25, 1500);
+	Actions.GiveWeapons(10, 23, 1500);
+	Actions.GiveWeapons(10, 21, 1500);
+	Actions.GiveWeapons(10, 19, 4500);
+	Actions.GiveWeapons(10, 17, 1500);
+	M7:= true;
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 1, 200);
+	    Actions.AIEquipRate(3, 1, 200);
+	    Actions.AIEquipRate(4, 1, 200);
+	    Actions.AIEquipRate(5, 1, 200);
+	    Actions.AIEquipRate(6, 1, 200);
+		Actions.AIEquipRate(7, 1, 200);
+	    Actions.AIEquipRate(8, 1, 200);
+		Actions.AIEquipRate(9, 1, 200);
+	    Actions.AIEquipRate(10, 1, 200);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 1, 150);
+	    Actions.AIEquipRate(3, 1, 150);
+	    Actions.AIEquipRate(4, 1, 150);
+	    Actions.AIEquipRate(5, 1, 150);
+	    Actions.AIEquipRate(6, 1, 150);
+		Actions.AIEquipRate(7, 1, 150);
+	    Actions.AIEquipRate(8, 1, 150);
+		Actions.AIEquipRate(9, 1, 150);
+	    Actions.AIEquipRate(10, 1, 150);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 1, 100);
+	    Actions.AIEquipRate(3, 1, 100);
+	    Actions.AIEquipRate(4, 1, 100);
+	    Actions.AIEquipRate(5, 1, 100);
+	    Actions.AIEquipRate(6, 1, 100);
+		Actions.AIEquipRate(7, 1, 100);
+	    Actions.AIEquipRate(8, 1, 100);
+		Actions.AIEquipRate(9, 1, 100);
+	    Actions.AIEquipRate(10, 1, 100);
+        end;
+        end;
+	end;
+
+if ((Might = 8) and (M8 = false)) then
+    begin
+	M8:= true;
+	Actions.GiveWeapons(2, 25, 1500);
+	Actions.GiveWeapons(2, 23, 1500);
+	Actions.GiveWeapons(2, 21, 1500);
+	Actions.GiveWeapons(2, 19, 4500);
+	Actions.GiveWeapons(2, 17, 1500);
+	Actions.GiveWeapons(3, 25, 1500);
+	Actions.GiveWeapons(3, 23, 1500);
+	Actions.GiveWeapons(3, 21, 1500);
+	Actions.GiveWeapons(3, 19, 4500);
+	Actions.GiveWeapons(3, 17, 1500);
+	Actions.GiveWeapons(4, 25, 1500);
+	Actions.GiveWeapons(4, 23, 1500);
+	Actions.GiveWeapons(4, 21, 1500);
+	Actions.GiveWeapons(4, 19, 4500);
+	Actions.GiveWeapons(4, 17, 1500);
+	Actions.GiveWeapons(5, 25, 1500);
+	Actions.GiveWeapons(5, 23, 1500);
+	Actions.GiveWeapons(5, 21, 1500);
+	Actions.GiveWeapons(5, 19, 4500);
+	Actions.GiveWeapons(5, 17, 1500);
+	Actions.GiveWeapons(6, 25, 1500);
+	Actions.GiveWeapons(6, 23, 1500);
+	Actions.GiveWeapons(6, 21, 1500);
+	Actions.GiveWeapons(6, 19, 4500);
+	Actions.GiveWeapons(6, 17, 1500);
+	Actions.GiveWeapons(7, 25, 1500);
+	Actions.GiveWeapons(7, 23, 1500);
+	Actions.GiveWeapons(7, 21, 1500);
+	Actions.GiveWeapons(7, 19, 4500);
+	Actions.GiveWeapons(7, 17, 1500);
+	Actions.GiveWeapons(8, 25, 1500);
+	Actions.GiveWeapons(8, 23, 1500);
+	Actions.GiveWeapons(8, 21, 1500);
+	Actions.GiveWeapons(8, 19, 4500);
+	Actions.GiveWeapons(8, 17, 1500);
+	Actions.GiveWeapons(9, 25, 1500);
+	Actions.GiveWeapons(9, 23, 1500);
+	Actions.GiveWeapons(9, 21, 1500);
+	Actions.GiveWeapons(9, 19, 4500);
+	Actions.GiveWeapons(9, 17, 1500);
+	Actions.GiveWeapons(10, 25, 1500);
+	Actions.GiveWeapons(10, 23, 1500);
+	Actions.GiveWeapons(10, 21, 1500);
+	Actions.GiveWeapons(10, 19, 4500);
+	Actions.GiveWeapons(10, 17, 1500);
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 1, 125);
+	    Actions.AIEquipRate(3, 1, 125);
+	    Actions.AIEquipRate(4, 1, 125);
+	    Actions.AIEquipRate(5, 1, 125);
+	    Actions.AIEquipRate(6, 1, 125);
+		Actions.AIEquipRate(7, 1, 125);
+	    Actions.AIEquipRate(8, 1, 125);
+		Actions.AIEquipRate(9, 1, 125);
+	    Actions.AIEquipRate(10, 1, 125);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 1, 100);
+	    Actions.AIEquipRate(3, 1, 100);
+	    Actions.AIEquipRate(4, 1, 100);
+	    Actions.AIEquipRate(5, 1, 100);
+	    Actions.AIEquipRate(6, 1, 100);
+		Actions.AIEquipRate(7, 1, 100);
+	    Actions.AIEquipRate(8, 1, 100);
+		Actions.AIEquipRate(9, 1, 100);
+	    Actions.AIEquipRate(10, 1, 100);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 1, 75);
+	    Actions.AIEquipRate(3, 1, 75);
+	    Actions.AIEquipRate(4, 1, 75);
+	    Actions.AIEquipRate(5, 1, 75);
+	    Actions.AIEquipRate(6, 1, 75);
+		Actions.AIEquipRate(7, 1, 75);
+	    Actions.AIEquipRate(8, 1, 75);
+		Actions.AIEquipRate(9, 1, 75);
+	    Actions.AIEquipRate(10, 1, 75);
+        end;
+        end;
+	end;
+
+if ((Might = 9) and (M9 = false)) then
+    begin
+	M9:= true;
+	Actions.GiveWeapons(2, 25, 1500);
+	Actions.GiveWeapons(2, 23, 1500);
+	Actions.GiveWeapons(2, 21, 1500);
+	Actions.GiveWeapons(2, 19, 4500);
+	Actions.GiveWeapons(2, 17, 1500);
+	Actions.GiveWeapons(3, 25, 1500);
+	Actions.GiveWeapons(3, 23, 1500);
+	Actions.GiveWeapons(3, 21, 1500);
+	Actions.GiveWeapons(3, 19, 4500);
+	Actions.GiveWeapons(3, 17, 1500);
+	Actions.GiveWeapons(4, 25, 1500);
+	Actions.GiveWeapons(4, 23, 1500);
+	Actions.GiveWeapons(4, 21, 1500);
+	Actions.GiveWeapons(4, 19, 4500);
+	Actions.GiveWeapons(4, 17, 1500);
+	Actions.GiveWeapons(5, 25, 1500);
+	Actions.GiveWeapons(5, 23, 1500);
+	Actions.GiveWeapons(5, 21, 1500);
+	Actions.GiveWeapons(5, 19, 4500);
+	Actions.GiveWeapons(5, 17, 1500);
+	Actions.GiveWeapons(6, 25, 1500);
+	Actions.GiveWeapons(6, 23, 1500);
+	Actions.GiveWeapons(6, 21, 1500);
+	Actions.GiveWeapons(6, 19, 4500);
+	Actions.GiveWeapons(6, 17, 1500);
+	Actions.GiveWeapons(7, 25, 1500);
+	Actions.GiveWeapons(7, 23, 1500);
+	Actions.GiveWeapons(7, 21, 1500);
+	Actions.GiveWeapons(7, 19, 4500);
+	Actions.GiveWeapons(7, 17, 1500);
+	Actions.GiveWeapons(8, 25, 1500);
+	Actions.GiveWeapons(8, 23, 1500);
+	Actions.GiveWeapons(8, 21, 1500);
+	Actions.GiveWeapons(8, 19, 4500);
+	Actions.GiveWeapons(8, 17, 1500);
+	Actions.GiveWeapons(9, 25, 1500);
+	Actions.GiveWeapons(9, 23, 1500);
+	Actions.GiveWeapons(9, 21, 1500);
+	Actions.GiveWeapons(9, 19, 4500);
+	Actions.GiveWeapons(9, 17, 1500);
+	Actions.GiveWeapons(10, 25, 1500);
+	Actions.GiveWeapons(10, 23, 1500);
+	Actions.GiveWeapons(10, 21, 1500);
+	Actions.GiveWeapons(10, 19, 4500);
+	Actions.GiveWeapons(10, 17, 1500);
+		case DifficultySetting of
+	    mdEasy1:
+        begin		
+		Actions.AIEquipRate(2, 1, 30);
+	    Actions.AIEquipRate(3, 1, 30);
+	    Actions.AIEquipRate(4, 1, 30);
+	    Actions.AIEquipRate(5, 1, 30);
+	    Actions.AIEquipRate(6, 1, 30);
+		Actions.AIEquipRate(7, 1, 30);
+	    Actions.AIEquipRate(8, 1, 30);
+		Actions.AIEquipRate(9, 1, 30);
+	    Actions.AIEquipRate(10, 1, 30);
+        end;
+		
+        mdNormal:
+        begin	
+		Actions.AIEquipRate(2, 1, 20);
+	    Actions.AIEquipRate(3, 1, 20);
+	    Actions.AIEquipRate(4, 1, 20);
+	    Actions.AIEquipRate(5, 1, 20);
+	    Actions.AIEquipRate(6, 1, 20);
+		Actions.AIEquipRate(7, 1, 20);
+	    Actions.AIEquipRate(8, 1, 20);
+		Actions.AIEquipRate(9, 1, 20);
+	    Actions.AIEquipRate(10, 1, 20);
+        end;
+		
+        mdHard1:
+        begin
+		Actions.AIEquipRate(2, 1, 10);
+	    Actions.AIEquipRate(3, 1, 10);
+	    Actions.AIEquipRate(4, 1, 10);
+	    Actions.AIEquipRate(5, 1, 10);
+	    Actions.AIEquipRate(6, 1, 10);
+		Actions.AIEquipRate(7, 1, 10);
+	    Actions.AIEquipRate(8, 1, 10);
+		Actions.AIEquipRate(9, 1, 10);
+	    Actions.AIEquipRate(10, 1, 10);
+        end;
+        end;
+	end;	
+	
+if ((S.PlayerDefeated(2)) and (S.PlayerDefeated(3)) and (S.PlayerDefeated(4))) and (AntiMessageRepeat1 = false) and (Might < 9) then
+    begin
+	Actions.ShowMsg(0, '<$3>');
+	AntiMessageRepeat1:= true;
+	end;	
+	
+if ((S.PlayerDefeated(5)) and (S.PlayerDefeated(6)) and (S.PlayerDefeated(7))) and (AntiMessageRepeat2 = false) and (Might < 9) then
+    begin
+	Actions.ShowMsg(0, '<$4>');
+	AntiMessageRepeat2:= true;
+	end;
+
+if ((S.PlayerDefeated(8)) and (S.PlayerDefeated(9)) and (S.PlayerDefeated(10))) and (AntiMessageRepeat3 = false) and (Might < 9) then
+    begin
+	Actions.ShowMsg(0, '<$5>');
+	AntiMessageRepeat3:= true;
+	end;	
+	
+	
+if S.GameTime = 3000 then
+    begin
+	///orange
+	Actions.PlanAddHouse(2, 1, 21, 33);
+	Actions.PlanAddHouse(2, 1, 16, 30);
+	Actions.PlanAddHouse(2, 4, 31, 26);
+	Actions.PlanAddHouse(2, 4, 26, 22);
+	Actions.PlanAddHouse(2, 3, 22, 26);
+	Actions.PlanAddHouse(2, 3, 21, 30);
+	Actions.PlanAddHouse(2, 3, 11, 30);
+	Actions.PlanAddRoad(2, 23, 33);
+	Actions.PlanAddRoad(2, 23, 32);
+	Actions.PlanAddRoad(2, 23, 31);
+	Actions.PlanAddRoad(2, 23, 30);
+	Actions.PlanAddRoad(2, 23, 29);
+	Actions.PlanAddRoad(2, 24, 29);
+	Actions.PlanAddRoad(2, 25, 29);
+	Actions.PlanAddRoad(2, 23, 28);
+	Actions.PlanAddRoad(2, 24, 27);
+	Actions.PlanAddRoad(2, 23, 27);
+	Actions.PlanAddRoad(2, 22, 27);
+	Actions.PlanAddRoad(2, 24, 26);
+	Actions.PlanAddRoad(2, 22, 31);
+	Actions.PlanAddRoad(2, 21, 31);
+	Actions.PlanAddRoad(2, 20, 31);
+	Actions.PlanAddRoad(2, 19, 31);
+	Actions.PlanAddRoad(2, 18, 31);
+	Actions.PlanAddRoad(2, 17, 31);
+	Actions.PlanAddRoad(2, 16, 31);
+	Actions.PlanAddRoad(2, 15, 31);
+	Actions.PlanAddRoad(2, 14, 31);
+	Actions.PlanAddRoad(2, 13, 31);
+	Actions.PlanAddRoad(2, 12, 31);
+	Actions.PlanAddRoad(2, 11, 31);
+	Actions.PlanAddRoad(2, 33, 28);
+	Actions.PlanAddRoad(2, 33, 27);
+	Actions.PlanAddRoad(2, 32, 27);
+	Actions.PlanAddRoad(2, 31, 27);
+	Actions.PlanAddRoad(2, 30, 27);
+	Actions.PlanAddRoad(2, 29, 27);
+	Actions.PlanAddRoad(2, 25, 26);
+	Actions.PlanAddRoad(2, 26, 26);
+	Actions.PlanAddRoad(2, 27, 26);
+	Actions.PlanAddRoad(2, 28, 26);
+	Actions.PlanAddRoad(2, 29, 26);
+	Actions.PlanAddRoad(2, 25, 25);
+	Actions.PlanAddRoad(2, 25, 24);
+	Actions.PlanAddRoad(2, 25, 23);
+	Actions.PlanAddRoad(2, 26, 23);
+	///red
+	Actions.PlanAddHouse(5, 1, 41, 148);
+	Actions.PlanAddHouse(5, 1, 38, 152);
+	Actions.PlanAddHouse(5, 4, 12, 130);
+	Actions.PlanAddHouse(5, 4, 48, 141);
+	Actions.PlanAddHouse(5, 3, 45, 145);
+	Actions.PlanAddHouse(5, 3, 49, 145);
+	Actions.PlanAddHouse(5, 3, 46, 149);
+	Actions.PlanAddRoad(5, 12, 131);
+	Actions.PlanAddRoad(5, 46, 142);
+	Actions.PlanAddRoad(5, 47, 142);
+	Actions.PlanAddRoad(5, 48, 142);
+    Actions.PlanAddRoad(5, 43, 147);
+	Actions.PlanAddRoad(5, 43, 148);
+	Actions.PlanAddRoad(5, 43, 149);
+	Actions.PlanAddRoad(5, 44, 149);
+	Actions.PlanAddRoad(5, 44, 150);
+	Actions.PlanAddRoad(5, 45, 150);
+	Actions.PlanAddRoad(5, 46, 150);
+	Actions.PlanAddRoad(5, 42, 149);
+	Actions.PlanAddRoad(5, 41, 149);
+	Actions.PlanAddRoad(5, 40, 149);
+	Actions.PlanAddRoad(5, 40, 150);
+	Actions.PlanAddRoad(5, 40, 151);
+	Actions.PlanAddRoad(5, 40, 152);
+	Actions.PlanAddRoad(5, 40, 153);
+	Actions.PlanAddRoad(5, 39, 153);
+	Actions.PlanAddRoad(5, 38, 153);
+	///garnet
+	Actions.PlanAddHouse(8, 1, 138, 156);
+	Actions.PlanAddHouse(8, 1, 112, 157);
+	Actions.PlanAddHouse(8, 4, 114, 144);
+	Actions.PlanAddHouse(8, 4, 103, 151);
+	Actions.PlanAddHouse(8, 3, 125, 159);
+	Actions.PlanAddHouse(8, 3, 121, 156);
+	Actions.PlanAddHouse(8, 3, 125, 163);
+	Actions.PlanAddRoad(8, 123, 156);
+	Actions.PlanAddRoad(8, 123, 157);
+	Actions.PlanAddRoad(8, 122, 157);
+	Actions.PlanAddRoad(8, 121, 157);
+	Actions.PlanAddRoad(8, 127, 157);
+	Actions.PlanAddRoad(8, 127, 158);
+	Actions.PlanAddRoad(8, 127, 159);
+	Actions.PlanAddRoad(8, 127, 160);
+	Actions.PlanAddRoad(8, 127, 161);
+	Actions.PlanAddRoad(8, 127, 162);
+	Actions.PlanAddRoad(8, 127, 163);
+	Actions.PlanAddRoad(8, 127, 164);
+	Actions.PlanAddRoad(8, 116, 148);
+	Actions.PlanAddRoad(8, 116, 147);
+	Actions.PlanAddRoad(8, 116, 146);
+	Actions.PlanAddRoad(8, 116, 145);
+	Actions.PlanAddRoad(8, 115, 145);
+	Actions.PlanAddRoad(8, 114, 145);
+	Actions.PlanAddRoad(8, 103, 152);
+	Actions.PlanAddRoad(8, 104, 152);
+	Actions.PlanAddRoad(8, 105, 152);
+	Actions.PlanAddRoad(8, 105, 153);
+	Actions.PlanAddRoad(8, 106, 153);
+	Actions.PlanAddRoad(8, 140, 155);
+	Actions.PlanAddRoad(8, 140, 156);
+	Actions.PlanAddRoad(8, 140, 157);
+	Actions.PlanAddRoad(8, 139, 157);
+	Actions.PlanAddRoad(8, 138, 157);
+	Actions.PlanAddRoad(8, 114, 153);
+	Actions.PlanAddRoad(8, 114, 154);
+	Actions.PlanAddRoad(8, 114, 155);
+	Actions.PlanAddRoad(8, 114, 156);
+	Actions.PlanAddRoad(8, 114, 157);
+	Actions.PlanAddRoad(8, 114, 158);
+	Actions.PlanAddRoad(8, 113, 158);
+	Actions.PlanAddRoad(8, 112, 158);
+	Actions.PlanAddRoad(8, 125, 160);
+	Actions.PlanAddRoad(8, 126, 160);
+	Actions.PlanAddRoad(8, 125, 164);
+	Actions.PlanAddRoad(8, 126, 164);
+    end;	
+	
+if S.GameTime = 7500 then
+    begin
+	///orange
+	Actions.PlanAddHouse(2, 13, 19, 54);
+	Actions.PlanAddHouse(2, 10, 24, 54);
+	Actions.PlanAddHouse(2, 2, 29, 55);
+	Actions.PlanAddRoad(2, 29, 53);
+	Actions.PlanAddRoad(2, 29, 56);
+	Actions.PlanAddRoad(2, 28, 56);
+	Actions.PlanAddRoad(2, 27, 56);
+	Actions.PlanAddRoad(2, 19, 55);
+	Actions.PlanAddRoad(2, 20, 55);
+	Actions.PlanAddRoad(2, 21, 55);
+	Actions.PlanAddRoad(2, 22, 55);
+	Actions.PlanAddRoad(2, 23, 55);
+	Actions.PlanAddRoad(2, 24, 55);
+	Actions.PlanAddRoad(2, 25, 55);
+	Actions.PlanAddRoad(2, 26, 55);
+	Actions.PlanAddRoad(2, 27, 55);
+	Actions.PlanAddRoad(2, 27, 54);
+	Actions.PlanAddRoad(2, 27, 53);
+	Actions.PlanAddRoad(2, 28, 50);
+	Actions.PlanAddRoad(2, 28, 51);
+	Actions.PlanAddRoad(2, 28, 52);
+	Actions.PlanAddRoad(2, 28, 53);
+	Actions.PlanAddRoad(2, 22, 52);
+	Actions.PlanAddRoad(2, 22, 53);
+	Actions.PlanAddRoad(2, 22, 54);
+	///red
+	Actions.PlanAddHouse(5, 13, 41, 145);
+	Actions.PlanAddHouse(5, 10, 42, 152);
+	Actions.PlanAddHouse(5, 2, 42, 157);
+	Actions.PlanAddRoad(5, 41, 153);
+	Actions.PlanAddRoad(5, 42, 153);
+	Actions.PlanAddRoad(5, 42, 146);
+	Actions.PlanAddRoad(5, 41, 146);
+	Actions.PlanAddRoad(5, 40, 146);
+	Actions.PlanAddRoad(5, 41, 154);
+	Actions.PlanAddRoad(5, 41, 155);
+	Actions.PlanAddRoad(5, 40, 155);
+	Actions.PlanAddRoad(5, 40, 156);
+	Actions.PlanAddRoad(5, 40, 157);
+	Actions.PlanAddRoad(5, 40, 158);
+	Actions.PlanAddRoad(5, 41, 158);
+	Actions.PlanAddRoad(5, 42, 158);
+	///garnet
+	Actions.PlanAddHouse(8, 13, 107, 159);
+	Actions.PlanAddHouse(8, 10, 129, 159);
+	Actions.PlanAddHouse(8, 2, 111, 154);
+	Actions.PlanAddRoad(8, 128, 160);
+	Actions.PlanAddRoad(8, 129, 160);
+	Actions.PlanAddRoad(8, 113, 155);
+	Actions.PlanAddRoad(8, 112, 155);
+	Actions.PlanAddRoad(8, 111, 155);
+	Actions.PlanAddRoad(8, 111, 158);
+	Actions.PlanAddRoad(8, 110, 158);
+	Actions.PlanAddRoad(8, 109, 158);
+	Actions.PlanAddRoad(8, 109, 159);
+	Actions.PlanAddRoad(8, 109, 160);
+	Actions.PlanAddRoad(8, 108, 160);
+	Actions.PlanAddRoad(8, 107, 160);
+    end;	
+	
+if S.GameTime = 11400 then
+    begin
+	///orange
+	Actions.PlanAddHouse(2, 3, 12, 26);
+	Actions.PlanAddHouse(2, 3, 17, 26);
+	Actions.PlanAddHouse(2, 3, 19, 23);
+	Actions.PlanAddHouse(2, 3, 20, 20);
+	Actions.PlanAddRoad(2, 13, 30);
+	Actions.PlanAddRoad(2, 13, 29);
+	Actions.PlanAddRoad(2, 13, 28);
+	Actions.PlanAddRoad(2, 13, 27);
+	Actions.PlanAddRoad(2, 12, 27);
+	Actions.PlanAddRoad(2, 14, 27);
+	Actions.PlanAddRoad(2, 15, 27);
+	Actions.PlanAddRoad(2, 16, 27);
+	Actions.PlanAddRoad(2, 17, 27);
+	Actions.PlanAddRoad(2, 18, 27);
+	Actions.PlanAddRoad(2, 19, 27);
+	Actions.PlanAddRoad(2, 20, 27);
+	Actions.PlanAddRoad(2, 20, 26);
+	Actions.PlanAddRoad(2, 20, 25);
+	Actions.PlanAddRoad(2, 20, 24);
+	Actions.PlanAddRoad(2, 19, 24);
+	Actions.PlanAddRoad(2, 21, 27);
+	Actions.PlanAddRoad(2, 21, 24);
+	Actions.PlanAddRoad(2, 22, 24);
+	Actions.PlanAddRoad(2, 23, 24);
+	Actions.PlanAddRoad(2, 24, 24);
+	Actions.PlanAddRoad(2, 21, 23);
+	Actions.PlanAddRoad(2, 21, 22);
+	Actions.PlanAddRoad(2, 21, 21);
+	Actions.PlanAddRoad(2, 20, 21);
+	Actions.PlanAddRoad(2, 14, 32);
+	Actions.PlanAddRoad(2, 14, 33);
+	Actions.PlanAddRoad(2, 14, 34);
+	///red
+	Actions.PlanAddHouse(5, 3, 52, 150);
+	Actions.PlanAddHouse(5, 3, 47, 153);
+	Actions.PlanAddHouse(5, 3, 51, 153);
+	Actions.PlanAddHouse(5, 3, 52, 157);
+	Actions.PlanAddRoad(5, 54, 148);
+	Actions.PlanAddRoad(5, 54, 149);
+	Actions.PlanAddRoad(5, 54, 150);
+	Actions.PlanAddRoad(5, 54, 151);
+	Actions.PlanAddRoad(5, 53, 151);
+	Actions.PlanAddRoad(5, 52, 151);
+	Actions.PlanAddRoad(5, 53, 152);
+	Actions.PlanAddRoad(5, 53, 153);
+	Actions.PlanAddRoad(5, 53, 154);
+	Actions.PlanAddRoad(5, 52, 154);
+	Actions.PlanAddRoad(5, 51, 154);
+	Actions.PlanAddRoad(5, 50, 154);
+	Actions.PlanAddRoad(5, 49, 154);
+	Actions.PlanAddRoad(5, 48, 154);
+	Actions.PlanAddRoad(5, 47, 154);
+	Actions.PlanAddRoad(5, 46, 154);
+	Actions.PlanAddRoad(5, 45, 154);
+	Actions.PlanAddRoad(5, 45, 153);
+	Actions.PlanAddRoad(5, 45, 152);
+	Actions.PlanAddRoad(5, 45, 151);	
+	Actions.PlanAddRoad(5, 43, 153);
+	Actions.PlanAddRoad(5, 44, 153);
+	Actions.PlanAddRoad(5, 50, 155);
+	Actions.PlanAddRoad(5, 50, 156);
+	Actions.PlanAddRoad(5, 50, 157);
+	Actions.PlanAddRoad(5, 50, 158);
+	Actions.PlanAddRoad(5, 51, 158);
+	Actions.PlanAddRoad(5, 52, 158);
+	///garnet
+	Actions.PlanAddHouse(8, 3, 121, 160);
+	Actions.PlanAddHouse(8, 3, 121, 164);
+	Actions.PlanAddHouse(8, 3, 117, 163);
+	Actions.PlanAddHouse(8, 3, 117, 160);
+	Actions.PlanAddRoad(8, 124, 160);
+	Actions.PlanAddRoad(8, 124, 164);
+	Actions.PlanAddRoad(8, 123, 158);
+	Actions.PlanAddRoad(8, 123, 159);
+	Actions.PlanAddRoad(8, 123, 160);
+	Actions.PlanAddRoad(8, 123, 161);
+	Actions.PlanAddRoad(8, 123, 162);
+	Actions.PlanAddRoad(8, 123, 163);
+	Actions.PlanAddRoad(8, 123, 164);
+	Actions.PlanAddRoad(8, 123, 165);
+	Actions.PlanAddRoad(8, 122, 165);
+	Actions.PlanAddRoad(8, 121, 165);
+	Actions.PlanAddRoad(8, 120, 165);
+	Actions.PlanAddRoad(8, 119, 165);
+	Actions.PlanAddRoad(8, 117, 161);
+	Actions.PlanAddRoad(8, 118, 161);
+	Actions.PlanAddRoad(8, 119, 161);
+	Actions.PlanAddRoad(8, 120, 161);
+	Actions.PlanAddRoad(8, 121, 161);
+	Actions.PlanAddRoad(8, 122, 161);
+	Actions.PlanAddRoad(8, 119, 162);
+	Actions.PlanAddRoad(8, 119, 163);
+	Actions.PlanAddRoad(8, 119, 164);
+	Actions.PlanAddRoad(8, 118, 164);
+	Actions.PlanAddRoad(8, 117, 164);
+    end;	
+	
+if S.GameTime = 16800 then
+    begin
+	///red
+	Actions.PlanAddHouse(7, 1, 72, 125);
+	Actions.PlanAddHouse(7, 4, 66, 142);
+	Actions.PlanAddHouse(7, 4, 64, 127);
+	Actions.PlanAddHouse(7, 3, 59, 135);
+	Actions.PlanAddHouse(7, 3, 63, 134);
+	Actions.PlanAddHouse(7, 3, 60, 119);
+	Actions.PlanAddRoad(7, 58, 120);
+	Actions.PlanAddRoad(7, 59, 120);
+	Actions.PlanAddRoad(7, 60, 120);
+	Actions.PlanAddRoad(7, 73, 142);
+	Actions.PlanAddRoad(7, 73, 143);
+	Actions.PlanAddRoad(7, 72, 143);
+	Actions.PlanAddRoad(7, 72, 144);
+	Actions.PlanAddRoad(7, 71, 144);
+	Actions.PlanAddRoad(7, 71, 145);
+	Actions.PlanAddRoad(7, 70, 145);
+	Actions.PlanAddRoad(7, 69, 145);
+	Actions.PlanAddRoad(7, 68, 145);
+	Actions.PlanAddRoad(7, 68, 144);
+	Actions.PlanAddRoad(7, 68, 143);
+	Actions.PlanAddRoad(7, 67, 143);
+	Actions.PlanAddRoad(7, 66, 143);
+	///garnet
+	Actions.PlanAddHouse(10, 1, 170, 116);
+	Actions.PlanAddHouse(10, 4, 168, 108);
+	Actions.PlanAddHouse(10, 4, 166, 130);
+	Actions.PlanAddHouse(10, 3, 161, 118);
+	Actions.PlanAddHouse(10, 3, 165, 116);
+	Actions.PlanAddHouse(10, 3, 165, 112);
+	Actions.PlanAddRoad(10, 161, 119);
+	Actions.PlanAddRoad(10, 162, 119);
+	Actions.PlanAddRoad(10, 163, 119);
+	Actions.PlanAddRoad(10, 163, 118);
+	Actions.PlanAddRoad(10, 163, 117);
+	Actions.PlanAddRoad(10, 164, 117);
+	Actions.PlanAddRoad(10, 165, 117);
+	Actions.PlanAddRoad(10, 166, 117);
+	Actions.PlanAddRoad(10, 167, 117);
+	Actions.PlanAddRoad(10, 168, 117);
+	Actions.PlanAddRoad(10, 169, 117);
+	Actions.PlanAddRoad(10, 170, 117);
+	Actions.PlanAddRoad(10, 162, 132);
+	Actions.PlanAddRoad(10, 163, 132);
+	Actions.PlanAddRoad(10, 164, 132);
+	Actions.PlanAddRoad(10, 164, 131);
+	Actions.PlanAddRoad(10, 165, 131);
+	Actions.PlanAddRoad(10, 166, 131);
+	Actions.PlanAddRoad(10, 167, 109);
+	Actions.PlanAddRoad(10, 167, 110);
+	Actions.PlanAddRoad(10, 167, 111);
+	Actions.PlanAddRoad(10, 167, 112);
+	Actions.PlanAddRoad(10, 167, 113);
+	Actions.PlanAddRoad(10, 167, 114);
+	Actions.PlanAddRoad(10, 167, 115);
+	Actions.PlanAddRoad(10, 167, 116);
+	Actions.PlanAddRoad(10, 165, 113);
+	Actions.PlanAddRoad(10, 166, 113);
+	Actions.PlanAddRoad(10, 168, 109);
+    end;	
+	
+if S.GameTime = 20700 then
+    begin
+	///red
+	Actions.PlanAddHouse(7, 10, 35, 149);
+	Actions.PlanAddHouse(7, 2, 32, 156);
+	Actions.PlanAddHouse(7, 1, 38, 156);
+	Actions.PlanAddHouse(7, 3, 61, 115);
+	Actions.PlanAddHouse(7, 3, 56, 116);
+	Actions.PlanAddRoad(7, 60, 116);
+	Actions.PlanAddRoad(7, 61, 116);
+	Actions.PlanAddRoad(7, 38, 147);
+	Actions.PlanAddRoad(7, 38, 148);
+	Actions.PlanAddRoad(7, 38, 149);
+	Actions.PlanAddRoad(7, 39, 149);
+	Actions.PlanAddRoad(7, 38, 150);
+	Actions.PlanAddRoad(7, 37, 150);
+	Actions.PlanAddRoad(7, 36, 150);
+	Actions.PlanAddRoad(7, 35, 150);
+	Actions.PlanAddRoad(7, 34, 150);
+	Actions.PlanAddRoad(7, 34, 151);
+	Actions.PlanAddRoad(7, 34, 152);
+	Actions.PlanAddRoad(7, 35, 152);
+	Actions.PlanAddRoad(7, 35, 153);
+	Actions.PlanAddRoad(7, 35, 154);
+	Actions.PlanAddRoad(7, 35, 155);
+	Actions.PlanAddRoad(7, 35, 156);
+	Actions.PlanAddRoad(7, 35, 157);
+	Actions.PlanAddRoad(7, 35, 158);
+	Actions.PlanAddRoad(7, 34, 158);
+	Actions.PlanAddRoad(7, 33, 158);
+	Actions.PlanAddRoad(7, 33, 157);
+	Actions.PlanAddRoad(7, 32, 157);
+	Actions.PlanAddRoad(7, 36, 154);
+	Actions.PlanAddRoad(7, 37, 153);
+	Actions.PlanAddRoad(7, 37, 154);
+	Actions.PlanAddRoad(7, 39, 157);
+	Actions.PlanAddRoad(7, 38, 157);
+	Actions.PlanAddRoad(7, 37, 157);
+	Actions.PlanAddRoad(7, 36, 157);
+	///garnet
+	Actions.PlanAddHouse(10, 10, 172, 120);
+	Actions.PlanAddHouse(10, 2, 169, 113);
+	Actions.PlanAddHouse(10, 3, 153, 114);
+	Actions.PlanAddHouse(10, 3, 146, 107);
+	Actions.PlanAddHouse(8, 29, 118, 157);
+	Actions.PlanAddRoad(10, 169, 118);
+	Actions.PlanAddRoad(10, 169, 119);
+	Actions.PlanAddRoad(10, 170, 119);
+	Actions.PlanAddRoad(10, 170, 120);
+	Actions.PlanAddRoad(10, 170, 121);
+	Actions.PlanAddRoad(10, 171, 121);
+	Actions.PlanAddRoad(10, 172, 121);
+	Actions.PlanAddRoad(10, 168, 114);
+	Actions.PlanAddRoad(10, 169, 114);
+	Actions.PlanAddRoad(8, 120, 157);
+	Actions.PlanAddRoad(8, 119, 155);
+	Actions.PlanAddRoad(8, 119, 156);
+	Actions.PlanAddRoad(8, 119, 157);
+	Actions.PlanAddRoad(8, 119, 158);
+	Actions.PlanAddRoad(8, 118, 158);
+	Actions.PlanAddRoad(8, 117, 158);
+	Actions.PlanAddRoad(8, 116, 158);
+	Actions.PlanAddRoad(8, 115, 158);
+    end;	
+	
+if S.GameTime = 23100 then
+    begin
+	///orange
+	Actions.PlanAddHouse(2, 4, 28, 48);
+	Actions.PlanAddHouse(2, 4, 55, 45);
+	///garnet
+	Actions.PlanAddHouse(9, 1, 143, 156);
+	Actions.PlanAddHouse(9, 4, 170, 136);
+	Actions.PlanAddHouse(9, 4, 141, 95);
+	Actions.PlanAddHouse(9, 3, 153, 143);
+	Actions.PlanAddHouse(9, 3, 147, 157);
+	Actions.PlanAddHouse(9, 3, 149, 150);
+	Actions.PlanAddRoad(9, 141, 157);
+	Actions.PlanAddRoad(9, 142, 157);
+	Actions.PlanAddRoad(9, 143, 157);
+	Actions.PlanAddRoad(9, 144, 157);
+	Actions.PlanAddRoad(9, 145, 157);
+	Actions.PlanAddRoad(9, 145, 158);
+	Actions.PlanAddRoad(9, 146, 158);
+	Actions.PlanAddRoad(9, 147, 158);
+	Actions.PlanAddRoad(9, 146, 150);
+	Actions.PlanAddRoad(9, 147, 150);
+	Actions.PlanAddRoad(9, 147, 151);
+	Actions.PlanAddRoad(9, 148, 151);
+	Actions.PlanAddRoad(9, 149, 151);
+	Actions.PlanAddRoad(9, 141, 96);
+	Actions.PlanAddRoad(9, 164, 133);
+	Actions.PlanAddRoad(9, 164, 134);
+	Actions.PlanAddRoad(9, 164, 135);
+	Actions.PlanAddRoad(9, 165, 135);
+	Actions.PlanAddRoad(9, 166, 135);
+	Actions.PlanAddRoad(9, 167, 135);
+	Actions.PlanAddRoad(9, 167, 136);
+	Actions.PlanAddRoad(9, 168, 136);
+	Actions.PlanAddRoad(9, 168, 137);
+	Actions.PlanAddRoad(9, 169, 137);
+	Actions.PlanAddRoad(9, 170, 137);
+    end;		
+	
+if S.GameTime = 27600 then
+    begin
+	///orange
+	Actions.PlanAddHouse(3, 4, 59, 5);
+	Actions.PlanAddHouse(3, 4, 70, 10);
+	Actions.PlanAddHouse(3, 3, 63, 26);
+	Actions.PlanAddHouse(3, 3, 58, 27);
+	Actions.PlanAddHouse(3, 3, 67, 19);
+	Actions.PlanAddHouse(3, 3, 63, 16);
+	Actions.PlanAddRoad(3, 69, 12);
+	Actions.PlanAddRoad(3, 69, 11);
+	Actions.PlanAddRoad(3, 70, 11);
+	Actions.PlanAddRoad(3, 59, 11);
+	Actions.PlanAddRoad(3, 59, 10);
+	Actions.PlanAddRoad(3, 59, 9);
+	Actions.PlanAddRoad(3, 59, 8);
+	Actions.PlanAddRoad(3, 59, 7);
+	Actions.PlanAddRoad(3, 59, 6);
+	Actions.GiveWares(2, 5, 400);
+	Actions.GiveWares(2, 3, 200);
+	Actions.GiveWares(3, 5, 400);
+	Actions.GiveWares(3, 3, 200);
+	Actions.GiveWares(4, 5, 400);
+	Actions.GiveWares(4, 3, 200);
+	///red
+	Actions.GiveWares(5, 5, 400);
+	Actions.GiveWares(5, 3, 200);
+	Actions.GiveWares(6, 5, 400);
+	Actions.GiveWares(6, 3, 200);
+	Actions.GiveWares(7, 5, 400);
+	Actions.GiveWares(7, 3, 200);
+	///garnet
+	Actions.PlanAddHouse(9, 10, 160, 136);
+	Actions.PlanAddHouse(9, 2, 146, 160);
+	Actions.PlanAddHouse(9, 3, 157, 145);
+	Actions.PlanAddHouse(9, 3, 162, 148);
+	Actions.PlanAddRoad(8, 119, 159);
+	Actions.PlanAddRoad(8, 119, 160);
+	Actions.PlanAddRoad(9, 159, 137);
+	Actions.PlanAddRoad(9, 160, 137);
+	Actions.PlanAddRoad(9, 143, 158);
+	Actions.PlanAddRoad(9, 143, 159);
+	Actions.PlanAddRoad(9, 143, 160);
+	Actions.PlanAddRoad(9, 144, 160);
+	Actions.PlanAddRoad(9, 144, 161);
+	Actions.PlanAddRoad(9, 145, 161);
+	Actions.PlanAddRoad(9, 146, 161);
+	Actions.GiveWares(8, 5, 400);
+	Actions.GiveWares(8, 3, 200);
+	Actions.GiveWares(9, 5, 400);
+	Actions.GiveWares(9, 3, 200);
+	Actions.GiveWares(10, 5, 400);
+	Actions.GiveWares(10, 3, 200);
+    end;
+	
+if S.GameTime = 33000 then
+    begin	
+    Actions.ShowMsg(0,'<$7>')	
+	end;
+	
+if S.GameTime = 39000 then
+    begin
+	///orange
+    Actions.HouseDestroy(S.HouseAt(17, 26), false);
+	Actions.HouseDestroy(S.HouseAt(22, 26), false);
+	Actions.HouseDestroy(S.HouseAt(19, 23), false);
+	Actions.HouseDestroy(S.HouseAt(12, 26), false);
+	Actions.PlanAddHouse(3, 1, 18, 26);
+	Actions.PlanAddHouse(4, 1, 19, 23);
+	Actions.PlanAddHouse(2, 23, 21, 26);
+	Actions.PlanAddHouse(2, 3, 48, 54);
+	Actions.PlanAddHouse(2, 3, 52, 54);
+	Actions.PlanAddHouse(2, 3, 54, 51);
+	Actions.PlanAddHouse(2, 3, 56, 54);
+	Actions.PlanAddRoad(2, 44, 56);
+	Actions.PlanAddRoad(2, 45, 56);
+	Actions.PlanAddRoad(2, 46, 56);
+	Actions.PlanAddRoad(2, 46, 55);
+	Actions.PlanAddRoad(2, 47, 55);
+	Actions.PlanAddRoad(2, 48, 55);
+	Actions.PlanAddRoad(2, 49, 55);
+	Actions.PlanAddRoad(2, 50, 55);
+	Actions.PlanAddRoad(2, 51, 55);
+	Actions.PlanAddRoad(2, 52, 55);
+	Actions.PlanAddRoad(2, 52, 56);
+	Actions.PlanAddRoad(2, 53, 56);
+	Actions.PlanAddRoad(2, 54, 56);	
+	Actions.PlanAddRoad(2, 54, 55);
+	Actions.PlanAddRoad(2, 54, 54);
+	Actions.PlanAddRoad(2, 54, 53);
+	Actions.PlanAddRoad(2, 54, 52);	
+	Actions.PlanAddRoad(2, 55, 55);	
+	Actions.PlanAddRoad(2, 56, 55);
+	Actions.PlanAddRoad(2, 57, 55);
+	///red
+	Actions.HouseDestroy(S.HouseAt(45, 145), false);
+	Actions.HouseDestroy(S.HouseAt(49, 145), false);
+	Actions.PlanAddHouse(6, 28, 46, 145);
+	Actions.PlanAddHouse(7, 28, 50, 145);
+	Actions.PlanAddHouse(5, 3, 56, 151);
+	Actions.PlanAddHouse(5, 3, 56, 155);
+	Actions.PlanAddHouse(5, 3, 59, 131);
+	Actions.PlanAddWineField(6, 44, 143);
+	Actions.PlanAddWineField(7, 45, 143);
+	Actions.PlanAddWineField(6, 46, 143);
+	Actions.PlanAddWineField(7, 47, 143);
+	Actions.PlanAddWineField(6, 47, 144);
+	Actions.PlanAddWineField(7, 47, 145);
+	Actions.PlanAddWineField(6, 48, 143);
+	Actions.PlanAddWineField(7, 49, 143);
+	Actions.PlanAddWineField(6, 50, 143);
+	Actions.PlanAddWineField(7, 49, 142);
+	Actions.PlanAddWineField(6, 50, 142);
+	Actions.PlanAddWineField(7, 51, 143);
+	Actions.PlanAddWineField(6, 51, 144);
+	Actions.PlanAddWineField(7, 51, 145);
+	Actions.PlanAddWineField(6, 52, 144);
+	Actions.PlanAddWineField(7, 52, 145);
+	Actions.PlanAddWineField(6, 51, 146);
+	Actions.PlanAddRoad(5, 59, 132);
+	Actions.PlanAddRoad(5, 58, 132);
+	Actions.PlanAddRoad(5, 58, 133);
+	Actions.PlanAddRoad(5, 53, 155);
+	Actions.PlanAddRoad(5, 54, 155);
+	Actions.PlanAddRoad(5, 54, 156);
+	Actions.PlanAddRoad(5, 55, 156);
+	Actions.PlanAddRoad(5, 56, 156);
+	Actions.PlanAddRoad(5, 54, 152);
+	Actions.PlanAddRoad(5, 55, 152);
+	Actions.PlanAddRoad(5, 56, 152);
+	Actions.GiveWeapons(6, 25, 100);
+	Actions.GiveWeapons(6, 23, 100);
+	Actions.GiveWeapons(6, 21, 100);
+	Actions.GiveWeapons(6, 19, 300);
+	Actions.GiveWeapons(6, 17, 100);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(121, 156), false);
+	Actions.HouseDestroy(S.HouseAt(121, 160), false);
+	Actions.HouseDestroy(S.HouseAt(125, 159), false);
+	Actions.PlanAddHouse(8, 28, 126, 159);
+	Actions.PlanAddHouse(8, 3, 112, 160);
+	Actions.PlanAddHouse(8, 3, 112, 163);
+	Actions.PlanAddHouse(8, 3, 119, 167);
+	Actions.PlanAddWineField(8, 124, 157);
+	Actions.PlanAddWineField(8, 125, 157);
+	Actions.PlanAddWineField(8, 126, 157);
+	Actions.PlanAddWineField(8, 128, 161);
+	Actions.PlanAddWineField(8, 129, 161);
+	Actions.PlanAddWineField(8, 130, 161);
+	Actions.PlanAddWineField(8, 128, 162);
+	Actions.PlanAddWineField(8, 129, 162);
+	Actions.PlanAddWineField(8, 130, 162);
+	Actions.PlanAddRoad(8, 108, 156);
+	Actions.PlanAddRoad(8, 109, 156);
+	Actions.PlanAddRoad(8, 109, 157);
+	Actions.PlanAddRoad(8, 114, 159);
+	Actions.PlanAddRoad(8, 114, 160);
+	Actions.PlanAddRoad(8, 114, 161);
+	Actions.PlanAddRoad(8, 113, 161);
+	Actions.PlanAddRoad(8, 112, 161);
+	Actions.PlanAddRoad(8, 114, 162);
+	Actions.PlanAddRoad(8, 114, 163);
+	Actions.PlanAddRoad(8, 114, 164);
+	Actions.PlanAddRoad(8, 113, 164);
+	Actions.PlanAddRoad(8, 112, 164);
+	Actions.PlanAddRoad(8, 115, 161);
+	Actions.PlanAddRoad(8, 116, 161);
+	Actions.PlanAddRoad(8, 115, 164);
+	Actions.PlanAddRoad(8, 116, 164);
+	Actions.PlanAddRoad(8, 121, 166);
+	Actions.PlanAddRoad(8, 121, 167);
+	Actions.PlanAddRoad(8, 121, 168);
+	Actions.PlanAddRoad(8, 120, 168);
+	Actions.PlanAddRoad(8, 119, 168);
+    end;	
+
+if S.GameTime = 43200 then
+    begin
+	///orange
+    Actions.HouseDestroy(S.HouseAt(21, 30), false);
+	Actions.HouseDestroy(S.HouseAt(11, 30), false);
+	Actions.HouseDestroy(S.HouseAt(20, 20), false);
+	Actions.PlanAddHouse(3, 10, 20, 20);
+	Actions.PlanAddHouse(3, 2, 12, 26);
+	Actions.PlanAddHouse(4, 10, 20, 30);
+	Actions.PlanAddHouse(4, 2, 10, 30);
+	Actions.PlanAddHouse(4, 3, 47, 58);
+	Actions.PlanAddHouse(4, 3, 51, 58);
+	Actions.PlanAddHouse(4, 3, 55, 59);
+	Actions.PlanAddHouse(4, 4, 41, 64);
+	Actions.PlanAddHouse(4, 4, 37, 63);
+	Actions.PlanAddRoad(2, 10, 31);
+	Actions.PlanAddRoad(4, 38, 65);
+	Actions.PlanAddRoad(4, 39, 65);
+	Actions.PlanAddRoad(4, 40, 65);
+	Actions.PlanAddRoad(4, 41, 65);
+	Actions.PlanAddRoad(4, 42, 65);
+	Actions.PlanAddRoad(4, 38, 64);
+	Actions.PlanAddRoad(4, 37, 64);
+	Actions.PlanAddRoad(3, 46, 60);
+	Actions.PlanAddRoad(3, 46, 59);
+	Actions.PlanAddRoad(3, 47, 59);
+	Actions.PlanAddRoad(3, 48, 59);
+	Actions.PlanAddRoad(3, 49, 59);
+	Actions.PlanAddRoad(3, 50, 59);
+	Actions.PlanAddRoad(3, 51, 59);
+	Actions.PlanAddRoad(3, 52, 59);
+	Actions.PlanAddRoad(3, 53, 59);
+	Actions.PlanAddRoad(3, 53, 58);
+	Actions.PlanAddRoad(3, 53, 57);
+	Actions.PlanAddRoad(3, 53, 60);
+	Actions.PlanAddRoad(3, 54, 60);
+	Actions.PlanAddRoad(3, 55, 60);
+	Actions.PlanAddRoad(3, 56, 60);
+	///garnet
+    Actions.HouseDestroy(S.HouseAt(117, 160), false);
+	Actions.HouseDestroy(S.HouseAt(117, 163), false);
+	Actions.HouseDestroy(S.HouseAt(125, 163), false);
+	Actions.HouseDestroy(S.HouseAt(121, 164), false);
+	Actions.PlanAddHouse(9, 28, 126, 163);
+	Actions.PlanAddHouse(10, 28, 122, 156);
+	Actions.PlanAddHouse(8, 23, 120, 160);
+	Actions.PlanAddHouse(8, 1, 117, 160);
+	Actions.PlanAddHouse(8, 19, 116, 163);
+	Actions.PlanAddHouse(8, 20, 120, 164);
+	Actions.PlanAddWineField(9, 122, 162);
+	Actions.PlanAddWineField(9, 120, 158);
+	Actions.PlanAddWineField(9, 121, 158);
+	Actions.PlanAddWineField(9, 122, 158);
+	Actions.PlanAddWineField(9, 124, 161);
+	Actions.PlanAddWineField(9, 125, 161);
+	Actions.PlanAddWineField(9, 126, 161);
+	Actions.PlanAddWineField(9, 128, 164);
+	Actions.PlanAddWineField(9, 127, 165);
+	Actions.PlanAddWineField(9, 128, 163);
+	Actions.PlanAddWineField(9, 129, 163);
+	Actions.PlanAddWineField(9, 121, 153);
+	Actions.PlanAddWineField(9, 120, 154);
+	Actions.PlanAddWineField(9, 121, 154);
+	Actions.PlanAddWineField(9, 122, 154);
+	Actions.PlanAddWineField(9, 123, 155);
+    end;	
+
+if S.GameTime = 54000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(26, 22), false);
+	Actions.PlanAddHouse(2, 28, 24, 23);
+	Actions.PlanAddWineField(2, 22, 21);
+	Actions.PlanAddWineField(2, 23, 21);
+	Actions.PlanAddWineField(2, 23, 20);
+	Actions.PlanAddWineField(2, 27, 23);
+	Actions.PlanAddWineField(2, 28, 23);
+	Actions.PlanAddWineField(2, 26, 24);
+	Actions.PlanAddWineField(2, 27, 24);
+	Actions.PlanAddWineField(2, 26, 25);
+	Actions.PlanAddWineField(2, 27, 25);
+	Actions.GiveWares(2, 5, 400);
+	Actions.GiveWares(2, 3, 200);
+	Actions.GiveWares(3, 5, 400);
+	Actions.GiveWares(3, 3, 200);
+	Actions.GiveWares(4, 5, 400);
+	Actions.GiveWares(4, 3, 200);
+	///red
+	Actions.HouseDestroy(S.HouseAt(46, 149), false);
+	Actions.HouseDestroy(S.HouseAt(47, 153), false);
+	Actions.HouseDestroy(S.HouseAt(51, 153), false);
+	Actions.PlanAddHouse(5, 19, 47, 153);
+	Actions.PlanAddHouse(5, 20, 45, 149);
+	Actions.GiveWares(5, 5, 400);
+	Actions.GiveWares(5, 3, 200);
+	Actions.GiveWares(6, 5, 400);
+	Actions.GiveWares(6, 3, 200);
+	Actions.GiveWares(7, 5, 400);
+	Actions.GiveWares(7, 3, 200);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(161, 118), false);
+	Actions.HouseDestroy(S.HouseAt(165, 116), false);
+	Actions.HouseDestroy(S.HouseAt(165, 112), false);
+	Actions.PlanAddHouse(8, 4, 133, 156);
+	Actions.PlanAddHouse(8, 4, 158, 99);
+	Actions.PlanAddHouse(8, 10, 134, 160);
+	Actions.PlanAddHouse(8, 2, 140, 159);
+	Actions.PlanAddHouse(10, 3, 157, 114);
+	Actions.PlanAddHouse(10, 3, 150, 109);
+	Actions.PlanAddHouse(10, 3, 161, 115);
+	Actions.PlanAddRoad(8, 129, 156);
+	Actions.PlanAddRoad(8, 130, 156);
+	Actions.PlanAddRoad(8, 131, 156);
+	Actions.PlanAddRoad(8, 131, 157);
+	Actions.PlanAddRoad(8, 132, 157);
+	Actions.PlanAddRoad(8, 133, 157);
+	Actions.PlanAddRoad(8, 134, 157);
+	Actions.PlanAddRoad(8, 135, 157);
+	Actions.PlanAddRoad(8, 136, 157);
+	Actions.PlanAddRoad(8, 137, 157);
+	Actions.PlanAddRoad(10, 154, 100);
+	Actions.PlanAddRoad(10, 155, 100);
+	Actions.PlanAddRoad(10, 156, 100);
+	Actions.PlanAddRoad(10, 157, 100);
+	Actions.PlanAddRoad(10, 158, 100);
+	Actions.PlanAddRoad(8, 130, 160);
+	Actions.PlanAddRoad(8, 131, 160);
+	Actions.PlanAddRoad(8, 132, 160);
+	Actions.PlanAddRoad(8, 132, 158);
+	Actions.PlanAddRoad(8, 132, 159);
+	Actions.PlanAddRoad(8, 132, 161);
+	Actions.PlanAddRoad(8, 133, 161);
+	Actions.PlanAddRoad(8, 134, 161);
+	Actions.PlanAddRoad(8, 137, 158);
+	Actions.PlanAddRoad(8, 137, 159);
+	Actions.PlanAddRoad(8, 138, 159);
+	Actions.PlanAddRoad(8, 138, 160);
+	Actions.PlanAddRoad(8, 139, 160);
+	Actions.PlanAddRoad(8, 140, 160);
+	Actions.PlanAddRoad(8, 141, 160);
+	Actions.PlanAddRoad(8, 142, 160);
+	Actions.PlanAddRoad(10, 150, 110);
+	Actions.PlanAddRoad(10, 154, 115);
+	Actions.PlanAddRoad(10, 155, 115);
+	Actions.PlanAddRoad(10, 156, 115);
+	Actions.PlanAddRoad(10, 157, 115);
+	Actions.PlanAddRoad(10, 158, 115);
+	Actions.PlanAddRoad(10, 159, 115);
+	Actions.PlanAddRoad(10, 159, 116);
+	Actions.PlanAddRoad(10, 160, 116);
+	Actions.PlanAddRoad(10, 161, 116);
+	Actions.PlanAddRoad(10, 162, 116);
+	Actions.PlanAddRoad(10, 163, 116);
+	Actions.GiveWares(8, 5, 400);
+	Actions.GiveWares(8, 3, 200);
+	Actions.GiveWares(9, 5, 400);
+	Actions.GiveWares(9, 3, 200);
+	Actions.GiveWares(10, 5, 400);
+	Actions.GiveWares(10, 3, 200);
+    end;
+
+if S.GameTime = 60000 then
+    begin
+	///red
+	Actions.HouseDestroy(S.HouseAt(59, 135), false);
+	Actions.HouseDestroy(S.HouseAt(63, 134), false);
+	Actions.HouseDestroy(S.HouseAt(52, 150), false);
+	Actions.HouseDestroy(S.HouseAt(52, 157), false);
+    Actions.PlanAddHouse(7, 3, 76, 135);
+	Actions.PlanAddHouse(7, 3, 29, 108);
+	Actions.PlanAddHouse(5, 3, 33, 108);
+	Actions.PlanAddHouse(5, 3, 76, 125);
+	Actions.PlanAddHouse(5, 22, 59, 135);
+	Actions.PlanAddHouse(5, 7, 64, 134);
+	Actions.PlanAddRoad(9, 29, 109);
+	Actions.PlanAddRoad(9, 32, 109);
+	Actions.PlanAddRoad(9, 33, 109);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(119, 167), false);
+	Actions.HouseDestroy(S.HouseAt(112, 163), false);
+	Actions.HouseDestroy(S.HouseAt(112, 160), false);
+	Actions.PlanAddHouse(8, 28, 119, 167);
+    Actions.PlanAddHouse(8, 3, 154, 150);
+	Actions.PlanAddHouse(8, 3, 158, 150);
+	Actions.PlanAddHouse(8, 3, 108, 163);
+	Actions.PlanAddHouse(8, 3, 157, 114);
+	Actions.PlanAddHouse(8, 7, 166, 116);
+	Actions.PlanAddHouse(8, 22, 161, 118);
+	Actions.PlanAddWineField(10, 122, 166);
+	Actions.PlanAddWineField(10, 122, 167);
+	Actions.PlanAddWineField(10, 122, 168);
+	Actions.PlanAddWineField(10, 120, 166);
+	Actions.PlanAddWineField(10, 120, 167);
+	Actions.PlanAddWineField(10, 116, 165);
+	Actions.PlanAddWineField(10, 116, 166);
+	Actions.PlanAddWineField(10, 116, 167);
+	Actions.PlanAddWineField(10, 117, 165);
+	Actions.PlanAddWineField(10, 118, 165);
+	Actions.PlanAddRoad(9, 150, 151);
+	Actions.PlanAddRoad(9, 151, 151);
+	Actions.PlanAddRoad(9, 152, 151);
+	Actions.PlanAddRoad(9, 153, 151);
+	Actions.PlanAddRoad(9, 154, 151);
+	Actions.PlanAddRoad(9, 155, 151);
+	Actions.PlanAddRoad(9, 156, 151);
+	Actions.PlanAddRoad(9, 157, 151);
+	Actions.PlanAddRoad(9, 158, 151);
+	Actions.PlanAddRoad(9, 159, 151);
+	Actions.PlanAddRoad(9, 160, 151);
+	Actions.PlanAddRoad(9, 160, 150);
+	Actions.PlanAddRoad(8, 108, 164);
+	Actions.PlanAddRoad(8, 109, 164);
+	Actions.PlanAddRoad(8, 110, 164);
+	Actions.PlanAddRoad(8, 111, 164);
+    end;	
+	
+if S.GameTime = 69000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(63, 16), false);
+	Actions.PlanAddHouse(2, 3, 70, 22);
+	Actions.PlanAddHouse(2, 3, 59, 24);
+	Actions.PlanAddHouse(3, 0, 63, 16);
+	Actions.PlanAddRoad(2, 70, 23);
+	Actions.PlanAddRoad(2, 69, 23);
+	Actions.PlanAddRoad(2, 59, 25);
+	Actions.PlanAddRoad(2, 60, 25);
+	Actions.PlanAddRoad(2, 61, 25);
+	Actions.PlanAddRoad(2, 61, 26);
+	///red
+	Actions.HouseDestroy(S.HouseAt(48, 141), false);
+	Actions.HouseDestroy(S.HouseAt(64, 127), false);
+	Actions.HouseDestroy(S.HouseAt(56, 151), false);
+	Actions.HouseDestroy(S.HouseAt(56, 155), false);
+	Actions.HouseDestroy(S.HouseAt(60, 119), false);
+	Actions.HouseDestroy(S.HouseAt(56, 116), false);
+	Actions.PlanAddHouse(5, 7, 48, 115);
+	Actions.PlanAddHouse(5, 4, 56, 147);
+	Actions.PlanAddHouse(7, 4, 48, 115);
+	Actions.PlanAddHouse(5, 3, 62, 151);
+	Actions.PlanAddHouse(5, 3, 67, 151);
+	Actions.PlanAddHouse(7, 3, 36, 112);
+	Actions.PlanAddHouse(7, 3, 37, 109);
+	Actions.PlanAddHouse(5, 3, 67, 148);
+	Actions.PlanAddHouse(5, 8, 56, 151);
+	Actions.PlanAddHouse(5, 8, 52, 157);
+	Actions.PlanAddRoad(7, 34, 115);
+	Actions.PlanAddRoad(7, 34, 114);
+	Actions.PlanAddRoad(7, 34, 113);
+	Actions.PlanAddRoad(7, 35, 113);
+	Actions.PlanAddRoad(7, 36, 113);
+	Actions.PlanAddRoad(7, 34, 112);
+	Actions.PlanAddRoad(7, 34, 111);
+	Actions.PlanAddRoad(7, 34, 110);
+	Actions.PlanAddRoad(7, 35, 110);
+	Actions.PlanAddRoad(7, 36, 110);
+	Actions.PlanAddRoad(7, 37, 110);
+	Actions.PlanAddRoad(7, 38, 110);
+	Actions.PlanAddRoad(7, 39, 110);
+	Actions.PlanAddRoad(7, 34, 109);
+	Actions.PlanAddField(6, 50, 152);
+	Actions.PlanAddField(6, 51, 152);
+	Actions.PlanAddField(6, 52, 152);
+	Actions.PlanAddField(6, 50, 153);
+	Actions.PlanAddField(6, 51, 153);
+	Actions.PlanAddField(6, 52, 153);	
+	Actions.PlanAddField(6, 54, 153);
+	Actions.PlanAddField(6, 55, 153);
+	Actions.PlanAddField(6, 56, 153);
+	Actions.PlanAddField(6, 57, 153);
+	Actions.PlanAddField(6, 58, 153);
+	Actions.PlanAddField(6, 59, 153);
+	Actions.PlanAddField(6, 54, 154);
+	Actions.PlanAddField(6, 55, 154);
+	Actions.PlanAddField(6, 56, 154);
+	Actions.PlanAddField(6, 57, 154);
+	Actions.PlanAddField(6, 58, 154);
+	Actions.PlanAddField(6, 59, 154);
+	Actions.PlanAddField(6, 55, 155);
+	Actions.PlanAddField(6, 56, 155);
+	Actions.PlanAddField(6, 57, 155);
+	Actions.PlanAddField(6, 58, 155);
+	Actions.PlanAddField(6, 59, 155);
+	Actions.PlanAddField(6, 59, 149);
+	Actions.PlanAddField(6, 59, 150);
+	Actions.PlanAddField(6, 59, 151);
+	Actions.PlanAddField(6, 53, 158);
+	Actions.PlanAddField(6, 54, 158);
+	Actions.PlanAddField(6, 55, 158);
+	Actions.PlanAddField(6, 55, 157);
+	Actions.PlanAddRoad(5, 55, 148);
+	Actions.PlanAddRoad(5, 56, 148);
+	Actions.PlanAddRoad(5, 57, 152);
+	Actions.PlanAddRoad(5, 58, 152);
+	Actions.PlanAddRoad(5, 59, 152);
+	Actions.PlanAddRoad(5, 60, 152);
+	Actions.PlanAddRoad(5, 61, 152);
+	Actions.PlanAddRoad(5, 62, 152);
+	Actions.PlanAddRoad(5, 63, 152);
+	Actions.PlanAddRoad(5, 64, 152);
+	Actions.PlanAddRoad(5, 65, 152);
+	Actions.PlanAddRoad(5, 66, 152);
+	Actions.PlanAddRoad(5, 67, 152);
+	Actions.PlanAddRoad(5, 64, 146);
+	Actions.PlanAddRoad(5, 64, 147);
+	Actions.PlanAddRoad(5, 64, 148);
+	Actions.PlanAddRoad(5, 64, 149);
+	Actions.PlanAddRoad(5, 64, 150);
+	Actions.PlanAddRoad(5, 64, 151);
+	Actions.PlanAddRoad(5, 65, 146);
+	Actions.PlanAddRoad(5, 66, 146);
+	Actions.PlanAddRoad(5, 67, 146);
+	Actions.PlanAddRoad(5, 68, 146);
+	Actions.PlanAddRoad(5, 65, 149);
+	Actions.PlanAddRoad(5, 66, 149);
+	Actions.PlanAddRoad(5, 67, 149);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(108, 163), false);
+	Actions.HouseDestroy(S.HouseAt(147, 157), false);
+	Actions.HouseDestroy(S.HouseAt(161, 115), false);
+	Actions.PlanAddHouse(8, 8, 111, 163);
+	Actions.PlanAddHouse(8, 3, 152, 155);
+	Actions.PlanAddHouse(8, 3, 156, 155);
+	Actions.PlanAddHouse(10, 3, 160, 111);
+	Actions.PlanAddField(8, 110, 159);
+    Actions.PlanAddField(8, 111, 159);
+	Actions.PlanAddField(8, 112, 159);
+	Actions.PlanAddField(8, 113, 159);
+	Actions.PlanAddField(8, 110, 160);
+    Actions.PlanAddField(8, 111, 160);
+	Actions.PlanAddField(8, 112, 160);
+	Actions.PlanAddField(8, 113, 160);
+	Actions.PlanAddField(8, 107, 161);
+	Actions.PlanAddField(8, 108, 161);
+	Actions.PlanAddField(8, 109, 161);
+	Actions.PlanAddField(8, 107, 162);
+	Actions.PlanAddField(8, 108, 162);
+	Actions.PlanAddField(8, 109, 162);
+	Actions.PlanAddField(8, 107, 163);
+	Actions.PlanAddField(8, 108, 163);
+	Actions.PlanAddField(8, 109, 163);
+	Actions.PlanAddRoad(10, 150, 158);
+	Actions.PlanAddRoad(10, 149, 158);
+	Actions.PlanAddRoad(10, 148, 158);
+	Actions.PlanAddRoad(10, 150, 157);
+	Actions.PlanAddRoad(10, 150, 156);
+	Actions.PlanAddRoad(10, 151, 156);
+	Actions.PlanAddRoad(10, 152, 156);
+	Actions.PlanAddRoad(10, 153, 156);
+	Actions.PlanAddRoad(10, 154, 156);
+	Actions.PlanAddRoad(10, 155, 156);
+	Actions.PlanAddRoad(10, 156, 156);
+	Actions.PlanAddRoad(10, 157, 156);
+	Actions.PlanAddRoad(10, 158, 156);
+	Actions.PlanAddRoad(10, 158, 155);
+	Actions.PlanAddRoad(10, 158, 154);
+	Actions.PlanAddRoad(10, 158, 153);
+	Actions.PlanAddRoad(10, 158, 152);
+	Actions.PlanAddRoad(9, 159, 114);
+	Actions.PlanAddRoad(9, 159, 113);
+	Actions.PlanAddRoad(9, 159, 112);
+	Actions.PlanAddRoad(9, 160, 112);
+	Actions.PlanAddRoad(9, 127, 121);
+	Actions.PlanAddRoad(9, 128, 121);
+	Actions.PlanAddRoad(9, 126, 119);
+	Actions.PlanAddRoad(9, 127, 119);
+	Actions.PlanAddRoad(9, 126, 120);
+	Actions.PlanAddRoad(9, 127, 120);
+    end;	
+if S.GameTime = 72000 then
+    begin
+	///garnet
+	Actions.PlanAddHouse(9, 17, 127, 120);	
+    end;
+
+if S.GameTime = 75000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(31, 26), false);
+	Actions.HouseDestroy(S.HouseAt(58, 27), false);
+    Actions.PlanAddHouse(4, 4, 62, 43);
+	Actions.PlanAddHouse(3, 17, 60, 27);
+	Actions.PlanAddRoad(2, 59, 48);
+	Actions.PlanAddRoad(2, 60, 48);
+	Actions.PlanAddRoad(2, 60, 47);
+	Actions.PlanAddRoad(2, 61, 47);
+	Actions.PlanAddRoad(2, 61, 46);
+	Actions.PlanAddRoad(2, 62, 46);
+	Actions.PlanAddRoad(2, 62, 45);
+	Actions.PlanAddRoad(2, 62, 44);
+	///red
+    Actions.HouseDestroy(S.HouseAt(61, 115), false);
+	Actions.HouseDestroy(S.HouseAt(59, 131), false);
+	Actions.PlanAddHouse(7, 17, 61, 115);
+	Actions.PlanAddHouse(7, 3, 66, 117);
+	Actions.PlanAddHouse(5, 3, 64, 130);
+	Actions.PlanAddRoad(7, 62, 116);
+	Actions.PlanAddRoad(7, 63, 116);
+	Actions.PlanAddRoad(7, 63, 117);
+	Actions.PlanAddRoad(7, 64, 117);
+	Actions.PlanAddRoad(7, 64, 118);
+	Actions.PlanAddRoad(7, 65, 118);
+	Actions.PlanAddRoad(7, 66, 118);
+	Actions.PlanAddRoad(5, 64, 131);
+	Actions.PlanAddRoad(5, 65, 131);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(166, 130), false);
+	Actions.HouseDestroy(S.HouseAt(153, 143), false);
+	Actions.HouseDestroy(S.HouseAt(157, 114), false);
+	Actions.PlanAddHouse(10, 13, 153, 143);
+    Actions.PlanAddHouse(10, 4, 143, 148);
+	Actions.PlanAddHouse(10, 3, 149, 101);
+	Actions.PlanAddRoad(10, 149, 102);
+	Actions.PlanAddRoad(10, 150, 102);
+	Actions.PlanAddRoad(10, 151, 102);
+    end;	
+	
+if S.GameTime = 84000 then
+    begin
+	///orange
+    Actions.HouseDestroy(S.HouseAt(63, 26), false);
+	Actions.HouseDestroy(S.HouseAt(67, 19), false);
+	Actions.HouseDestroy(S.HouseAt(54, 51), false);
+	Actions.HouseDestroy(S.HouseAt(56, 54), false);
+	Actions.HouseDestroy(S.HouseAt(52, 54), false);
+	Actions.HouseDestroy(S.HouseAt(48, 54), false);
+	Actions.HouseDestroy(S.HouseAt(47, 58), false);
+	Actions.PlanAddHouse(4, 9, 68, 19);
+	Actions.PlanAddHouse(2, 3, 56, 67);
+	Actions.PlanAddHouse(2, 3, 52, 67);
+	Actions.PlanAddHouse(2, 3, 55, 62);
+	Actions.PlanAddHouse(2, 3, 47, 62);
+	Actions.PlanAddHouse(2, 29, 50, 54);
+	Actions.PlanAddRoad(2, 45, 63);
+	Actions.PlanAddRoad(2, 46, 63);
+	Actions.PlanAddRoad(2, 47, 63);
+	Actions.PlanAddRoad(2, 55, 68);
+	Actions.PlanAddRoad(2, 56, 68);
+	///red
+	Actions.PlanAddHouse(7, 13, 59, 132);
+	Actions.PlanAddHouse(7, 9, 60, 119);
+	Actions.PlanAddHouse(5, 3, 32, 104);
+	Actions.PlanAddRoad(7, 59, 133);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(149, 150), false);
+	Actions.HouseDestroy(S.HouseAt(162, 148), false);
+	Actions.HouseDestroy(S.HouseAt(153, 114), false);
+	Actions.HouseDestroy(S.HouseAt(157, 145), false);
+    Actions.PlanAddHouse(9, 3, 148, 153);
+	Actions.PlanAddHouse(9, 3, 158, 139);
+	Actions.PlanAddHouse(9, 3, 158, 142);
+	Actions.PlanAddHouse(10, 3, 153, 105);
+	Actions.PlanAddHouse(8, 8, 164, 112);
+	Actions.PlanAddField(8, 168, 110);
+	Actions.PlanAddField(8, 169, 110);
+	Actions.PlanAddField(8, 168, 111);
+	Actions.PlanAddField(8, 169, 111);
+	Actions.PlanAddField(8, 160, 113);
+	Actions.PlanAddField(8, 161, 113);
+	Actions.PlanAddField(8, 162, 113);
+	Actions.PlanAddField(8, 163, 113);
+	Actions.PlanAddField(8, 160, 114);
+	Actions.PlanAddField(8, 161, 114);
+	Actions.PlanAddField(8, 162, 114);
+	Actions.PlanAddField(8, 163, 114);
+	Actions.PlanAddField(8, 160, 115);
+	Actions.PlanAddField(8, 161, 115);
+	Actions.PlanAddField(8, 162, 115);
+	Actions.PlanAddField(8, 163, 115);
+	Actions.PlanAddRoad(8, 164, 113);
+	Actions.PlanAddRoad(8, 148, 154);
+	Actions.PlanAddRoad(8, 149, 154);
+	Actions.PlanAddRoad(8, 150, 154);
+	Actions.PlanAddRoad(8, 150, 155);
+	Actions.PlanAddRoad(8, 150, 153);
+	Actions.PlanAddRoad(8, 150, 152);
+	Actions.PlanAddRoad(8, 155, 138);
+	Actions.PlanAddRoad(8, 155, 139);
+	Actions.PlanAddRoad(8, 155, 140);
+	Actions.PlanAddRoad(8, 156, 140);
+	Actions.PlanAddRoad(8, 157, 140);
+	Actions.PlanAddRoad(8, 158, 140);
+	Actions.PlanAddRoad(8, 156, 143);
+	Actions.PlanAddRoad(8, 157, 143);
+	Actions.PlanAddRoad(8, 158, 143);
+	Actions.PlanAddRoad(8, 155, 141);
+	Actions.PlanAddRoad(8, 155, 142);
+	Actions.PlanAddRoad(8, 155, 143);
+	Actions.PlanAddRoad(8, 155, 144);
+	Actions.PlanAddRoad(10, 153, 106);
+	Actions.PlanAddRoad(10, 152, 106);
+	Actions.PlanAddRoad(10, 151, 106);
+	Actions.PlanAddRoad(10, 150, 106);
+    end;	
+	
+if S.GameTime = 90000 then
+    begin
+	///orange
+    Actions.HouseDestroy(S.HouseAt(59, 5), false);
+	Actions.HouseDestroy(S.HouseAt(70, 10), false);
+	Actions.HouseDestroy(S.HouseAt(59, 24), false);
+	Actions.HouseDestroy(S.HouseAt(51, 58), false);
+	Actions.HouseDestroy(S.HouseAt(28, 48), false);
+	Actions.PlanAddHouse(4, 17, 54, 51);
+	Actions.PlanAddHouse(4, 9, 57, 54);
+	Actions.PlanAddHouse(4, 3, 51, 63);
+	Actions.PlanAddHouse(4, 3, 64, 22);
+	Actions.PlanAddRoad(2, 48, 63);
+	Actions.PlanAddRoad(2, 49, 63);
+	Actions.PlanAddRoad(2, 49, 64);
+	Actions.PlanAddRoad(2, 50, 64);
+	Actions.PlanAddRoad(2, 51, 64);
+	Actions.PlanAddRoad(2, 52, 64);
+	Actions.PlanAddRoad(2, 52, 65);
+	Actions.PlanAddRoad(2, 53, 65);
+	Actions.PlanAddRoad(4, 66, 21);
+	Actions.PlanAddRoad(4, 66, 22);
+	Actions.PlanAddRoad(4, 66, 23);
+	Actions.PlanAddRoad(4, 65, 23);
+	Actions.PlanAddRoad(4, 64, 23);
+	Actions.PlanAddRoad(4, 63, 23);
+	Actions.PlanAddRoad(4, 62, 23);
+	Actions.PlanAddRoad(4, 62, 24);
+	Actions.PlanAddRoad(4, 61, 24);
+	Actions.PlanAddRoad(4, 61, 25);
+	Actions.PlanAddRoad(4, 61, 26);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(152, 155), false);
+	Actions.HouseDestroy(S.HouseAt(156, 155), false);
+	Actions.HouseDestroy(S.HouseAt(154, 150), false);
+	Actions.HouseDestroy(S.HouseAt(158, 150), false);
+	Actions.PlanAddHouse(8, 3, 154, 153);
+	Actions.PlanAddHouse(8, 3, 153, 147);
+	Actions.PlanAddHouse(8, 3, 162, 142);
+	Actions.PlanAddHouse(8, 3, 162, 139);
+	Actions.PlanAddHouse(8, 16, 149, 157);
+	Actions.PlanAddRoad(8, 154, 154);
+	Actions.PlanAddRoad(8, 154, 155);
+	Actions.PlanAddRoad(8, 152, 148);
+	Actions.PlanAddRoad(8, 153, 148);
+	Actions.PlanAddRoad(8, 152, 149);
+	Actions.PlanAddRoad(8, 152, 150);
+	Actions.PlanAddRoad(8, 159, 140);
+	Actions.PlanAddRoad(8, 160, 140);
+	Actions.PlanAddRoad(8, 161, 140);
+	Actions.PlanAddRoad(8, 162, 140);
+	Actions.PlanAddRoad(8, 159, 143);
+	Actions.PlanAddRoad(8, 160, 143);
+	Actions.PlanAddRoad(8, 161, 143);
+	Actions.PlanAddRoad(8, 162, 143);
+    end;
+
+if S.GameTime = 100000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(55, 59), false);
+	Actions.GiveWares(2, 5, 800);
+	Actions.GiveWares(2, 3, 400);
+	Actions.GiveWares(3, 5, 800);
+	Actions.GiveWares(3, 3, 400);
+	Actions.GiveWares(4, 5, 800);
+	Actions.GiveWares(4, 3, 400);
+	///red
+	Actions.HouseDestroy(S.HouseAt(67, 151), false);
+	Actions.HouseDestroy(S.HouseAt(66, 117), false);
+	Actions.PlanAddHouse(5, 3, 78, 132);
+	Actions.PlanAddHouse(7, 3, 70, 129);
+	Actions.PlanAddRoad(6, 78, 133);
+	Actions.PlanAddRoad(6, 79, 133);
+	Actions.PlanAddRoad(6, 68, 130);
+	Actions.PlanAddRoad(6, 69, 130);
+	Actions.PlanAddRoad(6, 70, 130);
+	Actions.GiveWares(5, 5, 800);
+	Actions.GiveWares(5, 3, 400);
+	Actions.GiveWares(6, 5, 800);
+	Actions.GiveWares(6, 3, 400);
+	Actions.GiveWares(7, 5, 800);
+	Actions.GiveWares(7, 3, 400);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(154, 153), false);
+	Actions.HouseDestroy(S.HouseAt(148, 153), false);
+	Actions.HouseDestroy(S.HouseAt(153, 147), false);
+	Actions.PlanAddHouse(8, 8, 149, 150);
+	Actions.PlanAddHouse(8, 8, 154, 155);
+	Actions.PlanAddHouse(8, 8, 155, 150);
+	Actions.PlanAddHouse(8, 3, 139, 100);
+	Actions.PlanAddHouse(8, 3, 144, 101);
+	Actions.PlanAddHouse(9, 3, 158, 105);
+	Actions.PlanAddField(8, 151, 152);
+	Actions.PlanAddField(8, 152, 152);
+	Actions.PlanAddField(8, 151, 153);
+	Actions.PlanAddField(8, 152, 153);
+	Actions.PlanAddField(8, 151, 154);
+	Actions.PlanAddField(8, 152, 154);
+	Actions.PlanAddField(8, 151, 155);
+	Actions.PlanAddField(8, 152, 155);
+	Actions.PlanAddField(8, 153, 152);
+	Actions.PlanAddField(8, 154, 152);
+	Actions.PlanAddField(8, 155, 152);
+	Actions.PlanAddField(8, 156, 152);
+	Actions.PlanAddField(8, 157, 152);
+	Actions.PlanAddField(8, 157, 153);
+	Actions.PlanAddField(8, 157, 154);
+	Actions.PlanAddField(8, 157, 155);
+	Actions.PlanAddField(8, 147, 148);
+	Actions.PlanAddField(8, 147, 149);	
+	Actions.PlanAddField(8, 146, 152);
+	Actions.PlanAddField(8, 147, 152);
+	Actions.PlanAddField(8, 148, 152);
+	Actions.PlanAddField(8, 149, 152);
+	Actions.PlanAddField(8, 146, 153);
+	Actions.PlanAddField(8, 147, 153);
+	Actions.PlanAddField(8, 148, 153);
+	Actions.PlanAddField(8, 149, 153);
+	Actions.PlanAddField(8, 146, 154);
+	Actions.PlanAddField(8, 147, 154);
+	Actions.PlanAddField(8, 158, 148);
+	Actions.PlanAddField(8, 159, 148);
+	Actions.PlanAddField(8, 158, 149);
+	Actions.PlanAddField(8, 159, 149);
+	Actions.PlanAddField(8, 158, 150);
+	Actions.PlanAddField(8, 159, 150);
+	Actions.PlanAddField(8, 147, 148);
+	Actions.PlanAddField(8, 147, 149);
+	Actions.PlanAddField(8, 150, 145);
+	Actions.PlanAddField(8, 151, 145);
+	Actions.PlanAddField(8, 152, 145);
+	Actions.PlanAddField(8, 153, 145);
+	Actions.PlanAddField(8, 150, 146);
+	Actions.PlanAddField(8, 151, 146);
+	Actions.PlanAddField(8, 152, 146);
+	Actions.PlanAddField(8, 153, 146);
+	Actions.PlanAddField(8, 154, 146);
+	Actions.PlanAddField(8, 150, 147);
+	Actions.PlanAddField(8, 151, 147);
+	Actions.PlanAddField(8, 152, 147);
+	Actions.PlanAddField(8, 153, 149);
+	Actions.PlanAddField(8, 153, 150);
+	Actions.PlanAddRoad(8, 153, 147);
+	Actions.PlanAddRoad(8, 154, 147);
+	Actions.PlanAddRoad(8, 155, 147);
+	Actions.PlanAddRoad(9, 139, 101);
+	Actions.PlanAddRoad(9, 144, 102);
+	Actions.PlanAddRoad(9, 143, 102);
+	Actions.PlanAddRoad(9, 142, 102);
+	Actions.PlanAddRoad(9, 142, 101);
+	Actions.PlanAddRoad(9, 154, 106);
+	Actions.PlanAddRoad(9, 155, 106);
+	Actions.PlanAddRoad(9, 156, 106);
+	Actions.PlanAddRoad(9, 157, 106);
+	Actions.PlanAddRoad(9, 158, 106);
+	Actions.GiveWares(8, 5, 800);
+	Actions.GiveWares(8, 3, 400);
+	Actions.GiveWares(9, 5, 800);
+	Actions.GiveWares(9, 3, 400);
+	Actions.GiveWares(10, 5, 800);
+	Actions.GiveWares(10, 3, 400);
+    end;	
+	
+if S.GameTime = 108000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(41, 64), false);
+	Actions.HouseDestroy(S.HouseAt(37, 63), false);
+	Actions.HouseDestroy(S.HouseAt(55, 45), false);
+	Actions.HouseDestroy(S.HouseAt(70, 22), false);
+	Actions.PlanAddHouse(2, 3, 46, 65);
+	Actions.PlanAddHouse(3, 3, 48, 68);
+	Actions.PlanAddRoad(2, 48, 69);
+	Actions.PlanAddRoad(2, 44, 66);
+	Actions.PlanAddRoad(2, 45, 66);
+	Actions.PlanAddRoad(2, 46, 66);
+	///red
+	Actions.HouseDestroy(S.HouseAt(66, 142), false);
+	Actions.HouseDestroy(S.HouseAt(67, 148), false);
+	Actions.HouseDestroy(S.HouseAt(62, 151), false);
+	Actions.PlanAddHouse(5, 4, 24, 115);
+	Actions.PlanAddHouse(5, 4, 39, 134);
+	Actions.PlanAddHouse(5, 4, 18, 126);
+	Actions.PlanAddHouse(5, 3, 66, 145);
+	Actions.PlanAddHouse(5, 3, 64, 154);
+	Actions.PlanAddHouse(5, 8, 66, 151);
+	Actions.PlanAddHouse(5, 16, 63, 151);
+	Actions.PlanAddField(7, 65, 147);
+	Actions.PlanAddField(7, 66, 147);
+	Actions.PlanAddField(7, 67, 147);
+	Actions.PlanAddField(7, 68, 147);
+	Actions.PlanAddField(7, 69, 147);
+	Actions.PlanAddField(7, 70, 147);
+	Actions.PlanAddField(7, 65, 148);
+	Actions.PlanAddField(7, 66, 148);
+	Actions.PlanAddField(7, 67, 148);
+	Actions.PlanAddField(7, 68, 148);
+	Actions.PlanAddField(7, 69, 148);
+	Actions.PlanAddField(7, 70, 148);
+	Actions.PlanAddField(7, 69, 149);
+	Actions.PlanAddField(7, 70, 149);
+	Actions.PlanAddField(7, 69, 150);
+	Actions.PlanAddField(7, 70, 150);
+	Actions.PlanAddField(7, 69, 151);
+	Actions.PlanAddRoad(6, 18, 127);
+	Actions.PlanAddRoad(6, 27, 115);
+	Actions.PlanAddRoad(6, 26, 115);
+	Actions.PlanAddRoad(6, 26, 116);
+	Actions.PlanAddRoad(6, 25, 116);
+	Actions.PlanAddRoad(6, 24, 116);
+	Actions.PlanAddRoad(5, 62, 153);
+	Actions.PlanAddRoad(5, 62, 154);
+	Actions.PlanAddRoad(5, 62, 155);
+	Actions.PlanAddRoad(5, 63, 155);
+	Actions.PlanAddRoad(5, 64, 155);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(133, 156), false);
+	Actions.HouseDestroy(S.HouseAt(170, 136), false);
+	Actions.HouseDestroy(S.HouseAt(158, 142), false);
+	Actions.HouseDestroy(S.HouseAt(158, 139), false);
+	Actions.HouseDestroy(S.HouseAt(162, 142), false);
+	Actions.HouseDestroy(S.HouseAt(162, 139), false);
+	Actions.HouseDestroy(S.HouseAt(146, 107), false);
+	Actions.HouseDestroy(S.HouseAt(150, 109), false);
+	Actions.HouseDestroy(S.HouseAt(160, 111), false);
+	Actions.PlanAddHouse(9, 13, 160, 146);
+	Actions.PlanAddHouse(8, 28, 162, 139);
+	Actions.PlanAddHouse(10, 28, 162, 142);
+	Actions.PlanAddHouse(8, 8, 159, 111);
+	Actions.PlanAddHouse(8, 3, 155, 110);
+	Actions.PlanAddHouse(8, 3, 142, 105);
+	Actions.PlanAddField(10, 156, 144);
+	Actions.PlanAddField(10, 157, 144);
+	Actions.PlanAddField(10, 158, 144);
+	Actions.PlanAddField(10, 156, 145);
+	Actions.PlanAddField(10, 157, 145);
+	Actions.PlanAddField(10, 158, 145);
+	Actions.PlanAddField(10, 162, 147);
+	Actions.PlanAddField(10, 161, 147);
+	Actions.PlanAddField(10, 162, 148);
+	Actions.PlanAddField(10, 161, 148);
+	Actions.PlanAddField(9, 153, 114);
+	Actions.PlanAddField(9, 154, 114);
+	Actions.PlanAddField(9, 155, 114);
+	Actions.PlanAddField(9, 156, 114);
+	Actions.PlanAddField(9, 157, 114);
+	Actions.PlanAddField(9, 158, 114);
+	Actions.PlanAddField(9, 153, 113);
+	Actions.PlanAddField(9, 154, 113);
+	Actions.PlanAddField(9, 155, 113);
+	Actions.PlanAddField(9, 156, 113);
+	Actions.PlanAddField(9, 157, 113);
+	Actions.PlanAddField(9, 158, 113);
+	Actions.PlanAddField(9, 153, 112);
+	Actions.PlanAddField(9, 154, 112);
+	Actions.PlanAddField(9, 155, 112);
+	Actions.PlanAddField(9, 156, 112);
+	Actions.PlanAddWineField(8, 156, 141);
+	Actions.PlanAddWineField(8, 157, 141);
+	Actions.PlanAddWineField(8, 158, 141);
+	Actions.PlanAddWineField(8, 159, 141);
+	Actions.PlanAddWineField(8, 156, 142);
+	Actions.PlanAddWineField(8, 157, 142);
+	Actions.PlanAddWineField(8, 158, 142);
+	Actions.PlanAddWineField(8, 159, 142);
+	Actions.PlanAddWineField(8, 156, 138);
+	Actions.PlanAddWineField(8, 157, 138);
+	Actions.PlanAddWineField(8, 158, 138);
+	Actions.PlanAddWineField(8, 159, 138);
+	Actions.PlanAddWineField(8, 156, 139);
+	Actions.PlanAddWineField(8, 157, 139);
+	Actions.PlanAddWineField(8, 158, 139);
+	Actions.PlanAddWineField(8, 159, 139);
+	Actions.PlanAddRoad(9, 163, 143);
+	Actions.PlanAddRoad(9, 163, 142);
+	Actions.PlanAddRoad(9, 163, 141);
+	Actions.PlanAddRoad(9, 163, 140);
+	Actions.PlanAddRoad(9, 163, 139);
+	Actions.PlanAddRoad(9, 163, 138);
+    Actions.PlanAddRoad(9, 163, 137);
+    Actions.PlanAddRoad(9, 163, 136);
+	Actions.PlanAddRoad(9, 164, 136);
+	Actions.PlanAddRoad(9, 162, 137);
+	Actions.PlanAddRoad(9, 161, 137);
+	Actions.PlanAddRoad(8, 158, 112);
+	Actions.PlanAddRoad(8, 157, 112);
+	Actions.PlanAddRoad(8, 157, 111);
+	Actions.PlanAddRoad(8, 156, 111);
+	Actions.PlanAddRoad(8, 155, 111);
+	Actions.PlanAddRoad(8, 154, 111);
+	Actions.PlanAddRoad(8, 153, 111);
+	Actions.PlanAddRoad(8, 153, 110);
+	Actions.PlanAddRoad(8, 152, 110);
+	Actions.PlanAddRoad(8, 151, 110);
+	Actions.PlanAddRoad(9, 142, 106);
+    end;	
+
+if S.GameTime = 117000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(47, 62), false);
+	Actions.HouseDestroy(S.HouseAt(51, 63), false);
+	Actions.HouseDestroy(S.HouseAt(55, 62), false);
+	Actions.PlanAddHouse(4, 0, 47, 62);
+	Actions.PlanAddHouse(4, 9, 56, 62);
+	Actions.PlanAddHouse(4, 17, 52, 63);
+	///red
+	Actions.HouseDestroy(S.HouseAt(12, 130), false);
+	Actions.HouseDestroy(S.HouseAt(56, 147), false);
+	Actions.HouseDestroy(S.HouseAt(66, 145), false);
+	Actions.HouseDestroy(S.HouseAt(76, 135), false);
+	Actions.HouseDestroy(S.HouseAt(29, 108), false);
+	Actions.HouseDestroy(S.HouseAt(36, 112), false);
+	Actions.HouseDestroy(S.HouseAt(39, 109), false);
+	Actions.HouseDestroy(S.HouseAt(33, 108), false);
+	Actions.PlanAddHouse(6, 13, 33, 108);
+	Actions.PlanAddHouse(5, 4, 52, 114);
+	Actions.PlanAddHouse(5, 3, 70, 133);
+	Actions.PlanAddHouse(5, 3, 74, 132);
+	Actions.PlanAddHouse(7, 3, 27, 105);
+	Actions.PlanAddRoad(6, 70, 134);
+	Actions.PlanAddRoad(6, 69, 134);
+	Actions.PlanAddRoad(6, 68, 134);
+	Actions.PlanAddRoad(5, 50, 115);
+	Actions.PlanAddRoad(5, 51, 115);
+	Actions.PlanAddRoad(5, 52, 115);
+	Actions.PlanAddRoad(7, 71, 134);
+	Actions.PlanAddRoad(7, 72, 134);
+	Actions.PlanAddRoad(7, 72, 133);
+	Actions.PlanAddRoad(7, 73, 133);
+	Actions.PlanAddRoad(7, 74, 133);
+	Actions.PlanAddRoad(7, 75, 133);
+	Actions.PlanAddRoad(7, 76, 133);
+	Actions.PlanAddRoad(7, 77, 133);
+	Actions.PlanAddRoad(5, 30, 106);
+	Actions.PlanAddRoad(5, 29, 106);
+	Actions.PlanAddRoad(5, 28, 106);
+	Actions.PlanAddRoad(5, 27, 106);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(103, 151), false);
+	Actions.HouseDestroy(S.HouseAt(143, 148), false);
+	Actions.PlanAddHouse(8, 4, 134, 97);
+	Actions.PlanAddHouse(8, 3, 151, 113);
+	Actions.PlanAddHouse(8, 12, 166, 137);
+	Actions.PlanAddRoad(9, 137, 101);
+	Actions.PlanAddRoad(9, 138, 101);
+	Actions.PlanAddRoad(9, 137, 100);
+	Actions.PlanAddRoad(9, 137, 99);
+	Actions.PlanAddRoad(9, 136, 99);
+	Actions.PlanAddRoad(9, 136, 98);
+	Actions.PlanAddRoad(9, 135, 98);
+	Actions.PlanAddRoad(9, 134, 98);
+	Actions.PlanAddRoad(9, 164, 138);
+	Actions.PlanAddRoad(9, 165, 138);
+	Actions.PlanAddRoad(9, 166, 138);
+    end;		
+	
+if S.GameTime = 129000 then
+    begin
+	///orange
+	Actions.HouseDestroy(S.HouseAt(46, 65), false);
+	Actions.HouseDestroy(S.HouseAt(48, 68), false);
+	Actions.HouseDestroy(S.HouseAt(52, 67), false);
+	Actions.HouseDestroy(S.HouseAt(56, 67), false);
+	Actions.HouseDestroy(S.HouseAt(64, 22), false);
+	Actions.PlanAddHouse(4, 9, 53, 67);
+	Actions.GiveWares(2, 5, 500);
+	Actions.GiveWares(2, 3, 250);
+	Actions.GiveWares(3, 5, 500);
+	Actions.GiveWares(3, 3, 250);
+	Actions.GiveWares(4, 5, 500);
+	Actions.GiveWares(4, 3, 250);
+	///red
+	Actions.HouseDestroy(S.HouseAt(64, 130), false);
+	Actions.HouseDestroy(S.HouseAt(64, 154), false);
+	Actions.HouseDestroy(S.HouseAt(32, 104), false);
+	Actions.PlanAddHouse(5, 3, 74, 129);
+	Actions.PlanAddHouse(5, 3, 28, 102);
+	Actions.PlanAddHouse(7, 3, 78, 128);
+	Actions.PlanAddHouse(6, 28, 64, 130);
+	Actions.PlanAddHouse(7, 0, 65, 145);
+	Actions.PlanAddHouse(7, 9, 33, 104);
+	Actions.PlanAddWineField(5, 65, 129);
+	Actions.PlanAddWineField(5, 66, 129);
+	Actions.PlanAddWineField(5, 65, 130);
+	Actions.PlanAddWineField(5, 66, 130);
+	Actions.PlanAddWineField(5, 61, 129);
+	Actions.PlanAddWineField(5, 61, 130);
+	Actions.PlanAddWineField(5, 61, 131);
+	Actions.PlanAddWineField(5, 62, 131);
+	Actions.PlanAddWineField(5, 63, 131);
+	Actions.PlanAddRoad(6, 76, 128);
+	Actions.PlanAddRoad(6, 76, 129);
+	Actions.PlanAddRoad(6, 77, 129);
+	Actions.PlanAddRoad(6, 78, 129);
+	Actions.PlanAddRoad(6, 76, 130);
+    Actions.PlanAddRoad(6, 75, 130);
+	Actions.PlanAddRoad(6, 74, 130);
+	Actions.PlanAddRoad(6, 64, 132);
+	Actions.PlanAddRoad(6, 63, 132);
+	Actions.PlanAddRoad(6, 62, 132);
+	Actions.PlanAddRoad(6, 61, 132);
+	Actions.PlanAddRoad(6, 61, 133);
+	Actions.PlanAddRoad(6, 60, 133);
+	Actions.PlanAddRoad(6, 26, 103);
+	Actions.GiveWares(5, 5, 500);
+	Actions.GiveWares(5, 3, 250);
+	Actions.GiveWares(6, 5, 500);
+	Actions.GiveWares(6, 3, 250);
+	Actions.GiveWares(7, 5, 500);
+	Actions.GiveWares(7, 3, 250);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(151, 113), false);
+	Actions.HouseDestroy(S.HouseAt(155, 110), false);
+	Actions.HouseDestroy(S.HouseAt(153, 105), false);
+	Actions.HouseDestroy(S.HouseAt(158, 105), false);
+	Actions.HouseDestroy(S.HouseAt(114, 144), false);
+	Actions.HouseDestroy(S.HouseAt(168, 108), false);
+	Actions.PlanAddHouse(8, 16, 152, 109);
+	Actions.PlanAddHouse(8, 22, 146, 107);
+	Actions.PlanAddHouse(8, 7, 156, 110);
+	Actions.PlanAddHouse(9, 29, 155, 105);
+	Actions.PlanAddHouse(8, 3, 162, 107);
+	Actions.PlanAddRoad(9, 159, 106);
+	Actions.PlanAddRoad(9, 159, 107);
+	Actions.PlanAddRoad(9, 160, 107);
+	Actions.PlanAddRoad(9, 160, 108);
+	Actions.PlanAddRoad(9, 161, 108);
+	Actions.PlanAddRoad(9, 162, 108);
+	Actions.PlanAddRoad(9, 162, 109);
+	Actions.PlanAddRoad(9, 162, 110);
+	Actions.PlanAddRoad(9, 162, 111);
+	Actions.PlanAddRoad(9, 162, 112);
+	Actions.PlanAddRoad(9, 161, 112);
+	Actions.GiveWares(8, 5, 500);
+	Actions.GiveWares(8, 3, 250);
+	Actions.GiveWares(9, 5, 500);
+	Actions.GiveWares(9, 3, 250);
+	Actions.GiveWares(10, 5, 500);
+	Actions.GiveWares(10, 3, 250);
+    end;		
+	
+if S.GameTime = 138000 then
+    begin
+	///orange (finish)
+	Actions.HouseDestroy(S.HouseAt(62, 43), false);
+	Actions.GiveWares(2, 5, 6000);
+	Actions.GiveWares(2, 3, 3000);
+	Actions.GiveWares(3, 5, 6000);
+	Actions.GiveWares(3, 3, 3000);
+	Actions.GiveWares(4, 5, 6000);
+	Actions.GiveWares(4, 3, 3000);
+	///red
+	Actions.HouseDestroy(S.HouseAt(78, 132), false);
+	Actions.HouseDestroy(S.HouseAt(74, 132), false);
+	Actions.HouseDestroy(S.HouseAt(70, 133), false);
+	Actions.HouseDestroy(S.HouseAt(70, 129), false);
+	Actions.HouseDestroy(S.HouseAt(76, 125), false);
+	Actions.HouseDestroy(S.HouseAt(37, 109), false);
+	Actions.PlanAddHouse(7, 9, 79, 132);
+	Actions.PlanAddHouse(7, 9, 77, 125);
+	Actions.PlanAddHouse(5, 3, 39, 103);
+	Actions.PlanAddRoad(5, 39, 104);
+	Actions.GiveWares(5, 5, 6000);
+	Actions.GiveWares(5, 3, 3000);
+	Actions.GiveWares(6, 5, 6000);
+	Actions.GiveWares(6, 3, 3000);
+	Actions.GiveWares(7, 5, 6000);
+	Actions.GiveWares(7, 3, 3000);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(142, 105), false);
+	Actions.HouseDestroy(S.HouseAt(149, 101), false);
+	Actions.HouseDestroy(S.HouseAt(144, 101), false);
+	Actions.HouseDestroy(S.HouseAt(158, 99), false);
+	Actions.HouseDestroy(S.HouseAt(139, 100), false);
+	Actions.PlanAddHouse(8, 3, 148, 96);
+	Actions.PlanAddHouse(8, 4, 109, 146);
+	Actions.PlanAddHouse(8, 4, 163, 103);
+	Actions.PlanAddHouse(9, 9, 124, 124);
+	Actions.PlanAddHouse(9, 9, 149, 101);
+	Actions.PlanAddRoad(9, 146, 97);
+	Actions.PlanAddRoad(9, 147, 97);
+	Actions.PlanAddRoad(9, 148, 97);
+	Actions.PlanAddRoad(9, 149, 97);
+	Actions.PlanAddRoad(9, 150, 97);
+	Actions.PlanAddRoad(10, 163, 104);
+	Actions.PlanAddRoad(10, 162, 104);
+	Actions.PlanAddRoad(10, 161, 104);
+	Actions.PlanAddRoad(10, 161, 105);
+	Actions.PlanAddRoad(10, 160, 105);
+	Actions.PlanAddRoad(10, 160, 106);
+	Actions.PlanAddRoad(10, 124, 125);
+	Actions.PlanAddRoad(10, 125, 125);
+	Actions.PlanAddRoad(10, 126, 125);
+	Actions.PlanAddRoad(8, 109, 147);
+	Actions.PlanAddRoad(8, 110, 147);
+	Actions.PlanAddRoad(8, 111, 147);
+	Actions.PlanAddRoad(8, 111, 148);
+	Actions.PlanAddRoad(8, 112, 148);
+	Actions.GiveWares(8, 5, 6000);
+	Actions.GiveWares(8, 3, 3000);
+	Actions.GiveWares(9, 5, 6000);
+	Actions.GiveWares(9, 3, 3000);
+	Actions.GiveWares(10, 5, 6000);
+	Actions.GiveWares(10, 3, 3000);
+    end;		
+	
+if S.GameTime = 144000 then
+    begin
+	///red
+	Actions.HouseDestroy(S.HouseAt(27, 105), false);
+	Actions.HouseDestroy(S.HouseAt(28, 102), false);
+	Actions.HouseDestroy(S.HouseAt(74, 129), false);
+	Actions.HouseDestroy(S.HouseAt(78, 128), false);
+	Actions.HouseDestroy(S.HouseAt(18, 126), false);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(122, 132), false);
+	Actions.HouseDestroy(S.HouseAt(126, 128), false);
+	Actions.HouseDestroy(S.HouseAt(162, 107), false);
+	Actions.PlanAddHouse(9, 17, 123, 132);
+	Actions.PlanAddHouse(9, 17, 126, 128);
+    end;	
+	
+if S.GameTime = 162000 then
+    begin
+	///red
+	Actions.HouseDestroy(S.HouseAt(39, 103), false);
+	///garnet
+	Actions.HouseDestroy(S.HouseAt(163, 103), false);
+	Actions.HouseDestroy(S.HouseAt(148, 96), false);
+	Actions.HouseDestroy(S.HouseAt(109, 146), false);
+    end;		
+	
+if S.GameTime = 180000 then
+    begin
+	///red(finish)
+	Actions.HouseDestroy(S.HouseAt(24, 115), false);
+	Actions.HouseDestroy(S.HouseAt(48, 115), false);
+	Actions.HouseDestroy(S.HouseAt(52, 114), false);
+	///garnet(finish)
+	Actions.HouseDestroy(S.HouseAt(134, 97), false);
+	Actions.HouseDestroy(S.HouseAt(141, 95), false);
+	Actions.HouseDestroy(S.HouseAt(131, 116), false);
+	Actions.HouseDestroy(S.HouseAt(130, 120), false);
+	Actions.PlanAddHouse(9, 17, 131, 120);
+	Actions.PlanAddHouse(9, 17, 131, 116);
+    end;		
+end;

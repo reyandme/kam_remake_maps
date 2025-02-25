@@ -1,0 +1,15 @@
+Author
+DontTalk
+
+Version
+1.5 Balance Patch (Easy/Normal difficulty reduced, Hard unchanged)
+
+SmallDesc
+A Mission By DontTalk
+
+BigDescLIBX
+6
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+
