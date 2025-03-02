@@ -301,6 +301,5 @@ begin
 						end;
 			end;
 		end;
-	end else
-		Actions.ShowMsg(-1, 'Error in "difficulty.script". Please check if Difficulty level has been enabled in the Map Editor!');
+	end
 end;
