@@ -249,7 +249,8 @@ end;
 procedure OnTick;
 begin
 	//Enable Player2 to build Bowman and Lancers again
-	if States.GameTime() = Round(18000 *(EquipRateMod[Byte(States.MissionDifficulty()) -1])) then //30mins on Normal
+	//if States.GameTime() = Round(18000 *(EquipRateMod[Byte(States.MissionDifficulty()) -1])) then //30mins on Normal
+	if States.GameTime() = 18000 then
 	begin
 		Actions.UnitBlock(2, 17, false); //Bowman
 		Actions.UnitBlock(2, 19, false); //Lancer

@@ -1,0 +1,12 @@
+﻿0:Uram, az ellenséges erők megkezdték a főváros ostromát. Fel kell készítenünk a védelmet.
+1:Uram, ellenséget észleltek északkelet felől!
+2:Uram, ellenséget észleltek északnyugat felől!
+3:Uram, ellenséget észleltek délkelet felől!
+4:Uram, ellenséget észleltek délnyugat felől!
+5:Uram, az ellenség minden irányból egyszerre támad!
+6:Uram, árulók szivárogtak be a várba! Mindenáron vissza kell vernünk őket!
+7:Uram, az ellenség túlerőben van, nem tudjuk megmenteni a fővárost. Menekülnünk kell.
+8:Uram, vissza kell vonulnunk a várunkba, ez az utolsó védelmi vonalunk. Innen már nincs visszaút.
+9:[$%s]Cél :[] Védd meg a raktárat
+10:[$%s]Cél :[] Vonulj vissza a várba és védd meg a falakat
+11:[$%s]Cél :[] A főváros elveszett, már semmit sem tehetsz.
