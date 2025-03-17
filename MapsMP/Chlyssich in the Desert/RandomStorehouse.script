@@ -481,6 +481,47 @@ begin
   end;
 end;
 
+function RNST_IsAnyUnitAtBuildingArea(x,y: integer): boolean;
+var
+  i: integer;
+  j: integer;
+begin
+  result := false;
+	for i:= (x-1) to (x+1) do
+	begin
+
+    for j:= (y-2) to y+1 do
+	  begin
+      if (S.UnitAt(i,j) <> -1) then
+			begin
+				result := true;
+        exit;
+			end;
+    end;
+	end;
+end;
+
+procedure RNST_RemoveUnits(x,y: integer);
+var
+  i: integer;
+  j: integer;
+  unitId: integer;
+begin
+	for i:= (x-1) to (x+1) do
+	begin
+
+    for j:= (y-2) to y+1 do
+	  begin
+
+      unitId := S.UnitAt(i,j);
+      if (unitId <> -1) then
+			begin
+				A.UnitKill(unitId, true);
+			end;
+    end;
+	end;
+end;
+
 function RNST_GetTreesCount(x,y: integer): integer;
 var
   i: integer;
@@ -617,8 +658,17 @@ begin
 
   index := RNST_FindPlayerIndex(playerId);
 
+  //Remove after removing units will be fixed.
+  if RNST_IsAnyUnitAtBuildingArea(x,y) then
+  begin
+    exit;
+  end;
+
   //Count trees before placing storehouse.
   treesCount := RNST_GetTreesCount(x,y);
+
+  //For some reason if you kill unit it still counts as existing at core terrain. So it's impossible to put there house.
+  //RNST_RemoveUnits(x,y);
 
   //This place is ok. We start placing storehouse here.
   result := A.GiveHouseEx(playerId,htStore,x,y);

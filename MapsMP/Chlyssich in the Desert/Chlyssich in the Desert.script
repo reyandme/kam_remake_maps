@@ -17,16 +17,30 @@ begin
   RNST_SetUnlockedBuildingTypes(playerId, [htArmorSmithy, htArmorWorkshop, htBakery, htBarracks, htButchers, htCoalMine, htFarm, htFishermans, htGoldMine, htInn, htIronMine, htIronSmithy, htMarket, htMetallurgists, htMill, htQuarry, htSawmill, htSchool, htStables, htStore, htSwine, htTannery, htTownHall, htWatchTower, htWeaponSmithy, htWeaponWorkshop, htVineyard, htWoodcutters]);
   RNST_SetPlayerCitizensAtStart(playerId, utBuilder, 10);
   RNST_SetPlayerCitizensAtStart(playerId, utSerf, 10);
-  RNST_AddPlayerWaresAtStart(playerId, wtStone, 45);
-  RNST_AddPlayerWaresAtStart(playerId, wtTimber, 20);
+  RNST_AddPlayerWaresAtStart(playerId, wtStone, 50);
+  RNST_AddPlayerWaresAtStart(playerId, wtTimber, 25);
 end;
 
 procedure TryToGiveAdditionalResource(playerId: integer); 
 begin
-  if (S.KamRandomI(100) > 9) then
-  begin
-    exit;
-  end;
+
+  if (S.MissionDifficulty <> mdHard3) then
+    if (S.KamRandomI(100) > 9) then
+    begin
+      exit;
+    end;
+
+  if (S.MissionDifficulty = mdHard2) then
+    if (S.KamRandomI(100) > 14) then
+    begin
+      exit;
+    end;
+
+  if (S.MissionDifficulty = mdHard3) then
+    if (S.KamRandomI(100) > 19) then
+    begin
+      exit;
+    end;
 
   case S.KamRandomI(7) of
     0:
@@ -34,11 +48,11 @@ begin
     1:
       RNST_SetPlayerWaresAtStart(playerId, wtGoldOre, 10 + S.KamRandomI(16));
     2:
-      RNST_SetPlayerWaresAtStart(playerId, wtCoal, 20 + S.KamRandomI(21));
+      RNST_SetPlayerWaresAtStart(playerId, wtCoal, 10 + S.KamRandomI(21));
     3:
       RNST_SetPlayerWaresAtStart(playerId, wtIron, 1 + S.KamRandomI(20));
     4:
-      RNST_SetPlayerWaresAtStart(playerId, wtCorn, 10 + S.KamRandomI(26));
+      RNST_SetPlayerWaresAtStart(playerId, wtCorn, 8 + S.KamRandomI(25));
     5:
       RNST_SetPlayerWaresAtStart(playerId, wtSkin, 1 + S.KamRandomI(15));
     6:
@@ -116,7 +130,7 @@ var
 
 begin
 
-  if (S.MissionDifficulty = mdHard3) then
+  if (S.MissionDifficulty = mdHard1) or (S.MissionDifficulty = mdHard2) or (S.MissionDifficulty = mdHard3) then
   begin
     for playerId:= 0 to S.LocationCount do
       if S.PlayerEnabled(playerId) = true then
@@ -130,14 +144,39 @@ var
   serfs: integer;
   workers: integer;
   slow: boolean;
+  hStone,hTrunk,hTimber,hGold,hWine,hBread,hSausage,hFish: integer;
 
 begin
 
-  if (S.MissionDifficulty = mdEasy3) or (S.MissionDifficulty = mdEasy2) or (S.MissionDifficulty = mdEasy1) then
+  if (S.MissionDifficulty = mdEasy3) then
   begin
     InitPlayer35(playerId, xMin, xMax, yMin, yMax);
     exit;
   end;
+
+  if (S.MissionDifficulty = mdHard2) then
+    begin
+      hStone:= 4;
+      hTrunk:= S.KamRandomI(2);
+      hTimber:= 2;
+      hGold:= 4;
+      hWine:= 4;
+      hBread:= 3;
+      hSausage:= 1;
+      hFish:= S.KamRandomI(2);
+    end;
+
+  if (S.MissionDifficulty = mdHard3) then
+    begin
+      hStone:= 13;
+      hTrunk:= 1;
+      hTimber:= 7;
+      hGold:= 11;
+      hWine:= 10;
+      hBread:= 8;
+      hSausage:= 3;
+      hFish:= 2;
+    end;
 
   case S.KamRandomI(5) of
     0:
@@ -167,7 +206,20 @@ begin
       end;
   end;
 
-  slow := S.KamRandomI(5) = 0;
+  if (S.MissionDifficulty <> mdHard2) and (S.MissionDifficulty <> mdHard3) then
+    begin
+      slow := S.KamRandomI(5) = 0;
+    end;
+
+  if (S.MissionDifficulty = mdHard2) then
+    begin
+      slow := S.KamRandomI(10) = 0;
+    end;
+
+  if (S.MissionDifficulty = mdHard3) then
+    begin
+      slow := S.KamRandomI(20) = 0;
+    end;
 
   RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
 
@@ -186,14 +238,14 @@ begin
     RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
   end;
 
-  RNST_SetPlayerWaresAtStart(playerId, wtStone, 76 + S.KamRandomI(12));
-  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 4 + S.KamRandomI(3));
-  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 37 + S.KamRandomI(12));
-  RNST_SetPlayerWaresAtStart(playerId, wtGold, 45 + S.KamRandomI(35));
-  RNST_SetPlayerWaresAtStart(playerId, wtWine, 10 + S.KamRandomI(61));
-  RNST_SetPlayerWaresAtStart(playerId, wtBread, 0 + S.KamRandomI(56));
-  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 2 + S.KamRandomI(19));
-  RNST_SetPlayerWaresAtStart(playerId, wtFish, 2 + S.KamRandomI(14));
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, (76 + S.KamRandomI(12) - hStone));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, (4 + S.KamRandomI(3) - hTrunk));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, (37 + S.KamRandomI(12) - hTimber));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, (57 + S.KamRandomI(16) - hGold));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, (10 + S.KamRandomI(61) - hWine));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, (0 + S.KamRandomI(56) - hBread));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, (2 + S.KamRandomI(19) - hSausage));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, (2 + S.KamRandomI(14) - hFish));
 
   TryToGiveAdditionalResource(playerId);
   TryToUnlockAllBuildings(playerId);
@@ -221,6 +273,7 @@ procedure OnMissionStart;
 begin
   InitPlayers();
   RNST_FogAroundStoreHouseDisabled := true;
+  RNST_CinematicLength := 30;
   MI_InitMap(States.KamRandomI(7));
 
   Actions.PlayOGGLooped(-1, 'Desert', 0.25);
@@ -228,15 +281,12 @@ begin
 
   case S.MissionDifficulty of
     mdEasy3:
+      begin
       A.PeaceTime(35 * 600);
-    mdEasy2, mdEasy1:
-      begin
-        PeaceTime:= U.RandomRangeI(33,36) * 600 + S.KamRandomI(60) * 10;
-        A.PeaceTime(120 * 600);
       end;
-    mdHard1, mdHard2, mdHard3:
+    mdEasy1, mdNormal, mdHard1, mdHard2, mdHard3:
       begin
-        PeaceTime:= U.RandomRangeI(50,62) * 600 + S.KamRandomI(60) * 10;  
+        PeaceTime:= U.RandomRangeI(55,64) * 600 + S.KamRandomI(60) * 10;
         A.PeaceTime(120 * 600);
       end;
        
@@ -254,12 +304,12 @@ begin
     exit;
   end;
 
-  if (((S.MissionDifficulty = mdEasy1) or (S.MissionDifficulty = mdHard2) or (S.MissionDifficulty = mdHard3)) and (S.GameTime = PeaceTime - 20 * 10)) then
+  if (((S.MissionDifficulty = mdNormal) or (S.MissionDifficulty = mdHard1) or (S.MissionDifficulty = mdHard2) or (S.MissionDifficulty = mdHard3)) and (S.GameTime = PeaceTime - 30 * 10)) then
   begin
     Actions.PlayOGG(-1, 'PTend', 1);
   end;  
 
-  if (((S.MissionDifficulty = mdEasy2) or (S.MissionDifficulty = mdHard1)) and (S.GameTime < PeaceTime)) then
+  if ((S.MissionDifficulty = mdEasy1) and (S.GameTime < PeaceTime)) then
   begin
     A.OverlayTextSet(-1, U.TimeToString(PeaceTime - S.GameTime));
   end else
