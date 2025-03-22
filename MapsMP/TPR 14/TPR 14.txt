@@ -1,4 +1,4 @@
-BigDesc
+﻿BigDesc
 Mission 14 from The Peasants Rebellion campaign converted for co-operative by andreus.
 
 SetCoop
