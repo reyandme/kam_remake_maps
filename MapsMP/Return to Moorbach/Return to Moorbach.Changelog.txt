@@ -119,3 +119,19 @@ Version 0.8.5b (06.04.2023)
 - Updated improvestaticai.script to newest version
 - Added newest version of difficulty.script and set MAX_HANDS to 28
 - Reduced Auto Attack Range of Player6 from 4 to 2
+
+Version 0.9.0 (19.03.2025)
+- Updated improvestaticai.script to newest version
+- Added new scripts and functions
+- Refactoring of main script
+- Fixed and updated libx-files, including naming AI Enemies
+- Some Resources at player locations will be revealed
+- Player6 will now make use of his townhall
+- Player2 now has a townhall on hard1 and hard2
+- Bridge in the middle of the map is now wider
+- Minor changes to map visuals and elevation
+- Reduced Auto Attack Range of all AI Players to 2
+- Enabled AI on Pos0 and Pos1 for troubleshooting and selfhating players
+- Increased Wares in AI Storehouses and Barracks from 9000 to 65k
+- Made sure each AI Player has 3 different food types
+- Disabled IronOre and Iron Trade for Player1

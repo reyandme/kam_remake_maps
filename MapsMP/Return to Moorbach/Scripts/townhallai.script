@@ -1,0 +1,224 @@
+//-- TownhallAI --//
+//By Strangelove
+//v0.7.6b
+//19.03.2025
+//Developed for r15122
+
+//Copy this script in any map, and all AIs that have a townhall will immidiatly be able to recruit warriors and barbarian.
+//This works like most other scripts of that nature: Axefighters will be replaced with Barbarians (50% chance) and Swordfighters will be replaced with Warriors (33% Chance)
+//Do not use this script with permission from its Author!
+
+{$EVENT evtMissionStart:TownhallAi_OnMissionStart}
+{$EVENT evtWarriorEquipped:TownhallAi_OnWarriorEquipped}
+{$EVENT evtHouseBuilt:TownhallAi_OnHouseBuilt}
+{$EVENT evtHouseDestroyed:TownhallAi_OnHouseDestroyed}
+
+
+const
+    MINIMUM_TOWNHALL_GOLD = 80; //Can build 10 Barbarians
+    MAXIMUM_TOWNHALL_GOLD = 999; //Max ingame setting
+
+
+var
+	Townhall: array of Integer;
+
+
+
+function RecruitTownhallUnit(TownhallID: Integer; UnitType: TKMUnitType; Amount: Integer): Integer;
+begin
+	case UnitType of
+		utAxefighter: UnitType := utBarbarian;
+		utSwordfighter: UnitType := utWarrior;
+		else
+		    begin
+		    	Result := -1;
+		    	exit;
+		    end;
+	end;
+	
+	//Check if Units were successfully recruited
+	if Actions.HouseTownHallEquipEx(TownhallID, UnitType, Amount) <> Amount then
+	begin
+		Result := -1;
+	end else
+		Result := Amount;
+end;
+
+
+function ChangeChance(UnitType: TKMUnitType): Boolean;
+begin
+	case UnitType of
+		utAxefighter: if Utils.RandomRangeI(0, 1) = 0 then
+			Result := true; //50% Chance
+		utSwordfighter: if Utils.RandomRangeI(0, 2) = 0 then
+			Result := true; //33% Chance
+	end;
+end;
+
+
+function PlayerGetTownhall(Player, GoldLowerLimit, GoldUpperLimit: Integer): Integer;
+var
+    aHouses: array of Integer;
+    h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+
+	for h := 0 to High(aHouses) do
+	begin
+		if States.HouseTypeEx(aHouses[h]) = htTownHall then
+		begin
+			//Set Townhall Gold Amount
+            Actions.HouseTownHallMaxGold(aHouses[h], Utils.EnsureRangeI(States.HouseWareAmount(aHouses[h], wtGold), GoldLowerLimit, GoldUpperLimit));
+
+	        Result := aHouses[h];
+	        exit; //Only need 1 Townhall
+		end;
+	end;
+
+    Result := -1; //If none is found
+end;
+
+
+
+procedure ReimburseWeapons(Player: Integer; UnitType: TKMUnitType); //Dont reimburse Recruit; add Goldchest instead
+begin
+    case UnitType of
+        utAxefighter:
+        begin
+            Actions.GiveWeaponsEx(Player, wtAxe, 1);
+            Actions.GiveWeaponsEx(Player, wtLeatherArmor, 1);
+            Actions.GiveWeaponsEx(Player, wtWoodenShield, 1);
+        end;
+        utSwordfighter:
+        begin
+            Actions.GiveWeaponsEx(Player, wtSword, 1);
+            Actions.GiveWeaponsEx(Player, wtIronArmor, 1);
+            Actions.GiveWeaponsEx(Player, wtIronShield, 1);
+        end;
+    end;
+
+    Actions.GiveWaresEx(Player, wtGold, 1);
+end;
+
+
+
+procedure TownhallAi_OnMissionStart();
+var
+    PlayerCount: Integer;
+	p: Integer;
+begin
+    PlayerCount := States.StatPlayerCount();
+
+	//SetArrayLength	
+	SetLength(Townhall, PlayerCount);
+
+	//Check for Townhall and save ID
+	for p := 0 to PlayerCount -1 do
+	begin
+		if States.PlayerIsAI(p) then
+		begin
+            Townhall[p] := PlayerGetTownhall(p, MINIMUM_TOWNHALL_GOLD, MAXIMUM_TOWNHALL_GOLD);
+        end;
+    end;
+end;
+
+
+procedure TownhallAi_OnWarriorEquipped(aUnitID, aGroupID: Integer);
+var
+	UnitOwner: Integer;
+	UnitType: TKMUnitType;
+begin
+	UnitOwner := States.UnitOwner(aUnitID);
+
+	if States.PlayerIsAI(UnitOwner) then
+	begin
+		if Townhall[UnitOwner] <> -1 then
+		begin
+			UnitType := States.UnitTypeEx(aUnitID);
+
+            //Check if AI is set to mixed army compositon
+			if States.AIArmyType(UnitOwner) <> atIronAndLeather then
+			begin
+                if States.GroupMemberCount(aGroupID) > 1 then
+                begin
+                    //UnitType is the same as the Units in the Group its gonna get linked to -> Do nothing
+                    if UnitType = States.UnitTypeEx(States.GroupMember(aGroupID, 0)) then
+                    begin
+                        exit;
+                    end else
+                    begin
+                        //UnitType is a different Unit -> Kill it and give appropriate Type
+                        if RecruitTownhallUnit(Townhall[UnitOwner], UnitType, 1) <> -1 then
+                        begin
+                            Actions.UnitKill(aUnitID, true);
+                            ReimburseWeapons(UnitOwner, Unittype);
+                            exit;
+                        end;
+                    end;
+                end else
+                begin
+                    //First Member of the Group (New Group) -> Leave as is or kill (by chance)
+                    if ChangeChance(UnitType) then
+                    begin
+                        if RecruitTownhallUnit(Townhall[UnitOwner], UnitType, 1) <> -1 then
+                        begin
+                            Actions.UnitKill(aUnitID, true);
+                            ReimburseWeapons(UnitOwner, Unittype);
+                            exit;
+                        end;
+                    end;
+                end;
+			end else
+			begin
+			    //Set to mixed: Every indivdual Axefighter and Swordfighter has a chance to change
+			    if ChangeChance(UnitType) then
+			    begin
+                    if RecruitTownhallUnit(Townhall[UnitOwner], UnitType, 1) <> -1 then
+                    begin
+                        Actions.UnitKill(aUnitID, true);
+                        ReimburseWeapons(UnitOwner, Unittype);
+                        exit;
+                    end;
+                end;
+			end;
+		end;
+	end;
+end;
+
+
+procedure TownhallAi_OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+var
+	HouseOwner: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+
+	if States.PlayerIsAI(HouseOwner) then
+	begin
+		if States.HouseTypeEx(aHouse) = htTownHall then
+		begin
+		    //Check if there is another Townhall
+		    Townhall[HouseOwner] := PlayerGetTownhall(HouseOwner, MINIMUM_TOWNHALL_GOLD, MAXIMUM_TOWNHALL_GOLD);
+		end;
+	end;
+end;
+
+
+//Update HouseIDs for Townhall if they are (re)built
+procedure TownhallAi_OnHouseBuilt(aHouse: Integer);
+var
+	HouseOwner: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+
+	if States.PlayerIsAI(HouseOwner) then
+	begin
+		if States.HouseTypeEx(aHouse) = htTownHall then
+		begin
+		    //Set Townhall Gold Amount
+            Actions.HouseTownHallMaxGold(aHouse, MINIMUM_TOWNHALL_GOLD);
+
+		    //Check for older townhall and save that one; Dont just default to newest one
+		    Townhall[HouseOwner] := PlayerGetTownhall(HouseOwner, MINIMUM_TOWNHALL_GOLD, MAXIMUM_TOWNHALL_GOLD);
+		end;
+	end;
+end;
