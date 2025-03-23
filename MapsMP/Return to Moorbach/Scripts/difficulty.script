@@ -1,7 +1,7 @@
 //-- Difficulty --//
 //By Strangelove
-//v0.8.6b (No Cheat version)
-//13.11.2021
+//v0.8.6c (No Cheat version) (Ensure compatibility with tools.script)
+//19.03.2025
 //Developed for KaM Remake r10745
 //Last Tested on KaM Remake r12945
 
@@ -181,7 +181,7 @@ end;
 
 
 //Return GroupType of Army Units
-function GetGroupType(UnitType: Byte): Byte; 
+function GetgroupTypeB(UnitType: Byte): Byte; 
 begin
 	case UnitType of
 		14,15,16,23,26: Result := 0; //Melee
@@ -264,55 +264,6 @@ begin
 			break;
 		end;
 	Actions.AIDefencePositionRemove(Player, X, Y);
-end;
-
-
-procedure AddDefencePositionAndGroup(Player, UnitType, X, Y, D, Radius: Byte); //Causes Problems if AI already has Attack defence positions with same GroupType (Added Groups will  be asigned to previously existing positions)
-var
-	Count, Columns, GroupID: Integer;
-begin
-	Actions.AIDefencePositionAdd(Player, X, Y, D, GetGroupType(UnitType), Radius, 0);
-	States.AIGroupsFormationGet(Player, GetGroupType(UnitType), Count, Columns);
-	GroupID := Actions.GiveGroup(Player, UnitType, X, Y, D, Count, Columns);
-	Actions.GroupHungerSet(GroupID, States.UnitMaxHunger()/2 +States.KaMRandomI(States.UnitMaxHunger()/2 +1));
-end;
-
-
-procedure AddAIAttack(Player: Byte; Repeating: Boolean; Delay: Cardinal; MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups: Byte; Target: TKMAIAttackTarget; CustomPosition: TKMPoint);
-var
-	g: Byte;
-	outCount, outColums: Integer;
-	GroupUnitCount: array[0..3] of Byte;
-	Total: Word;
-begin
-	for g := 0 to 3 do
-	begin
-		States.AIGroupsFormationGet(Player, g, outCount, outColums);
-		GroupUnitCount[g] := outCount;
-		{$IFDEF TESTMODE}Actions.Log('Player: ' + inttostr(Player) + ', GroupType: ' +inttostr(g) + ', Count: ' +inttostr(GroupUnitCount[g]));{$ENDIF}
-	end;
-	Total := MeleeGroups *GroupUnitCount[0] +AntiHorseGroups *GroupUnitCount[1] +RangedGroups *GroupUnitCount[2] +MountedGroups *GroupUnitCount[3];
-	Actions.AIAttackAdd(Player, Repeating, Delay, Total, MeleeGroups, AntiHorseGroups, RangedGroups, MountedGroups, false, Target, CustomPosition); //Once
-	{$IFDEF TESTMODE}Actions.Log('Attack of Player' +inttostr(Player) + '; Units Total: ' + inttostr(Total));{$ENDIF}
-end;
-
-
-procedure GiveHouseAndConnect(Player, HouseType, X, Y: Byte);
-var
-	HouseID, ClosestHouse: Integer;
-begin
-	HouseID := Actions.GiveHouse(Player, HouseType, X, Y);
-	if  HouseID <> -1 then
-	begin
-		ClosestHouse := States.ClosestHouse(Player, X, Y, 11); //Closest Storehouse
-		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(ClosestHouse), States.HousePositionY(ClosestHouse) +1, true);
-		if HouseType = 17 then
-		begin
-			Actions.HouseAddWaresTo(HouseID, 1, 5); //Add Stone to House if Tower
-			Actions.GiveUnit(Player, 13, X, Y +1, 4); //Add Recruit
-		end;
-	end else
-		Actions.Log('House could not be added!' + ' Player:' + inttostr(Player) + ' X:' + inttostr(X) + ' Y:' + inttostr(Y));
 end;
 
 
