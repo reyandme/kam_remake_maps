@@ -1,0 +1,15 @@
+﻿0:The Vreslan kingdom, neighboring us from the east recently began a huge excavation of iron in the Nayru basin on the border between our countries. In recent history, the Vreslan kingdom often acted against us, and those recent developments suggest that it is highly likely for them to prepare the launch of an offensive aimed at our territories again. ||We shall not allow that to happen. You are tasked with leading an assault against the Vreslans in the basin in order to destroy their mining facilities, and harvest as much iron as you can to strengthen our own military potential while weakening the enemy. Act fast, as hostile forces will soon mobilize to push your forces out of the region.||[$0707FF]Difficulty Rating:[] ****||Map uses [$E1FA6B]Strangelove's[] improved AI script.|Map uses [$7A7AEB]Cmowla's[] Anti Lure script (4.3b).
+1:[$B28080]Collected Iron[]
+2:Our soldiers have reached the basin. Enemy forces noticed our arrival, but they are too small to pose much of a threat. Dispatch them quickly and take over the mining camp.
+3:We took control over the western mining camp. |We need to expand quickly so we can achieve our goals before arrival of enemy army. Destroy the remaining Vreslan mining camps and gather 
+4: iron.
+5:Vreslan craftsmen, upon seeing our troops approaching, set big chunk of the camp ablaze to set back our mining operations. We ought to quickly rebuild the destroyed mines and start harvesting resources for ourselves.
+6:The first contingent of Vreslan troops reached the basin. They will soon rain down onto our positions. Prepare for battle!
+7:Another group of Vreslan soldiers appeared in the region. Their forces are significantly more menacing then before. We need to act quick to finish our objectives before the truly dangerous armies appear.
+8:Time is up. Vreslan army have reached the outskirts of the basin. If we don't finish our tasks hastily, our camp is bound to get flooded by enemy troops!
+9:We have destroyed all Vreslan mining facilites in the region. Now, focus on gathering all the remaining iron as quickly as you can.
+101:Western Mine
+102:Northern Mine
+103:Southern Mine
+104:Eastern Mine
+105:Vreslan Troops
