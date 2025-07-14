@@ -1,0 +1,441 @@
+{$EVENT evtTick:Attackers}
+var
+AttackToken, AttackPrep: Integer;
+
+procedure Attackers();
+begin
+if S.GameTime = (AttackPrep + 1000) then begin
+    A.AIDefencePositionRemoveAll(4);
+	AttackPrep:= 36000000000;
+	end;
+
+if S.GameTime = (1800) then begin
+    if (AttackToken = 0) then begin
+	A.AIDefencePositionAdd(4, 34, 71, DIRECTION_NE, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 40, 78, DIRECTION_NE, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 45, 83, DIRECTION_NE, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 50, 85, DIRECTION_NE, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 49, 85, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 37, 75, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 37, 74, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 43, 80, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_MILITIA, 12, 112, DIRECTION_NE, 20, 5);
+    A.GiveGroup(4, UNIT_AXE_FIGHTER, 7, 110, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 4, 113, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 7, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 11, 112, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 15, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 7, 115, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 18, 116, DIRECTION_NE, 9, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 1) then begin
+	A.AIDefencePositionAdd(4, 15, 5, DIRECTION_E, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 15, 2, DIRECTION_E, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 12, 5, DIRECTION_E, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 12, 2, DIRECTION_E, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 3, 53, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 10, 28, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 48, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 7, 55, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_MILITIA, 12, 112, DIRECTION_NE, 20, 5);
+    A.GiveGroup(4, UNIT_AXE_FIGHTER, 7, 110, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 4, 113, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 7, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 11, 112, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 15, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 7, 115, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 18, 116, DIRECTION_NE, 9, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 2) then begin
+	A.AIDefencePositionAdd(4, 111, 117, DIRECTION_N, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 114, 117, DIRECTION_N, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 117, 117, DIRECTION_N, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 120, 117, DIRECTION_N, GROUP_MOUNTED, 10, 0);
+	A.AIDefencePositionAdd(4, 88, 117, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 114, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 65, 116, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 73, 107, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_MILITIA, 12, 112, DIRECTION_NE, 20, 5);
+    A.GiveGroup(4, UNIT_AXE_FIGHTER, 7, 110, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 4, 113, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 7, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 11, 112, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 15, 116, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 7, 115, DIRECTION_NE, 9, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 18, 116, DIRECTION_NE, 9, 3);
+	AttackPrep:= S.GameTime;
+    end;
+end;
+
+if S.GameTime = (12000) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 12, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 14, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 3, 18, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 3, 15, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 3, 50, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 3, 54, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 73, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 70, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 3, 115, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 5, 117, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 45, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 42, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 113, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 120, 118, DIRECTION_N, 6, 3);
+	end;
+	
+if S.GameTime = (17450) then begin
+    if (AttackToken = 2) then begin
+	A.AIDefencePositionAdd(4, 45, 83, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 40, 78, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 43, 80, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 33, 72, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 40, 82, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 48, 85, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 42, 81, DIRECTION_NE, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 37, 78, DIRECTION_NE, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_REBEL, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 0) then begin
+	A.AIDefencePositionAdd(4, 4, 47, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 53, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 50, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 47, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 50, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 53, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 59, DIRECTION_E, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 41, DIRECTION_E, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_REBEL, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 1) then begin
+	A.AIDefencePositionAdd(4, 86, 112, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 92, 113, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 114, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 116, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 115, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 118, DIRECTION_N, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 80, 118, DIRECTION_N, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_REBEL, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_REBEL, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_ROGUE, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end;	
+end;	
+if S.GameTime = (34000) then begin
+    if (AttackToken = 1) then begin
+	A.AIDefencePositionAdd(4, 31, 73, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 31, 74, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 34, 77, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 35, 77, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 39, 80, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 44, 84, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 44, 85, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 47, 87, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 47, 88, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 2) then begin
+	A.AIDefencePositionAdd(4, 2, 54, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 51, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 48, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 51, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 48, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 15, 28, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 15, 31, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 14, 34, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 16, 34, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 0) then begin
+	A.AIDefencePositionAdd(4, 74, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 77, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 80, 118, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 113, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 115, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 116, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 115, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 117, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end;
+end;	
+	
+if S.GameTime = (48200) then begin
+	A.GiveGroup(4, UNIT_KNIGHT, 14, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 12, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 10, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 15, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 4, 16, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 18, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 47, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 50, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 53, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 119, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 116, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 113, 118, DIRECTION_N, 6, 3);
+	end;
+
+if S.GameTime = (62500) then begin
+    if (AttackToken = 0) then begin
+	A.AIDefencePositionAdd(4, 31, 73, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 31, 74, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 34, 77, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 35, 77, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 39, 80, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 44, 84, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 44, 85, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 47, 87, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 47, 88, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 1) then begin
+	A.AIDefencePositionAdd(4, 2, 54, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 51, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 48, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 51, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 48, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 15, 28, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 15, 31, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 14, 34, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 16, 34, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 2) then begin
+	A.AIDefencePositionAdd(4, 74, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 77, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 80, 118, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 113, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 115, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 116, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 115, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 117, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 111, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 114, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 2, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 117, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 117, DIRECTION_E, 6, 3);
+	AttackPrep:= S.GameTime;
+    end;
+end; 
+	
+if S.GameTime = (77000) then begin
+	A.GiveGroup(4, UNIT_KNIGHT, 12, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 14, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 18, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 3, 15, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 50, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 3, 54, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 73, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 70, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 115, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 5, 117, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 45, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 42, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 113, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 120, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 168, 118, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 168, 115, DIRECTION_W, 6, 3);
+	end;
+	
+if S.GameTime = (92000) then begin
+    if (AttackToken = 2) then begin
+	A.AIDefencePositionAdd(4, 45, 83, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 40, 78, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 43, 80, DIRECTION_NE, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 33, 72, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 40, 82, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 48, 85, DIRECTION_NE, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 42, 81, DIRECTION_NE, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 37, 78, DIRECTION_NE, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 0) then begin
+	A.AIDefencePositionAdd(4, 4, 47, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 53, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 50, DIRECTION_E, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 47, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 50, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 4, 53, DIRECTION_E, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 59, DIRECTION_E, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 2, 41, DIRECTION_E, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end else
+	if (AttackToken = 1) then begin
+	A.AIDefencePositionAdd(4, 86, 112, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 114, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 92, 113, DIRECTION_N, GROUP_MELEE, 10, 0);
+	A.AIDefencePositionAdd(4, 83, 114, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 89, 116, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 115, DIRECTION_N, GROUP_ANTIHORSE, 10, 0);
+	A.AIDefencePositionAdd(4, 96, 118, DIRECTION_N, GROUP_RANGED, 10, 0);
+	A.AIDefencePositionAdd(4, 80, 118, DIRECTION_N, GROUP_RANGED, 10, 0);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 111, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 10, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 7, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 7, 114, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 113, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 3, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 6, 117, DIRECTION_NE, 6, 3);
+	A.GiveGroup(4, UNIT_CROSSBOWMAN, 3, 114, DIRECTION_NE, 6, 3);
+	AttackPrep:= S.GameTime;
+    end;	
+end;
+
+if S.GameTime = (105800) then begin
+	A.GiveGroup(4, UNIT_BARBARIAN, 12, 3, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 13, 7, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_BARBARIAN, 6, 19, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 6, 15, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 48, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 52, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 65, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 61, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_BARBARIAN, 4, 111, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 4, 116, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_BARBARIAN, 10, 116, DIRECTION_N, 16, 4);
+	A.GiveGroup(4, UNIT_PIKEMAN, 15, 116, DIRECTION_N, 16, 4);
+	end;
+	
+if S.GameTime = (123000) then begin
+	A.GiveGroup(4, UNIT_KNIGHT, 12, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 14, 2, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 18, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 15, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 50, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 54, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 73, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 2, 70, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 3, 115, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 5, 117, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 45, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 42, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 113, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 120, 118, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 168, 118, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 168, 115, DIRECTION_W, 6, 3);
+	end;
+	
+if S.GameTime = (141800) then begin
+	A.GiveGroup(4, UNIT_KNIGHT, 12, 3, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 13, 7, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 6, 19, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 6, 15, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 48, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 4, 52, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 65, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 4, 61, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 111, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 4, 116, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 10, 116, DIRECTION_N, 16, 4);
+	A.GiveGroup(4, UNIT_SCOUT, 15, 116, DIRECTION_N, 16, 4);
+	end;
+	
+if S.GameTime = (160000) then begin
+	A.GiveGroup(4, UNIT_KNIGHT, 12, 3, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 13, 7, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 6, 19, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 6, 15, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 48, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 52, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 65, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 61, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 111, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 4, 116, DIRECTION_E, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 10, 116, DIRECTION_N, 16, 4);
+	A.GiveGroup(4, UNIT_KNIGHT, 15, 116, DIRECTION_N, 16, 4);
+	end;		
+end;
+	

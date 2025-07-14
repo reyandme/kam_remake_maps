@@ -1,0 +1,349 @@
+{$I constants.script}  // By Greeny
+{$I improvestaticai.script}  /// By Strangelove
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I DamageCloseBuildings.script} /// By Ritter des Todes
+{$I THrecruitment.script}
+{$I Attacks.script}
+
+var
+DifficultySetting: TKMMissionDifficulty;
+CollectedGold, RequiredGold, CollectedLoaves, RequiredLoaves, CollectedSkins, RequiredSkins, MainStore: Integer;
+UpgradeTimer, UpgradeTimer2: Integer;
+playersWhoWin: array of integer;
+
+function TotalResourceAmount(iPlayer, iType: Byte): Integer;
+var
+	i, iTotalResourceAmount: Integer;
+	aHouses: array of Integer;
+begin
+	Result := -1;
+	aHouses := S.PlayerGetAllHouses(iPlayer);
+	for i := 0 to Length(aHouses) -1 do
+	begin
+	    if (S.HouseType(aHouses[i]) = 11) then begin
+			if (S.HousePositionX(aHouses[i]) > 112) and (S.HousePositionY(aHouses[i]) < 94) then
+				iTotalResourceAmount := iTotalResourceAmount +S.HouseResourceAmount(aHouses[i], iType);
+		end;
+	end;
+    Result := iTotalResourceAmount;
+end;
+
+procedure OnMissionStart();	
+begin
+playersWhoWin := [0];    
+DifficultySetting := S.MissionDifficulty();
+AttackToken:= (S.KaMRandomI(3));
+A.ShowMsgGoto(0, 152, 71,'<$1>');
+///Offsets (dont touch this)
+AI2[0]:= 1000;
+AI2[1]:= 1150;
+AI2[2]:= 1300;
+AI2[3]:= 1450;
+AI3[0]:= 1030;
+AI3[1]:= 1180;
+AI3[2]:= 1330;
+AI3[3]:= 1480;
+AI4[0]:= 1060;
+AI4[1]:= 1210;
+AI4[2]:= 1360;
+AI4[3]:= 1510;
+////////////////////////////
+case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 10);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 5);
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 30);
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 15);
+		A.GiveWeapons(0, WARE_HORSES, 10);
+		A.GiveWeapons(0, WARE_SWORDS, 5);
+		A.GiveWeapons(0, WARE_PIKES, 5);
+		A.GiveWeapons(0, WARE_CROSSBOWS, 5);
+		A.GiveWeapons(0, WARE_LONGBOWS, 10);
+		A.GiveWeapons(0, WARE_HAND_AXES, 10);
+		A.GiveWeapons(0, WARE_LANCES, 10);
+		///Seperate Storehouse
+		A.GiveWares(0, WARE_GOLD, 65);
+		A.GiveWares(0, WARE_STONES, 80);
+		A.GiveWares(0, WARE_TIMBER, 60);
+		A.GiveWares(0, WARE_WINE, 70);
+		A.GiveWares(0, WARE_SAUSAGES, 40);
+		A.GiveWares(0, WARE_LOAVES, 45);
+		A.GiveWares(0, WARE_FISH, 35);
+		///Castle Storehouse 1
+		MainStore:= S.HouseAt(92, 45);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 100);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 20);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 70);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 40);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 45);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 35);
+		A.HouseAddWaresTo(MainStore, WARE_COAL, 200);
+		A.HouseAddWaresTo(MainStore, WARE_IRON_ORE, 100);
+		///ICastle Storehouse 2
+		MainStore:= S.HouseAt(68, 48);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 20);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 60);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 40);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 40);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 30);
+		///Resources to gather
+		RequiredGold:= 1200;
+		RequiredLoaves:= 400;
+		RequiredSkins:= 150;
+		///AI EQ rates
+		A.AIEquipRate(1, 0, 400);
+		A.AIEquipRate(1, 1, 700);
+		A.AIEquipRate(2, 0, 400);
+		A.AIEquipRate(2, 1, 700);
+		A.AIEquipRate(3, 0, 400);
+		A.AIEquipRate(3, 1, 700);
+		Difficulty[0]:= 900; ///Barbarians
+		Difficulty[1]:= 650; ///Rebels
+		Difficulty[2]:= 700; ///Rogues
+		Difficulty[3]:= 650; ///Vagabonds
+		///AI Buff timer (Iron Units/Eq rate increase)
+		UpgradeTimer:= 42000;
+		UpgradeTimer2:= 950000;
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 5);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 5);
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 15);
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 15);
+		A.GiveWeapons(0, WARE_SWORDS, 5);
+		A.GiveWeapons(0, WARE_PIKES, 5);
+		A.GiveWeapons(0, WARE_CROSSBOWS, 5);
+		A.GiveWeapons(0, WARE_LONGBOWS, 5);
+		A.GiveWeapons(0, WARE_HAND_AXES, 5);
+		A.GiveWeapons(0, WARE_LANCES, 5);
+		///Seperate Storehouse
+		A.GiveWares(0, WARE_GOLD, 60);
+		A.GiveWares(0, WARE_STONES, 60);
+		A.GiveWares(0, WARE_TIMBER, 50);
+		A.GiveWares(0, WARE_WINE, 60);
+		A.GiveWares(0, WARE_SAUSAGES, 35);
+		A.GiveWares(0, WARE_LOAVES, 40);
+		A.GiveWares(0, WARE_FISH, 15);
+		///Castle Storehouse 1
+		MainStore:= S.HouseAt(92, 45);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 80);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 15);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 60);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 35);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 45);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 30);
+		A.HouseAddWaresTo(MainStore, WARE_COAL, 140);
+		A.HouseAddWaresTo(MainStore, WARE_IRON_ORE, 70);
+		///ICastle Storehouse 2
+		MainStore:= S.HouseAt(68, 48);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 15);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 50);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 35);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 35);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 25);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 25);
+		///Resources to gather
+		RequiredGold:= 1350;
+		RequiredLoaves:= 450;
+		RequiredSkins:= 175;
+		///AI EQ rates
+		A.AIEquipRate(1, 0, 350);
+		A.AIEquipRate(1, 1, 600);
+		A.AIEquipRate(2, 0, 350);
+		A.AIEquipRate(2, 1, 500);
+		A.AIEquipRate(3, 0, 350);
+		A.AIEquipRate(3, 1, 500);
+		Difficulty[0]:= 800; ///Barbarians
+		Difficulty[1]:= 600; ///Rebels
+		Difficulty[2]:= 650; ///Rogues
+		Difficulty[3]:= 625; ///Vagabonds
+		///AI Buff timer (Iron Units/Eq rate increase)
+		UpgradeTimer:= 36000;
+		UpgradeTimer2:= 85000;
+        end;
+		
+        mdHard1:
+		begin
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 3);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 3);
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 9);
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 9);
+		A.GiveWeapons(0, WARE_SWORDS, 3);
+		A.GiveWeapons(0, WARE_PIKES, 3);
+		A.GiveWeapons(0, WARE_CROSSBOWS, 3);
+		A.GiveWeapons(0, WARE_LONGBOWS, 3);
+		A.GiveWeapons(0, WARE_HAND_AXES, 3);
+		A.GiveWeapons(0, WARE_LANCES, 3);
+		///Seperate Storehouse
+		A.GiveWares(0, WARE_GOLD, 50);
+		A.GiveWares(0, WARE_STONES, 50);
+		A.GiveWares(0, WARE_TIMBER, 50);
+		A.GiveWares(0, WARE_WINE, 50);
+		A.GiveWares(0, WARE_SAUSAGES, 25);
+		A.GiveWares(0, WARE_LOAVES, 25);
+		A.GiveWares(0, WARE_FISH, 15);
+		///Castle Storehouse 1
+		MainStore:= S.HouseAt(92, 45);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 70);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 10);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 50);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 40);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 25);
+		A.HouseAddWaresTo(MainStore, WARE_COAL, 100);
+		A.HouseAddWaresTo(MainStore, WARE_IRON_ORE, 50);
+		///ICastle Storehouse 2
+		MainStore:= S.HouseAt(68, 48);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 10);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 1999);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 45);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 30);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 20);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 20);
+		///Resources to gather
+		RequiredGold:= 1500;
+		RequiredLoaves:= 500;
+		RequiredSkins:= 200;
+		///AI EQ rates
+		A.AIEquipRate(1, 0, 300);
+		A.AIEquipRate(1, 1, 500);
+		A.AIEquipRate(2, 0, 300);
+		A.AIEquipRate(2, 1, 500);
+		A.AIEquipRate(3, 0, 300);
+		A.AIEquipRate(3, 1, 500);
+		Difficulty[0]:= 700; ///Barbarians
+		Difficulty[1]:= 550; ///Rebels
+		Difficulty[2]:= 600; ///Rogues
+		Difficulty[3]:= 575; ///Vagabonds
+		///AI Buff timer (Iron Units/Eq rate increase)
+		UpgradeTimer:= 33000;
+		UpgradeTimer2:= 75000;
+        end;
+    end;
+end;
+
+
+
+procedure OnTick();
+begin
+if (States.GameTime MOD 10 = 0) then begin
+    A.OverlayTextSet(0, '<$2>');
+    CollectedGold:= TotalResourceAmount(0, WARE_GOLD);
+	CollectedLoaves:= TotalResourceAmount(0, WARE_LOAVES);
+	CollectedSkins:= TotalResourceAmount(0, WARE_SKINS);
+	if CollectedGold < RequiredGold then
+	begin
+		A.OverlayTextAppend(0, '|<$3>: ' + inttostr(CollectedGold)+ '/' + inttostr(RequiredGold) + '');
+	end	else
+		A.OverlayTextAppend(0, '|<$3>[$5BD75B]: ' + inttostr(CollectedGold)+ '/' + inttostr(RequiredGold) + '[]');
+	
+	if CollectedLoaves < RequiredLoaves then
+	begin
+		A.OverlayTextAppend(0, '|<$4>: ' + inttostr(CollectedLoaves)+ '/' + inttostr(RequiredLoaves) + '');
+	end	else
+		A.OverlayTextAppend(0, '|<$4>[$5BD75B]: ' + inttostr(CollectedLoaves)+ '/' + inttostr(RequiredLoaves) + '[]');
+		
+	if CollectedSkins < RequiredSkins then
+	begin
+		A.OverlayTextAppend(0, '|<$5>: ' + inttostr(CollectedSkins)+ '/' + inttostr(RequiredSkins) + '');
+	end	else
+		A.OverlayTextAppend(0, '|<$5>[$5BD75B]: ' + inttostr(CollectedSkins)+ '/' + inttostr(RequiredSkins) + '[]');
+end;
+
+if (S.GameTime MOD 25 = 0) then 
+    if (CollectedGold >= RequiredGold) and (CollectedLoaves >= RequiredLoaves) and (CollectedSkins >= RequiredSkins) then begin
+	A.PlayerWin(playersWhoWin,True);
+	end;
+
+if (S.GameTime = UpgradeTimer) then begin
+        A.GiveWeapons(1, WARE_IRON_ARMOR, 500);
+		A.GiveWeapons(1, WARE_IRON_ARMOR, 1500);
+		A.GiveWeapons(1, WARE_SWORDS, 500);
+		A.GiveWeapons(1, WARE_PIKES, 500);
+		A.GiveWeapons(1, WARE_CROSSBOWS, 500);		
+		A.GiveWeapons(2, WARE_IRON_ARMOR, 500);
+		A.GiveWeapons(2, WARE_IRON_ARMOR, 1500);
+		A.GiveWeapons(2, WARE_SWORDS, 500);
+		A.GiveWeapons(2, WARE_PIKES, 500);
+		A.GiveWeapons(2, WARE_CROSSBOWS, 500);
+		A.GiveWeapons(3, WARE_IRON_ARMOR, 500);
+		A.GiveWeapons(3, WARE_IRON_ARMOR, 1500);
+		A.GiveWeapons(3, WARE_SWORDS, 500);
+		A.GiveWeapons(3, WARE_PIKES, 500);
+		A.GiveWeapons(3, WARE_CROSSBOWS, 500);
+	end;
+	
+if (S.GameTime = UpgradeTimer2) then begin
+	A.GiveWeapons(1, WARE_IRON_ARMOR, 500);
+	A.GiveWeapons(1, WARE_IRON_ARMOR, 1500);
+	A.GiveWeapons(1, WARE_SWORDS, 500);
+	A.GiveWeapons(1, WARE_PIKES, 500);
+	A.GiveWeapons(1, WARE_CROSSBOWS, 500);		
+	A.GiveWeapons(2, WARE_IRON_ARMOR, 500);
+	A.GiveWeapons(2, WARE_IRON_ARMOR, 1500);
+	A.GiveWeapons(2, WARE_SWORDS, 500);
+	A.GiveWeapons(2, WARE_PIKES, 500);
+	A.GiveWeapons(2, WARE_CROSSBOWS, 500);
+	A.GiveWeapons(3, WARE_IRON_ARMOR, 500);
+	A.GiveWeapons(3, WARE_IRON_ARMOR, 1500);
+	A.GiveWeapons(3, WARE_SWORDS, 500);
+	A.GiveWeapons(3, WARE_PIKES, 500);
+	A.GiveWeapons(3, WARE_CROSSBOWS, 500);
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.AIEquipRate(1, 0, 300);
+		A.AIEquipRate(1, 1, 600);
+		A.AIEquipRate(2, 0, 300);
+		A.AIEquipRate(2, 1, 600);
+		A.AIEquipRate(3, 0, 300);
+		A.AIEquipRate(3, 1, 600);
+        end;
+		
+        mdNormal:
+        begin
+		A.AIEquipRate(1, 0, 250);
+		A.AIEquipRate(1, 1, 500);
+		A.AIEquipRate(2, 0, 250);
+		A.AIEquipRate(2, 1, 500);
+		A.AIEquipRate(3, 0, 250);
+		A.AIEquipRate(3, 1, 500);
+        end;
+		
+        mdHard1:
+		begin
+		A.AIEquipRate(1, 0, 200);
+		A.AIEquipRate(1, 1, 400);
+		A.AIEquipRate(2, 0, 200);
+		A.AIEquipRate(2, 1, 400);
+		A.AIEquipRate(3, 0, 200);
+		A.AIEquipRate(3, 1, 400);
+        end;
+    end;
+	end;	
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+    if (aHouseID = S.HouseAt(89, 56)) or (aHouseID = S.HouseAt(97, 60)) then begin
+	A.PlayerDefeat(0);
+	end;
+	
+    if (aHouseID = S.HouseAt(14, 15)) or (aHouseID = S.HouseAt(21, 14)) or (aHouseID = S.HouseAt(22, 18)) or (aHouseID = S.HouseAt(89, 112)) or (aHouseID = S.HouseAt(92, 117)) or (aHouseID = S.HouseAt(99, 117)) or (aHouseID = S.HouseAt(18, 96)) or (aHouseID = S.HouseAt(13, 102)) or (aHouseID = S.HouseAt(22, 101)) then begin
+		Difficulty[0]:= 80; ///Barbarians
+		Difficulty[1]:= 60; ///Rebels
+		Difficulty[2]:= 65; ///Rogues
+		Difficulty[3]:= 62; ///Vagabonds
+	end;	
+end;
+

@@ -1,0 +1,88 @@
+{$EVENT evtTick:TownHallUnitOnTick}
+
+var
+	AI2: array[0..3] of Integer;
+	AI3: array[0..3] of Integer;
+	AI4: array[0..3] of Integer;
+	Difficulty: array[0..3] of Integer;
+	
+procedure TownHallUnitOnTick();
+begin
+//////////////////////////////////              AI 2              ////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	if (S.PlayerDefeated(1) = false) and (S.HouseAt(14, 15)<> -1) and (S.GameTime > AI2[0]) and (S.StatUnitMultipleTypesCount(1, [UNIT_BARBARIAN, UNIT_AXE_FIGHTER, UNIT_SWORD_FIGHTER]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(14, 15), UNIT_BARBARIAN, 1);
+			AI2[0]:= (S.GameTime + Difficulty[0]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+	if (S.PlayerDefeated(1) = false) and (S.HouseAt(21, 14)<> -1) and (S.GameTime > AI2[1]) and (S.StatUnitMultipleTypesCount(1, [UNIT_REBEL, UNIT_LANCE_CARRIER, UNIT_PIKEMAN]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(21, 14), UNIT_REBEL, 1);
+			AI2[1]:= (S.GameTime + Difficulty[1]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(1) = false) and (S.HouseAt(21, 14)<> -1) and (S.GameTime > AI2[2]) and (S.StatUnitMultipleTypesCount(1, [UNIT_ROGUE, UNIT_BOWMAN, UNIT_CROSSBOWMAN]) < 64) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(21, 14), UNIT_ROGUE, 1);
+			AI2[2]:= (S.GameTime + Difficulty[2]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(1) = false) and (S.HouseAt(22, 18)<> -1) and (S.GameTime > AI2[3]) and (S.StatUnitMultipleTypesCount(1, [UNIT_VAGABOND, UNIT_SCOUT, UNIT_KNIGHT]) < 54) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(22, 18), UNIT_VAGABOND, 1);
+			AI2[3]:= (S.GameTime + Difficulty[3]);
+		end;
+		
+//////////////////////////////////              AI 3              ////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	if (S.PlayerDefeated(2) = false) and (S.HouseAt(89, 112)<> -1) and (S.GameTime > AI3[0]) and (S.StatUnitMultipleTypesCount(2, [UNIT_BARBARIAN, UNIT_AXE_FIGHTER, UNIT_SWORD_FIGHTER]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(89, 112), UNIT_BARBARIAN, 1);
+			AI3[0]:= (S.GameTime + Difficulty[0]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+	if (S.PlayerDefeated(2) = false) and (S.HouseAt(92, 117)<> -1) and (S.GameTime > AI3[1]) and (S.StatUnitMultipleTypesCount(2, [UNIT_REBEL, UNIT_LANCE_CARRIER, UNIT_PIKEMAN]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(92, 117), UNIT_REBEL, 1);
+			AI3[1]:= (S.GameTime + Difficulty[1]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(2) = false) and (S.HouseAt(92, 117)<> -1) and (S.GameTime > AI3[2]) and (S.StatUnitMultipleTypesCount(2, [UNIT_ROGUE, UNIT_BOWMAN, UNIT_CROSSBOWMAN]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(92, 117), UNIT_ROGUE, 1);
+			AI3[2]:= (S.GameTime + Difficulty[2]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(2) = false) and (S.HouseAt(99, 117)<> -1) and (S.GameTime > AI3[3]) and (S.StatUnitMultipleTypesCount(2, [UNIT_VAGABOND, UNIT_SCOUT, UNIT_KNIGHT]) < 63) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(99, 117), UNIT_VAGABOND, 1);
+			AI3[3]:= (S.GameTime + Difficulty[3]);
+		end;
+		
+//////////////////////////////////              AI 4             /////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	if (S.PlayerDefeated(3) = false) and (S.HouseAt(18, 96)<> -1) and (S.GameTime > AI4[0]) and (S.StatUnitMultipleTypesCount(3, [UNIT_BARBARIAN, UNIT_AXE_FIGHTER, UNIT_SWORD_FIGHTER]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(18, 96), UNIT_BARBARIAN, 1);
+			AI4[0]:= (S.GameTime + Difficulty[0]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+	if (S.PlayerDefeated(3) = false) and (S.HouseAt(13, 102)<> -1) and (S.GameTime > AI4[1]) and (S.StatUnitMultipleTypesCount(3, [UNIT_REBEL, UNIT_LANCE_CARRIER, UNIT_PIKEMAN]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(13, 102), UNIT_REBEL, 1);
+			AI4[1]:= (S.GameTime + Difficulty[1]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(3) = false) and (S.HouseAt(13, 102)<> -1) and (S.GameTime > AI4[2]) and (S.StatUnitMultipleTypesCount(3, [UNIT_ROGUE, UNIT_BOWMAN, UNIT_CROSSBOWMAN]) < 56) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(13, 102), UNIT_ROGUE, 1);
+			AI4[2]:= (S.GameTime + Difficulty[2]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(3) = false) and (S.HouseAt(22, 101)<> -1) and (S.GameTime > AI4[3]) and (S.StatUnitMultipleTypesCount(3, [UNIT_VAGABOND, UNIT_SCOUT, UNIT_KNIGHT]) < 63) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(22, 101), UNIT_VAGABOND, 1);
+			AI4[3]:= (S.GameTime + Difficulty[3]);
+		end;			
+end;
