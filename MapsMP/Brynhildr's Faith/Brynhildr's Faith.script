@@ -1,0 +1,104 @@
+{$INCLUDE RandomStorehouse.script}
+
+procedure InitPlayer(playerId, xMin, xMax, yMin, yMax: integer);
+var
+  serfs: integer;
+  workers: integer;
+  slow: boolean;
+
+begin
+
+case States.KamRandomI(5) of
+    0:
+      begin
+        serfs := 7;
+        workers := 6;
+      end;
+    1:
+      begin
+        serfs := 6;
+        workers := 5;
+      end;
+    2:
+      begin
+        serfs := 5;
+        workers := 4;
+      end;
+    3:
+      begin
+        serfs := 4;
+        workers := 3;
+      end;
+    4:
+      begin
+        serfs := 3;
+        workers := 3;
+      end;
+  end;
+
+  slow := States.KamRandomI(5) = 0;
+
+  RNST_InitPlayerEx(playerId, xMin, xMax, yMin, yMax, workers, serfs, slow);
+
+  case States.KamRandomI(2) of
+    0:
+      if (not slow) then
+      begin
+        RNST_SetUnlockedBuildingTypes(playerId, [htQuarry]);
+      end;
+    1:
+      RNST_SetUnlockedBuildingTypes(playerId, [htWoodcutters]);
+  end;
+
+  if  (States.KamRandomI(2) = 0) then
+  begin
+    RNST_SetUnlockedBuildingTypes(playerId, [htFarm]);
+  end;
+
+  RNST_SetPlayerWaresAtStart(playerId, wtStone, 80 + States.KamRandomI(16));
+  RNST_SetPlayerWaresAtStart(playerId, wtTrunk, 3 + States.KamRandomI(3));
+  RNST_SetPlayerWaresAtStart(playerId, wtTimber, 50 + States.KamRandomI(11));
+  RNST_SetPlayerWaresAtStart(playerId, wtGold, 56 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtWine, 20 + States.KamRandomI(40));
+  RNST_SetPlayerWaresAtStart(playerId, wtBread, 20 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtSausage, 10 + States.KamRandomI(21));
+  RNST_SetPlayerWaresAtStart(playerId, wtFish, 10 + States.KamRandomI(21));
+end;
+//end;
+
+procedure InitPlayers();
+begin
+
+  RNST_SightRadius := 40;
+  RNST_IsAllowedToPlaceAtCoal := true;
+
+
+  //InitPlayer(0,2,62,2,62);
+  //InitPlayer(1,64,124,2,62);
+  //InitPlayer(2,126,186,2,62);
+
+
+  InitPlayer(0,24,30,45,51);
+  InitPlayer(1,98,104,49,55);
+  InitPlayer(2,120,126,74,80);
+  InitPlayer(3,152,158,39,45);
+  InitPlayer(4,153,159,18,24);
+  InitPlayer(5,223,229,42,48);
+  
+  //RNST_InitBoundPlayer(1,0,126,131,165,170);
+  RNST_InitBoundPlayer(6,0,24,30,206,212);
+  RNST_InitBoundPlayer(7,1,98,104,210,216);
+  RNST_InitBoundPlayer(8,2,120,126,235,241);
+  RNST_InitBoundPlayer(9,3,152,158,200,206);
+  RNST_InitBoundPlayer(10,4,153,159,179,185);
+  RNST_InitBoundPlayer(11,5,223,229,203,209);
+
+end;
+
+procedure OnMissionStart;
+begin
+  InitPlayers();
+
+
+end;
+
