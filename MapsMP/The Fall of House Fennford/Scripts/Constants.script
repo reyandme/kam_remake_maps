@@ -1,0 +1,137 @@
+const
+
+  DIRECTION_NONE = dirNA;
+  DIRECTION_NORTH = dirN;
+  DIRECTION_SOUTH = dirS;
+  DIRECTION_EAST = dirE;
+  DIRECTION_WEST = dirW;
+  DIRECTION_NORTH_EAST = dirNE;
+  DIRECTION_NORTH_WEST = dirNW;
+  DIRECTION_SOUTH_EAST = dirSE;
+  DIRECTION_SOUTH_WEST = dirSW;
+
+const
+
+  GROUP_NONE = gtNone;
+  GROUP_MELEE = gtMelee;
+  GROUP_ANTIHORSE = gtAntiHorse;
+  GROUP_RANGED = gtRanged;
+  GROUP_MOUNTED = gtMounted;
+
+const
+
+  HOUSE_NONE = htNone;
+  HOUSE_SCHOOLHOUSE = htSchool;
+  HOUSE_INN = htInn;
+  HOUSE_QUARRY = htQuarry;
+  HOUSE_WOODCUTTERS = htWoodcutters;
+  HOUSE_SAWMILL = htSawmill;
+  HOUSE_FARM = htFarm;
+  HOUSE_MILL = htMill;
+  HOUSE_BAKERY = htBakery;
+  HOUSE_SWINE_FARM = htSwine;
+  HOUSE_BUTCHERS = htButchers;
+  HOUSE_VINEYARD = htVineyard;
+  HOUSE_GOLD_MINE = htGoldMine;
+  HOUSE_COAL_MINE = htCoalMine;
+  HOUSE_METALLURGISTS = htMetallurgists;
+  HOUSE_WEAPONS_WORKSHOP = htWeaponWorkshop;
+  HOUSE_TANNERY = htTannery;
+  HOUSE_ARMORY_WORKSHOP = htArmorWorkshop;
+  HOUSE_STABLES = htStables;
+  HOUSE_IRON_MINE = htIronMine;
+  HOUSE_IRON_SMITHY = htIronSmithy;
+  HOUSE_WEAPON_SMITHY = htWeaponSmithy;
+  HOUSE_ARMOR_SMITHY = htArmorSmithy;
+  HOUSE_BARRACKS = htBarracks;
+  HOUSE_STOREHOUSE = htStore;
+  HOUSE_WATCHTOWER = htWatchTower;
+  HOUSE_FISHERMANS = htFishermans;
+  HOUSE_MARKETPLACE = htMarket;
+  HOUSE_TOWN_HALL = htTownHall;
+  HOUSE_SIEGE_WORKSHOP = htSiegeWorkshop;
+
+const
+
+  PASSABILITY_NONE = tpNone;
+  PASSABILITY_WALK = tpWalk;
+  PASSABILITY_WALK_ROAD = tpWalkRoad;
+  PASSABILITY_BUILD = tpBuild;
+  PASSABILITY_BUILD_NO_OBJECT = tpBuildNoObj;
+  PASSABILITY_BUILD_ROAD = tpMakeRoads;
+  PASSABILITY_CUT_TREE = tpCutTree;
+  PASSABILITY_CRAB = tpCrab;
+  PASSABILITY_FISH = tpFish;
+  PASSABILITY_WOLF = tpWolf;
+
+const
+
+  UNIT_NONE = utNone;
+  UNIT_SERF = utSerf;
+  UNIT_LABORER = utBuilder;
+  UNIT_STONEMASON = utStonemason;
+  UNIT_WOODCUTTER = utWoodcutter;
+  UNIT_CARPENTER = utCarpenter;
+  UNIT_FISHERMAN = utFisher;
+  UNIT_FARMER = utFarmer;
+  UNIT_BAKER = utBaker;
+  UNIT_ANIMAL_BREEDER = utAnimalBreeder;
+  UNIT_BUTCHER = utButcher;
+  UNIT_MINER = utMiner;
+  UNIT_METALLURGIST = utMetallurgist;
+  UNIT_BLACKSMITH = utSmith;
+  UNIT_RECRUIT = utRecruit;
+  UNIT_MILITIA = utMilitia;
+  UNIT_AXE_FIGHTER = utAxeFighter;
+  UNIT_SWORD_FIGHTER = utSwordFighter;
+  UNIT_BOWMAN = utBowman;
+  UNIT_CROSSBOWMAN = utCrossbowman;
+  UNIT_LANCE_CARRIER = utLanceCarrier;
+  UNIT_PIKEMAN = utPikeman;
+  UNIT_SCOUT = utScout;
+  UNIT_KNIGHT = utKnight;
+  UNIT_REBEL = utRebel;
+  UNIT_ROGUE = utRogue;
+  UNIT_VAGABOND = utVagabond;
+  UNIT_BARBARIAN = utBarbarian;
+  UNIT_WARRIOR = utWarrior;
+  UNIT_WOLF = utWolf;
+  UNIT_FISH = utFish;
+  UNIT_WATERSNAKE = utWatersnake;
+  UNIT_SEASTAR = utSeastar;
+  UNIT_CRAB = utCrab;
+  UNIT_WATERFLOWER = utWaterflower;
+  UNIT_WATERLEAF = utWaterleaf;
+  UNIT_DUCK = utDuck;
+
+const
+
+  WARE_NONE = wtNone;
+  WARE_TREE_TRUNK = wtTrunk;
+  WARE_STONE = wtStone;
+  WARE_TIMBER = wtTimber;
+  WARE_IRON_ORE = wtIronOre;
+  WARE_GOLD_ORE = wtGoldOre;
+  WARE_COAL = wtCoal;
+  WARE_IRON = wtIron;
+  WARE_GOLD = wtGold;
+  WARE_WINE_BARREL = wtWine;
+  WARE_CORN = wtCorn;
+  WARE_LOAF = wtBread;
+  WARE_FLOUR = wtFlour;
+  WARE_LEATHER = wtLeather;
+  WARE_SAUSAGE = wtSausage;
+  WARE_PIG = wtPig;
+  WARE_SKIN = wtSkin;
+  WARE_WOODEN_SHIELD = wtWoodenShield;
+  WARE_IRON_SHIELD = wtIronShield;
+  WARE_LEATHER_ARMOR = wtLeatherArmor;
+  WARE_IRON_ARMOR = wtIronArmor;
+  WARE_HAND_AXE = wtAxe;
+  WARE_SWORD = wtSword;
+  WARE_LANCE = wtLance;
+  WARE_PIKE = wtPike;
+  WARE_LONGBOW = wtBow;
+  WARE_CROSSBOW = wtCrossbow;
+  WARE_HORSE = wtHorse;
+  WARE_FISH = wtFish;
