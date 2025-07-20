@@ -1,0 +1,69 @@
+The Fall of House Fennford
+**************************
+
+v0.2.1 (01.12.2024)
+- Fixed a bug that caused Player9 to not attack
+- Fixed a bug where only 2 of 3 scripted attacks happened
+- Attacks are now coming every 15minutes (previously every 16minutes)
+- Allow Gold trade for Player0
+- Disabled ability to train Warriors for Player1 and Player2
+- Increase supply of accessible gold for Player0 to a total of 600
+- Moved gold supplies close to Player0 starting location and made room for an additional mine
+- Slightly increased supply of accessible gold of Player1
+- Diversified tileset of all stone mountains
+- Check for "Can Worker" on Player0's stone mountain and fixed elevation
+
+v0.2.2 (03.12.2024)
+- Carved out a passage thru the Goldmountain on Player0 location
+- Gold supplies close to Player0 starting location reduced from 600 to 560
+- Message that Player0 is discoverd by Enemy now comes around 10 Minutes before the first attack (20 Minutes previously)
+- Recruit Delay of Player4 increased from 50 to 52
+- Recruit Delay of Player8 increased from 66 to 68
+- Initial Delay of all starting Attacks increased by 1,5 Minutes
+- Reworked some Messages in the libx file
+
+v0.2.2b (04.12.2024)
+- First attacks are now approximatly 10% less powerful
+
+v0.2.2c (04.12.2024)
+- Attacks now get harder with each iteration, but start easier
+- Script formatting changes
+
+v0.2.3 (09.12.2024)
+- Added hard3 difficulty
+- Disable horse trade for all players
+- Initial Delay of all starting Attacks decreased by 0.5 Minutes
+- Moved some parts of the script from OnMissionStart to OnTick to increase loading speed at startup
+
+v0.2.4 (20.12.2024)
+- Enabled easy3 difficulty
+- Finished elevation of sea
+- Increased amount of fish in the sea from 200 to 250
+- Placed aditional seasnakes, seastars and ducks
+- Placed missing seaweed in sea
+
+v0.3 (21.12.2024)
+- Defense Positons are added by script instead of in mapEd
+- Defense Position Radius now automatically scales with difficulty
+- Fixed Radius of one of Player7's Defense Position
+
+v0.3.1 (22.12.2024)
+- Added main story
+- Reworked ingame messages
+- Fixed some broken tiles
+
+v0.3.1b (23.12.2024)
+- Script folder was deleted by tavern during upload (introduced a workout, till tavern supports that feature)
+
+v0.3.1c (02.01.2025)
+- Swinefarm in Player6 Base belonged to Player7 for some reason
+
+v0.3.1d (19.03.2025)
+- Fixed a minor bug in improvestaticai.script
+- Turned off "Replenish"-Part in improvestaticai.script
+- all secondary scripts now moved into "Scripts" folder
+
+v0.3.2 (07.04.2025)
+- Fixed a severe bug that caused AI Player8 to not make any soldiers
+- Updated tools.script to newest version
+- Turned ON "Replenish"-Part in improvestaticai.script
