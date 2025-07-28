@@ -38,7 +38,7 @@ begin
 	for i := 0 to 29 do
 		if i <> 26 then //26 is not in use
 			Actions.HouseAllow(iPlayer, i, false);
-	Actions.HouseAllow(iPlayer, 11, true); //Storehouse always unlocked
+	Actions.HouseUnlock(iPlayer, 11); //Storehouse always unlocked
 end;
 
 //Use Traditionl Unlock Order for Houses (Overwrites Static Script settings: Comment out Houses that are supposed to be blocked here!)
@@ -46,56 +46,57 @@ procedure TraditionalUnlock(iPlayer: Byte; iHouseID: Integer);
 begin
 	case States.HouseType(iHouseID) of
 		0: 	begin //Sawmill
-				Actions.HouseAllow(iPlayer, 17, true); //Watch Tower (After Sawmill this time!)
-				Actions.HouseAllow(iPlayer, 4, true); //Iron Mine
-				Actions.HouseAllow(iPlayer, 5, true); //Gold Mine
-				Actions.HouseAllow(iPlayer, 3, true); //Coal Mine
-				Actions.HouseAllow(iPlayer, 28, true); //Vineyard
-				Actions.HouseAllow(iPlayer, 8, true); //Farm
-				Actions.HouseAllow(iPlayer, 19, true); //Weapons Workshop
-				Actions.HouseAllow(iPlayer, 21, true); //Barracks
-			//	Actions.HouseAllow(iPlayer, 6, true); //Fisherman
+				// Actions.HouseAllow(iPlayer, 17, true); //Watch Tower (After Sawmill this time!)
+				Actions.HouseUnlock(iPlayer, 17); //Watch Tower (After Sawmill this time!)
+				Actions.HouseUnlock(iPlayer, 4); //Iron Mine
+				Actions.HouseUnlock(iPlayer, 5); //Gold Mine
+				Actions.HouseUnlock(iPlayer, 3); //Coal Mine
+				Actions.HouseUnlock(iPlayer, 28); //Vineyard
+				Actions.HouseUnlock(iPlayer, 8); //Farm
+				Actions.HouseUnlock(iPlayer, 19); //Weapons Workshop
+				Actions.HouseUnlock(iPlayer, 21); //Barracks	
+			//	Actions.HouseUnlock(iPlayer, 6); //Fisherman
 			end;
 		1: 	begin // Iron Smithy
-				Actions.HouseAllow(iPlayer, 2, true); //Weapon Smithy
-				Actions.HouseAllow(iPlayer, 10, true); //Armor Smithy
+				Actions.HouseUnlock(iPlayer, 2); //Weapon Smithy
+				Actions.HouseUnlock(iPlayer, 10); //Armor Smithy
 			end;
 		2: exit; // Weapon Smithy
 		3: exit; //Coal Mine
-		4: Actions.HouseAllow(iPlayer, 1, true); //Iron Mine -> Iron Smithy
-		5: Actions.HouseAllow(iPlayer, 15, true); //Gold Mine -> Metallurgist
+		4: Actions.HouseUnlock(iPlayer, 1); //Iron Mine -> Iron Smithy
+		5: Actions.HouseUnlock(iPlayer, 15); //Gold Mine -> Metallurgist
 		6: exit; //Fisherman's Hut
 		7: exit; //Bakery
 		8: 	begin //Farm
-				Actions.HouseAllow(iPlayer, 12, true); //Stables
-				Actions.HouseAllow(iPlayer, 16, true); //Swine Farm
-				Actions.HouseAllow(iPlayer, 22, true); //Mill
+				Actions.HouseUnlock(iPlayer, 12); //Stables
+				Actions.HouseUnlock(iPlayer, 16); //Swine Farm
+				Actions.HouseUnlock(iPlayer, 22); //Mill
 			end;
-		9: Actions.HouseAllow(iPlayer, 0, true); //Woodcutter -> Sawmill
+		9: Actions.HouseUnlock(iPlayer, 0); //Woodcutter -> Sawmill
 		10: exit; //Armor Smithy
-		11: Actions.HouseAllow(iPlayer, 13, true); //Storehouse -> School
+		11: Actions.HouseUnlock(iPlayer, 13); //Storehouse -> School
 		12: exit; //Stables
-		13: Actions.HouseAllow(iPlayer, 27, true); //School -> Inn
+		13: Actions.HouseUnlock(iPlayer, 27); //School -> Inn
 		14: begin //Quarry
-				Actions.HouseAllow(iPlayer, 9, true); //Woodcutter
-				//Actions.HouseAllow(iPlayer, 17, true); //Watch Tower
+				Actions.HouseUnlock(iPlayer, 9); //Woodcutter
+				//Actions.HouseUnlock(iPlayer, 17); //Watch Tower
 			end;
 		15: exit; //Metallurgist's
 		16:	begin //Swine Farm
-				Actions.HouseAllow(iPlayer, 24, true); //Butcher
-				Actions.HouseAllow(iPlayer, 25, true); //Tannery
+				Actions.HouseUnlock(iPlayer, 24); //Butcher
+				Actions.HouseUnlock(iPlayer, 25); //Tannery
 			end;
 		17: exit; //Watch Tower
 		18: exit; //Townhall
 		19: exit; //Weapons Workshop
 		20: exit; //Armor Workshop
 		21: exit; //Barracks
-		22: Actions.HouseAllow(iPlayer, 7, true); //Mill -> Bakery
+		22: Actions.HouseUnlock(iPlayer, 7); //Mill -> Bakery
 		23: exit; //Vehicles Workshop
 		24: exit;//Butcher's
-		25: Actions.HouseAllow(iPlayer, 20, true); //Tannery -> Armor Workshop
+		25: Actions.HouseUnlock(iPlayer, 20); //Tannery -> Armor Workshop
 		26: exit; //Unused
-		27: Actions.HouseAllow(iPlayer, 9, true); //Inn -> Woodcutter (just this time: No Stone in the Map!)
+		27: Actions.HouseUnlock(iPlayer, 9); //Inn -> Woodcutter (just this time: No Stone in the Map!)
 		28: exit; //Vineyard
 		29: exit; //Market
 	end;
