@@ -1,8 +1,8 @@
-Author
+﻿Author
 DontTalk
 
 Version
-1.5.1 Ambience Patch
+1.6 Caravan Bug fix, Better rewards from caravans, AI behavior improvements (small EQ rate reduction for balance)
 
 SmallDesc
 A Mission by DontTalk

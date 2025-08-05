@@ -1,0 +1,15 @@
+﻿0:Das Reich der Vreslanen, das im Osten an uns grenzt, hat vor kurzem im Nayru-Becken an der Grenze zwischen unseren Ländern mit einer großen Ausgrabung von Eisen begonnen. In der jüngeren Geschichte hat das vreslanische Königreich oft gegen uns gehandelt, und diese jüngsten Entwicklungen lassen vermuten, dass es sehr wahrscheinlich ist, dass sie wieder eine Offensive auf unsere Gebiete vorbereiten. |Das werden wir nicht zulassen. Ihr habt den Auftrag, einen Angriff gegen die Vreslaner im Becken zu führen, um ihre Bergbauanlagen zu zerstören und so viel Eisen wie möglich zu gewinnen, um unser eigenes militärisches Potenzial zu stärken und den Feind zu schwächen. Handeln Sie schnell, denn die feindlichen Kräfte werden bald mobilisieren, um Ihre Truppen aus der Region zu vertreiben.||[$0707FF]Schwierigkeitsgrad:[] ****||Map uses [$E1FA6B]Strangelove's[] improved AI script.|Map uses [$7A7AEB]Cmowla's[] Anti Lure script (4.3b)
+1:[$B28080]Eisen eingesammelt[]
+2:Unsere Soldaten haben den Talkessel erreicht. Die feindlichen Truppen haben unsere Ankunft bemerkt, aber sie sind zu klein, um eine große Bedrohung darzustellen. Schaltet sie schnell aus und übernehmt das Minenlager.
+3:Wir haben die Kontrolle über das westliche Bergbaulager übernommen. |Wir müssen schnell expandieren, damit wir unsere Ziele vor der Ankunft der feindlichen Armee erreichen können. Zerstöre die restlichen vreslanischen Minenlager und sammle 
+4: Eisen.
+5:Die vreslanischen Handwerker haben, als sie unsere Truppen kommen sahen, große Teile des Lagers in Brand gesetzt, um unsere Bergbauaktivitäten zu behindern. Wir sollten die zerstörten Minen schnell wieder aufbauen und damit beginnen, Ressourcen für uns zu ernten.
+6:Das erste Kontingent der vreslanischen Truppen hat das Bassin erreicht. Sie werden sich bald auf unsere Stellungen stürzen. Bereitet euch auf die Schlacht vor!
+7:Eine weitere Gruppe vreslanischer Soldaten ist in der Region erschienen. Ihre Streitkräfte sind deutlich bedrohlicher als zuvor. Wir müssen schnell handeln, um unsere Ziele zu erreichen, bevor die wirklich gefährlichen Armeen auftauchen.
+8:Die Zeit ist um. Die vreslanische Armee hat die Außenbezirke des Beckens erreicht. Wenn wir unsere Aufgaben nicht schnell erledigen, wird unser Lager von feindlichen Truppen überschwemmt werden!
+9:Wir haben alle vreslanischen Bergbauanlagen in der Region zerstört. Konzentriert euch jetzt darauf, so schnell wie möglich das restliche Eisen zu sammeln.
+101:Westliche Mine
+102:Nördliche Mine
+103:Südliche Mine
+104:Östliches Mine
+105:Vreslanische Truppen

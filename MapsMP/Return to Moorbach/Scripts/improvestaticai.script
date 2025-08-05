@@ -1,9 +1,9 @@
 //-- Improve Static AI --//
 //By Strangelove
-//v0.5.2
-//29.10.2022
+//v0.6.1d
+//19.03.2025
 //Developed for r8754
-//Last modified on r14787
+//Last modified on r151379
 //Requires r14281+ to work
 
 
@@ -12,13 +12,21 @@
 // Do not use this script without permission from its author!
 
 {$EVENT evtMissionStart:ImproveStaticAIOnMissionStart}
+{$EVENT evtMissionStart:ImproveStaticAI2OnMissionStart}
 {$EVENT evtHouseDamaged:ImproveStaticAIOnHouseDamaged}
 {$EVENT evtHouseRepaired:ImproveStaticAIOnHouseRepaired}
 {$EVENT evtHouseDestroyed:ImproveStaticAIOnHouseDestroyed}
+{$EVENT evtHouseAfterDestroyedEx:ImproveStaticAI2OnHouseAfterDestroyedEx}
 {$EVENT evtTick:ImproveStaticAIOnTick}
 {$EVENT evtTick:ImproveStaticAI2OnTick}
+{$EVENT evtTick:ImproveStaticAI3OnTick}
+{$EVENT evtTick:ImproveStaticAI4OnTick}
+{$EVENT evtTick:ImproveStaticAI5OnTick}
 {$EVENT evtPlayerDefeated:ImproveStaticAIOnPlayerDefeated}
 {$EVENT evtHouseBuilt:ImproveStaticAIOnHouseBuilt}
+{$EVENT evtHouseBuilt:ImproveStaticAI2OnHouseBuilt}
+{$EVENT evtHouseAfterDestroyedEx:ImproveStaticAIOnHouseAfterDestroyedEx}
+{$EVENT evtUnitDied:ImproveStaticAIOnUnitDied}
 
 
 {$DEFINE DEBUG}
@@ -34,7 +42,12 @@
 //{$UNDEF REPAIR}
 {$DEFINE DISTRIBUTION} //Set Ware Distribution to 5
 //{$UNDEF DISTRIBUTION}
-
+{$DEFINE RETIRE} //Retire useless eaters
+//{$UNDEF RETIRE}
+{$DEFINE DESTROY} //Destroy Houses that cant reach resources
+{$UNDEF DESTROY}
+{$DEFINE REPLENISH} //Replenish Soldiers that are killed before Recruit Delay is up
+{$UNDEF REPLENISH}
 
 
 const
@@ -45,7 +58,13 @@ const
 	//Repair
 	REPAIR_FREQ = 293;	//How frequently not-yet repaired Houses are marked for repair (in Ticks)
 	
+	//Retire
+	RETIRE_FREQ = 591;
 	
+	//Destroy
+	DESTROY_DELAY = 1199;
+
+
 	
 {$IFDEF REBUILD}
 Type
@@ -137,9 +156,11 @@ begin
 	//Use any Housetype if not found
 	if iClosestHouse = -1 then
 		iClosestHouse := States.ClosestHouse(Player, X, Y, -1);
-	//New house plan not connected? Connect to closest house
-	if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
-		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
+    //Is there another House to connect to?
+	if iClosestHouse <> -1 then
+	    //New house plan not connected? Connect to closest house
+	    if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
+		    Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
 end;
 
 
@@ -250,31 +271,25 @@ end;
 
 
 
-function GetRandomHungerLevel(): Integer;
-var
-	UnitMaxHunger: Integer;
-begin
-	UnitMaxHunger := States.UnitMaxHunger();
-	Result := Utils.RandomRangeI(UnitMaxHunger/2, UnitMaxHunger);
-end;
-
-
 //Sets the HungerLevel of AI Players to a random amount
 procedure UnitsRandomHungerSet();
 var
 	aUnits, aGroups: array of Integer;
 	i, p: Integer;
+	UnitMaxHunger: Integer;
 begin
+    UnitMaxHunger := States.UnitMaxHunger();
+
 	for p := 0 to States.StatPlayerCount() -1 do
 		if States.PlayerIsAI(p) then
 		begin
 			aUnits := States.PlayerGetAllUnits(p);
 			for i := 0 to High(aUnits) do
 				if States.UnitsGroup(aUnits[i]) = -1 then
-					Actions.UnitHungerSet(aUnits[i], GetRandomHungerLevel());
+					Actions.UnitHungerSet(aUnits[i], Utils.RandomRangeI(UnitMaxHunger/5, UnitMaxHunger));
 			aGroups := States.PlayerGetAllGroups(p);
 			for i := 0 to High(aGroups) do
-				Actions.GroupHungerSet(aGroups[i], GetRandomHungerLevel());	
+				Actions.GroupHungerSet(aGroups[i], Utils.RandomRangeI(UnitMaxHunger/4, UnitMaxHunger));
 		end;
 end;
 
@@ -299,53 +314,54 @@ var
 begin
 	aHouses := States.PlayerGetAllHouses(Player);
 	for h := 0 to High(aHouses) do
-		case States.HouseType(aHouses[h]) of
-			0: 	BlockWareInStorehouse(Player, 0, true); //Sawmill: Treetrunk
-			1:	begin //Iron Smithy
-					BlockWareInStorehouse(Player, 3, true); //Iron Ore
-					BlockWareInStorehouse(Player, 5, true); //Coal
-				end;
-			2:  begin //Weapon Smithy
-					BlockWareInStorehouse(Player, 5, true); //Coal
-					BlockWareInStorehouse(Player, 6, true); //Iron
-				end;
-			3: 	; //Coal Mine
-			4:	; //Iron Mine
-			5: 	; //Coal Mine
-			6:	; //Fisherhut
-			7: 	BlockWareInStorehouse(Player, 11, true); //Bakery: Flour
-			8:	; //Farm
-			9:	; //Woodcutter
-			10:	begin //Weapon Smithy
-					BlockWareInStorehouse(Player, 5, true); //Coal
-					BlockWareInStorehouse(Player, 6, true); //Iron
-				end;
-			11: ; //Storehouses
-			12: BlockWareInStorehouse(Player, 9, true); //Stables: Corn
-			13: ; //Schools
-			14: ; //Quarry
-			15: begin //Metallurgists
-					BlockWareInStorehouse(Player, 4, true); //Gold Ore
-					BlockWareInStorehouse(Player, 5, true); //Coal
-				end;
-			16: BlockWareInStorehouse(Player, 9, true); //Swinefarm: Corn
-			17: ; //Watchtower
-			18: ; //Townhall
-			19: ; //BlockWareInStorehouse(Player, 2, true); //Weapons Workshop: Timber
-			20: begin
-					BlockWareInStorehouse(Player, 12, true); //Armory Workshop
-					//BlockWareInStorehouse(Player, 2, true); //Timber
-				end;
-			21: ; //Barracks
-			22: BlockWareInStorehouse(Player, 9, true); //Mill: Corn
-			23: ; //Vehicles Workshop
-			24: BlockWareInStorehouse(Player, 14, true); //Butcher: Pig
-			25: BlockWareInStorehouse(Player, 15, true); //Tannery: Skin
-			26: ; //Unused
-			27: ; //Inn
-			28: ; //Vineyard
-			29: ; //Market
-		end;
+		if States.HouseIsComplete(aHouses[h]) then
+			case States.HouseType(aHouses[h]) of
+				0: 	BlockWareInStorehouse(Player, 0, true); //Sawmill: Treetrunk
+				1:	begin //Iron Smithy
+						BlockWareInStorehouse(Player, 3, true); //Iron Ore
+						BlockWareInStorehouse(Player, 5, true); //Coal
+					end;
+				2:  begin //Weapon Smithy
+						BlockWareInStorehouse(Player, 5, true); //Coal
+						BlockWareInStorehouse(Player, 6, true); //Iron
+					end;
+				3: 	; //Coal Mine
+				4:	; //Iron Mine
+				5: 	; //Coal Mine
+				6:	; //Fisherhut
+				7: 	BlockWareInStorehouse(Player, 11, true); //Bakery: Flour
+				8:	; //Farm
+				9:	; //Woodcutter
+				10:	begin //Weapon Smithy
+						BlockWareInStorehouse(Player, 5, true); //Coal
+						BlockWareInStorehouse(Player, 6, true); //Iron
+					end;
+				11: ; //Storehouses
+				12: BlockWareInStorehouse(Player, 9, true); //Stables: Corn
+				13: ; //Schools
+				14: ; //Quarry
+				15: begin //Metallurgists
+						BlockWareInStorehouse(Player, 4, true); //Gold Ore
+						BlockWareInStorehouse(Player, 5, true); //Coal
+					end;
+				16: BlockWareInStorehouse(Player, 9, true); //Swinefarm: Corn
+				17: ; //Watchtower
+				18: ; //Townhall
+				19: ; //BlockWareInStorehouse(Player, 2, true); //Weapons Workshop: Timber
+				20: begin
+						BlockWareInStorehouse(Player, 12, true); //Armory Workshop
+						//BlockWareInStorehouse(Player, 2, true); //Timber
+					end;
+				21: ; //Barracks
+				22: BlockWareInStorehouse(Player, 9, true); //Mill: Corn
+				23: ; //Vehicles Workshop
+				24: BlockWareInStorehouse(Player, 14, true); //Butcher: Pig
+				25: BlockWareInStorehouse(Player, 15, true); //Tannery: Skin
+				26: ; //Unused
+				27: ; //Inn
+				28: ; //Vineyard
+				29: ; //Market
+			end;
 end;
 
 
@@ -360,6 +376,19 @@ begin
 				ExecuteWareBlock(p);
 end;
 
+
+procedure ResetWareBlock(Player: Integer);
+var
+	w: Integer;
+begin
+	if States.PlayerIsAI(Player) then
+		if not States.AIAutoBuild(Player) then //Igrone if AI has AutoBuild enabled
+		begin
+			for w := 0 to 27 do
+				BlockWareInStorehouse(Player, w, false); //Allow everything in Storehouse
+			ExecuteWareBlock(Player); //Update Block
+		end;
+end;
 
 
 //If AI is set to Autorepair: Only repair important Houses
@@ -500,13 +529,26 @@ var
 	HouseOwner: Integer;
 begin
 	HouseOwner := States.HouseOwner(aHouse);
-	if States.PlayerIsAI(HouseOwner) then
-		if not States.AIAutoBuild(HouseOwner) then
-			if States.HouseType(aHouse) = 11 then
-				ExecuteWareBlock(HouseOwner);
+	ResetWareBlock(HouseOwner);
+end;
+
+procedure ImproveStaticAIOnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, X, Y: Integer);
+begin
+	ResetWareBlock(aOwner);
+end;
+{$ELSE}
+
+
+procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAIOnHouseAfterDestroyed(aHouseType, aOwner, aX, aY: Integer);
+begin
+
 end;
 {$ENDIF}
-
 
 {$IFDEF REPAIR}
 procedure ImproveStaticAIOnHouseDamaged(aHouse: Integer; aAttacker: Integer);
@@ -516,9 +558,13 @@ begin
 	HouseOwner := States.HouseOwner(aHouse);
 	if States.AIRepairMode(HouseOwner) = rmRepairManual then
 	begin
-		HouseType := States.HouseType(aHouse);
-		if States.HouseDamage(aHouse) > (Round(States.HouseTypeMaxHealth(HouseType) *(1 -GetRepairThresold(HouseType)))) then
-			Actions.HouseRepairEnable(aHouse, true);
+		if States.HouseCanReachResources(aHouse) then
+		begin
+			HouseType := States.HouseType(aHouse);
+			if States.HouseDamage(aHouse) > (Round(States.HouseTypeMaxHealth(HouseType) *(1 -GetRepairThresold(HouseType)))) then
+				Actions.HouseRepairEnable(aHouse, true);
+		end else
+			Actions.HouseRepairEnable(aHouse, false); //Useless Houses have no priority
 	end;
 end;
 
@@ -575,7 +621,7 @@ procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
 var
 	HouseOwner, j: Integer;
 begin
-	HouseOwner := States.HouseOwner(aHouseID);
+	HouseOwner := States.HouseOwner(aHouseID);	
 	if States.PlayerIsAI(HouseOwner) then
 		if not States.AIAutoBuild(HouseOwner) then
 			if (aDestroyerIndex <> -1) and (aDestroyerIndex <> HouseOwner) then	//Ignore if Building was destroyed by original Owner or script
@@ -604,7 +650,7 @@ end;
 //Make AI rebuild destroyed Houses
 procedure ImproveStaticAIOnTick();
 var 
-	GameTime: Cardinal;
+	GameTime: Integer;
 	j: Integer;
 begin
 	GameTime := States.GameTime();
@@ -656,6 +702,250 @@ end;
 {$ENDIF}
 
 
+{$IFDEF RETIRE}
+procedure RetireUnit(UnitID: Integer);
+begin
+	if States.UnitHome(UnitID) = -1 then 
+		if States.UnitHunger(UnitID) < (States.UnitMaxHunger() /4) then //Only retire before getting hungry
+			if States.UnitDismissable(UnitID) then
+				Actions.UnitDismiss(UnitID);
+end;
+
+//Retire Units that do not have a home and before they get hungry
+procedure ImproveStaticAI3OnTick();
+var
+	p, i, UnitType: Integer;
+	aUnits: array of Integer;
+begin
+	if States.GameTime() mod RETIRE_FREQ = 0 then
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.PlayerIsAI(p) then
+				if not States.AIAutoBuild(p) then
+				begin	
+					//Retire useless eaters
+					aUnits := States.PlayerGetAllUnits(p);
+					for i := 0 to High(aUnits) do
+						if States.UnitsGroup(aUnits[i]) = -1 then
+						begin
+							UnitType := States.UnitType(aUnits[i]);
+							if UnitType <> 0 then //Exclude Serfs
+								if UnitType <> 9 then //...and Labourers
+									RetireUnit(aUnits[i]);
+						end;
+				end;
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAI3OnTick();
+begin
+
+end;
+{$ENDIF}
+
+
+{$IFDEF DESTROY}
+procedure ImproveStaticAI4OnTick();
+var
+	p, h: Integer;
+	aHouses: array of Integer;
+begin
+	if States.GameTime() mod DESTROY_DELAY = 0 then
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.PlayerIsAI(p) then
+				if not States.AIAutoBuild(p) then
+				begin
+					aHouses := States.PlayerGetAllHouses(p);
+					for h := 0 to High(aHouses) do
+						if not States.HouseCanReachResources(aHouses[h]) then
+						begin
+							Actions.HouseSetClosedForWorker(aHouses[h], true); //Throw out worker; might find another job elsewhere
+							if States.HouseWareAmount(aHouses[h], wtAll) = 0 then //Dont destroy if there are still wares left in the building
+								Actions.HouseDestroy(aHouses[h], false);
+						end else
+							Actions.HouseSetClosedForWorker(aHouses[h], false); //Open House again if resources magically come back
+				end;
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAI4OnTick();
+begin
+
+end;
+{$ENDIF}
+
+
+
+{$IFDEF REPLENISH}
+var
+	ReplenishingCount: array of Integer;
+	bHasBarracks: array of Boolean;
+	ReplenishRate: Integer;
+
+
+
+function PlayerHasBarracks(Player: Integer): Boolean;
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to High(aHouses) do
+		if States.HouseTypeEx(aHouses[h]) = htBarracks then
+			if States.HouseIsComplete(aHouses[h]) then //Check if Barracks is complete
+			begin
+				Result := true;
+				exit;
+			end;
+	Result := false;
+end;
+
+
+function TrainRecruit(Player: Integer): Integer;
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to High(aHouses) do
+		if States.HouseTypeEx(aHouses[h]) = htSchool then
+			if States.HouseSchoolQueue(aHouses[h], 5) = -1 then //Check if there is space in queue
+			begin
+				Result := Actions.HouseSchoolQueueAddEx(aHouses[h], utRecruit, 1);
+				break;
+			end;
+end;
+
+
+
+procedure ImproveStaticAI2OnMissionStart();
+var
+	p, t, RecruitRate: Integer;
+begin
+	SetLength(ReplenishingCount, States.StatPlayerCount());
+	SetLength(bHasBarracks, States.StatPlayerCount());
+	ReplenishRate := 3000; //Upper limit in MapEd: 3000
+	
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+		begin
+			bHasBarracks[p] := PlayerHasBarracks(p);
+			
+			if States.AIUnlimitedEquip(p) then //Never use UnlimitedEquip, but just in case...
+				RecruitRate := 100;	
+				
+			//Dynamic Replenish Rate (Scales with Equip Rate)
+			for t := 0 to 1 do
+			begin	
+				RecruitRate := States.AIEquipRate(p, t);
+				if ReplenishRate > RecruitRate then
+					ReplenishRate := RecruitRate;
+			end;
+		end;
+		
+	//Enforce lower limit
+	if ReplenishRate < 100 then
+		ReplenishRate := 100; //Lower limit in MapEd: 100
+end;
+
+
+procedure ImproveStaticAI2OnHouseBuilt(aHouse: Integer);
+begin
+	if States.HouseTypeEx(aHouse) = htBarracks then
+		bHasBarracks[States.HouseOwner(aHouse)] := true;
+end;
+
+
+procedure ImproveStaticAI2OnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, X, Y: Integer);
+var
+	h, q: Integer;
+	aHouses: array of Integer;
+begin
+	if aHouseType = htBarracks then
+	begin
+		bHasBarracks[aOwner] := PlayerHasBarracks(aOwner); //Check for 2nd Barracks
+		
+		if not bHasBarracks[aOwner] then
+		begin
+			aHouses := States.PlayerGetAllHouses(aOwner);
+			for h := 0 to High(aHouses) do
+				if States.HouseTypeEx(aHouses[h]) = htSchool then
+					for q := 5 downto 0 do
+						if States.HouseSchoolQueue(aHouses[h], q) = 13 then //Delete all Recruits from Queue (no standing around to cause traffic jam)
+						begin
+							Actions.HouseSchoolQueueRemove(aHouses[h], q);
+							Inc(ReplenishingCount[aOwner]); //Back to the array
+						end;
+		end;
+	end;
+end;
+
+
+procedure ImproveStaticAIOnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+var
+	GroupID, Owner: Integer;
+begin
+	GroupID := States.UnitsGroup(aUnit);
+	if GroupID <> -1 then //Exclude civilians
+	begin
+		Owner := States.UnitOwner(aUnit);
+		if States.PlayerIsAI(Owner) then
+			if States.AIRecruitDelay(Owner) > 0 then
+				if States.GroupAssignedToDefencePosition(GroupID, -1, -1) then //Ignore units that have no defense positions (f.e. initial attack groups)
+					if bHasBarracks[Owner] then
+					begin
+						if TrainRecruit(Owner) <> 1 then //If all schools queues are full, store in array
+							Inc(ReplenishingCount[Owner]);
+					end else
+						Inc(ReplenishingCount[Owner]); //No Barracks? Store in array
+	end;
+end;
+
+
+procedure ImproveStaticAI5OnTick();
+var 
+	p: Integer;
+begin
+	if States.GameTime() mod ReplenishRate = 0 then
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.PlayerIsAI(p) then
+				if bHasBarracks[p] then	//Check if there is a barracks
+					if ReplenishingCount[p] > 0 then
+						if TrainRecruit(p) = 1 then //Check if recruit was really added to queue
+							Dec(ReplenishingCount[p]);
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAI2OnMissionStart();
+begin
+
+end;
+
+procedure ImproveStaticAI2OnHouseBuilt(aHouse: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAI2OnHouseAfterDestroyedEx(aHouseType: TKMHouseType; aOwner, X, Y: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAIOnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAI5OnTick();
+begin
+
+end;
+{$ENDIF}
+
+
+
 {Changelog v0.5.1 01.04.2022}
 {- Instead of fixed array sice for destroyed houses, array will now increase if necessary
 - HouseData will not be removed from array if it cant be placed
@@ -669,3 +959,32 @@ end;
 {Changelog v0.5.2 29.10.2022}
 {- Change variable types Byte, Word, Smallint and Cardinal to Integer
 - Cleanups}
+
+{Changelog v0.5.3 20.10.2023
+- Wares Blocked in Storehouse now take into account if a new house is built or destroyed
+- Houses that cant reach resources will not be repaired while damaged
+- Retire Units that do not have a home before they get hungry
+- Throw Workers out of Houses when resources are exhausted and destroy building after last ware has been taken from it (Turned off by default)}
+
+{Changelog v0.6.0 28.09.2024
+- Fixed a bug where the script broke when disabeling WareBlock function
+- AI is now replenishing its killed soldiers even during their recruit delay (only affects dead soldiers that were assigned to non-attacking defense positions)}
+
+{Changelog v0.6.1 16.10.2024
+- Fixed a bug with new replenishing script, where AI kept making recruits even though they had no barracks
+- All queued up recruits in schoolhouse will be deleted when barracks are destroyed (no recruits standing around, causing traffic jam)
+- Replenish Rate is now dynamic and depends on Recruit Rate of AIs
+- Refactoring code of new features
+- Switched OnHouseAfterDestroyed to OnHouseAfterDestroyedEx version}
+
+{Changelog v0.6.1b 08.11.2024
+- UnitsRandomHungerSet procedure now sets hunger level from 20 to 100% for citizens and 25 to 100% for soldiers (instead of 50 to 100% regardless of type)
+}
+
+{Changelog v0.6.1c 09.12.2024
+- Fixed a bug where the script produced errors when there was no house to connect to for procedure "ConnectToClosestHouse"
+}
+
+{Changelog v0.6.12d 19.03.2025
+- Fixed a bug where turing off "replenish" did cause errors
+}

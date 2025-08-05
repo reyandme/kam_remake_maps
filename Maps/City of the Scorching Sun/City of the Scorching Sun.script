@@ -1,5 +1,6 @@
 {$I KD_Hearse.script}  /// by KingDyron
 {$I improvestaticai.script}  /// By Strangelove
+{$I DamageCloseBuildings.script} /// By Ritter des Todes
 
 var 
     DifficultySetting: TKMMissionDifficulty;
@@ -112,10 +113,10 @@ begin
             Actions.AIEquipRate(4, 1, 1000);
 	        Actions.AIEquipRate(5, 1, 1000);
 			Actions.AIEquipRate(6, 1, 1000);
-	        Actions.AIEquipRate(7, 1, 350);
-	        Actions.AIEquipRate(8, 1, 350);
-			Actions.AIEquipRate(9, 1, 250);
-	        Actions.AIEquipRate(10, 1, 250);
+	        Actions.AIEquipRate(7, 1, 380);
+	        Actions.AIEquipRate(8, 1, 380);
+			Actions.AIEquipRate(9, 1, 275);
+	        Actions.AIEquipRate(10, 1, 275);
         end;
 		
         mdNormal:
@@ -134,10 +135,10 @@ begin
             Actions.AIEquipRate(4, 1, 500);
 	        Actions.AIEquipRate(5, 1, 500);
 			Actions.AIEquipRate(6, 1, 500);
-	        Actions.AIEquipRate(7, 1, 225);
-	        Actions.AIEquipRate(8, 1, 225);
-			Actions.AIEquipRate(9, 1, 175);
-	        Actions.AIEquipRate(10, 1, 175);
+	        Actions.AIEquipRate(7, 1, 245);
+	        Actions.AIEquipRate(8, 1, 245);
+			Actions.AIEquipRate(9, 1, 185);
+	        Actions.AIEquipRate(10, 1, 185);
         end;
 		
         mdHard1:
@@ -155,10 +156,10 @@ begin
             Actions.AIEquipRate(4, 1, 200);
 	        Actions.AIEquipRate(5, 1, 200);
 			Actions.AIEquipRate(6, 1, 200);
-	        Actions.AIEquipRate(7, 1, 150);
-	        Actions.AIEquipRate(8, 1, 150);
-			Actions.AIEquipRate(9, 1, 100);
-	        Actions.AIEquipRate(10, 1, 100);
+	        Actions.AIEquipRate(7, 1, 160);
+	        Actions.AIEquipRate(8, 1, 160);
+			Actions.AIEquipRate(9, 1, 115);
+	        Actions.AIEquipRate(10, 1, 115);
         end;
     end;
 end;
@@ -205,267 +206,267 @@ begin
 	If S.GameTime = 18000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse, [16, 19, 15]); 
-		Hearse_SetReward(MyHearse, [9], [25]);	
+		Hearse_SetReward(MyHearse, [9], [35]);	
 		
 	end;
 	If S.GameTime = 27000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [16, 20, 15]); 
-		Hearse_SetReward(MyHearse2, [9], [25]);	
+		Hearse_SetReward(MyHearse2, [9], [35]);	
 	end;
 	If S.GameTime = 36000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [16, 20, 15]); 
 		Hearse_SetReward(MyHearse3, [3], [20]);	
 		Hearse_ChangeTypes(MyHearse, [16, 19, 15]); 
-		Hearse_SetReward(MyHearse, [8, 10, 19, 23], [15, 15, 5, 5]);	
+		Hearse_SetReward(MyHearse, [8, 10, 19, 23], [20, 20, 10, 10]);	
 		Hearse_SetGroupSize(MyHearse, 9, 3);
 	end;
 	If S.GameTime = 51000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [22, 22]); 
-		Hearse_SetReward(MyHearse2, [13, 26], [10, 10]);	
+		Hearse_SetReward(MyHearse2, [13, 26], [30, 15]);	
 		Hearse_SetGroupSize(MyHearse2, 6, 3);	
 	end;
     If S.GameTime = 60000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [26, 14, 24]); 
-		Hearse_SetReward(MyHearse3, [0, 2, 1], [10, 10, 30]);
+		Hearse_SetReward(MyHearse3, [0, 2, 1], [10, 30, 50]);
         Hearse_SetGroupSize(MyHearse3, 25, 5);	
 		Hearse_SetLeaderGroupSize(MyHearse3, 1, 1)
 		Hearse_ChangeTypes(MyHearse, [16, 15, 14]); 
-		Hearse_SetReward(MyHearse, [25, 24], [10, 15]);	
+		Hearse_SetReward(MyHearse, [25, 24], [10, 20]);	
 		Hearse_SetGroupSize(MyHearse, 16, 4);
 		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
 	end;
 		If S.GameTime = 75000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [15, 19, 20]); 
-		Hearse_SetReward(MyHearse2, [9, 8, 14, 2], [5, 5, 3, 10]);	
+		Hearse_SetReward(MyHearse2, [9, 8, 14, 2], [15, 15, 5, 20]);	
 		Hearse_SetGroupSize(MyHearse2, 9, 3);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);
 	end;
 	    If S.GameTime = 84000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [14, 24]); 
-		Hearse_SetReward(MyHearse3, [9], [5]);
+		Hearse_SetReward(MyHearse3, [9], [15]);
         Hearse_SetGroupSize(MyHearse3, 4, 2);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 4, 2);
 		Hearse_ChangeTypes(MyHearse, [22, 22]); 
-		Hearse_SetReward(MyHearse, [26], [20]);	
+		Hearse_SetReward(MyHearse, [26], [25]);	
 		Hearse_SetGroupSize(MyHearse, 9, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
 	end;
 		If S.GameTime = 99000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [23, 21, 22]); 
-		Hearse_SetReward(MyHearse2, [16, 18, 19, 17], [15, 15, 5, 5]);	
+		Hearse_SetReward(MyHearse2, [16, 18, 19, 17], [15, 15, 10, 10]);	
 		Hearse_SetGroupSize(MyHearse2, 16, 4);
         Hearse_SetLeaderGroupSize(MyHearse2, 1, 1);	
 	end;
 		If S.GameTime = 108000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [20, 20, 19]); 
-		Hearse_SetReward(MyHearse3, [22, 23], [15, 10]);	
+		Hearse_SetReward(MyHearse3, [22, 23], [20, 15]);	
 		Hearse_SetGroupSize(MyHearse3, 9, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 9, 3);
 		Hearse_ChangeTypes(MyHearse, [23, 26]); 
-		Hearse_SetReward(MyHearse, [7], [45]);	
+		Hearse_SetReward(MyHearse, [7], [60]);	
 		Hearse_SetGroupSize(MyHearse, 9, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
 	end;
 	   If S.GameTime = 123000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [26, 14, 24]); 
-		Hearse_SetReward(MyHearse2, [20], [15]);	
+		Hearse_SetReward(MyHearse2, [20], [30]);	
 		Hearse_SetGroupSize(MyHearse2, 20, 5);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);	
 	end;
 	   If S.GameTime = 132000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [15, 16, 19]); 
-		Hearse_SetReward(MyHearse3, [12, 2], [10, 20]);	
+		Hearse_SetReward(MyHearse3, [12, 2], [12, 35]);	
 		Hearse_SetGroupSize(MyHearse3, 9, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 16, 4);
 		Hearse_ChangeTypes(MyHearse, [22, 21]); 
-		Hearse_SetReward(MyHearse, [7, 27, 14, 6], [10, 10, 3, 6]);	
+		Hearse_SetReward(MyHearse, [7, 27, 14, 6], [25, 30, 6, 15]);	
 		Hearse_SetGroupSize(MyHearse, 6, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
 	end;
 		If S.GameTime = 147000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [16, 16]); 
-		Hearse_SetReward(MyHearse2, [5, 4, 3], [25, 10, 10]);	
+		Hearse_SetReward(MyHearse2, [5, 4, 3], [45, 25, 20]);	
 		Hearse_SetGroupSize(MyHearse2, 9, 3);	
 	end;
 		If S.GameTime = 156000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [20, 21, 19]); 
-		Hearse_SetReward(MyHearse3, [10, 8], [15, 15]);	
+		Hearse_SetReward(MyHearse3, [10, 8], [30, 45]);	
 		Hearse_SetGroupSize(MyHearse3, 9, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
 		Hearse_ChangeTypes(MyHearse, [16, 20]); 
-		Hearse_SetReward(MyHearse, [3, 6], [15, 10]);	
+		Hearse_SetReward(MyHearse, [3, 6], [30, 20]);	
 		Hearse_SetGroupSize(MyHearse, 6, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 12, 4);
 	end;
 		If S.GameTime = 171000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [26, 23]); 
-		Hearse_SetReward(MyHearse2, [27], [50]);	
+		Hearse_SetReward(MyHearse2, [27], [85]);	
 		Hearse_SetGroupSize(MyHearse2, 4, 2);
         Hearse_SetLeaderGroupSize(MyHearse2, 4, 2);	  		
 	end;
 	    If S.GameTime = 180000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [14, 24, 27]); 
-		Hearse_SetReward(MyHearse3, [9, 10, 11], [15, 15, 15]);	
+		Hearse_SetReward(MyHearse3, [9, 10, 11], [40, 25, 25]);	
 		Hearse_SetGroupSize(MyHearse3, 25, 5);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 25, 5);
 		Hearse_ChangeTypes(MyHearse, [16, 16, 20]); 
-		Hearse_SetReward(MyHearse, [5, 19, 23], [25, 5, 23]);	
+		Hearse_SetReward(MyHearse, [5, 19, 23], [50, 15, 25]);	
 		Hearse_SetGroupSize(MyHearse, 9, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
 	end;
         If S.GameTime = 195000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [22, 21, 27]); 
-		Hearse_SetReward(MyHearse2, [26, 9], [15, 15]);	
+		Hearse_SetReward(MyHearse2, [26, 9], [35, 35]);	
 		Hearse_SetGroupSize(MyHearse2, 16, 4);	
 	end;
 		If S.GameTime = 204000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [20, 22, 16]); 
-		Hearse_SetReward(MyHearse3, [21, 23, 25], [10, 10, 10]);	
+		Hearse_SetReward(MyHearse3, [21, 23, 25], [20, 20, 20]);	
 		Hearse_SetGroupSize(MyHearse3, 12, 4);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
 		Hearse_ChangeTypes(MyHearse, [22, 22, 21]); 
-		Hearse_SetReward(MyHearse, [26, 5, 12], [10, 15, 15]);	
+		Hearse_SetReward(MyHearse, [26, 5, 12], [20, 40, 25]);	
 		Hearse_SetGroupSize(MyHearse, 16, 4);
 		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
 	end;
 	    If S.GameTime = 219000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [16, 15]); 
-		Hearse_SetReward(MyHearse2, [2, 0], [20, 10]);	
+		Hearse_SetReward(MyHearse2, [2, 0], [50, 20]);	
 		Hearse_SetGroupSize(MyHearse2, 9, 3);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);	
 	end;
 		If S.GameTime = 228000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [23, 15, 14]); 
-		Hearse_SetReward(MyHearse3, [20, 18, 16], [15, 10, 5]);	
+		Hearse_SetReward(MyHearse3, [20, 18, 16], [30, 25, 20]);	
 		Hearse_SetGroupSize(MyHearse3, 9, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 6, 3);
 		Hearse_ChangeTypes(MyHearse, [19, 19, 15]); 
-		Hearse_SetReward(MyHearse, [0, 2, 12], [10, 30, 20]);	
+		Hearse_SetReward(MyHearse, [0, 2, 12], [15, 50, 35]);	
 		Hearse_SetGroupSize(MyHearse, 9, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
 	end;
 		If S.GameTime = 243000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [23, 26]); 
-		Hearse_SetReward(MyHearse2, [7], [100]);	
+		Hearse_SetReward(MyHearse2, [7], [125]);	
 		Hearse_SetGroupSize(MyHearse2, 16, 4);
         Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);	 		
 	end;
 	    If S.GameTime = 252000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [16, 15, 20]); 
-		Hearse_SetReward(MyHearse3, [9, 14, 15], [15, 5, 5]);	
+		Hearse_SetReward(MyHearse3, [9, 14, 15], [45, 10, 15]);	
 		Hearse_SetGroupSize(MyHearse3, 12, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 9, 3);
 		Hearse_ChangeTypes(MyHearse, [22, 21, 22]); 
-		Hearse_SetReward(MyHearse, [7], [80]);	
+		Hearse_SetReward(MyHearse, [7], [105]);	
 		Hearse_SetGroupSize(MyHearse, 20, 4);
 		Hearse_SetLeaderGroupSize(MyHearse, 20, 4);
 	end;
 		If S.GameTime = 267000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [20, 21]); 
-		Hearse_SetReward(MyHearse2, [22, 19], [15, 15]);	
+		Hearse_SetReward(MyHearse2, [22, 19], [25, 25]);	
 		Hearse_SetGroupSize(MyHearse2, 9, 3);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 9, 3);			
 	end;
 		If S.GameTime = 276000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [15, 15]); 
-		Hearse_SetReward(MyHearse3, [20, 24, 2], [10, 10, 10]);	
+		Hearse_SetReward(MyHearse3, [20, 24, 2], [20, 20, 30]);	
 		Hearse_SetGroupSize(MyHearse3, 6, 3);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 6, 3);
 		Hearse_ChangeTypes(MyHearse, [19, 19]); 
-		Hearse_SetReward(MyHearse, [22, 18], [10, 10]);	
+		Hearse_SetReward(MyHearse, [22, 18], [20, 20]);	
 		Hearse_SetGroupSize(MyHearse, 6, 3);
 		Hearse_SetLeaderGroupSize(MyHearse, 6, 3);
 	end;
 		If S.GameTime = 291000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [20, 23, 22]); 
-		Hearse_SetReward(MyHearse2, [7, 5, 4], [25, 10, 10]);	
+		Hearse_SetReward(MyHearse2, [7, 5, 4], [45, 20, 20]);	
 		Hearse_SetGroupSize(MyHearse2, 6, 3);	
 	end;
 		If S.GameTime = 300000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [23, 26, 16]); 
-		Hearse_SetReward(MyHearse3, [5, 4], [30, 30]);	
+		Hearse_SetReward(MyHearse3, [5, 4], [45, 45]);	
 		Hearse_SetGroupSize(MyHearse3, 12, 4);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 12, 4);
 		Hearse_ChangeTypes(MyHearse, [20, 16, 20]); 
-		Hearse_SetReward(MyHearse, [12, 2], [30, 30]);	
+		Hearse_SetReward(MyHearse, [12, 2], [40, 80]);	
 		Hearse_SetGroupSize(MyHearse, 16, 4);
 		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
 	end;
 		If S.GameTime = 315000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [23, 22]); 
-		Hearse_SetReward(MyHearse2, [19, 17, 21], [10, 10, 10]);	
+		Hearse_SetReward(MyHearse2, [19, 17, 21], [25, 25, 25]);	
 		Hearse_SetGroupSize(MyHearse2, 4, 2);
         Hearse_SetLeaderGroupSize(MyHearse2, 20, 5);			
 	end;
 		If S.GameTime = 324000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [14, 24, 27]); 
-		Hearse_SetReward(MyHearse3, [8, 10, 27], [25, 25, 20]);	
+		Hearse_SetReward(MyHearse3, [8, 10, 27], [45, 45, 40]);	
 		Hearse_SetGroupSize(MyHearse3, 25, 5);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 25, 5);
 		Hearse_ChangeTypes(MyHearse, [22, 21]); 
-		Hearse_SetReward(MyHearse, [26], [25]);	
+		Hearse_SetReward(MyHearse, [26], [40]);	
 		Hearse_SetGroupSize(MyHearse, 25, 5);
 		Hearse_SetLeaderGroupSize(MyHearse, 9, 3);
 	end;
 		If S.GameTime = 339000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [23, 14, 24]); 
-		Hearse_SetReward(MyHearse2, [9, 11, 12], [25, 15, 15]);	
+		Hearse_SetReward(MyHearse2, [9, 11, 12], [40, 25, 25]);	
 		Hearse_SetGroupSize(MyHearse2, 25, 5);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 20, 5);
 	end;
 		If S.GameTime = 348000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [16, 20, 22]); 
-		Hearse_SetReward(MyHearse3, [5, 4, 3], [60, 20, 20, 20]);	
+		Hearse_SetReward(MyHearse3, [5, 4, 3], [80, 40, 40]);	
 		Hearse_SetGroupSize(MyHearse3, 25, 5);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 20, 5);
 		Hearse_ChangeTypes(MyHearse, [23, 26, 22]); 
-		Hearse_SetReward(MyHearse, [21, 23, 25, 19, 17], [15, 15, 15, 45, 15]);	
+		Hearse_SetReward(MyHearse, [21, 23, 25, 19, 17], [20, 20, 20, 60, 20]);	
 		Hearse_SetGroupSize(MyHearse, 25, 5);
 		Hearse_SetLeaderGroupSize(MyHearse, 20, 5);
 	end;
 		If S.GameTime = 363000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse2, [16, 20, 26]); 
-		Hearse_SetReward(MyHearse2, [7], [40]);	
+		Hearse_SetReward(MyHearse2, [7], [65]);	
 		Hearse_SetGroupSize(MyHearse2, 16, 4);	
 		Hearse_SetLeaderGroupSize(MyHearse2, 16, 4);	
 	end;
 		If S.GameTime = 372000 then 
 	begin
 		Hearse_ChangeTypes(MyHearse3, [22, 21]); 
-		Hearse_SetReward(MyHearse3, [7], [40]);
+		Hearse_SetReward(MyHearse3, [7], [80]);
         Hearse_SetGroupSize(MyHearse3, 16, 4);		
 		Hearse_SetLeaderGroupSize(MyHearse3, 16, 4);
 		Hearse_ChangeTypes(MyHearse, [20, 20, 16]); 
-		Hearse_SetReward(MyHearse, [7], [40]);	
+		Hearse_SetReward(MyHearse, [7], [80]);	
 		Hearse_SetGroupSize(MyHearse, 16, 4);
 		Hearse_SetLeaderGroupSize(MyHearse, 16, 4);
 	end;
@@ -546,7 +547,7 @@ if  (aIndex = 4) then
 if  (aIndex = 5) then
 	begin 
 	Actions.ShowMsg(0, '<$7>');	
-	Actions.PlayerShareFogCompliment(0, 3, True);
+	Actions.PlayerShareFogCompliment(0, 2, True);
 	    case DifficultySetting of
 		
 	    mdEasy1:

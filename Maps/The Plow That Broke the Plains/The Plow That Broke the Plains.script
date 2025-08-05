@@ -1,0 +1,108 @@
+{$I constants.script}  // By Greeny
+{$I improvestaticai.script}  /// By Strangelove
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I DamageCloseBuildings.script} /// By Ritter des Todes
+{$I THrecruitment.script}
+{$I BaseBuild.script}
+
+var
+DifficultySetting: TKMMissionDifficulty;
+Ai_Attack_Start: Integer;
+AIattack: Boolean;
+pointxy: TKMPoint;
+
+procedure OnMissionStart();	
+begin
+AIattack:= false;
+A.ShowMsg(0,'<$1>');
+AI2[0]:= 2000;
+AI2[1]:= 2234;
+AI2[2]:= 1981;
+AI2[3]:= 2119;
+DifficultySetting := S.MissionDifficulty();
+DCB_Mode := DCB_ALL;
+RogueCount:= 36;
+VagabondCount:= 36;
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 40);
+		A.GiveWares(0, WARE_STONES, 55);
+		A.GiveWares(0, WARE_TIMBER, 35);
+		A.GiveWares(0, WARE_WINE, 20);
+		A.GiveWares(0, WARE_LOAVES, 20);
+		A.AIEquipRate(2, 0, 600);
+		Difficulty[0]:= 1500; ///Barbarians
+		Difficulty[1]:= 600; ///Rebels
+		Difficulty[2]:= 625; ///Rogues
+		Difficulty[3]:= 800; ///Vagabonds
+		Ai_Attack_Start:= 60000;
+		A.AIRecruitDelay(2, 48000);
+		end;
+		
+		mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 30);
+		A.GiveWares(0, WARE_STONES, 40);
+		A.GiveWares(0, WARE_TIMBER, 25);
+		A.GiveWares(0, WARE_WINE, 20);
+		A.AIEquipRate(2, 0, 400);
+		Difficulty[0]:= 1200; ///Barbarians
+		Difficulty[1]:= 500; ///Rebels
+		Difficulty[2]:= 525; ///Rogues
+		Difficulty[3]:= 600; ///Vagabonds
+		Ai_Attack_Start:= 48000;
+		A.AIRecruitDelay(2, 42000);
+		end;
+		
+		mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 25);
+		A.GiveWares(0, WARE_STONES, 35);
+		A.GiveWares(0, WARE_TIMBER, 20);
+		A.AIEquipRate(2, 0, 200);
+		Difficulty[0]:= 900; ///Barbarians
+		Difficulty[1]:= 400; ///Rebels
+		Difficulty[2]:= 425; ///Rogues
+		Difficulty[3]:= 450; ///Vagabonds
+		Ai_Attack_Start:= 36000;
+		A.AIRecruitDelay(2, 36000);
+		end;
+    end;
+end;
+
+procedure OnTick();
+begin
+if S.GameTime = ((Ai_Attack_Start) - 1500) then begin
+	A.ShowMsg(0,'<$2>');
+    end;
+
+if S.GameTime = Ai_Attack_Start then begin
+	RogueCount:= 42;
+	VagabondCount:= 45;
+    end;
+		
+if (S.StatArmyCount(2) >= 136) and (AIattack = false) and (S.GameTime MOD 10 = 0) then begin
+    A.AIDefencePositionRemove(2, 74, 15);
+	A.AIDefencePositionRemove(2, 59, 7);
+	A.AIDefencePositionRemove(2, 65, 7);
+	A.AIDefencePositionRemove(2, 28, 17);
+	A.AIDefencePositionRemove(2, 68, 25);
+	A.AIDefencePositionRemove(2, 31, 28);
+	A.AIAttackAdd(2, True, 1, 1, 1, 0, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(2, True, 1, 1, 0, 1, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	A.AIAttackAdd(2, True, 1, 1, 0, 0, 1, 0, false, attClosestUnit, pointxy);
+	AIattack:= true;
+	end;	
+	
+if (S.StatArmyCount(2) < 85) and (AIattack = true) and (S.GameTime MOD 10 = 0) then begin
+	A.AIDefencePositionAdd(2, 74, 15, DIRECTION_S, GROUP_MELEE, 19, 0);
+	A.AIDefencePositionAdd(2, 59, 7, DIRECTION_S, GROUP_MELEE, 28, 0);
+	A.AIDefencePositionAdd(2, 65, 7, DIRECTION_S, GROUP_ANTIHORSE, 32, 0);
+	A.AIDefencePositionAdd(2, 28, 17, DIRECTION_S, GROUP_ANTIHORSE, 19, 0);
+	A.AIDefencePositionAdd(2, 68, 25, DIRECTION_S, GROUP_RANGED, 23, 0);
+	A.AIDefencePositionAdd(2, 31, 28, DIRECTION_S, GROUP_RANGED, 22, 0);
+	A.AIAttackRemoveAll(2);
+	AIattack:= false;
+	end;
+end;

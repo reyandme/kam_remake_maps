@@ -1,0 +1,15 @@
+﻿Author
+DontTalk
+
+Version
+1.1 Polish translation fix
+
+SmallDesc
+A mission by DontTalk
+
+BigDescLIBX
+0
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

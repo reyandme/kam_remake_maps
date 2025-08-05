@@ -1,16 +1,14 @@
 //-- Return to Moorbach --//
 //By Strangelove
-//v0.8.5
-//08.10.2021
+//v0.9
+//19.03.2025
 //Developed for r10540
-//Last Tested on 12945
+//Last Tested on 15472
 
-{$I dynamicmap.script}
-{$I improvestaticai.script}
-{$I difficulty.script}
-
-{$COMMAND cmd: ShowCommands}
-{$COMMAND showmydeposits: RevealDepositsForPlayer}
+{$I Scripts/tools.script}
+{$I Scripts/improvestaticai.script}
+{$I Scripts/townhallai.script}
+{$I Scripts/difficulty.script}
 
 
 const
@@ -20,51 +18,9 @@ var
 	DifficultySetting: TKMMissionDifficulty;
 
 
-procedure ShowCommands(P: Integer);
-begin
-	Actions.ShowMsg(P, '/cmd|/showmydeposits');
-end;
-
-procedure RevealDepositsForPlayer(P: Integer);
-begin
-	if not Utils.InRangeI(P, 0, 1) then
-		exit;
-	if P = 0 then
-	begin
-		Actions.FogRevealCircle(0, 68, 102 +Offset_Y, 1); //Gold Mines Loc1
-		Actions.FogRevealCircle(0, 65, 110 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 68, 109 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 73, 113 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 76, 115 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 39, 108 +Offset_Y, 1); //Iron Mines
-		Actions.FogRevealCircle(0, 39, 120 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 35, 127 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 26, 129 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 14, 140 +Offset_Y, 1);
-		Actions.FogRevealCircle(0, 7, 148 +Offset_Y, 1);
-	end else
-	begin
-		Actions.FogRevealCircle(1, 92, 117 +Offset_Y, 1); //Gold Mines Loc2
-		Actions.FogRevealCircle(1, 93, 123 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 97, 122 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 101, 121 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 100, 114 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 103, 115 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 107, 118 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 109, 112 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 129, 126 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 132, 131 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 137, 134 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 140, 133 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 144, 135 +Offset_Y, 1);
-		Actions.FogRevealCircle(1, 146, 131 +Offset_Y, 1);
-	end;
-end;
-
-
 procedure OnMissionStart();
 var
-	p: Byte;
+	p: Integer;
 	StartPosition: TKMPoint;
 begin
 	DifficultySetting := States.MissionDifficulty();
@@ -74,7 +30,7 @@ begin
 	RecruitDelayMod := [2, 1.5, 1.25, 1, 1, 1, 1];
 	RecruitLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
 	WorkerLimitMod := [1, 1, 1, 1, 1.33, 1.66, 2];
-	
+
 	case DifficultySetting of
 		mdHard1, mdHard2:
 		begin
@@ -88,6 +44,12 @@ begin
 			GiveHouseAndConnect(6, 17, 125, 36);
 			GiveHouseAndConnect(6, 17, 155, 50);
 			GiveHouseAndConnect(6, 17, 120, 30);
+			//Add Townhall for Player2
+			GiveHouseAndConnectEx(2, htTownhall, 23, 60);
+		end;
+		else begin
+			//Add Coalmine instead of Townhall for Player2
+			GiveHouseAndConnectEx(2, htCoalmine, 23, 60);
 		end;
 	end;
 	
@@ -166,6 +128,37 @@ begin
 		end;
 	
 	//Initial Msg
-	if States.GameTime() = 60 then
-		Actions.ShowMsg(-1, '<$0>');
+	if States.GameTime() = 100 then
+	begin
+		Actions.ShowMsg(0, '<$0>');
+		Actions.ShowMsg(1, '<$0>');
+
+		//Reveal Resources
+		Actions.FogRevealCircle(0, 68, 102 +Offset_Y, Utils.RandomRangeI(0, 2)); //Gold Mines Loc1
+	    Actions.FogRevealCircle(0, 65, 110 +Offset_Y, Utils.RandomRangeI(0, 2));
+	    Actions.FogRevealCircle(0, 68, 109 +Offset_Y, Utils.RandomRangeI(0, 2));
+	    Actions.FogRevealCircle(0, 73, 113 +Offset_Y, Utils.RandomRangeI(0, 2));
+	    Actions.FogRevealCircle(0, 76, 115 +Offset_Y, Utils.RandomRangeI(0, 2));
+	    Actions.FogRevealCircle(0, 39, 108 +Offset_Y, Utils.RandomRangeI(0, 3)); //Iron Mines
+	    Actions.FogRevealCircle(0, 39, 120 +Offset_Y, Utils.RandomRangeI(0, 3));
+	    Actions.FogRevealCircle(0, 35, 127 +Offset_Y, Utils.RandomRangeI(0, 3));
+	    Actions.FogRevealCircle(0, 26, 129 +Offset_Y, Utils.RandomRangeI(0, 3));
+	    Actions.FogRevealCircle(0, 14, 140 +Offset_Y, Utils.RandomRangeI(0, 3));
+	    Actions.FogRevealCircle(0, 7, 148 +Offset_Y, Utils.RandomRangeI(0, 3));
+
+		Actions.FogRevealCircle(1, 92, 117 +Offset_Y, Utils.RandomRangeI(0, 2)); //Gold Mines Loc2
+		Actions.FogRevealCircle(1, 93, 123 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 97, 122 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 101, 121 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 100, 114 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 103, 115 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 107, 118 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 109, 112 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 129, 126 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 132, 131 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 137, 134 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 140, 133 +Offset_Y, Utils.RandomRangeI(0, 2));
+		Actions.FogRevealCircle(1, 144, 135 +Offset_Y, Utils.RandomRangeI(0, 2));
+	    Actions.FogRevealCircle(1, 146, 131 +Offset_Y, Utils.RandomRangeI(0, 2));
+    end;
 end;

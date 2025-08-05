@@ -1,0 +1,593 @@
+{$EVENT evtMissionStart:Populate_OnMissionStart}
+
+//
+// Constants
+//
+// All necessary constants for proper function of the script.
+//
+const
+
+  POPULATE_HOUSE_WARE_MAXIMUM = 5;
+
+//
+// Variables
+//
+// All necessary variables for proper function of the script.
+//
+var
+
+  Populate_Config_gPlayers: array of Integer;
+
+  Populate_Config_gWareMinimum: Integer;
+
+  Populate_Config_gWareMaximum: Integer;
+
+//
+// Config player add
+//
+// Enables town populating for a specified player.
+//
+procedure Populate_Config_PlayerAdd(aPlayer: Integer);
+
+begin
+
+  SetLength(Populate_Config_gPlayers, Length(Populate_Config_gPlayers) + 1);
+
+  Populate_Config_gPlayers[High(Populate_Config_gPlayers)] := aPlayer;
+
+end;
+
+//
+// Config ware set minimum
+//
+// Sets the minimum amount of wares added to each building on mission start. Should not be lower than zero.
+//
+procedure Populate_Config_WareSetMinimum(aWareMinimum: Integer);
+
+begin
+
+  if (aWareMinimum < 0) then begin
+
+    aWareMinimum := 0;
+
+  end;
+
+  Populate_Config_gWareMinimum := aWareMinimum;
+
+end;
+
+//
+// Config ware set maximum
+//
+// Sets the maximum amount of wares added to each building on mission start. Should not be lower than minimum.
+//
+procedure Populate_Config_WareSetMaximum(aWareMaximum: Integer);
+
+begin
+
+  if (aWareMaximum > 5) then begin
+
+    aWareMaximum := 5;
+
+  end;
+
+  Populate_Config_gWareMaximum := aWareMaximum;
+
+end;
+
+//
+// Map tile laborer spawnable
+//
+// Checks if a laborer can be spawned at a map tile.
+//
+function Populate_MapTileLaborerSpawnable(aX: Integer; aY: Integer): Boolean;
+
+begin
+
+  if S.MapTilePassabilityEx(aX, aY, PASSABILITY_WALK) then begin
+
+    if (S.UnitAt(aX, aY) = -1) then begin
+
+      if (S.IsRoadAt(-1, aX, aY) = false) then begin
+
+        Result := true;
+
+      end;
+
+    end;
+
+  end;
+
+end;
+
+//
+// Player spawn laborer
+//
+// Spawns all laborers for the player under specified house.
+//
+procedure Populate_PlayerSpawnLaborer(aPlayer: Integer; aEntranceX: Integer; aEntranceY: Integer);
+
+var
+
+  pX, pY: Integer;
+
+  pLaborerLimit, pLaborerCount: Integer;
+
+  pStartX, pStartY: Integer;
+
+  pStopX, pStopY: Integer;
+
+begin
+
+    pLaborerLimit := S.AIWorkerLimit(aPlayer);
+
+    pLaborerCount := S.StatUnitTypeCountEx(aPlayer, UNIT_LABORER);
+
+    if (pLaborerCount >= pLaborerLimit) then begin
+
+      exit;
+
+    end;
+
+    pStartX := aEntranceX - 3;
+
+    pStopX := aEntranceX + 3;
+
+    if (pStartX < 1) then begin
+
+      pStartX := 1;
+
+    end;
+
+    if (pStopX > S.MapWidth() - 1) then begin
+
+      pStopX := S.MapWidth() - 1;
+
+    end;
+
+    pStartY := aEntranceY + 1;
+
+    pStopY := aEntranceY + 4;
+
+    if (pStopY > S.MapHeight() - 1) then begin
+
+      pStopY := S.MapHeight() - 1;
+
+    end;
+
+    for pX := pStartX to pStopX do begin
+
+      for pY := pStartY to pStopY do begin
+
+        if (Populate_MapTileLaborerSpawnable(pX, pY) = true) and (pLaborerCount < pLaborerLimit) then begin
+
+          A.GiveUnitEx(aPlayer, UNIT_LABORER, pX, pY, DIRECTION_SOUTH);
+
+          Inc(pLaborerCount);
+
+        end;
+
+      end;
+
+    end;
+
+end;
+
+//
+// Player has ware type
+//
+// Checks if player has a certain ware type in any of the warehouses.
+//
+function Populate_PlayerHasWareType(aPlayer: Integer; aWareType: TKMWareType): Boolean;
+
+var
+
+	pI: Integer;
+
+	pHouse: Integer;
+
+	pHouses: array of Integer;
+
+begin
+
+	pHouses := S.PlayerGetAllHouses(aPlayer);
+
+	for pI := 0 to High(pHouses) do begin
+
+	  pHouse := pHouses[pI];
+
+	  if (S.HouseTypeEx(pHouse) = HOUSE_STOREHOUSE) then begin
+
+      if (S.HouseWareAmount(pHouse, aWareType) > 0) then begin
+
+        Result := true;
+
+        exit;
+
+      end;
+
+		end;
+
+  end;
+
+end;
+
+//
+// Mission start event
+//
+// Mission start handling. Populates the city, adds wares to houses and pregrows fields and winefields.
+//
+procedure Populate_OnMissionStart();
+
+var
+
+  pI, pP, pX, pY: Integer;
+
+  pPlayer: Integer;
+
+  pSerfLimit, pSerfCount: Integer;
+
+  pRoads: array of TKMPoint;
+
+  pRoad: TKMPoint;
+
+  pRandomIndex: Integer;
+
+  pHouses: array of Integer;
+
+  pHouse: Integer;
+
+  pHouseType: TKMHouseType;
+
+  pHouseWorker: TKMUnitType;
+
+  pHouseEntrance: TKMPoint;
+
+begin
+
+  //
+  // Go through each enabled player.
+  //
+  for pP := Low(Populate_Config_gPlayers) to High(Populate_Config_gPlayers) do begin
+
+    pPlayer := Populate_Config_gPlayers[pP];
+
+    //
+    // Calculate maximum posssible serf count.
+    //
+    pSerfLimit := U.CeilTo(S.StatHouseCount(pPlayer) * S.AISerfsPerHouse(pPlayer), 1);
+
+    pSerfCount := 0;
+
+    //
+    // Reset saved roads
+    //
+    SetLength(pRoads, 0);
+
+    //
+    // Go though all X coordinates.
+    //
+    for pX := 1 to S.MapWidth() - 1 do begin
+
+      //
+      // Go though all Y coordinates.
+      //
+      for pY := 1 to S.MapHeight() - 1 do begin
+
+        //
+        // If there is road, save it for later.
+        //
+        if S.IsRoadAt(pPlayer, pX, pY) then begin
+
+          SetLength(pRoads, Length(pRoads) + 1);
+
+          pRoads[High(pRoads)].X := pX;
+
+          pRoads[High(pRoads)].Y := pY;
+
+        end;
+
+        //
+        // If there is field, age it.
+        //
+        if S.IsFieldAt(pPlayer, pX, pY) then begin
+
+          A.GiveFieldAged(pPlayer, pX, pY, U.RandomRangeI(1, 6), true);
+
+        end;
+
+        //
+        // If there is winefield, age it.
+        //
+        if S.IsWinefieldAt(pPlayer, pX, pY) then begin
+
+          A.GiveWineFieldAged(pPlayer, pX, pY, U.RandomRangeI(1, 3), true);
+
+        end;
+
+      end;
+
+    end;
+
+    //
+    // Shuffle saved roads ensuring randomness.
+    //
+    for pI := High(pRoads) downto Low(pRoads) do begin
+
+      pRandomIndex := U.FloorTo(S.KaMRandom() * pI, 1);
+
+      pRoad := pRoads[pI];
+
+      pRoads[pI] := pRoads[pRandomIndex];
+
+      pRoads[pRandomIndex] := pRoad;
+
+    end;
+
+    //
+    // Go through each saved road.
+    //
+    for pI := Low(pRoads) to High(pRoads) do begin
+
+      pRoad := pRoads[pI];
+
+      //
+      // Skip to next road if there is a unit already or if there is a house on top of the road.
+      //
+      if (S.UnitAt(pRoad.X, pRoad.Y) <> -1) or (S.HouseAt(pRoad.X, pRoad.Y - 1) <> -1) then begin
+
+        continue;
+
+      end;
+
+      A.GiveUnitEx(pPlayer, UNIT_SERF, pRoad.X, pRoad.Y, DIRECTION_SOUTH);
+
+      Inc(pSerfCount);
+
+      //
+      // If serf limit is reached end the loop.
+      //
+      if (pSerfCount = pSerfLimit) then begin
+
+        break;
+
+      end;
+
+    end;
+
+    pHouses := S.PlayerGetAllHouses(pPlayer);
+
+    //
+    // Go though each player house.
+    //
+    for pI := Low(pHouses) to High(pHouses) do begin
+
+      pHouse := pHouses[pI];
+
+      pHouseType := S.HouseTypeEx(pHouse);
+
+      pHouseWorker := S.HouseTypeToWorkerType(pHouseType);
+
+      pHouseEntrance := S.HousePosition(pHouse);
+
+      //
+      // If house has assignable worker and is not barracks, then add the worker near the entrance.
+      //
+      if (pHouseType <> HOUSE_BARRACKS) and (pHouseWorker <> UNIT_NONE) then begin
+
+        A.GiveUnitEx(pPlayer, pHouseWorker, pHouseEntrance.X, pHouseEntrance.Y + 1, DIRECTION_SOUTH);
+
+      end;
+
+      //
+      // Fill all the houses with necessary resources.
+      //
+      case pHouseType of
+
+        HOUSE_ARMOR_SMITHY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_COAL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_IRON, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_ARMORY_WORKSHOP: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_TIMBER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_LEATHER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_BAKERY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_FLOUR, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_LOAF, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_BUTCHERS: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_PIG, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_SAUSAGE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_COAL_MINE: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_COAL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_FARM: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_CORN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_FISHERMANS: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_FISH, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_GOLD_MINE: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_GOLD_ORE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_INN: begin
+
+          if Populate_PlayerHasWareType(pPlayer, WARE_LOAF) then begin
+
+            A.HouseAddWaresToEx(pHouse, WARE_LOAF, POPULATE_HOUSE_WARE_MAXIMUM);
+
+          end;
+
+          if Populate_PlayerHasWareType(pPlayer, WARE_SAUSAGE) then begin
+
+            A.HouseAddWaresToEx(pHouse, WARE_SAUSAGE, POPULATE_HOUSE_WARE_MAXIMUM);
+
+          end;
+
+          if Populate_PlayerHasWareType(pPlayer, WARE_WINE_BARREL) then begin
+
+            A.HouseAddWaresToEx(pHouse, WARE_WINE_BARREL, POPULATE_HOUSE_WARE_MAXIMUM);
+
+          end;
+
+          if Populate_PlayerHasWareType(pPlayer, WARE_FISH) then begin
+
+            A.HouseAddWaresToEx(pHouse, WARE_FISH, POPULATE_HOUSE_WARE_MAXIMUM);
+
+          end;
+
+          Populate_PlayerSpawnLaborer(pPlayer, pHouseEntrance.X, pHouseEntrance.Y);
+
+        end;
+
+        HOUSE_IRON_MINE: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_IRON_ORE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_IRON_SMITHY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_COAL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_IRON_ORE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_METALLURGISTS: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_COAL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_GOLD_ORE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_MILL: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_CORN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_FLOUR, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_QUARRY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_STONE, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_SAWMILL: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_TREE_TRUNK, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_TIMBER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_SCHOOLHOUSE: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_GOLD, POPULATE_HOUSE_WARE_MAXIMUM);
+
+        end;
+
+        HOUSE_SIEGE_WORKSHOP: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_TIMBER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_IRON, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_STABLES: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_CORN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_SWINE_FARM: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_CORN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_PIG, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_SKIN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_TANNERY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_SKIN, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_LEATHER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_WATCHTOWER: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_STONE, POPULATE_HOUSE_WARE_MAXIMUM);
+
+        end;
+
+        HOUSE_WEAPON_SMITHY: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_COAL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+          A.HouseAddWaresToEx(pHouse, WARE_IRON, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_WEAPONS_WORKSHOP: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_TIMBER, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_VINEYARD: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_WINE_BARREL, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+        HOUSE_WOODCUTTERS: begin
+
+          A.HouseAddWaresToEx(pHouse, WARE_TREE_TRUNK, U.RandomRangeI(Populate_Config_gWareMinimum, Populate_Config_gWareMaximum));
+
+        end;
+
+      end;
+
+    end;
+
+  end;
+
+end;

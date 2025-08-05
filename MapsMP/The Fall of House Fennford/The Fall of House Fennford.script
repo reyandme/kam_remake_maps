@@ -1,0 +1,801 @@
+//-- The Fall of House Fennford --//
+//By Strangelove
+//v0.3.2
+//19.03.2025
+//Developed for KaM Remake r15122
+//Last tested on 15379
+
+{$I Scripts/Constants.script} //Made by Vatrix
+{$I Scripts/tools.script}
+{$I Scripts/Populate.script} //Made by Vatrix
+{$I Scripts/AnimatedLavaLakes.script} //Made by Ritter des Todes
+{$I Scripts/improvestaticai.script}
+{$I Scripts/townhallai.script}
+
+{$DEFINE ENABLEATK}
+//{$UNDEF ENABLEATK}
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+
+	bDefensePositionsPopulated: Boolean;
+	bEnrage: Boolean;
+
+	bStopAttack: Boolean;
+	bAttack: array[0..3] of Boolean;
+	AttackIntervall: Integer;
+	NumberOfAttackingPlayers: Integer;
+	bBeefedUp: Boolean;
+
+	aCustomPosition: TKMPoint;
+
+	RadiusModifier: Single;
+
+
+procedure OnMissionStart();
+var
+	PosX: Integer;
+begin
+	DifficultySetting := States.MissionDifficulty();
+
+	//Startup AI Towns
+	Populate_Config_PlayerAdd(3);
+	Populate_Config_PlayerAdd(4);
+	Populate_Config_PlayerAdd(5);
+	Populate_Config_PlayerAdd(6);
+	Populate_Config_PlayerAdd(7);
+	Populate_Config_PlayerAdd(8);
+	Populate_Config_WareSetMinimum(0);
+	Populate_Config_WareSetMaximum(5);
+
+	//Manuall AI Setup
+	case DifficultySetting of
+		mdEasy3:
+		begin
+			//Add extra Gold for Player1 and Player2 only (Set in mapEd: dditional 10 Wine as well)
+			Actions.GiveWaresEx(1, wtGold, 30);
+			Actions.GiveWaresEx(2, wtGold, 30);
+
+			//AI Player 3 (Swamp Island next to Player 0)
+			//Basic
+			Actions.AIWorkerLimit(3, 3);
+			Actions.AIRecruitLimit(3, 12);
+			Actions.AIRecruitDelay(3, MinToTick(86));
+			Actions.AIArmyType(3, atIronAndLeather);
+			Actions.AIEquipRate(3, 0, Randomize(1200, 0.5)); //Leather
+			Actions.AIEquipRate(3, 1, Randomize(940, 0.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks: Targets Player0
+			AddAIAttack(3, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			//AddAIAttack(3, true, 0, 1, 2, 1, 1, attClosestBuildingFromArmy, aCustomPosition); //50
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 3);
+			Actions.AIRecruitLimit(4, 12);
+			Actions.AIRecruitDelay(4, MinToTick(85));
+			Actions.AIArmyType(4, atIronAndLeather);
+			Actions.AIEquipRate(4, 0, Randomize(1280, 0.5)); //Leather
+			Actions.AIEquipRate(4, 1, Randomize(1180, 0.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 12, 8, 9
+			//Attacks: Targets Player2
+			AddAIAttack(4, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			//AddAIAttack(4, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //50
+
+			//AI Player 5 (Lower right)
+			//Basic
+			Actions.AIWorkerLimit(5, 3);
+			Actions.AIRecruitLimit(5, 12);
+			Actions.AIRecruitDelay(5, MinToTick(100));
+			Actions.AIArmyType(5, atIronThenLeather);
+			SetEqualEquipRate(5, Randomize(525, 1));
+			//Actions.AIEquipRate(5, 0, Randomize(600, 2)); //Leather
+			//Actions.AIEquipRate(5, 1, Randomize(600, 2)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks: Targets Player0
+			AddAIAttack(5, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			//AddAIAttack(5, true, 0, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+
+			//AI Player 6 (Middle right)
+			//Basic
+			Actions.AIWorkerLimit(6, 3);
+			Actions.AIRecruitLimit(6, 12);
+			Actions.AIRecruitDelay(6, MinToTick(96));
+			Actions.AIArmyType(6, atIronAndLeather);
+			Actions.AIEquipRate(6, 0, Randomize(830, 0.5)); //Leather
+			Actions.AIEquipRate(6, 1, Randomize(1600, 0.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player1
+			AddAIAttack(6, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			//AddAIAttack(6, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //58
+
+			//AI Player 7 (Center)
+			//Basic
+			Actions.AIWorkerLimit(7, 3);
+			Actions.AIRecruitLimit(7, 12);
+			Actions.AIRecruitDelay(7, MinToTick(75));
+			Actions.AIArmyType(7, atIronAndLeather);
+			Actions.AIEquipRate(7, 0, Randomize(790, 0.5)); //Leather
+			Actions.AIEquipRate(7, 1, Randomize(1790, 0.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player1
+			AddAIAttack(7, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			//AddAIAttack(7, true, 0, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+
+			//AI Player 8 (Top right)
+			//Basic
+			Actions.AIWorkerLimit(8, 3);
+			Actions.AIRecruitLimit(8, 12);
+			Actions.AIRecruitDelay(8, MinToTick(106));
+			Actions.AIArmyType(8, atIronAndLeather);
+			Actions.AIEquipRate(8, 0, Randomize(755, 0.5)); //Leather
+			Actions.AIEquipRate(8, 1, Randomize(2000, 0.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player2
+			AddAIAttack(8, true, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			//AddAIAttack(8, true, 0, 1, 1, 1, 2, attClosestBuildingFromArmy, aCustomPosition); //58
+		end;
+
+		mdNormal:
+		begin
+			//Add extra Gold for Player1 and Player2 only (Set in mapEd: dditional 10 Wine as well)
+			Actions.GiveWaresEx(1, wtGold, 15);
+			Actions.GiveWaresEx(2, wtGold, 15);
+
+			//AI Player 3 (Swamp Island next to Player 0)
+			//Basic
+			Actions.AIWorkerLimit(3, 6);
+			Actions.AIRecruitLimit(3, 15);
+			Actions.AIRecruitDelay(3, MinToTick(52));
+			Actions.AIArmyType(3, atIronAndLeather);
+			Actions.AIEquipRate(3, 0, Randomize(1200, 1)); //Leather
+			Actions.AIEquipRate(3, 1, Randomize(380, 1)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player0
+			AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(3, true, 0, 1, 2, 1, 1, attClosestBuildingFromArmy, aCustomPosition); //50
+			{$ENDIF}
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 6);
+			Actions.AIRecruitLimit(4, 15);
+			Actions.AIRecruitDelay(4, MinToTick(52));
+			Actions.AIArmyType(4, atIronAndLeather);
+			Actions.AIEquipRate(4, 0, Randomize(1280, 1)); //Leather
+			Actions.AIEquipRate(4, 1, Randomize(500, 1)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 12, 8, 9
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player2
+			AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(4, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //50
+			{$ENDIF}
+
+			//AI Player 5 (Lower right)
+			//Basic
+			Actions.AIWorkerLimit(5, 6);
+			Actions.AIRecruitLimit(5, 15);
+			Actions.AIRecruitDelay(5, MinToTick(68));
+			Actions.AIArmyType(5, atIronThenLeather);
+			SetEqualEquipRate(5, Randomize(270, 2));
+			//Actions.AIEquipRate(5, 0, Randomize(600, 2)); //Leather
+			//Actions.AIEquipRate(5, 1, Randomize(600, 2)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player0
+			AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(5, true, 0, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+			{$ENDIF}
+
+			//AI Player 6 (Middle right)
+			//Basic
+			Actions.AIWorkerLimit(6, 6);
+			Actions.AIRecruitLimit(6, 15);
+			Actions.AIRecruitDelay(6, MinToTick(61));
+			Actions.AIArmyType(6, atIronAndLeather);
+			Actions.AIEquipRate(6, 0, Randomize(620, 1)); //Leather
+			Actions.AIEquipRate(6, 1, Randomize(620, 1)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player1
+			AddAIAttack(6, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(6, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //58
+			{$ENDIF}
+
+			//AI Player 7 (Center)
+			//Basic
+			Actions.AIWorkerLimit(7, 6);
+			Actions.AIRecruitLimit(7, 15);
+			Actions.AIRecruitDelay(7, MinToTick(45));
+			Actions.AIArmyType(7, atIronAndLeather);
+			Actions.AIEquipRate(7, 0, Randomize(400, 1)); //Leather
+			Actions.AIEquipRate(7, 1, Randomize(1630, 1)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player1
+			AddAIAttack(7, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(7, true, 0, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+			{$ENDIF}
+
+			//AI Player 8 (Top right)
+			//Basic
+			Actions.AIWorkerLimit(8, 6);
+			Actions.AIRecruitLimit(8, 15);
+			Actions.AIRecruitDelay(8, MinToTick(66));
+			Actions.AIArmyType(8, atIronAndLeather);
+			Actions.AIEquipRate(8, 0, Randomize(480, 1)); //Leather
+			Actions.AIEquipRate(8, 1, Randomize(880, 1)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			{$IFDEF ENABLEATK}
+			//Attacks: Targets Player2
+			AddAIAttack(8, false, 0, 1, 1, 1, 1, RandomAttackTarget([attClosestBuildingFromArmy, attClosestBuildingFromStartPos]), aCustomPosition); //46
+			AddAIAttack(8, true, 0, 1, 1, 1, 2, attClosestBuildingFromArmy, aCustomPosition); //58
+			{$ENDIF}
+		end;
+
+		mdHard3:
+		begin
+			//AI Player 3 (Swamp Island next to Player 0)
+			//Basic
+			Actions.AIWorkerLimit(3, 9);
+			Actions.AIRecruitLimit(3, 24);
+			Actions.AIRecruitDelay(3, MinToTick(38));
+			Actions.AIArmyType(3, atIronThenLeather);
+			//Actions.AIEquipRate(3, 0, Randomize(1200, 1)); //Leather
+			Actions.AIEquipRate(3, 1, Randomize(215, 3)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks: Targets Player0
+			//AddAIAttack(3, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(3, true, 0, 1, 2, 1, 1, attClosestBuildingFromArmy, aCustomPosition); //50
+
+			//AI Player 4
+			//Basic
+			Actions.AIWorkerLimit(4, 9);
+			Actions.AIRecruitLimit(4, 24);
+			Actions.AIRecruitDelay(4, MinToTick(40));
+			Actions.AIArmyType(4, atIronAndLeather);
+			Actions.AIEquipRate(4, 0, Randomize(2700, 1.5)); //Leather
+			Actions.AIEquipRate(4, 1, Randomize(235, 1.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 12, 8, 9
+			//Attacks: Targets Player2
+			//AddAIAttack(4, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(4, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //50
+
+			//AI Player 5 (Lower right)
+			//Basic
+			Actions.AIWorkerLimit(5, 9);
+			Actions.AIRecruitLimit(5, 24);
+			Actions.AIRecruitDelay(5, MinToTick(47));
+			Actions.AIArmyType(5, atIronThenLeather);
+			SetEqualEquipRate(5, Randomize(205, 3));
+			//Actions.AIEquipRate(5, 0, Randomize(600, 2)); //Leather
+			//Actions.AIEquipRate(5, 1, Randomize(600, 2)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 12, 9, 8, 12
+			//Attacks: Targets Player0
+			//AddAIAttack(5, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //41
+			AddAIAttack(5, true, 0, 2, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //53
+
+			//AI Player 6 (Middle right)
+			//Basic
+			Actions.AIWorkerLimit(6, 9);
+			Actions.AIRecruitLimit(6, 24);
+			Actions.AIRecruitDelay(6, MinToTick(45));
+			Actions.AIArmyType(6, atIronAndLeather);
+			Actions.AIEquipRate(6, 0, Randomize(200, 1.5)); //Leather
+			Actions.AIEquipRate(6, 1, Randomize(205, 1.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player1
+			//AddAIAttack(6, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(6, true, 0, 1, 1, 1, 2, attClosestBuildingFromStartPos, aCustomPosition); //58
+
+			//AI Player 7 (Center)
+			//Basic
+			Actions.AIWorkerLimit(7, 9);
+			Actions.AIRecruitLimit(7, 24);
+			Actions.AIRecruitDelay(7, MinToTick(36));
+			Actions.AIArmyType(7, atIronAndLeather);
+			Actions.AIEquipRate(7, 0, Randomize(1200, 1.5)); //Leather
+			Actions.AIEquipRate(7, 1, Randomize(230, 1.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player1
+			//AddAIAttack(7, false, 0, 1, 1, 1, 1, attClosestBuildingFromStartPos, aCustomPosition); //46
+			AddAIAttack(7, true, 0, 1, 1, 2, 1, attClosestBuildingFromStartPos, aCustomPosition); //56
+
+			//AI Player 8 (Top right)
+			//Basic
+			Actions.AIWorkerLimit(8, 9);
+			Actions.AIRecruitLimit(8, 24);
+			Actions.AIRecruitDelay(8, MinToTick(49));
+			Actions.AIArmyType(8, atIronAndLeather);
+			Actions.AIEquipRate(8, 0, Randomize(1650, 1.5)); //Leather
+			Actions.AIEquipRate(8, 1, Randomize(210, 1.5)); //Iron
+			//Soldier Formations set in MapEd; Amount of Soldiers in Groups: 15, 9, 10, 12
+			//Attacks: Targets Player2
+			//AddAIAttack(8, false, 0, 1, 1, 1, 1, RandomAttackTarget([attClosestBuildingFromArmy, attClosestBuildingFromStartPos]), aCustomPosition); //46
+			AddAIAttack(8, true, 0, 1, 1, 1, 2, attClosestBuildingFromArmy, aCustomPosition); //58
+		end;
+	end;
+
+	//Kill activation Units
+	for PosX := 5 to 8 do
+	begin
+		Actions.UnitKill(States.UnitAt(PosX, 1), true);
+	end;
+
+	//Number of simultanious Attacks depend on difficutly setting (...and randomness)
+	case DifficultySetting of
+		mdEasy3: begin
+			RadiusModifier := 0.8;
+			AttackIntervall := 25;
+			NumberOfAttackingPlayers := 1;
+			bBeefedUp := false;
+		end;
+		mdEasy2: begin
+			RadiusModifier := 0.833;
+			AttackIntervall := 20;
+			NumberOfAttackingPlayers := 1;
+			bBeefedUp := false;
+		end;
+		mdEasy1: begin
+			RadiusModifier := 0.866;
+			 AttackIntervall := 17;
+			 NumberOfAttackingPlayers := 1;
+			 bBeefedUp := true; //Makes attack 10 to 20% more powerful
+		 end;
+		mdNormal: begin
+			RadiusModifier := 0.9;
+			AttackIntervall := 15;
+			NumberOfAttackingPlayers := 2;
+			bBeefedUp := false;
+		end;
+		mdHard1: begin
+			RadiusModifier := 0.933;
+			AttackIntervall := 14;
+			NumberOfAttackingPlayers := 2;
+			bBeefedUp := true;
+		end;
+		mdHard2: begin
+			RadiusModifier := 0.966;
+			AttackIntervall := 13;
+			NumberOfAttackingPlayers := 3;
+			bBeefedUp := false;
+		end;
+		mdHard3: begin
+			RadiusModifier := 1;
+			AttackIntervall := 12;
+			NumberOfAttackingPlayers := 3;
+			bBeefedUp := true;
+		end;
+	end;
+
+	//Add all DefencePositions
+
+	//Defence Positions of Player3
+	Actions.AIDefencePositionAdd(3, 87, 144, 6, 0, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(3, 90, 161, 5, 0, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(3, 91, 136, 7, 0, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(3, 102, 165, 6, 1, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #4 - Antihorse
+	Actions.AIDefencePositionAdd(3, 104, 133, 6, 1, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #5 - Antihorse
+	Actions.AIDefencePositionAdd(3, 90, 144, 6, 2, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #6 - Ranged
+	Actions.AIDefencePositionAdd(3, 93, 158, 5, 2, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #7 - Ranged
+	Actions.AIDefencePositionAdd(3, 94, 139, 7, 2, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #8 - Ranged
+	Actions.AIDefencePositionAdd(3, 96, 155, 5, 2, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #9 - Ranged
+	Actions.AIDefencePositionAdd(3, 86, 153, 6, 3, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #10 - Mounted
+	Actions.AIDefencePositionAdd(3, 94, 146, 6, 0, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 1); //Position #11 - Melee
+	Actions.AIDefencePositionAdd(3, 90, 151, 6, 1, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 1); //Position #12 - Antihorse
+	Actions.AIDefencePositionAdd(3, 99, 140, 6, 1, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 1); //Position #13 - Antihorse
+	Actions.AIDefencePositionAdd(3, 97, 163, 6, 3, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #14 - Mounted
+	Actions.AIDefencePositionAdd(3, 98, 132, 7, 3, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #15 - Mounted
+	Actions.AIDefencePositionAdd(3, 97, 146, 6, 2, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 1); //Position #16 - Ranged
+	Actions.AIDefencePositionAdd(3, 123, 147, 2, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #17 - Mounted
+
+	//Defence Positions of Player4
+	Actions.AIDefencePositionAdd(4, 153, 109, 0, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(4, 146, 111, 0, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(4, 137, 146, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(4, 143, 146, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #4 - Melee
+	Actions.AIDefencePositionAdd(4, 152, 115, 0, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #5 - Melee
+	Actions.AIDefencePositionAdd(4, 153, 112, 0, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #6 - Ranged
+	Actions.AIDefencePositionAdd(4, 146, 114, 0, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #7 - Ranged
+	Actions.AIDefencePositionAdd(4, 141, 146, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #8 - Ranged
+	Actions.AIDefencePositionAdd(4, 135, 146, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #9 - Ranged
+	Actions.AIDefencePositionAdd(4, 158, 113, 0, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #10 - Ranged
+	Actions.AIDefencePositionAdd(4, 141, 117, 0, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #11 - Ranged
+	Actions.AIDefencePositionAdd(4, 132, 139, 5, 2, Utils.EnsureRangeI(Round(33 *RadiusModifier), 20, 33), 0); //Position #12 - Ranged
+	Actions.AIDefencePositionAdd(4, 152, 118, 0, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #13 - Ranged
+	Actions.AIDefencePositionAdd(4, 141, 114, 0, 1, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #14 - Antihorse
+	Actions.AIDefencePositionAdd(4, 158, 110, 0, 1, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #15 - Antihorse
+	Actions.AIDefencePositionAdd(4, 137, 140, 6, 1, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 0); //Position #16 - Antihorse
+	Actions.AIDefencePositionAdd(4, 137, 152, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #17 - Antihorse
+	Actions.AIDefencePositionAdd(4, 146, 117, 0, 3, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #18 - Mounted
+	Actions.AIDefencePositionAdd(4, 141, 142, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #19 - Mounted
+	Actions.AIDefencePositionAdd(4, 141, 151, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #20 - Mounted
+	Actions.AIDefencePositionAdd(4, 162, 111, 0, 3, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #21 - Mounted
+	Actions.AIDefencePositionAdd(4, 172, 145, 3, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #22 - Melee
+	Actions.AIDefencePositionAdd(4, 166, 146, 2, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #23 - Antihorse
+	Actions.AIDefencePositionAdd(4, 169, 142, 3, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #24 - Ranged
+	Actions.AIDefencePositionAdd(4, 157, 116, 0, 3, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 1); //Position #25 - Mounted
+	Actions.AIDefencePositionAdd(4, 174, 137, 4, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #26 - Mounted
+
+	//Defence Positions of Player5
+	Actions.AIDefencePositionAdd(5, 186, 147, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(5, 188, 154, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(5, 218, 129, 0, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(5, 224, 129, 0, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #4 - Melee
+	Actions.AIDefencePositionAdd(5, 191, 142, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #5 - Melee
+	Actions.AIDefencePositionAdd(5, 184, 147, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #6 - Ranged
+	Actions.AIDefencePositionAdd(5, 186, 154, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #7 - Ranged
+	Actions.AIDefencePositionAdd(5, 218, 127, 0, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #8 - Ranged
+	Actions.AIDefencePositionAdd(5, 224, 127, 0, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #9 - Ranged
+	Actions.AIDefencePositionAdd(5, 209, 133, 1, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #10 - Ranged
+	Actions.AIDefencePositionAdd(5, 187, 143, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #11 - Antihorse
+	Actions.AIDefencePositionAdd(5, 192, 153, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #12 - Antihorse
+	Actions.AIDefencePositionAdd(5, 221, 133, 0, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #13 - Antihorse
+	Actions.AIDefencePositionAdd(5, 233, 131, 7, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #14 - Antihorse
+	Actions.AIDefencePositionAdd(5, 190, 160, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #15 - Mounted
+	Actions.AIDefencePositionAdd(5, 213, 129, 0, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #16 - Mounted
+	Actions.AIDefencePositionAdd(5, 190, 148, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #17 - Mounted
+	Actions.AIDefencePositionAdd(5, 229, 128, 0, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #18 - Mounted
+	Actions.AIDefencePositionAdd(5, 195, 147, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #19 - Mounted
+	Actions.AIDefencePositionAdd(5, 217, 133, 0, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #20 - Melee
+	Actions.AIDefencePositionAdd(5, 226, 133, 0, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #21 - Melee
+	Actions.AIDefencePositionAdd(5, 200, 147, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #22 - Antihorse
+	Actions.AIDefencePositionAdd(5, 195, 142, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #23 - Ranged
+	Actions.AIDefencePositionAdd(5, 229, 141, 0, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #24 - Mounted
+
+	//Defence Positions of Player6
+	Actions.AIDefencePositionAdd(6, 211, 102, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(6, 227, 115, 4, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(6, 211, 95, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(6, 218, 105, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #4 - Melee
+	Actions.AIDefencePositionAdd(6, 241, 100, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #5 - Antihorse
+	Actions.AIDefencePositionAdd(6, 217, 100, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #6 - Antihorse
+	Actions.AIDefencePositionAdd(6, 213, 110, 5, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #7 - Antihorse
+	Actions.AIDefencePositionAdd(6, 217, 95, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #8 - Antihorse
+	Actions.AIDefencePositionAdd(6, 214, 102, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #9 - Ranged
+	Actions.AIDefencePositionAdd(6, 227, 117, 4, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #10 - Ranged
+	Actions.AIDefencePositionAdd(6, 214, 95, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #11 - Ranged
+	Actions.AIDefencePositionAdd(6, 221, 105, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #12 - Ranged
+	Actions.AIDefencePositionAdd(6, 219, 115, 5, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #13 - Mounted
+	Actions.AIDefencePositionAdd(6, 215, 89, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #14 - Mounted
+	Actions.AIDefencePositionAdd(6, 221, 98, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #15 - Mounted
+	Actions.AIDefencePositionAdd(6, 239, 114, 4, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #16 - Mounted
+	Actions.AIDefencePositionAdd(6, 237, 86, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #17 - Melee
+	Actions.AIDefencePositionAdd(6, 230, 98, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #18 - Antihorse
+	Actions.AIDefencePositionAdd(6, 246, 104, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #19 - Ranged
+	Actions.AIDefencePositionAdd(6, 248, 87, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #20 - Mounted
+	Actions.AIDefencePositionAdd(6, 252, 84, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #21 - Mounted
+
+	//Defence Positions of Player7
+	Actions.AIDefencePositionAdd(7, 182, 87, 6, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(7, 201, 74, 0, 0, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(7, 188, 87, 6, 0, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(7, 196, 80, 0, 0, Utils.EnsureRangeI(Round(37 *RadiusModifier), 20, 37), 0); //Position #4 - Melee
+	Actions.AIDefencePositionAdd(7, 186, 94, 6, 0, Utils.EnsureRangeI(Round(37 *RadiusModifier), 20, 37), 0); //Position #5 - Melee
+	Actions.AIDefencePositionAdd(7, 190, 114, 0, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #6 - Antihorse
+	Actions.AIDefencePositionAdd(7, 190, 82, 6, 1, Utils.EnsureRangeI(Round(35 *RadiusModifier), 20, 35), 0); //Position #7 - Antihorse
+	Actions.AIDefencePositionAdd(7, 202, 80, 0, 1, Utils.EnsureRangeI(Round(38 *RadiusModifier), 20, 38), 0); //Position #8 - Antihorse
+	Actions.AIDefencePositionAdd(7, 179, 100, 7, 1, Utils.EnsureRangeI(Round(32 *RadiusModifier), 20, 32), 0); //Position #9 - Antihorse
+	Actions.AIDefencePositionAdd(7, 185, 87, 6, 2, Utils.EnsureRangeI(Round(32 *RadiusModifier), 20, 32), 0); //Position #10 - Ranged
+	Actions.AIDefencePositionAdd(7, 201, 77, 0, 2, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #11 - Ranged
+	Actions.AIDefencePositionAdd(7, 196, 83, 0, 2, Utils.EnsureRangeI(Round(39 *RadiusModifier), 20, 39), 0); //Position #12 - Ranged
+	Actions.AIDefencePositionAdd(7, 189, 94, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #13 - Ranged
+	Actions.AIDefencePositionAdd(7, 185, 79, 7, 3, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #14 - Mounted
+	Actions.AIDefencePositionAdd(7, 207, 76, 0, 3, Utils.EnsureRangeI(Round(38 *RadiusModifier), 20, 38), 0); //Position #15 - Mounted
+	Actions.AIDefencePositionAdd(7, 182, 94, 6, 3, Utils.EnsureRangeI(Round(32 *RadiusModifier), 20, 32), 0); //Position #16 - Mounted
+	Actions.AIDefencePositionAdd(7, 193, 76, 0, 3, Utils.EnsureRangeI(Round(33 *RadiusModifier), 20, 33), 0); //Position #17 - Mounted
+	Actions.AIDefencePositionAdd(7, 209, 102, 2, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #18 - Melee
+	Actions.AIDefencePositionAdd(7, 208, 97, 2, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #19 - Antihorse
+	Actions.AIDefencePositionAdd(7, 209, 92, 2, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #20 - Ranged
+	Actions.AIDefencePositionAdd(7, 206, 102, 2, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #21 - Ranged
+	Actions.AIDefencePositionAdd(7, 203, 104, 2, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #22 - Mounted
+
+	//Defence Positions of Player8
+	Actions.AIDefencePositionAdd(8, 216, 41, 5, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #1 - Melee
+	Actions.AIDefencePositionAdd(8, 209, 13, 6, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #2 - Melee
+	Actions.AIDefencePositionAdd(8, 221, 47, 5, 0, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #3 - Melee
+	Actions.AIDefencePositionAdd(8, 208, 6, 6, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #4 - Melee
+	Actions.AIDefencePositionAdd(8, 212, 32, 4, 0, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #5 - Melee
+	Actions.AIDefencePositionAdd(8, 231, 53, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #6 - Melee
+	Actions.AIDefencePositionAdd(8, 211, 18, 6, 1, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #7 - Antihorse
+	Actions.AIDefencePositionAdd(8, 230, 46, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 0); //Position #8 - Antihorse
+	Actions.AIDefencePositionAdd(8, 212, 37, 4, 1, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #9 - Antihorse
+	Actions.AIDefencePositionAdd(8, 212, 8, 6, 1, Utils.EnsureRangeI(Round(20 *RadiusModifier), 20, 20), 0); //Position #10 - Antihorse
+	Actions.AIDefencePositionAdd(8, 214, 43, 5, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #11 - Ranged
+	Actions.AIDefencePositionAdd(8, 207, 13, 6, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #12 - Ranged
+	Actions.AIDefencePositionAdd(8, 219, 49, 5, 2, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #13 - Ranged
+	Actions.AIDefencePositionAdd(8, 206, 6, 6, 2, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #14 - Ranged
+	Actions.AIDefencePositionAdd(8, 219, 38, 5, 2, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #15 - Ranged
+	Actions.AIDefencePositionAdd(8, 224, 44, 5, 2, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 0); //Position #16 - Ranged
+	Actions.AIDefencePositionAdd(8, 212, 23, 6, 3, Utils.EnsureRangeI(Round(30 *RadiusModifier), 20, 30), 0); //Position #17 - Mounted
+	Actions.AIDefencePositionAdd(8, 226, 51, 6, 3, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 0); //Position #18 - Mounted
+	Actions.AIDefencePositionAdd(8, 212, 3, 6, 3, Utils.EnsureRangeI(Round(34 *RadiusModifier), 20, 34), 0); //Position #19 - Mounted
+	Actions.AIDefencePositionAdd(8, 215, 13, 6, 0, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 1); //Position #20 - Melee
+	Actions.AIDefencePositionAdd(8, 216, 5, 6, 1, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 1); //Position #21 - Antihorse
+	Actions.AIDefencePositionAdd(8, 213, 13, 6, 2, Utils.EnsureRangeI(Round(36 *RadiusModifier), 20, 36), 1); //Position #22 - Ranged
+	Actions.AIDefencePositionAdd(8, 238, 52, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #23 - Mounted
+	Actions.AIDefencePositionAdd(8, 240, 46, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Position #24 - Mounted
+end;
+
+
+procedure OnHouseBuilt(aHouseID: Integer);
+var
+	HouseOwner: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouseID);
+
+	if not States.PlayerIsAI(HouseOwner) then
+	begin
+		case HouseOwner of
+			0: begin
+			   if Utils.InAreaI(States.HousePositionX(aHouseID), States.HousePositionY(aHouseID), 29, 105, 86, 144) then
+			   begin
+				   SetAIStartPositionToClosestHouse(HouseOwner, 3);
+			   end;
+			end;
+			1: begin
+				if Utils.InAreaI(States.HousePositionX(aHouseID), States.HousePositionY(aHouseID), 45, 62, 179, 108) then
+				begin
+					SetAIStartPositionToClosestHouse(HouseOwner, 6);
+					SetAIStartPositionToClosestHouse(HouseOwner, 7);
+				end;
+			end;
+			2: begin
+				if Utils.InAreaI(States.HousePositionX(aHouseID), States.HousePositionY(aHouseID), 128, 3, 204, 107) then
+				begin
+					SetAIStartPositionToClosestHouse(HouseOwner, 4);
+				end;
+				if Utils.InAreaI(States.HousePositionX(aHouseID), States.HousePositionY(aHouseID), 31, 3, 208, 29) then
+				begin
+					SetAIStartPositionToClosestHouse(HouseOwner, 8);
+				end;
+			end;
+		end;
+	end;
+end;
+
+
+procedure OnUnitWounded(aUnit: Integer; aAttacker: Integer);
+begin
+	if not bEnrage then
+	begin
+		if States.UnitOwner(aUnit) = 3 then
+		begin
+			if States.UnitOwner(aAttacker) = 0 then
+			begin
+				Actions.AIRecruitDelay(3, 0);
+				Actions.ShowMsg(0, '<$1>');
+				bEnrage := true;
+			end;
+		end;
+	end;
+end;
+
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+begin
+	if not bEnrage then
+	begin
+		if States.HouseOwner(aHouse) = 3 then
+		begin
+			if States.UnitOwner(aAttacker) = 0 then
+			begin
+				Actions.AIRecruitDelay(3, 0);
+				Actions.ShowMsg(0, '<$1>');
+				bEnrage := true;
+			end;
+		end;
+	end;
+end;
+
+
+procedure OnTick();
+var
+	GameTime: Integer;
+	atkIndex, atk: Integer;
+begin
+	GameTime := States.GameTime();
+
+	//Add soldiers to defence positions
+	if not bDefensePositionsPopulated then
+	begin
+		case GameTime of
+			1: PopulateDefensePosition(3);
+			2: PopulateDefensePosition(4);
+			3: PopulateDefensePosition(5);
+			4: PopulateDefensePosition(6);
+			5: PopulateDefensePosition(7);
+			6: PopulateDefensePosition(8);
+			7: bDefensePositionsPopulated := true;
+		end;
+	end;
+
+	if GameTime mod 12 = 0 then
+	begin
+		ChangeWaterfallEndTiles(103, 104, 119);
+	end;
+
+	if GameTime = 340 then
+	begin
+		Actions.ShowMsg(0, '<$0>');
+	end;
+
+	if not bEnrage then
+	begin
+		if GameTime = (States.AIRecruitDelay(3) *1.2) then
+		begin
+			Actions.ShowMsg(0, '<$3>');
+			bEnrage := true;
+		end;
+	end;
+
+	if not bStopAttack then
+	begin
+	   //Add DefencePositions in advance
+		if GameTime = 29 then
+		begin
+			Actions.AIDefencePositionAdd(9, 168, 142, 7, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Mounted
+			Actions.AIDefencePositionAdd(9, 171, 138, 7, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1);
+			Actions.AIDefencePositionAdd(9, 174, 145, 7, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1);
+
+			Actions.AIDefencePositionAdd(10, 201, 102, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Melee
+			Actions.AIDefencePositionAdd(10, 206, 97, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Melee
+			Actions.AIDefencePositionAdd(10, 205, 102, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Antihorse
+			Actions.AIDefencePositionAdd(10, 208, 102, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Ranged
+
+			Actions.AIDefencePositionAdd(11, 237, 51, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Melee
+			Actions.AIDefencePositionAdd(11, 239, 56, 6, 0, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Melee
+			Actions.AIDefencePositionAdd(11, 240, 46, 6, 1, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Antihorse
+			Actions.AIDefencePositionAdd(11, 240, 51, 6, 2, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Ranged
+
+			Actions.AIDefencePositionAdd(12, 216, 5, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1); //Mounted
+			Actions.AIDefencePositionAdd(12, 214, 13, 6, 3, Utils.EnsureRangeI(Round(40 *RadiusModifier), 20, 40), 1);
+		end;
+
+		if GameTime = MinToTick(Round(AttackIntervall *0.5)) then
+		begin
+			Actions.ShowMsg(1, '<$2>');
+			Actions.ShowMsg(2, '<$2>');
+		end;
+
+		if GameTime mod MinToTick(AttackIntervall) = 0 then
+		begin
+			//AI that shares defenseposition space with spawn attackers starts making units? Stop all attacks!
+			if (GameTime > States.AIRecruitDelay(4)) or (GameTime > States.AIRecruitDelay(7)) or (GameTime > States.AIRecruitDelay(8)) then
+			begin
+				bStopAttack := true;
+				exit;
+			end;
+
+			if NumberOfAttackingPlayers < 4 then
+			begin
+				while atk < NumberOfAttackingPlayers do
+				begin
+					atkIndex := Utils.RandomRangeI(Low(bAttack), High(bAttack));
+					if bAttack[atkIndex] = false then
+					begin
+						bAttack[atkIndex] := true;
+						Inc(atk);
+					end;
+				end;
+			end else
+			begin
+				for atkIndex := Low(bAttack) to High(bAttack) do
+				begin
+					 bAttack[atkIndex] := true;
+				end;
+			end;
+
+			if bAttack[0] then
+			begin
+				//Cleanup
+				Actions.AIAttackRemoveAll(9);
+				//Add Groups
+				if not bBeefedUp then
+				begin
+					Actions.GiveGroupEx(9, utVagabond, 177, 181, dirN, 9, 3);
+					Actions.GiveGroupEx(9, utVagabond, 184, 180, dirN, 9, 3);
+					Actions.GiveGroupEx(9, utVagabond, 188, 181, dirN, 9, 3);
+				end else
+				begin
+					Actions.GiveGroupEx(9, utVagabond, 177, 181, dirN, 9, 3);
+					Actions.GiveGroupEx(9, utVagabond, 184, 180, dirN, 9, 3);
+					Actions.GiveGroupEx(9, utScout, 188, 181, dirN, 9, 3);
+				end;
+				//Choose Target
+				SetAIStartPositionToClosestHouse(1, 9);
+				//Let them move into position and add new Attacks
+				Actions.AIAttackAdd(9, true, GameTime +Randomize(MinToTick(4), 5), 1, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
+				bAttack[0] := false;
+			end;
+
+			if bAttack[1] then
+			begin
+				//Cleanup
+				Actions.AIAttackRemoveAll(10);
+				//Add Groups
+				if not bBeefedUp then
+				begin
+					Actions.GiveGroupEx(10, utMilitia, 234, 154, dirNW, 12, 4);
+					Actions.GiveGroupEx(10, utLancecarrier, 229, 169, dirN, 12, 4);
+					Actions.GiveGroupEx(10, utBowman, 232, 161, dirNW, 8, 4);
+				end else
+				begin
+					Actions.GiveGroupEx(10, utMilitia, 234, 154, dirNW, 9, 3);
+					Actions.GiveGroupEx(10, utAxefighter, 237, 150, dirNW, 6, 3);
+					Actions.GiveGroupEx(10, utLancecarrier, 229, 169, dirN, 12, 4);
+					Actions.GiveGroupEx(10, utBowman, 232, 161, dirNW, 8, 4);
+				end;
+				//Choose Target
+				SetAIStartPositionToClosestHouse(1, 10);
+				//Let them move into position and add new Attacks
+				Actions.AIAttackAdd(10, true, GameTime +Randomize(MinToTick(3), 5), 1, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
+				bAttack[1] := false;
+			end;
+
+			if bAttack[2] then
+			begin
+				//Cleanup
+				Actions.AIAttackRemoveAll(11);
+				//Add Groups
+				if not bBeefedUp then
+				begin
+					Actions.GiveGroupEx(11, utMilitia, 253, 47, dirW, 15, 5);
+					//Actions.GiveGroupEx(11, utMilitia, 253, 35, dirW, 9, 3);
+					Actions.GiveGroupEx(11, utLancecarrier, 253, 26, dirW, 9, 3);
+					Actions.GiveGroupEx(11, utBowman, 254, 41, dirW, 10, 5);
+				end else
+				begin
+					Actions.GiveGroupEx(11, utMilitia, 253, 35, dirW, 10, 5);
+					Actions.GiveGroupEx(11, utAxefighter, 253, 47, dirW, 6, 3);
+					Actions.GiveGroupEx(11, utLancecarrier, 253, 26, dirW, 9, 3);
+					Actions.GiveGroupEx(11, utBowman, 254, 41, dirW, 10, 5);
+				end;
+				//Choose Target
+				SetAIStartPositionToClosestHouse(2, 11);
+				//Let them move into position and add new Attacks
+				Actions.AIAttackAdd(11, true, GameTime +Randomize(MinToTick(3.5), 5), 1, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
+				bAttack[2] := false;
+			end;
+
+			if bAttack[3] then
+			begin
+				//Cleanup
+				Actions.AIAttackRemoveAll(12);
+				//Add Groups
+				if not bBeefedUp then
+				begin
+					Actions.GiveGroupEx(12, utVagabond, 218, 3, dirS, 12, 4);
+					Actions.GiveGroupEx(12, utVagabond, 223, 3, dirS, 12, 4);
+				end else
+				begin
+					Actions.GiveGroupEx(12, utVagabond, 218, 3, dirS, 12, 4);
+					Actions.GiveGroupEx(12, utScout, 223, 3, dirS, 12, 4);
+				end;
+				//Choose Target
+				if RandomBool() then
+				begin
+					Actions.AIStartPosition(12, 1, 1);
+				end else
+				begin
+					Actions.AIStartPosition(12, 129, 1);
+				end;
+				//Let them move into position and add new Attacks
+				Actions.AIAttackAdd(12, true, GameTime +Randomize(MinToTick(4.5), 5), 1, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
+				bAttack[3] := false;
+			end;
+
+			//Strengthen attacks each round
+			if not bBeefedUp then
+			begin
+				bBeefedUp := true;
+			end else
+			begin
+				bBeefedUp := false;
+				Inc(NumberOfAttackingPlayers);
+				NumberOfAttackingPlayers := Utils.EnsureRangeI(NumberOfAttackingPlayers, 1, 4); //Prevent possible out of range errors
+			end;
+		end;
+	end;
+end;

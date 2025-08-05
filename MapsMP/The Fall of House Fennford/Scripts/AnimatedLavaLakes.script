@@ -1,0 +1,219 @@
+{$EVENT evtTick:ALL_OnTick}
+{$EVENT evtMissionStart:ALL_OnMissionStart}
+
+type ALL_MapTileInfo =
+record
+  LavaLakeIndex: integer;
+end;
+
+type ALL_LavaLake =
+record
+  Tiles: array of TKMTerrainTileBrief;
+end;
+
+var
+  ALL_LavaLakes: array of ALL_LavaLake;
+  ALL_MapTilesInfo: array of array of ALL_MapTileInfo;
+  ALL_CurrentLakeId: integer;
+
+function ALL_AddTile(points: array of TKMTerrainTileBrief; x,y: integer): array of TKMTerrainTileBrief;
+begin
+  result := points;
+  SetLength(result, Length(result) + 1);
+  result[High(result)].X := x;
+  result[High(result)].Y := y;
+  result[High(result)].UpdateRotation := true;
+end;
+
+function ALL_IsMapPoint(x,y: integer): boolean;
+begin
+  result := (x > 0) and (y > 0) and (x < S.MapWidth) and (y < S.MapHeight);
+end;
+
+function ALL_IsLavaTile(x,y: integer): boolean;
+begin
+  result := ALL_IsMapPoint(x,y) and (S.MapTileType(x, y) = 7);
+end;
+
+function ALL_SafeGetLavaLakeIndex(x,y: integer): integer;
+begin
+  result := -1;
+  if (ALL_IsMapPoint(x,y)) then
+  begin
+    result := ALL_MapTilesInfo[x][y].LavaLakeIndex;
+  end;
+end;
+
+function ALL_FindLavaLakeContinuationIndex(x,y: integer): integer;
+begin
+  result := ALL_SafeGetLavaLakeIndex(x-1,y-1);
+  if (result <> -1) then
+  begin
+    exit;
+  end;
+  result := ALL_SafeGetLavaLakeIndex(x,y-1);
+  if (result <> -1) then
+  begin
+    exit;
+  end;
+  result := ALL_SafeGetLavaLakeIndex(x+1,y-1);
+end;
+
+function ALL_UniteTKMTerrainTileBriefArrays(first, second: array of TKMTerrainTileBrief): array of TKMTerrainTileBrief;
+var
+  i: integer;
+begin
+
+  result := [];
+  for i:= 0 to High(first) do
+  begin
+    setLength(result, Length(result) +1);
+    result[High(result)].X := first[i].X;
+    result[High(result)].Y := first[i].Y;
+    result[High(result)].UpdateRotation := first[i].UpdateRotation;
+  end;
+
+  for i:= 0 to High(second) do
+  begin
+    setLength(result, Length(result) +1);
+    result[High(result)].X := second[i].X;
+    result[High(result)].Y := second[i].Y;
+    result[High(result)].UpdateRotation := second[i].UpdateRotation;
+  end;
+end;
+
+procedure ALL_FillMapInfo();
+var
+  i: integer;
+  x: integer;
+  y: integer;
+
+  currentLavaLakeIndex: integer;
+  neighborLavaLakeIndex: integer;
+  //logstr: string;
+begin
+
+  SetLength(ALL_MapTilesInfo, S.MapWidth + 1);
+
+  for y:=1 to S.MapWidth - 1 do
+  begin
+    SetLength(ALL_MapTilesInfo[y], S.MapHeight + 1);
+  end;
+
+  for y:=1 to S.MapHeight - 1 do
+  begin
+
+    currentLavaLakeIndex:= -1;
+
+    for x:=1 to S.MapWidth - 1 do
+    begin
+
+      //Fish water logic.
+      if (ALL_IsLavaTile(x, y)) then
+      begin
+
+        //Check if we found lake, that already was registered.
+        if (currentLavaLakeIndex = -1) then
+        begin
+
+          currentLavaLakeIndex := ALL_FindLavaLakeContinuationIndex(x,y);
+
+          //If we found no lava lake that is connected with this tile, register new lava lake.
+          if (currentLavaLakeIndex = -1) then
+          begin
+
+            setLength(ALL_LavaLakes, Length(ALL_LavaLakes) + 1);
+            currentLavaLakeIndex := High(ALL_LavaLakes);
+          end;
+
+        end else
+        begin
+          neighborLavaLakeIndex := ALL_FindLavaLakeContinuationIndex(x,y);
+
+          //If we found other lava lake that is connected to this tile, that means it's the same lava lake.
+          if ((neighborLavaLakeIndex <> -1) and (currentLavaLakeIndex <> neighborLavaLakeIndex)) then
+          begin
+
+            ALL_LavaLakes[currentLavaLakeIndex].Tiles := ALL_UniteTKMTerrainTileBriefArrays(ALL_LavaLakes[currentLavaLakeIndex].Tiles, ALL_LavaLakes[neighborLavaLakeIndex].Tiles);
+            setLength(ALL_LavaLakes[neighborLavaLakeIndex].Tiles, 0);
+
+            for i:= 1 to S.MapWidth - 1 do
+            begin
+              if (ALL_MapTilesInfo[i][y-1].LavaLakeIndex = neighborLavaLakeIndex) then
+              begin
+                ALL_MapTilesInfo[i][y-1].LavaLakeIndex := currentLavaLakeIndex;
+              end;
+            end;
+          end;
+        end;
+
+      end else
+      begin
+        currentLavaLakeIndex := -1;
+      end;
+
+      ALL_MapTilesInfo[x][y].LavaLakeIndex := currentLavaLakeIndex;
+      if (currentLavaLakeIndex <> -1) then
+      begin
+        ALL_LavaLakes[currentLavaLakeIndex].Tiles := ALL_AddTile(ALL_LavaLakes[currentLavaLakeIndex].Tiles, x, y);
+      end;
+
+    end;
+  end;
+
+  //Remove all empty lakes. We get them after we understand that one lake is part of other.
+  for i := 0 to High(ALL_LavaLakes) do
+  begin
+    if (Length(ALL_LavaLakes[i].Tiles) = 0) then
+    begin
+      ALL_LavaLakes[i] := ALL_LavaLakes[High(ALL_LavaLakes)];
+      SetLength(ALL_LavaLakes, Length(ALL_LavaLakes) - 1);
+      Dec(i);
+    end;
+  end;
+
+  //You can use it to see lava lakes information.
+  {
+  for i := 0 to High(ALL_LavaLakes) do
+  begin
+    A.Log('Lake ' + IntToStr(i));
+    logstr := '';
+
+    for x := 0 to High(ALL_LavaLakes[i].Tiles) do
+    begin
+      logstr := logstr  + '('+ IntToStr(ALL_LavaLakes[i].Tiles[x].X) + ',' + IntToStr(ALL_LavaLakes[i].Tiles[x].Y) + ');';
+    end;
+    A.Log(logstr);
+  end;
+  }
+end;
+
+function ALL_AnimateLavaTiles(tiles: array of TKMTerrainTileBrief): array of TKMTerrainTileBrief;
+var
+	i: integer;
+
+begin
+
+  result := tiles;
+
+	for i := 0 to High(tiles) do
+		result[i].Rotation := States.KaMRandomI(4);
+
+	Actions.MapTilesArraySet(result, False, False);
+end;
+
+procedure ALL_OnTick();
+begin
+  if (ALL_CurrentLakeId >= High(ALL_LavaLakes)) then
+  begin
+    ALL_CurrentLakeId := 0;
+  end;
+
+  ALL_AnimateLavaTiles(ALL_LavaLakes[ALL_CurrentLakeId].Tiles);
+  Inc(ALL_CurrentLakeId);
+end;
+
+procedure ALL_OnMissionStart();
+begin
+  ALL_FillMapInfo();
+end;
