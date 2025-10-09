@@ -1,0 +1,9 @@
+﻿Author
+[$800080]Thunder[HU][]
+
+Version
+2026_RMtT8
+
+BigDesc
+[$800080]Iron&Gold 2026[]|(RMtT8)||School->Quarry+Inn->Wcutter||Story|There is no long roads just not enough stone.|An anciant Barbaric quote||I&G2026 (RMtT8)|-new locs for 12P||I&G2022|-Boosted loc5! All iron at one spot.|-Loc6, replaced storehouse and 3 trees|-Exteded battlefield on North|-Removed hills from the middle zone|-removed annoying objects, but not the tree from l5 ;P|| I&G2019|-Fixed some iron mountains; given more space and wider entrances to loc 7/8; more space on loc 5|-Repainted some parts|-Wider fighting area, more opened on bottom.|||Have fun!||[$800080]Made by Thunder[HU]
+
