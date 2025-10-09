@@ -1,0 +1,15 @@
+﻿Author
+DontTalk
+
+Version
+1.0
+
+SmallDesc
+A mission By DontTalk
+
+BigDescLIBX
+0
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+
