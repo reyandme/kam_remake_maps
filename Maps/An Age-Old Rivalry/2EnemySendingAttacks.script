@@ -1,0 +1,152 @@
+//AV1:
+//P2 & 3: 6 melee
+//P5: 24 mounted
+//P6: 42 mounted
+//P7: 24 mounted
+
+//AV2:
+//P2 & 3: 6 melee
+//P5: 24 mounted, 18 melee, 18 range, 18 antihorse
+//P6: 42 mounted
+//P7: 24 mounted, 18 melee, 18 range, 18 antihorse
+
+procedure SendingEnemyAttacks(i, j: Integer); //i = player no.-1, j = variation; variation 1 = melee etc, variation 2 = mounted
+begin
+	if (i = 1) then
+		begin
+			A.AIAttackAdd (PlayerNumber[1], true, 0, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, U.KMPoint(0, 0));
+			if (j = 1) then				
+				begin
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 40); //remove attack variation 1
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 44);		
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 48);	
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 52);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 41);
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 46);
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 52);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[1], 67, 44);
+				end else
+			if (j = 2) then
+				begin
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 40); //remove attack variation 2
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 44);		
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 48);	
+					A.AIDefencePositionRemove (PlayerNumber[1], 74, 52);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 41);
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 46);
+					A.AIDefencePositionRemove (PlayerNumber[1], 70, 52);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[1], 67, 44);				
+				end;	
+		end else
+	if (i = 2) then
+		begin
+			A.AIAttackAdd (PlayerNumber[2], true, 0, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, U.KMPoint(0, 0));
+			if (j = 1) then				
+				begin					
+					A.AIDefencePositionRemove (PlayerNumber[2], 38, 39); //remove attack variation 1
+					A.AIDefencePositionRemove (PlayerNumber[2], 43, 39);
+					A.AIDefencePositionRemove (PlayerNumber[2], 51, 32);
+					
+					A.AIDefencePositionRemove (PlayerNumber[2], 4, 48);
+					A.AIDefencePositionRemove (PlayerNumber[2], 4, 44);
+					A.AIDefencePositionRemove (PlayerNumber[2], 11, 43);
+					
+					A.AIDefencePositionRemove (PlayerNumber[2], 37, 35);
+					A.AIDefencePositionRemove (PlayerNumber[2], 43, 35);
+					A.AIDefencePositionRemove (PlayerNumber[2], 2, 40);
+					A.AIDefencePositionRemove (PlayerNumber[2], 15, 36);	
+				end else
+			if (j = 2) then
+				begin		
+					A.AIDefencePositionRemove (PlayerNumber[2], 22, 7); //remove attack variation 2
+					A.AIDefencePositionRemove (PlayerNumber[2], 42, 25); 								
+					A.AIDefencePositionRemove (PlayerNumber[2], 38, 39); 	
+					A.AIDefencePositionRemove (PlayerNumber[2], 43, 39); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 38, 36); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 43, 36); 								
+					A.AIDefencePositionRemove (PlayerNumber[2], 51, 34);
+					A.AIDefencePositionRemove (PlayerNumber[2], 51, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 3, 48); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 3, 45); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 3, 42);
+					A.AIDefencePositionRemove (PlayerNumber[2], 11, 42); 
+					A.AIDefencePositionRemove (PlayerNumber[2], 15, 36);				
+				end;
+		end else
+	if (i = 4) then
+		begin
+			A.AIAttackAdd (PlayerNumber[4], true, 0, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, U.KMPoint(0, 0));		
+			if (j = 1) then
+				begin
+					A.AIDefencePositionRemove (PlayerNumber[4], 89, 46); //add attack variation 1
+					A.AIDefencePositionRemove (PlayerNumber[4], 89, 40);
+					A.AIDefencePositionRemove (PlayerNumber[4], 92, 43);
+					A.AIDefencePositionRemove (PlayerNumber[4], 95, 46);
+					A.AIDefencePositionRemove (PlayerNumber[4], 95, 40);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[4], 99, 45);
+					A.AIDefencePositionRemove (PlayerNumber[4], 99, 40);
+					A.AIDefencePositionRemove (PlayerNumber[4], 102, 43);
+				end else               
+			if (j = 2) then            
+				begin                  
+					A.AIDefencePositionRemove (PlayerNumber[4], 89, 46); //add attack variation 2
+					A.AIDefencePositionRemove (PlayerNumber[4], 89, 40);
+					A.AIDefencePositionRemove (PlayerNumber[4], 92, 43);
+					A.AIDefencePositionRemove (PlayerNumber[4], 95, 46);
+					A.AIDefencePositionRemove (PlayerNumber[4], 95, 40);
+									   
+					A.AIDefencePositionRemove (PlayerNumber[4], 99, 45);
+					A.AIDefencePositionRemove (PlayerNumber[4], 99, 40);
+					A.AIDefencePositionRemove (PlayerNumber[4], 102, 43);
+				end;
+		end else
+	if (i = 5) then
+		begin
+			A.AIAttackAdd (PlayerNumber[5], true, 0, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, U.KMPoint(0, 0));			
+			if (j = 1) then
+				begin				
+					A.AIDefencePositionRemove (PlayerNumber[5], 121, 34); //add attack variation 2
+					A.AIDefencePositionRemove (PlayerNumber[5], 125, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 129, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 133, 34); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 122, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 127, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 132, 31); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 145, 34);
+					A.AIDefencePositionRemove (PlayerNumber[5], 149, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 153, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 157, 34); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 146, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 151, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 156, 31); 
+				end else
+			if (j = 2) then
+				begin				
+					A.AIDefencePositionRemove (PlayerNumber[5], 121, 34); //add attack variation 2
+					A.AIDefencePositionRemove (PlayerNumber[5], 125, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 129, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 133, 34); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 122, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 127, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 132, 31); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 145, 34);
+					A.AIDefencePositionRemove (PlayerNumber[5], 149, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 153, 34); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 157, 34); 
+					
+					A.AIDefencePositionRemove (PlayerNumber[5], 146, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 151, 31); 
+					A.AIDefencePositionRemove (PlayerNumber[5], 156, 31); 	
+				end;		
+		end;
+end;

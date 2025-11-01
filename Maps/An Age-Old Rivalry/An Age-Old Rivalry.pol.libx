@@ -1,0 +1,34 @@
+﻿0:Często zadawane pytanie - strzał z łuku, strzał w dziesiątkę.
+1:Od wieków trwa wojna między klanami topora i włóczni. Teraz nadszedł czas, aby rozstrzygnąć ją raz na zawsze. Który z nich jest lepszy? Wybierz i poprawdź swoją stronę do zwycięstwa!||Mapa wykorzystuje ImprovedAI Script autorstwa Strangelove, i skrypt BurnBabyBurn (płonące budynki będą nadal otrzymywać obrażenia). Wielkie podziękowania dla Phischlinga i greeny'ego za pomoc w tworzeniu skryptów.||Sygnał = B + kliknięcie lewym przyciskiem myszy.||Uwaga: Jeśli chcesz w pełni zbadać mapę podczas pierwszej rozgrywki, wybierz własną ścieżkę.
+
+2:Spójrz na to! Miejsce jak ze snu! Prawdziwy raj!
+
+3:Świetnie, udało nam się wydobyć trochę towarów z spichlerza wroga!
+4:Fantastycznie, udało nam się przejąć trochę uzbrojenia z koszar wroga!
+5:Tutejsi jeźdzcy najemni są świetnie wyszkoleni i byliby mile widzianym wsparciem dla naszej armii!
+
+6:Przybyli wysłannicy klanów topora i włóczni! Musimy wybrać, do której strony dołączyć, wysyłając im sygnał... lub zignorować ich i podążać własną ścieżką do chwały!
+
+7:Wygląda na to, że wróg zauważył, że szkolimy oddziały w stalowe pancerze i rozpoczyna własny handel żelazem, aby spróbować dorównać naszej sile!
+
+8:Zgładziliśmy przywódcę klanu topora! Nadchodzi ich kres, a klan włóczni odniesie zwycięstwo!
+9:Zgładziliśmy przywódcę klanu włóczni! Nadchodzi ich kres, a klan topora odniesie zwycięstwo!
+
+10:Przywódca klanu topora nie żyje! Już zaraz padną na kolana przed naszą potęgą!
+11:Przywódca klanu włóczni nie żyje! Wkrótce zostaną zrównani z ziemią!
+
+12:Witaj w klanie topora, przyjacielu! Twoje wybory będą wielbione przez samych bogów! A teraz pozbądźmy się tych lansjerów! Nie powinni stanowić zagrożenia - w końcu dysponujemy lepszą bronią i lepszymi ludźmi! Podczas gdy oni są tchórzami, walczący dystans swoimi marnymi kijami. Pozwalanie im żyć jest niedźwiedzią przysługą dla świata. Pora to zmienić!
+13:Witaj w klanie włóczni, przyjacielu! Wygląda na to, że los skierował cię we właściwą stronę! Skierujmy teraz nasze punkty na tych przeklętych toporników na zachodzie i wyraźnie zaznaczmy, że popełnili poważny błąd, nie przyjmując punktu! Jeśli przyjmiesz mój punkt?
+14:Decyzja o nieopowiedzeniu się po żadnej ze stron została podjęta! Teraz nadszedł czas, aby podążyć własną ścieżką przeciwko klanom toporu i włóczni! Pokażmy tym barbarzyńcom siłę zdecydowanie niezdecydowanej dywersyfikacji! 
+
+15:Spójrz! Tam stoi wódź klanu topora! Brać go!
+16:Spójrz! Tam stoi wódź klanu włóczni! Brać go!
+
+100:Gracz 1
+101:Klan Topora
+102:Klan Topora
+103:Klan Topora
+104:Klan Włóczni
+105:Klan Włóczni
+106:Klan Włóczni
+107:Idylliczny Raj

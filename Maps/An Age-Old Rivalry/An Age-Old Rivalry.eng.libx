@@ -1,0 +1,34 @@
+﻿0:Lancering a question, frequently axed.
+1:For aeons, the war has raged between the clans of the axe & lance. Now the time has come to settle this once & for all. Which is the greater? Choose your allegiance!||Map uses ImprovedAI Script by Strangelove, and BurnBabyBurn script (buildings on fire will continue to take damage unless repaired). Many thanks to Phischling & greeny for their help learning scripting.||Signal = B + left click.||Note: If you like to explore the map in full for your first playthrough, choose to forge your own path.
+
+2:Would you look at that! This is what dreams are made of! What an absolute paradise!
+
+3:Excellent, we've managed to salvage some wares from the enemy's storehouse!
+4:Fantastic, we've managed to salvage some weapons & armour from the enemy's barracks!
+5:The mercenary cavalry here are highly trained, and would be a welcome asset to our cause!
+
+6:Emissaries for both the axe & lance clans have arrived! We must choose which side to join by sending them a signal... or ignore them & follow our own path to glory!
+
+7:It seems the enemy is aware that we're training troops clad in iron, and are starting their own iron trade in order to try and match our strength!
+
+8:We have taken down the leader of the axe clan! They will soon fall, and the lances will be victorious!
+9:We have taken down the leader of the lance clan! They will soon fall, and the axes will be victorious!
+
+10:The leader of the axe clan is dead! They will soon fall to our indomitable strength!
+11:The leader of the lance clan is dead! They will soon be completely crushed!
+
+12:Welcome to the axe clan, friend! Your choices are to be revered by the gods themselves! Now let us rid the world of those pesky lancers! They should pose no threat to us - after all, we have the greater weapon & the greater men! Whilst they are sniveling cowards, attempting to keep enemies at bay with their flimsy sticks. It is a disservice to the world to let them live. So let us rectify that!
+13:Welcome to the lance clan, friend! It seems fate has pointed you in the right direction! Now let us point our points at those darned axefighters to the west, and pointedly point out that they made a grave mistake in not taking the point! If you take my point?
+14:The decision to not decide has been decided! Now it is time to forge our own path against both the axe & lance clans! Let us show these heathens the power of decisively indecisive diversification! 
+
+15:Look! There's the leader of the axe clan! Get him!
+16:Look! There's the leader of the lance clan! Get him!
+
+100:Player 1
+101:Team Axe
+102:Team Axe
+103:Team Axe
+104:Team Lance
+105:Team Lance
+106:Team Lance
+107:A Perfect Hamlet

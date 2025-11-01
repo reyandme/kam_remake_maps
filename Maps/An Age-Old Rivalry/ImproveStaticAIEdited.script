@@ -1,0 +1,671 @@
+//-- Improve Static AI --//
+//By Strangelove
+//v0.5.2
+//29.10.2022
+//Developed for r8754
+//Last modified on r14787
+//Requires r14281+ to work
+
+
+// This script tweaks the AI settings of non-autobuild AIs by making them Rebuild destroyed Houses, blocks unfinished wares to the storehouse and maxes out the Ware distribution.
+// Just copy this file into the map folder and type "{$I improvestaticai.script}"
+// Do not use this script without permission from its author!
+
+{$EVENT evtMissionStart:ImproveStaticAIOnMissionStart}
+{$EVENT evtHouseDamaged:ImproveStaticAIOnHouseDamaged}
+{$EVENT evtHouseRepaired:ImproveStaticAIOnHouseRepaired}
+{$EVENT evtHouseDestroyed:ImproveStaticAIOnHouseDestroyed}
+{$EVENT evtTick:ImproveStaticAIOnTick}
+{$EVENT evtTick:ImproveStaticAI2OnTick}
+{$EVENT evtPlayerDefeated:ImproveStaticAIOnPlayerDefeated}
+{$EVENT evtHouseBuilt:ImproveStaticAIOnHouseBuilt}
+
+
+{$DEFINE DEBUG}
+{$UNDEF DEBUG}
+
+{$DEFINE REBUILD} //Enable Rebuilding of AI Houses
+//{$UNDEF REBUILD}
+{$DEFINE SETHUNGER} //Set Hunger Level of AI Players
+//{$UNDEF SETHUNGER}
+{$DEFINE BLOCK} //Block unfinished Wares in Storehouse
+//{$UNDEF BLOCK}
+{$DEFINE REPAIR} //Repair only important Houses
+//{$UNDEF REPAIR}
+{$DEFINE DISTRIBUTION} //Set Ware Distribution to 5
+//{$UNDEF DISTRIBUTION}
+
+
+
+const
+	//Rebuild
+	REBUILD_FREQ = 61; 	//How frequently aDestroyedHouses array will be checked (in Ticks)
+	TRIES = 20;			//Number of attempts for trying to find a new site, before preparing the original one
+	
+	//Repair
+	REPAIR_FREQ = 293;	//How frequently not-yet repaired Houses are marked for repair (in Ticks)
+	
+	
+	
+{$IFDEF REBUILD}
+Type
+	TDestroyedHouse = record
+		aHouse: Integer;
+		iX, iY, iDelay: Integer;
+		iType, iOwner: Integer;
+		iTime: Integer;
+	end;
+
+
+var
+	aDestroyedHouses: array of TDestroyedHouse;
+
+
+
+function GetRebuildDelay(HouseType: Integer): Integer;
+begin
+	//Cant be 0; Destroyed House needs time to be removed from game (in Ticks)
+	case HouseType of 
+		0:	Result := 450; 	//Sawmill
+		1: 	Result := 600;	//Iron Smithy
+		2:	Result := 600;	//Weapon Smithy
+		3: 	Result := 600;	//Coal Mine
+		4:	Result := 600;	//Iron Mine
+		5:  Result := 600;	//Gold Mine
+		6: 	Result := 750;	//Fisherhut
+		7:  Result := 600;	//Bakery
+		8:  Result := 600;	//Farm
+		9:	Result := 450;	//Woodcutter
+		10:	Result := 600;	//Armor Smithy
+		11:	Result := 200; 	//Storehouse
+		12: Result := 750; 	//Stable
+		13:	Result := 150;	//Schoolhouse
+		14: Result := 450;	//Quarry
+		15:	Result := 300; 	//Metallurgist
+		16:	Result := 600; 	//Swinefarm
+		17:	Result := 250;	//Watchtower
+		18: Result := 300;	//Townhall
+		19:	Result := 600; 	//Weapons Workshop
+		20: Result := 600;	//Armor Workshop
+		21: Result := 200;	//Barracks
+		22:	Result := 600; 	//Mill
+		23:	Result := 450; 	//Vehicle Workshop ???
+		24: Result := 600;	//Butcher
+		25:	Result := 900; 	//Tannery
+		26: Result := 300;  //Unused
+		27: Result := 300;	//Inn
+		28: Result := 750;	//Vineyard
+		29: Result := 600; 	//Market
+	end;
+end;
+
+
+function CountInRecords(records: array of TDestroyedHouse; Value: Integer): Integer;
+var
+    i: Integer;
+begin
+    Result := 0;
+    for i := Low(records) to High(records) do 
+        if records[i].aHouse = Value then
+            Inc(Result);
+end;
+
+
+//Save Destroyed Houses
+procedure DestroyedHouseData(aHouseID, j: Integer);
+var
+	HouseType: Integer;
+begin
+	aDestroyedHouses[j].iX := States.HousePositionX(aHouseID);
+	aDestroyedHouses[j].iY := States.HousePositionY(aHouseID);
+	aDestroyedHouses[j].iOwner := States.HouseOwner(aHouseID);
+	HouseType := States.HouseType(aHouseID);
+	aDestroyedHouses[j].iType := HouseType;
+	aDestroyedHouses[j].iDelay := GetRebuildDelay(HouseType);
+	aDestroyedHouses[j].iTime := States.GameTime();
+	aDestroyedHouses[j].aHouse := aHouseID;
+end;
+{$ENDIF}
+
+
+procedure ConnectToClosestHouse(Player, X, Y, HouseType: Integer);
+var
+	iClosestHouse: Integer;
+begin
+	//Find closest House of prefered type
+	iClosestHouse := States.ClosestHouse(Player, X, Y, HouseType);
+	//Use any Housetype if not found
+	if iClosestHouse = -1 then
+		iClosestHouse := States.ClosestHouse(Player, X, Y, -1);
+	//New house plan not connected? Connect to closest house
+	if not States.ConnectedByRoad(X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1) then
+		Actions.PlanConnectRoad(Player, X, Y +1, States.HousePositionX(iClosestHouse), States.HousePositionY(iClosestHouse) +1, false);
+end;
+
+
+function GetNewPositionX(X, t: Integer): Integer;
+var
+	aX: array of Integer;
+begin
+	aX := [-1, 0 , 1, 0, -1, 1, 1, -1, -2, 0, 2, 0, -2, -1, 1, 2, 2, 1, -1, -2];
+	t := Utils.EnsureRangeI(t, 0, High(aX)); //Prevent possible out of Range Errors
+	Result := Utils.EnsureRangeI(X +aX[t], 2, States.MapWidth() -2);
+end;
+
+
+function GetNewPositionY(Y, t: Integer): Integer;
+var
+	aY: array of Integer;
+begin
+	aY := [0, -1, 0, 1, -1, -1, 1, 1, 0, -2, 0, 2, -1, -2, -2, -1, 1, 2, 2, 1];
+	t := Utils.EnsureRangeI(t, 0, High(aY)); //Prevent possible out of Range Errors
+	Result := Utils.EnsureRangeI(Y +aY[t], 3, States.MapHeight() -2);
+end;
+
+
+function PlanAddHouseAndConnect(Player, HouseType: Integer; X, Y: Integer): Boolean;
+var
+	t, X1, Y1: Integer;
+begin
+	Result := true;
+	if not Actions.PlanAddHouse(Player, HouseType, X, Y) then
+	begin
+		while t < TRIES do
+		begin
+			X1 := GetNewPositionX(X, t);
+			Y1 := GetNewPositionY(Y, t);
+			{$IFDEF DEBUG}
+			Actions.Log('Original Coordinates: X: ' +inttostr(X) +', Y: ' +inttostr(Y) + '; New Coordinates: X1: ' +inttostr(X1) + ', Y1: ' +inttostr(Y1) + '; Try: ' +inttostr(t));
+			{$ENDIF}
+			if Actions.PlanAddHouse(Player, HouseType, X1, Y1) then
+			begin
+				{$IFDEF DEBUG}
+				Actions.Log('House plan could not be placed at first try: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X) + ', ' + inttostr(Y) + ');' + ' House plan placed at: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X1) + ', ' + inttostr(Y1) + ');' + ' GameTime: ' + inttostr(States.GameTime()) + ' Tries: ' + inttostr(t));
+				{$ENDIF}
+				ConnectToClosestHouse(Player, X1, Y1, 11); //Closest Storehouse
+				break;
+			end else
+				Inc(t);
+		end;
+		{$IFDEF DEBUG}
+		Actions.Log('House plan could not be placed: Actions.PlanAddHouse(' + inttostr(Player) + ', ' + inttostr(HouseType) + ', ' + inttostr(X) + ', ' + inttostr(Y) + ');');
+		{$ENDIF}
+		Result := false;
+	end else
+		ConnectToClosestHouse(Player, X, Y, 11); //Check and (re)connect even when plan is placed on the same coordinates
+end;
+
+
+procedure PrepareConstructionSite(HouseOwner, HouseType, HousePositionX, HousePositionY: Integer);
+var
+	aOffset: array of Integer;
+	X, Y: Integer;
+begin
+	{$IFDEF DEBUG}
+	Actions.Log('House not removed from array: Prepare original building site!');
+	{$ENDIF}
+	case HouseType of	{[X1, Y1, X2, Y2]}
+		0:	aOffset := [-1, -1, 2, 0]; 	//Sawmill
+		1: 	aOffset := [-2, -1, 1, 0]; 	//Iron Smithy
+		2:	aOffset := [-1, -1, 2, 0]; 	//Weapon Smithy
+		3: 	aOffset := [-1, -1, 1, 0]; 	//Coal Mine
+		4:	aOffset := [-1, 0, 1, 0]; 	//Iron Mine
+		5:  aOffset := [-1, 0, 0, 0]; 	//Gold Mine
+		6: 	aOffset := [0, -1, 2, 0]; 	//Fisherhut
+		7:  aOffset := [-2, -2, 1, 0];	//Bakery
+		8:  aOffset := [-1, -2, 2, 0];	//Farm
+		9:	aOffset := [-2, -1, 0, 0];	//Woodcutter
+		10:	aOffset := [-1, -2, 2, 0];	//Armor Smithy
+		11:	aOffset := [-1, -2, 1, 0]; 	//Storehouse
+		12: aOffset := [-2, -2, 1, 0];	//Stable
+		13:	aOffset := [-1, -2, 1, 0]; 	//Schoolhouse
+		14: aOffset := [-1, -1, 1, 0]; 	//Quarry
+		15:	aOffset := [-1, -2, 1, 0]; 	//Metallurgist
+		16:	aOffset := [-3, -2, 0, 0]; 	//Swinefarm
+		17:	aOffset := [-1, -1, 0, 0]; 	//Watchtower
+		18: aOffset := [-1, -2, 2, 0];	//Townhall
+		19:	aOffset := [-1, -1, 2, 0]; 	//Weapons Workshop
+		20: aOffset := [0, -2, 2, 0];	//Armor Workshop
+		21: aOffset := [-1, -3, 2, 0]; 	//Barracks
+		22:	aOffset := [-1, -1, 1, 0]; 	//Mill
+		23:	aOffset := [-1, -1, 1, 0]; 	//Vehicle Workshop ???
+		24: aOffset := [-2, -2, 0, 0];	//Butcher
+		25:	aOffset := [-1, -1, 1, 0]; 	//Tannery
+		26: exit;						//Unused
+		27: aOffset := [-1, -2, 2, 0];	//Inn
+		28: aOffset := [-2, -1, 0, 0];	//Vineyard
+		29: aOffset := [-3, -2, 0, 0]; 	//Market
+	end;
+
+	for X := HousePositionX +aOffset[0] to HousePositionX +aOffset[2] do
+		for Y := HousePositionY +aOffset[1] to HousePositionY +aOffset[3] do
+		begin
+			{$IFDEF DEBUG}
+			Actions.Log('Checked Tile: ' + inttostr(X) + ', ' + inttostr(Y));
+			{$ENDIF}
+			if (States.IsFieldAt(-1, X, Y) or States.IsWinefieldAt(-1, X, Y)) then
+				Actions.PlanAddRoad(HouseOwner, X, Y);
+		end;
+end;
+
+
+
+function GetRandomHungerLevel(): Integer;
+var
+	UnitMaxHunger: Integer;
+begin
+	UnitMaxHunger := States.UnitMaxHunger();
+	Result := Utils.RandomRangeI(UnitMaxHunger/2, UnitMaxHunger);
+end;
+
+
+//Sets the HungerLevel of AI Players to a random amount
+procedure UnitsRandomHungerSet();
+var
+	aUnits, aGroups: array of Integer;
+	i, p: Integer;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+		begin
+			aUnits := States.PlayerGetAllUnits(p);
+			for i := 0 to High(aUnits) do
+				if States.UnitsGroup(aUnits[i]) = -1 then
+					Actions.UnitHungerSet(aUnits[i], GetRandomHungerLevel());
+			aGroups := States.PlayerGetAllGroups(p);
+			for i := 0 to High(aGroups) do
+				Actions.GroupHungerSet(aGroups[i], GetRandomHungerLevel());	
+		end;
+end;
+
+
+
+procedure BlockWareInStorehouse(Player, WareType: Integer; Block: Boolean); //Block specific Ware in all Storehouses target Player controls
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to High(aHouses) do
+		if States.HouseType(aHouses[h]) = 11 then
+			Actions.HouseWareBlock(aHouses[h], WareType, Block);
+end;
+
+
+procedure ExecuteWareBlock(Player: Integer);
+var
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	aHouses := States.PlayerGetAllHouses(Player);
+	for h := 0 to High(aHouses) do
+		case States.HouseType(aHouses[h]) of
+			0: 	BlockWareInStorehouse(Player, 0, true); //Sawmill: Treetrunk
+			1:	begin //Iron Smithy
+					BlockWareInStorehouse(Player, 3, true); //Iron Ore
+					BlockWareInStorehouse(Player, 5, true); //Coal
+				end;
+			2:  begin //Weapon Smithy
+					BlockWareInStorehouse(Player, 5, true); //Coal
+					BlockWareInStorehouse(Player, 6, true); //Iron
+				end;
+			3: 	; //Coal Mine
+			4:	; //Iron Mine
+			5: 	; //Coal Mine
+			6:	; //Fisherhut
+			7: 	BlockWareInStorehouse(Player, 11, true); //Bakery: Flour
+			8:	; //Farm
+			9:	; //Woodcutter
+			10:	begin //Weapon Smithy
+					BlockWareInStorehouse(Player, 5, true); //Coal
+					BlockWareInStorehouse(Player, 6, true); //Iron
+				end;
+			11: ; //Storehouses
+			12: BlockWareInStorehouse(Player, 9, true); //Stables: Corn
+			13: ; //Schools
+			14: ; //Quarry
+			15: begin //Metallurgists
+					BlockWareInStorehouse(Player, 4, true); //Gold Ore
+					BlockWareInStorehouse(Player, 5, true); //Coal
+				end;
+			16: BlockWareInStorehouse(Player, 9, true); //Swinefarm: Corn
+			17: ; //Watchtower
+			18: ; //Townhall
+			19: ; //BlockWareInStorehouse(Player, 2, true); //Weapons Workshop: Timber
+			20: begin
+					BlockWareInStorehouse(Player, 12, true); //Armory Workshop
+					//BlockWareInStorehouse(Player, 2, true); //Timber
+				end;
+			21: ; //Barracks
+			22: BlockWareInStorehouse(Player, 9, true); //Mill: Corn
+			23: ; //Vehicles Workshop
+			24: BlockWareInStorehouse(Player, 14, true); //Butcher: Pig
+			25: BlockWareInStorehouse(Player, 15, true); //Tannery: Skin
+			26: ; //Unused
+			27: ; //Inn
+			28: ; //Vineyard
+			29: ; //Market
+		end;
+end;
+
+
+//Blocks Wares in AI Storehouses depending on its structures
+procedure WareBlock();
+var
+	p: Integer;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+			if not States.AIAutoBuild(p) then //Igrone if AI has AutoBuild enabled
+				ExecuteWareBlock(p);
+end;
+
+
+
+//If AI is set to Autorepair: Only repair important Houses
+procedure HouseRepair();
+var
+	p, h: Integer;
+	aHouses: array of Integer;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+			if not States.AIAutoBuild(p) then //Igrone if AI has AutoBuild enabled
+				if States.AIAutoRepair(p) then  //Switch from RepairAlways to RepairManual
+				begin
+					Actions.AIRepairMode(p, rmRepairManual);
+					aHouses := States.PlayerGetAllHouses(p);
+					for h := 0 to High(aHouses) do
+						Actions.HouseRepairEnable(aHouses[h], false);
+				end;
+end;
+
+
+function GetRepairThresold(HouseType: Integer): Single;
+begin
+	case HouseType of
+		0:	Result := 0.75; //Sawmill
+		1: 	Result := 0.5; 	//Iron Smithy
+		2:	Result := 0.5; 	//Weapon Smithy
+		3: 	Result := 0.5; 	//Coal Mine
+		4:	Result := 0.5;	//Iron Mine
+		5:  Result := 0.5;	//Gold Mine
+		6: 	Result := 0.5;	//Fisherhut
+		7:  Result := 0.5;	//Bakery
+		8:  Result := 0.5;	//Farm
+		9:	Result := 0.75;	//Woodcutter
+		10:	Result := 0.5;	//Armor Smithy
+		11:	Result := 1;	//Storehouse
+		12: Result := 0.5;	//Stable
+		13:	Result := 1; 	//Schoolhouse
+		14: Result := 0.75;	//Quarry
+		15:	Result := 0.75; //Metallurgist
+		16:	Result := 0.5; 	//Swinefarm
+		17:	Result := 1; 	//Watchtower
+		18: Result := 1;	//Townhall
+		19:	Result := 0.5; 	//Weapons Workshop
+		20: Result := 0.5;	//Armor Workshop
+		21: Result := 1; 	//Barracks
+		22:	Result := 0.5; 	//Mill
+		23:	Result := 0.5; 	//Vehicle Workshop ???
+		24: Result := 0.5;	//Butcher
+		25:	Result := 0.5; 	//Tannery
+		26: Result := 0.5;  //Unused
+		27: Result := 1;	//Inn
+		28: Result := 0.5;	//Vineyard
+		29: Result := 0.5; 	//Market
+	end;
+end;
+
+
+function AllLabourersIdle(Player: Integer): Boolean;
+var
+	u, IdleLabourer: Integer;
+	aUnits: array of Integer;
+begin
+	Result := false;
+	aUnits := States.PlayerGetAllUnits(Player);
+	for u := 0 to High(aUnits) do
+		if States.UnitType(aUnits[u]) = 9 then
+			if States.UnitIdle(aUnits[u]) then
+				Inc(IdleLabourer);
+	if IdleLabourer = States.StatUnitTypeCount(Player, 9) then
+		Result := true;
+end;
+
+
+
+//Change default Ware Distribution for AI
+procedure WareDistribution();
+var
+	p: Integer;
+begin
+	for p := 0 to States.StatPlayerCount() -1 do
+		if States.PlayerIsAI(p) then
+			if not States.AIAutoBuild(p) then //Igrone if AI has AutoBuild enabled
+			begin
+				//Adjust Ware Distribution
+				//Iron
+				Actions.PlayerWareDistribution(p, 6, 2, 5); //Weapon Smithy
+				Actions.PlayerWareDistribution(p, 6, 10, 5); //Armor smithy
+				//Coal
+				Actions.PlayerWareDistribution(p, 5, 1, 5);	//Iron smity
+				Actions.PlayerWareDistribution(p, 5, 15, 5); //Metallurgist
+				Actions.PlayerWareDistribution(p, 5, 2, 5);	//Weapon Smithy
+				Actions.PlayerWareDistribution(p, 5, 10, 5); //Armor Smithy
+				//Timber
+				Actions.PlayerWareDistribution(p, 2, 20, 5); //Armory workshop
+				Actions.PlayerWareDistribution(p, 2, 19, 5); //Weapon Workshop
+				//Corn
+				Actions.PlayerWareDistribution(p, 9, 22, 5); //Mill
+				Actions.PlayerWareDistribution(p, 9, 16, 5); //Swine farm
+				Actions.PlayerWareDistribution(p, 9, 12, 5); //Stables
+			end;
+end;
+
+
+
+procedure ImproveStaticAIOnMissionStart();
+{$IFDEF REBUILD}
+var
+	j: Integer;
+	{$ENDIF}
+begin
+	{$IFDEF BLOCK}
+	WareBlock();
+	{$ENDIF}
+	{$IFDEF REPAIR}
+	HouseRepair();
+	{$ENDIF}
+	{$IFDEF DISTRIBUTION}
+	WareDistribution();
+	{$ENDIF}
+	{$IFDEF SETHUNGER}
+	UnitsRandomHungerSet();
+	{$ENDIF}
+	{$IFDEF REBUILD}
+	//Scale Array dynamicly
+	SetLength(aDestroyedHouses, States.StatPlayerCount());
+	//Assign values to arrays
+	for j := 0 to High(aDestroyedHouses) do
+		aDestroyedHouses[j].aHouse := -1;
+	{$ENDIF}
+end;
+
+
+{$IFDEF BLOCK}
+//Block Wares in newly built Storehouses
+procedure ImproveStaticAIOnHouseBuilt(aHouse: Integer);
+var
+	HouseOwner: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+	if States.PlayerIsAI(HouseOwner) then
+		if not States.AIAutoBuild(HouseOwner) then
+			if States.HouseType(aHouse) = 11 then
+				ExecuteWareBlock(HouseOwner);
+end;
+{$ENDIF}
+
+
+{$IFDEF REPAIR}
+procedure ImproveStaticAIOnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+	HouseOwner, HouseType: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouse);
+	if States.AIRepairMode(HouseOwner) = rmRepairManual then
+	begin
+		HouseType := States.HouseType(aHouse);
+		if States.HouseDamage(aHouse) > (Round(States.HouseTypeMaxHealth(HouseType) *(1 -GetRepairThresold(HouseType)))) then
+			Actions.HouseRepairEnable(aHouse, true);
+	end;
+end;
+
+
+//Disable once repairs are completed
+procedure ImproveStaticAIOnHouseRepaired(aHouse, aRepairAmount, aDamage: Integer);
+begin
+	if States.AIRepairMode(States.HouseOwner(aHouse)) = rmRepairManual then
+		if States.HouseDamage(aHouse) = 0 then
+			Actions.HouseRepairEnable(aHouse, false);
+end;
+
+
+//Check for buildings that have not been repaired yet or have been damaged above thresold
+procedure ImproveStaticAI2OnTick();
+var
+	p, h: Integer;
+	aHouses: array of Integer;
+begin
+	if States.GameTime() mod REPAIR_FREQ = 0 then
+		for p := 0 to States.StatPlayerCount() -1 do
+			if States.AIRepairMode(p) = rmRepairManual then
+				if AllLabourersIdle(p) then
+				begin
+					aHouses := States.PlayerGetAllHouses(p);
+					for h := 0 to High(aHouses) do
+						if  States.HouseDamage(aHouses[h]) > 0 then
+							Actions.HouseRepairEnable(aHouses[h], true);
+				end;
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAIOnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAIOnHouseRepaired(aHouse, aRepairAmount, aDamage: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAI2OnTick();
+begin
+
+end;
+{$ENDIF}
+
+
+
+{$IFDEF REBUILD}
+procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
+var
+	HouseOwner, j: Integer;
+begin
+	HouseOwner := States.HouseOwner(aHouseID);
+	if States.PlayerIsAI(HouseOwner) then
+		if not States.AIAutoBuild(HouseOwner) then
+			if (aDestroyerIndex <> HouseOwner) then //Ignore if Building was destroyed by original Owner or script //(aDestroyerIndex <> -1) and  (taken destroyed by script out for Groggy Campaign)
+			begin
+				//Dont rebuild if house cant reach resources
+				if not States.HouseCanReachResources(aHouseID) then
+					exit;
+				//Check if there is free space in array
+				if CountInRecords(aDestroyedHouses, -1) = 0 then
+				begin
+					SetLength(aDestroyedHouses, Length(aDestroyedHouses) +1); //Expand array
+					DestroyedHouseData(aHouseID, High(aDestroyedHouses)); //Save Data into new empty slot
+				end else
+				begin
+					for j := 0 to High(aDestroyedHouses) do
+						if (aDestroyedHouses[j].aHouse = -1) then //Save House Data to next empty position in array
+						begin
+							DestroyedHouseData(aHouseID, j);
+							exit;
+						end;
+				end;
+			end;
+end;
+
+
+//Make AI rebuild destroyed Houses
+procedure ImproveStaticAIOnTick();
+var 
+	GameTime: Cardinal;
+	j: Integer;
+begin
+	GameTime := States.GameTime();
+	if GameTime mod REBUILD_FREQ = 0 then
+		for j := 0 to High(aDestroyedHouses) do
+			if (aDestroyedHouses[j].aHouse <> -1) then
+				if ((aDestroyedHouses[j].iTime +aDestroyedHouses[j].iDelay) <= GameTime) then
+				begin
+					if PlanAddHouseAndConnect(aDestroyedHouses[j].iOwner, aDestroyedHouses[j].iType, aDestroyedHouses[j].iX, aDestroyedHouses[j].iY) then
+					begin
+						aDestroyedHouses[j].aHouse := -1; //Only remove from array if successfully placed
+					end else
+					begin
+						aDestroyedHouses[j].iTime := GameTime; //Update Time
+						PrepareConstructionSite(aDestroyedHouses[j].iOwner, aDestroyedHouses[j].iType, aDestroyedHouses[j].iX, aDestroyedHouses[j].iY); //Prepare original construction site
+					end;
+					break; //Better performance
+				end;
+end;
+
+
+//Remove stored buildings of defeated AIPlayer from Array to free up space
+procedure ImproveStaticAIOnPlayerDefeated(aIndex: Integer);
+var
+	j: Integer;
+begin
+	if States.PlayerIsAI(aIndex) then
+		for j := 0 to High(aDestroyedHouses) do
+			if aDestroyedHouses[j].iOwner = aIndex then
+				aDestroyedHouses[j].aHouse := -1;
+end;
+
+
+{$ELSE}
+procedure ImproveStaticAIOnHouseDestroyed(aHouseID, aDestroyerIndex: Integer);
+begin
+
+end;
+
+procedure ImproveStaticAIOnTick();
+begin
+
+end;
+
+procedure ImproveStaticAIOnPlayerDefeated(aIndex: Integer);
+begin
+
+end;
+{$ENDIF}
+
+
+{Changelog v0.5.1 01.04.2022}
+{- Instead of fixed array sice for destroyed houses, array will now increase if necessary
+- HouseData will not be removed from array if it cant be placed
+- Evasion of obstacles has been improved from using randomly generated coordinates to predefined ones
+- If Evasion is not enough, site will be prepared: Build roads over winefields and farms
+- Default time between arrays getting checked reduced
+- Rebuild Delay changes according to housetype
+- Buildings that cant reach resources will not be saved and rebuild 
+- Repair is now handled by script instead: Repair is now dependend on house type (thresold and time before it repair starts)}
+
+{Changelog v0.5.2 29.10.2022}
+{- Change variable types Byte, Word, Smallint and Cardinal to Integer
+- Cleanups}
