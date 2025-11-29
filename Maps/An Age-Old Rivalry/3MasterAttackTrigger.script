@@ -1,0 +1,54 @@
+procedure MasterAttackTrigger(); //Attacks, Townhall Reset, BurnBabyBurn
+var
+	i, j: Integer; //i = player, j = attack variation
+begin	
+	for i:= 1 to PlayerAndAICount-2 do
+		begin
+			with PlayersAndAI[i] do
+			if (i <> 3) and (i <> 6) then //add this in if we want to skip certain AIs
+				begin							
+					if (Defeated = false) and (S.GameTime > InitialAttackTime[1]) then
+						begin					
+							for j:= 1 to 2 do
+								begin
+									//Preparing Attacks (Repeated)
+									if (PreparingAttack[j] = false) and (((S.GameTime - AttackSentTime) mod PreparationTimeCheck = 0) or (AttackOn = false)) then
+										begin	
+											if (S.StatArmyCount(i) < TotalTroopCount[0]+1) then
+												begin
+													if (AttackSent[2] = true) or (AttackOn = false) then
+														begin
+															PreparingEnemyAttacks(i, 1);
+															PreparingAttack[1]:= true;
+															AttackSent[2]:= false;
+															AttackPreparationTime:= U.RoundTo(S.GameTime, 100);															
+														end else	
+													if (AttackSent[1] = true) or (AttackOn = false) then
+														begin																																				
+															PreparingEnemyAttacks(i, 2);																
+															PreparingAttack[2]:= true;
+															AttackSent[1]:= false;
+															AttackPreparationTime:= U.RoundTo(S.GameTime, 100);	
+														end;																		
+													if (AttackOn = false) then
+														begin
+															AttackOn:= true
+														end;
+												end;
+										end;
+									//Attack! (Repeated)
+									if (S.GameTime mod 1200 = 0) then
+										begin
+											if (PreparingAttack[j] = true) and ((S.StatArmyCount(i) > TotalTroopCount[j]) or ((S.GameTime - AttackPreparationTime) > AttackAnywayTime[j])) then
+												begin
+													SendingEnemyAttacks(i, j);														
+													PreparingAttack[j]:= false;														
+													AttackSent[j]:= true;
+													AttackSentTime:= U.RoundTo(S.GameTime, 100);																								
+												end;
+										end;
+								end;						
+						end;
+				end;
+		end;
+end;

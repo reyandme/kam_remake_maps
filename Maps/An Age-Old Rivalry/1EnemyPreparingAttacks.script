@@ -1,0 +1,198 @@
+//AV1:
+//P2: 36 melee, 24 archers, 8 mounted
+//P5: 45 lances, 24 archers
+
+//P3: 54 axefighters, 32 archers
+//P6: 54 lances, 32 archers
+
+//AV2:
+//P2: 36 melee, 24 archers, 8 mounted
+//P5: 45 lances, 24 archers
+
+//P3: 88 mounted
+//P6: 54 lances, 32 archers
+
+procedure PreparingEnemyAttacks(i, j: Integer); //i = player no.-1, j = variation; variation 1 = melee etc, variation 2 = mounted
+begin
+	if (i = 1) then
+		begin
+			case U.RandomRangeI(0, 3) of
+				0: begin
+						A.AIStartPosition(PlayerNumber[1],104,16);
+					end;
+				1: begin
+						A.AIStartPosition(PlayerNumber[1],104,35);
+					end;
+				2: begin
+						A.AIStartPosition(PlayerNumber[1],104,57);
+					end;
+				3: begin
+						A.AIStartPosition(PlayerNumber[1],104,72);
+					end;
+			end;
+			A.AIAttackRemoveAll(1);			
+			if (j = 1) then				
+				begin
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 40, 2, 0, 15, 0); //add attack variation 1
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 44, 2, 0, 15, 0);		
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 48, 2, 0, 15, 0);	
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 52, 2, 0, 15, 0);
+
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 41, 2, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 46, 2, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 52, 2, 2, 15, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[1], 67, 44, 2, 3, 15, 0);
+				end else
+			if (j = 2) then
+				begin
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 40, 2, 0, 15, 0); //add attack variation 2
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 44, 2, 0, 15, 0);		
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 48, 2, 0, 15, 0);	
+					A.AIDefencePositionAdd (PlayerNumber[1], 74, 52, 2, 0, 15, 0);
+
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 41, 2, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 46, 2, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[1], 70, 52, 2, 2, 15, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[1], 67, 44, 2, 3, 15, 0);				
+				end;	
+		end else
+	if (i = 2) then
+		begin
+			case U.RandomRangeI(0, 1) of
+				0: begin
+						A.AIStartPosition(PlayerNumber[2],60,101);
+					end;
+				1: begin
+						A.AIStartPosition(PlayerNumber[2],39,124);
+					end;
+			end;
+			A.AIAttackRemoveAll(2);
+			if (j = 1) then				
+				begin				
+					A.AIDefencePositionAdd (PlayerNumber[2], 38, 39, 4, 0, 20, 0); //add attack variation 1
+					A.AIDefencePositionAdd (PlayerNumber[2], 43, 39, 4, 0, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 51, 32, 4, 0, 22, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[2], 4, 48, 4, 0, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 4, 44, 4, 0, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 11, 43, 4, 0, 20, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[2], 37, 35, 4, 2, 22, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 43, 35, 4, 2, 22, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 2, 40, 4, 2, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 15, 36, 4, 2, 20, 0);	
+				end else
+			if (j = 2) then
+				begin	
+					A.AIDefencePositionAdd (PlayerNumber[2], 22, 7, 4, 3, 20, 0); //add attack variation 2	
+					A.AIDefencePositionAdd (PlayerNumber[2], 42, 25, 4, 3, 20, 0);					 			
+					A.AIDefencePositionAdd (PlayerNumber[2], 38, 39, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 43, 39, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 38, 36, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 43, 36, 4, 3, 20, 0); 								
+					A.AIDefencePositionAdd (PlayerNumber[2], 51, 34, 4, 3, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 51, 31, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 3, 48, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 3, 45, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 3, 42, 4, 3, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[2], 11, 42, 4, 3, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[2], 15, 36, 4, 3, 20, 0);											
+				end;	
+		end else
+	if (i = 4) then
+		begin
+			case U.RandomRangeI(0, 3) of
+				0: begin
+						A.AIStartPosition(PlayerNumber[4],67,16);
+					end;
+				1: begin
+						A.AIStartPosition(PlayerNumber[4],67,35);
+					end;
+				2: begin
+						A.AIStartPosition(PlayerNumber[4],67,57);
+					end;
+				3: begin
+						A.AIStartPosition(PlayerNumber[4],67,72);
+					end;
+			end;
+			A.AIAttackRemoveAll(4);	
+			if (j = 1) then
+				begin
+					A.AIDefencePositionAdd (PlayerNumber[4], 89, 46, 6, 1, 15, 0); //add attack variation 1
+					A.AIDefencePositionAdd (PlayerNumber[4], 89, 40, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 92, 43, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 95, 46, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 95, 40, 6, 1, 15, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[4], 99, 45, 6, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 99, 40, 6, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 102, 43, 6, 2, 15, 0);
+				end else
+			if (j = 2) then
+				begin
+					A.AIDefencePositionAdd (PlayerNumber[4], 89, 46, 6, 1, 15, 0); //add attack variation 2
+					A.AIDefencePositionAdd (PlayerNumber[4], 89, 40, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 92, 43, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 95, 46, 6, 1, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 95, 40, 6, 1, 15, 0);
+					
+					A.AIDefencePositionAdd (PlayerNumber[4], 99, 45, 6, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 99, 40, 6, 2, 15, 0);
+					A.AIDefencePositionAdd (PlayerNumber[4], 102, 43, 6, 2, 15, 0);
+				end;	
+		end else
+	if (i = 5) then
+		begin
+			A.AIAttackRemoveAll(5);
+			case U.RandomRangeI(0, 1) of
+				0: begin
+						A.AIStartPosition(PlayerNumber[5],134,113);
+					end;
+				1: begin
+						A.AIStartPosition(PlayerNumber[5],98,114);
+					end;
+			end;
+			if (j = 1) then
+				begin				
+					A.AIDefencePositionAdd (PlayerNumber[5], 121, 34, 4, 1, 20, 0); //add attack variation 2
+					A.AIDefencePositionAdd (PlayerNumber[5], 125, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 129, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 133, 34, 4, 1, 20, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 122, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 127, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 132, 31, 4, 2, 23, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 145, 34, 4, 1, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[5], 149, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 153, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 157, 34, 4, 1, 20, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 146, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 151, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 156, 31, 4, 2, 23, 0); 
+				end else
+			if (j = 2) then
+				begin					
+					A.AIDefencePositionAdd (PlayerNumber[5], 121, 34, 4, 1, 20, 0); //add attack variation 2
+					A.AIDefencePositionAdd (PlayerNumber[5], 125, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 129, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 133, 34, 4, 1, 20, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 122, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 127, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 132, 31, 4, 2, 23, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 145, 34, 4, 1, 20, 0);
+					A.AIDefencePositionAdd (PlayerNumber[5], 149, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 153, 34, 4, 1, 20, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 157, 34, 4, 1, 20, 0); 
+					
+					A.AIDefencePositionAdd (PlayerNumber[5], 146, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 151, 31, 4, 2, 23, 0); 
+					A.AIDefencePositionAdd (PlayerNumber[5], 156, 31, 4, 2, 23, 0); 
+				end;	
+		end;
+end;

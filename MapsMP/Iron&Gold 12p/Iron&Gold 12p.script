@@ -1,9 +1,9 @@
-//script by Ben modified by sado; Thunder version where School unlock only quarry immediately.
+//script by Ben modified by sado; Thunder version where School unlocks only quarry immediately.
 
 procedure OnMissionStart;
 var  P: Integer;
 begin
-  for P := 0 to 9 do
+  for P := 0 to 11 do
     if States.PlayerEnabled(P) then
     begin
         Actions.HouseAllow(P, 27, False);  //inn

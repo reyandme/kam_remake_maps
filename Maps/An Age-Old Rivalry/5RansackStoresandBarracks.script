@@ -1,0 +1,83 @@
+{$EVENT evtHouseDestroyed:Ransack}
+
+var
+AntiMessageRepeat99, AntiMessageRepeat100: Boolean;
+
+BarracksDestroyed, StorehousesDestroyed: Integer;
+
+procedure Ransack(aHouseID: Integer; aDestroyerIndex: Integer);
+begin //Ransack Storehouses & Barracks (Added Wares)
+	if (aDestroyerIndex = 0) then
+		begin //give wares to players 1 & 2  when destroying an enemy storehouse or barracks
+			if (S.HouseTypeEx(aHouseID) = htStore) then
+				begin
+					if (S.HouseOwner(aHouseID) <> 0) then
+						begin
+							if (AntiMessageRepeat99 = false) then
+								begin
+									A.ShowMsg(-1, '<$3>'); //enemy storehouse ransacked message
+									AntiMessageRepeat99:= true
+								end;
+							if (StorehousesDestroyed < 4) then //first 3 storehouses
+								begin
+									StorehousesDestroyed:= StorehousesDestroyed + 1
+									A.GiveWaresEx(0, wtTimber, S.KaMRandomI(15));
+									A.GiveWaresEx(0, wtStone, S.KaMRandomI(15));
+									A.GiveWaresEx(0, wtGold, 10);
+									A.GiveWaresEx(0, wtGold, S.KaMRandomI(12));
+										
+									A.GiveWaresEx(0, wtBread, S.KaMRandomI(12));																
+									A.GiveWaresEx(0, wtSausage, S.KaMRandomI(10));																		
+									A.GiveWaresEx(0, wtFish, S.KaMRandomI(12));
+									A.GiveWaresEx(0, wtWine, S.KaMRandomI(12));								
+									
+									A.GiveWaresEx(0, wtPig, S.KaMRandomI(10));
+									A.GiveWaresEx(0, wtSkin, S.KaMRandomI(10));	
+									A.GiveWaresEx(0, wtFlour, S.KaMRandomI(10));									
+									A.GiveWaresEx(0, wtLeather, S.KaMRandomI(10));										
+								end else
+									A.GiveWaresEx(0, wtTimber, S.KaMRandomI(8));
+									A.GiveWaresEx(0, wtStone, S.KaMRandomI(8));
+									A.GiveWaresEx(0, wtGold, 5);
+									A.GiveWaresEx(0, wtGold, S.KaMRandomI(5));
+																	
+									A.GiveWaresEx(0, wtBread, S.KaMRandomI(8));																								
+									A.GiveWaresEx(0, wtSausage, S.KaMRandomI(8));
+									A.GiveWaresEx(0, wtFish, S.KaMRandomI(8));
+									
+									A.GiveWaresEx(0, wtPig, S.KaMRandomI(5));
+									A.GiveWaresEx(0, wtSkin, S.KaMRandomI(5));	
+									A.GiveWaresEx(0, wtFlour, S.KaMRandomI(5));
+									A.GiveWaresEx(0, wtLeather, S.KaMRandomI(5));		
+						end;			
+				end else
+					if (S.HouseTypeEx(aHouseID) = htBarracks) then
+						begin
+							if (S.HouseOwner(aHouseID) <> 0) then
+								begin
+									if (AntiMessageRepeat100 = false) then
+										begin
+											A.ShowMsg(-1, '<$4>'); //enemy barracks ransacked message
+											AntiMessageRepeat100:= true
+										end;
+									if (S.HouseWareAmount(aHouseID, wtLeatherArmor) > 9) then
+										begin
+											if (BarracksDestroyed < 4) then
+												begin
+													BarracksDestroyed:= BarracksDestroyed +1;
+													A.GiveWaresEx(0, wtAxe, S.KaMRandomI(12));
+													A.GiveWaresEx(0, wtBow, S.KaMRandomI(12));
+													A.GiveWaresEx(0, wtLeatherArmor, S.KaMRandomI(12));
+													A.GiveWaresEx(0, wtWoodenShield, S.KaMRandomI(12));				
+													A.GiveWaresEx(0, wtHorse, S.KaMRandomI(8));																										
+												end else
+													A.GiveWaresEx(0, wtAxe, S.KaMRandomI(8));
+													A.GiveWaresEx(0, wtBow, S.KaMRandomI(8));										
+													A.GiveWaresEx(0, wtLeatherArmor, S.KaMRandomI(10));
+													A.GiveWaresEx(0, wtWoodenShield, S.KaMRandomI(8));			
+													A.GiveWaresEx(0, wtHorse, S.KaMRandomI(5));
+										end;
+								end;				
+						end;
+		end;
+end;

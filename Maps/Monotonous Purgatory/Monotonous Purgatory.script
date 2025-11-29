@@ -1,0 +1,518 @@
+{$I constants.script}  // By Greeny
+{$I improvestaticai.script}  /// By Strangelove
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I DamageCloseBuildings.script} /// By Ritter des Todes
+{$I Attacks.script}
+
+var
+DifficultySetting: TKMMissionDifficulty;
+Loot: array[0..5] of Boolean;
+Epost, TimerDifficulty, Countdown, Stage: Integer;
+Timer, FinalAttack, MsgPost: Boolean;
+
+procedure OnMissionStart();	
+begin
+DifficultySetting := S.MissionDifficulty();
+DCB_Mode := DCB_ALL;
+AttackToken:= (S.KaMRandomI(4));
+Timer:= false;
+Epost:= 3600000000000;
+TimerDifficulty:= 3600000000000;
+Stage:= 3600000000000;
+Countdown:= 1;
+FinalAttack:= false;
+MsgPost:= false;
+A.AIRecruitDelay(1, 15500);
+A.AIRecruitDelay(2, 16000);
+A.AIRecruitDelay(3, 16500);
+    case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 30);
+		A.GiveWares(0, WARE_STONES, 20);
+		A.GiveWares(0, WARE_TIMBER, 10);
+		A.GiveWares(0, WARE_FISH, 10);
+		A.GiveWares(0, WARE_LOAVES, 10);
+		A.AIEquipRate(1, 0, 700);
+		A.AIEquipRate(2, 0, 700);
+		A.AIEquipRate(3, 0, 700);
+		A.AIEquipRate(5, 0, 500);
+		A.AIEquipRate(5, 1, 500);
+		///Clock
+		TimerDifficulty:= 18000;
+		end;
+		
+		mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 20);
+		A.GiveWares(0, WARE_STONES, 10);
+		A.GiveWares(0, WARE_TIMBER, 5);
+		A.GiveWares(0, WARE_LOAVES, 10);
+		A.AIEquipRate(1, 0, 500);
+		A.AIEquipRate(2, 0, 500);
+		A.AIEquipRate(3, 0, 500);
+		A.AIEquipRate(5, 0, 350);
+		A.AIEquipRate(5, 1, 350);
+		///Clock
+		TimerDifficulty:= 15000;
+		end;
+		
+		mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 15);
+		A.GiveWares(0, WARE_TIMBER, 5);
+		A.AIEquipRate(1, 0, 300);
+		A.AIEquipRate(2, 0, 300);
+		A.AIEquipRate(3, 0, 300);
+		A.AIEquipRate(5, 0, 200);
+		A.AIEquipRate(5, 1, 200);
+		///Clock
+		TimerDifficulty:= 12000;
+		end;
+    end;
+end;
+
+procedure OnTick();
+begin
+if S.GameTime = 1500 then begin
+	A.ShowMsg(0,'<$1>');
+    end;
+	
+if S.GameTime = 6000 then begin
+	A.ShowMsg(0,'<$2>');
+    end;
+	
+if S.GameTime = 9000 then begin
+	A.ShowMsg(0,'<$3>');
+    end;
+	
+if S.GameTime = 51500 then begin
+	A.ShowMsg(0,'<$6>');
+	A.PlanAddHouse(5, HOUSE_STOREHOUSE, 134, 133);
+	A.GiveRoad(5, 133, 135);
+	A.GiveRoad(5, 134, 135);
+	A.GiveRoad(5, 135, 135);
+	A.GiveRoad(5, 133, 134);
+	A.GiveRoad(5, 134, 134);
+	A.GiveRoad(5, 135, 134);
+	A.GiveUnit(5, UNIT_LABORER, 136, 136, 0);
+	A.GiveUnit(5, UNIT_LABORER, 136, 137, 0);
+	A.GiveUnit(5, UNIT_LABORER, 136, 138, 0);
+	A.GiveUnit(5, UNIT_LABORER, 136, 139, 0);
+	A.GiveUnit(5, UNIT_LABORER, 137, 136, 0);
+	A.GiveUnit(5, UNIT_LABORER, 137, 137, 0);
+	A.GiveUnit(5, UNIT_LABORER, 137, 138, 0);
+	A.GiveUnit(5, UNIT_LABORER, 137, 139, 0);
+	A.GiveUnit(5, UNIT_SERF, 138, 136, 0);
+	A.GiveUnit(5, UNIT_SERF, 138, 137, 0);
+	A.GiveUnit(5, UNIT_SERF, 138, 138, 0);
+	A.GiveUnit(5, UNIT_SERF, 138, 139, 0);
+	A.GiveUnit(5, UNIT_SERF, 139, 136, 0);
+	A.GiveUnit(5, UNIT_SERF, 139, 137, 0);
+	A.GiveUnit(5, UNIT_SERF, 139, 138, 0);
+	A.GiveUnit(5, UNIT_SERF, 139, 139, 0);
+	A.GiveGroup(5, UNIT_CROSSBOWMAN, 138, 134, DIRECTION_W, 6, 3);
+	A.GiveGroup(5, UNIT_CROSSBOWMAN, 138, 131, DIRECTION_W, 6, 3);
+	A.GiveGroup(5, UNIT_CROSSBOWMAN, 138, 128, DIRECTION_W, 6, 3);
+	A.GiveGroup(5, UNIT_PIKEMAN, 128, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(5, UNIT_PIKEMAN, 131, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(5, UNIT_PIKEMAN, 134, 138, DIRECTION_N, 6, 3);
+    end;
+
+if S.GameTime = 61300 then begin
+	A.ShowMsg(0,'<$3>');
+	Timer:= true;
+    end;
+
+If Timer then
+	begin
+		countdown := 61300 + TimerDifficulty - S.GameTime;
+		if countdown > 0 then
+		begin
+			A.OverlayTextSet(-1,'<$8>: '+ U.TimeToString(countdown));
+		end else
+		begin
+			A.OverlayTextSet(-1,'');
+			Timer := false;
+		end;
+	end;
+
+if (Countdown = 0) and (FinalAttack = false) then
+    begin
+	A.ShowMsg(0, '<$9>');
+	FinalAttack:= true;
+	Stage:= S.GameTime;
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 76, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 72, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 49, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 45, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 138, 2, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 138, 6, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 138, 10, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 138, 125, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 138, 130, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 138, 134, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 138, 18, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 138, 138, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 138, 113, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 36, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 40, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 48, 138, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_KNIGHT, 44, 138, DIRECTION_E, 6, 3);
+    end;
+	
+If (S.GameTime = (Stage + 450)) and (FinalAttack = true) then
+    begin
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 2, 49, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 2, 71, DIRECTION_E, 6, 3);
+    A.GiveGroup(4, UNIT_PIKEMAN, 2, 67, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 2, 53, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 2, 57, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 37, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 41, 138, DIRECTION_N, 6, 3);
+    A.GiveGroup(4, UNIT_PIKEMAN, 33, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 53, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 124, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 137, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 45, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 49, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 127, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 131, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 130, 2, DIRECTION_S, 6, 3);
+    A.GiveGroup(4, UNIT_PIKEMAN, 118, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_PIKEMAN, 127, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 121, 2, DIRECTION_S, 6, 3);
+	end;
+	
+If (S.GameTime = (Stage + 900)) and (FinalAttack = true) then
+    begin
+    A.GiveGroup(4, UNIT_MILITIA, 138, 118, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_AXE_FIGHTER, 138, 122, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 138, 130, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_SWORD_FIGHTER, 138, 114, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 118, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 122, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_AXE_FIGHTER, 134, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_AXE_FIGHTER, 138, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 64, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 68, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 72, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SWORD_FIGHTER, 2, 60, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SWORD_FIGHTER, 2, 55, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 53, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 57, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BARBARIAN, 41, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_AXE_FIGHTER, 37, 138, DIRECTION_N, 6, 3);
+	end;
+	
+If (S.GameTime > (Stage + 1500)) and (FinalAttack = true) then
+    if (S.StatArmyCount(4) = 0) then
+    begin
+    A.PlayerWin([0], false);
+	end;		
+	
+If S.GameTime = (Epost + 50) then
+    begin
+    A.HouseAddBuildingMaterials(S.HouseAt(134, 133));
+	end;
+	
+If S.GameTime = (Epost + 750) then
+    begin
+    A.GiveWares(5, WARE_GOLD, 999);
+	A.GiveWares(5, WARE_STONES, 3999);
+	A.GiveWares(5, WARE_TIMBER, 1999);
+	A.GiveWares(5, WARE_FISH, 9999);
+	A.GiveWares(5, WARE_LOAVES, 9999);
+	A.GiveWares(5, WARE_WINE, 9999);
+	A.GiveWares(5, WARE_SAUSAGES, 9999);
+	A.GiveWares(5, WARE_LEATHER, 999);
+	A.GiveWares(5, WARE_HAND_AXES, 15);
+	A.GiveWares(5, WARE_IRON_ARMOR, 10);
+	A.GiveWares(5, WARE_PIKES, 10);
+	A.PlanAddHouse(5, HOUSE_SCHOOL, 126, 129);
+	A.PlanAddHouse(5, HOUSE_INN, 131, 128);
+	A.PlanAddRoad(5, 132, 134);
+	A.PlanAddRoad(5, 132, 133);
+	A.PlanAddRoad(5, 132, 132);
+	A.PlanAddRoad(5, 131, 132);
+	A.PlanAddRoad(5, 131, 131);
+	A.PlanAddRoad(5, 131, 130);
+	A.PlanAddRoad(5, 131, 129);
+	A.PlanAddRoad(5, 130, 130);
+	A.PlanAddRoad(5, 130, 129);
+	A.PlanAddRoad(5, 129, 129);
+	A.PlanAddRoad(5, 128, 129);
+	A.PlanAddRoad(5, 126, 130);
+	A.PlanAddRoad(5, 127, 130);
+	A.PlanAddRoad(5, 128, 130);
+	end;
+
+If S.GameTime = (Epost + 2850) then
+    begin
+	A.PlanAddHouse(5, HOUSE_BARRACKS, 133, 123);
+	A.PlanAddHouse(5, HOUSE_WATCHTOWER, 124, 122);
+	A.PlanAddHouse(5, HOUSE_WATCHTOWER, 118, 128);
+	A.PlanAddRoad(5, 129, 128);
+	A.PlanAddRoad(5, 129, 127);
+	A.PlanAddRoad(5, 129, 126);
+	A.PlanAddRoad(5, 130, 126);
+	A.PlanAddRoad(5, 130, 125);
+	A.PlanAddRoad(5, 131, 125);
+	A.PlanAddRoad(5, 132, 125);
+	A.PlanAddRoad(5, 132, 124);
+	A.PlanAddRoad(5, 133, 124);
+	A.PlanAddRoad(5, 125, 130);
+	A.PlanAddRoad(5, 125, 131);
+	A.PlanAddRoad(5, 124, 131);
+	A.PlanAddRoad(5, 123, 131);
+	A.PlanAddRoad(5, 122, 131);
+	A.PlanAddRoad(5, 121, 131);
+	A.PlanAddRoad(5, 120, 131);
+	A.PlanAddRoad(5, 120, 130);
+	A.PlanAddRoad(5, 120, 129);
+	A.PlanAddRoad(5, 119, 129);
+	A.PlanAddRoad(5, 118, 129);
+	A.PlanAddRoad(5, 124, 123);
+	A.PlanAddRoad(5, 125, 123);
+	A.PlanAddRoad(5, 125, 124);
+	A.PlanAddRoad(5, 126, 124);
+	A.PlanAddRoad(5, 127, 124);
+	A.PlanAddRoad(5, 127, 125);
+	A.PlanAddRoad(5, 128, 125);
+	A.PlanAddRoad(5, 128, 126);
+	end;
+	
+If S.GameTime = (Epost + 6080) then
+    begin
+	A.GiveWeapons(5, WARE_IRON_ARMOR, 250);
+	A.GiveWeapons(5, WARE_PIKES, 125);
+	A.GiveWeapons(5, WARE_CROSSBOWS, 125);
+	A.GiveWeapons(5, WARE_HAND_AXES, 500);
+	A.PlanAddHouse(5, HOUSE_WATCHTOWER, 125, 116);
+	A.PlanAddHouse(5, HOUSE_WATCHTOWER, 128, 113);
+	A.PlanAddRoad(5, 125, 117);
+	A.PlanAddRoad(5, 126, 117);
+	A.PlanAddRoad(5, 127, 117);
+	A.PlanAddRoad(5, 128, 117);
+	A.PlanAddRoad(5, 129, 117);
+	A.PlanAddRoad(5, 128, 114);
+	A.PlanAddRoad(5, 128, 115);
+	A.PlanAddRoad(5, 129, 115);
+	A.PlanAddRoad(5, 129, 116);
+	A.PlanAddRoad(5, 129, 118);
+	A.PlanAddRoad(5, 130, 118);
+	A.PlanAddRoad(5, 130, 118);
+	A.PlanAddRoad(5, 130, 119);
+	A.PlanAddRoad(5, 130, 120);
+	A.PlanAddRoad(5, 130, 121);
+	A.PlanAddRoad(5, 130, 122);
+	A.PlanAddRoad(5, 130, 123);
+	A.PlanAddRoad(5, 130, 124);
+	end;
+	
+If S.GameTime = (Epost + 9080) then
+    begin
+	A.PlanAddHouse(5, HOUSE_WEAPONS_WORKSHOP, 133, 118);
+	A.PlanAddHouse(5, HOUSE_WEAPONS_WORKSHOP, 124, 135);
+	A.PlanAddRoad(5, 131, 119);
+	A.PlanAddRoad(5, 132, 119);
+	A.PlanAddRoad(5, 133, 119);
+	A.PlanAddRoad(5, 121, 132);
+	A.PlanAddRoad(5, 121, 133);
+	A.PlanAddRoad(5, 121, 134);
+	A.PlanAddRoad(5, 122, 134);
+	A.PlanAddRoad(5, 122, 135);
+	A.PlanAddRoad(5, 122, 136);
+	A.PlanAddRoad(5, 123, 136);
+	A.PlanAddRoad(5, 124, 136);
+	end;
+	
+If S.GameTime = (Epost + 10780) then
+    begin
+	A.PlanAddHouse(5, HOUSE_ARMORY_WORKSHOP, 126, 123);
+	A.PlanAddHouse(5, HOUSE_ARMORY_WORKSHOP, 130, 114);
+	A.PlanAddRoad(5, 130, 115);
+	end;
+
+if (S.GameTime MOD 10 = 0) and (MsgPost = false) and (Loot[0] = true) and (Loot[1] = true) and (Loot[2] = true) and (Loot[3] = true) and (Loot[4] = true) and (Loot[5] = true) then
+   begin
+   A.ShowMsg(0,'<$10>');
+   MsgPost:= true;
+   end;
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+if (Loot[5] = false) and (aHouseID = S.HouseAt(112, 93)) and (S.HouseOwner(aHouseID) = 3) and (aDestroyerIndex = 0) and (S.StatHouseMultipleTypesCount(0, [HOUSE_BARRACKS]) > 0) then
+    begin
+	A.ShowMsg(0,'<$4>');
+	Loot[5]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 5);
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 15);
+		A.GiveWeapons(0, WARE_LONGBOWS, 10);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 5);
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 10);
+		A.GiveWeapons(0, WARE_LONGBOWS, 5);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWeapons(0, WARE_LEATHER_ARMOR, 5);
+		A.GiveWeapons(0, WARE_IRON_ARMOR, 5);
+        end;
+    end;
+	end;
+	
+if (Loot[4] = false) and (aHouseID = S.HouseAt(117, 94)) and (S.HouseOwner(aHouseID) = 3) and (aDestroyerIndex = 0) then
+    begin
+	A.ShowMsg(0,'<$5>');
+	Loot[4]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_FISH, 15);
+		A.GiveWares(0, WARE_LOAVES, 30);
+		A.GiveWares(0, WARE_TIMBER, 20);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_FISH, 10);
+		A.GiveWares(0, WARE_LOAVES, 20);
+		A.GiveWares(0, WARE_TIMBER, 15);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_FISH, 5);
+		A.GiveWares(0, WARE_LOAVES, 10);
+		A.GiveWares(0, WARE_TIMBER, 10);
+        end;
+    end;
+	end;
+
+if (Loot[3] = false) and (aHouseID = S.HouseAt(24, 15)) and (S.HouseOwner(aHouseID) = 2) and (aDestroyerIndex = 0) and (S.StatHouseMultipleTypesCount(0, [HOUSE_BARRACKS]) > 0) then
+    begin
+	A.ShowMsg(0,'<$4>');
+	Loot[3]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWeapons(0, WARE_PIKES, 5);
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 15);
+		A.GiveWeapons(0, WARE_HAND_AXES, 10);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWeapons(0, WARE_PIKES, 5);
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 10);
+		A.GiveWeapons(0, WARE_HAND_AXES, 5);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWeapons(0, WARE_WOODEN_SHIELD, 5);
+		A.GiveWeapons(0, WARE_PIKES, 5);
+        end;
+    end;
+	end;
+
+if (aHouseID = S.HouseAt(27, 21)) and (S.HouseOwner(aHouseID) = 2) and (aDestroyerIndex = 0) and (Loot[2] = false) then
+    begin
+	A.ShowMsg(0,'<$5>');
+	Loot[2]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_WINE, 15);
+		A.GiveWares(0, WARE_SAUSAGES, 15);
+		A.GiveWares(0, WARE_STONES, 55);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_WINE, 10);
+		A.GiveWares(0, WARE_SAUSAGES, 10);
+		A.GiveWares(0, WARE_STONES, 40);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_WINE, 10);
+		A.GiveWares(0, WARE_SAUSAGES, 5);
+		A.GiveWares(0, WARE_STONES, 25);
+        end;
+    end;
+	end;
+
+if (Loot[1] = false) and (aHouseID = S.HouseAt(21, 104)) and (S.HouseOwner(aHouseID) = 1) and (aDestroyerIndex = 0) and (S.StatHouseMultipleTypesCount(0, [HOUSE_BARRACKS]) > 0) then
+    begin
+	A.ShowMsg(0,'<$4>');
+	Loot[1]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWeapons(0, WARE_SWORDS, 5);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 5);
+		A.GiveWeapons(0, WARE_HAND_AXES, 15);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWeapons(0, WARE_SWORDS, 5);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 5);
+		A.GiveWeapons(0, WARE_HAND_AXES, 8);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWeapons(0, WARE_SWORDS, 5);
+		A.GiveWeapons(0, WARE_IRON_SHIELD, 5);
+        end;
+    end;
+	end;
+
+if (aHouseID = S.HouseAt(35, 105)) and (S.HouseOwner(aHouseID) = 1) and (aDestroyerIndex = 0) and (Loot[0] = false) then
+    begin
+	A.ShowMsg(0,'<$5>');
+	Loot[0]:= true;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 30);
+		A.GiveWares(0, WARE_SAUSAGES, 15);
+		A.GiveWares(0, WARE_STONES, 55);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 20);
+		A.GiveWares(0, WARE_SAUSAGES, 10);
+		A.GiveWares(0, WARE_STONES, 40);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 10);
+		A.GiveWares(0, WARE_SAUSAGES, 5);
+		A.GiveWares(0, WARE_STONES, 25);
+        end;
+    end;
+	end;	
+end;
+
+procedure OnHousePlanDigged (aHouse: Integer);
+begin
+if (aHouse = S.HouseAt(134, 133)) and (S.HouseOwner(S.HouseAt(134, 133)) = 5) then
+begin
+   Epost := S.GameTime;
+end;
+end;

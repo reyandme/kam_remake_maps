@@ -1,0 +1,108 @@
+{$EVENT evtTick:Attackers}
+var
+AttackToken: Integer;
+
+procedure Attackers();
+begin
+if S.GameTime = (6600) then
+    if (AttackToken = 0) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 42, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 39, 138, DIRECTION_N, 4, 2);
+	A.GiveGroup(4, UNIT_MILITIA, 46, 138, DIRECTION_N, 4, 2);
+    end else
+	if (AttackToken = 1) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 59, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 56, DIRECTION_E, 4, 2);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 63, DIRECTION_E, 4, 2);
+    end else
+	if (AttackToken = 2) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 137, 137, DIRECTION_NW, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 136, 137, DIRECTION_NW, 4, 2);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 135, DIRECTION_NW, 4, 2);
+    end else
+	if (AttackToken = 3) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 136, 3, DIRECTION_SW, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 137, 3, DIRECTION_SW, 4, 2);
+	A.GiveGroup(4, UNIT_MILITIA, 134, 2, DIRECTION_SW, 4, 2);
+    end;
+	
+if S.GameTime = (14150) then
+    if (AttackToken = 0) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 130, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 134, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 5, DIRECTION_W, 4, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 10, DIRECTION_W, 4, 3);
+    end else
+	if (AttackToken = 1) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 45, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 41, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 37, 138, DIRECTION_N, 4, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 49, 138, DIRECTION_N, 4, 3);
+    end else
+	if (AttackToken = 2) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 57, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 2, 61, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 53, DIRECTION_E, 4, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 2, 65, DIRECTION_E, 4, 3);
+    end else
+	if (AttackToken = 3) then begin
+	A.GiveGroup(4, UNIT_VAGABOND, 127, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_VAGABOND, 131, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 128, DIRECTION_W, 4, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 132, DIRECTION_W, 4, 3);
+    end;
+	
+if S.GameTime = (30500) then
+    if (AttackToken = 0) then begin
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 2, 52, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 2, 64, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 2, 60, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 2, 56, DIRECTION_E, 6, 3);
+    end else
+	if (AttackToken = 1) then begin
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 138, 114, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 138, 126, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 138, 118, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 138, 122, DIRECTION_W, 6, 3);
+    end else
+	if (AttackToken = 2) then begin
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 37, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 49, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 41, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 45, 138, DIRECTION_N, 6, 3);
+    end else
+	if (AttackToken = 3) then begin
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 123, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_LANCE_CARRIER, 134, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 127, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_BOWMAN, 130, 2, DIRECTION_S, 6, 3);
+    end;
+			
+if S.GameTime = (50500) then
+    begin
+	A.GiveGroup(4, UNIT_MILITIA, 126, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 132, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 130, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 136, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 129, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 135, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_MILITIA, 138, 133, DIRECTION_W, 6, 3);
+    end;
+	
+if S.GameTime = (60300) then
+    if (AttackToken = 0) or (AttackToken = 2) then begin
+    A.GiveGroup(4, UNIT_SCOUT, 130, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 134, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 138, 2, DIRECTION_S, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 35, 138, DIRECTION_N, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 39, 138, DIRECTION_N, 6, 3);
+    end else
+	if (AttackToken = 1) or (AttackToken = 3) then begin
+	A.GiveGroup(4, UNIT_SCOUT, 2, 54, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 58, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 2, 62, DIRECTION_E, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 138, 134, DIRECTION_W, 6, 3);
+	A.GiveGroup(4, UNIT_SCOUT, 138, 138, DIRECTION_W, 6, 3);
+    end;		
+end;

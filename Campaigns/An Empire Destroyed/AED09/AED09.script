@@ -185,7 +185,7 @@ begin
 		end;
 	end;
 end;
-function ClosestPlayerGroupType(aPlayer: Integer; gType: TKMGroupType: X, Y, radius:Integer): Integer; 
+function ClosestPlayerGroupType(aPlayer: Integer; gType: TKMGroupType; X, Y, radius: Integer): Integer;
 var 
 Groups: array of Integer; 
 i, BestDistanceSqr, ThisDistanceSqr, DX, DY, fUnit: Integer;
@@ -261,7 +261,7 @@ begin
 	6: RESULT := -radius;
 	7: RESULT := -radius;
     else RESULT := 0; 
-  end
+  end;
 end;
 function DirectionToOY(aDir, radius: integer): integer;
 begin
@@ -274,7 +274,7 @@ begin
 	0: RESULT := -radius;
 	1: RESULT := -radius;
     else RESULT := 0; 
-  end
+  end;
 end;
 function RetreatRange(aGroup, radius: integer): boolean;
 var m, d, u: integer;
@@ -315,7 +315,8 @@ begin
 						if AttackHouse(g, ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS)) then
 							if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SMELL_RADIUS-7)) then
 								AttackHouse(g, ClosestEnemyHouse(p, x, y, 100));
-			end else begin//melee
+			end             // <-- NINCS pontosvessző itt!
+			else begin      // <-- else közvetlenül az end után
 				if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SNIFF_RADIUS)) then
 					if AttackHouse(g, ClosestEnemyHouse(p, x, y, AI_SNIFF_RADIUS+1)) then begin
 						h:= ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS+3);
@@ -330,7 +331,8 @@ begin
 	end;
  end;
 end;
-// END AI
+
+// end;AI
 
 ////////////////////////
 
@@ -451,7 +453,7 @@ begin
 	25: RESULT := 15; //xbow
 	26: RESULT := 25; //horses
     else RESULT := 0; 
-  end
+  end;
 end;
 function ArmyTypeToQuestCount(aType: integer): integer;
 begin
@@ -470,7 +472,7 @@ begin
 	22: RESULT := 6; //knight
 	
     else RESULT := 0; 
-  end
+  end;
 end;
 procedure GetWaresCount;
 var
@@ -524,8 +526,10 @@ begin
 	if aRanged then begin
 		SetLength(HARASS_GROUPS, 2);
 		HARASS_GROUPS[1]:= Actions.GiveGroup(aPlayer, HARASS_RANGED_TYPE, ENEMY[aPlayer].SPAWN[r].X, ENEMY[aPlayer].SPAWN[r].Y, ENEMY[aPlayer].SPAWN[r].dir, Round(aCount/2), Round(Sqrt(aCount)+1));
-	end else
+	end          // <-- NINCS pontosvessző!
+	else begin   // <-- else új sorban, szóközzel
 		SetLength(HARASS_GROUPS, 1);
+	end;
 	if aPlayer = 3 then
 		aCount:= Round(aCount*1.7);
 	if aPlayer = 1 then
@@ -533,6 +537,7 @@ begin
 	HARASS_GROUPS[0]:= Actions.GiveGroup(aPlayer, ENEMY[aPlayer].aType, ENEMY[aPlayer].SPAWN[r].X, ENEMY[aPlayer].SPAWN[r].Y, ENEMY[aPlayer].SPAWN[r].dir, aCount, Round(Sqrt(aCount)+1));
  end;
 end;
+
 procedure HarassPlayer;
 begin
 	if HARASS_ENABLED then begin
@@ -559,12 +564,12 @@ end;
 procedure ShowMissionObjectives(aPlayer: integer);
 var j: integer;
 begin
-	Actions.OverlayTextSetFormatted(aPlayer, '<$4>', []);
+	Actions.OverlayTextSet(aPlayer, '<$4>');  // <-- Paraméter nélkül!
 	if TIMER_ON then
 		Actions.OverlayTextAppend(aPlayer, ShowTimer(TIMER));
 	Actions.OverlayTextAppend(aPlayer, '|');
 	if QUEST_NUMBER = 1 then begin
-		Actions.OverlayTextAppendFormatted(aPlayer, '<$6>', []);
+		Actions.OverlayTextAppend(aPlayer, '<$6>');  // <-- Formatted helyett sima Append
 		Actions.OverlayTextAppend(aPlayer, '|');
 		for j:= 7 to 26 do begin
 			if WareTypeToQuestCount(j) > 0 then begin
@@ -575,7 +580,7 @@ begin
 				Actions.OverlayTextAppend(aPlayer, '|');
 			end;
 		end;
-		Actions.OverlayTextAppendFormatted(aPlayer, '<$10>', []);
+		Actions.OverlayTextAppend(aPlayer, '<$10>');  // <-- Itt is
 		Actions.OverlayTextAppend(aPlayer, '|');
 		for j:= 14 to 22 do begin
 			if States.StatUnitTypeCount(PLAYER, j) >= ArmyTypeToQuestCount(j) then
@@ -586,7 +591,7 @@ begin
 		end;
 	end;
 	if QUEST_NUMBER = 3 then begin
-		Actions.OverlayTextAppendFormatted(aPlayer, '<$11>', []);
+		Actions.OverlayTextAppend(aPlayer, '<$11>');  // <-- És itt is
 		Actions.OverlayTextAppend(aPlayer, '|');
 	end;
 end;
