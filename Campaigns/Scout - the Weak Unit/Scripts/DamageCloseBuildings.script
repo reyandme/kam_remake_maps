@@ -1,0 +1,668 @@
+//Damage houses and house plans with melee units fighting close to them to prevent abusing.
+//This script makes every single melee unit fighting close to your buildings deal damage to them to prevent using building and house plans as wall.
+//Also AI troups destroy house plans that are placed to make them use 'Snake' formation.
+
+//Made by Ritter des Todes.
+//12.03.2024.
+//Version 4.0.
+//Developed for r15122+
+
+// To import script use {$I DamageCloseBuildings.script}
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+//DESCRIPTION OF USER INTERFACE.
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Adding player that will be affected by script or set custom building damage for some player.
+// DCB_AddPlayer(playerId: integer; buildingDamage: integer) procedure.
+
+// Removing player affected by script.
+// DCB_RemovePlayer(playerId: integer) procedure.
+
+// Damage dealed to building close to fighters. Default value is 1.
+// DCB_HouseDamage: integer;
+
+// Variable to setup script:
+// DCB_Mode: DCB_Settings;
+
+// Enum values description for DCB_Mode
+// DCB_PLAYERS_ONLY : script works only for non AI players and players set by DCB_AddPlayer procedure.
+// DCB_CUSTOM_PLAYERS_ONLY : script works only for players set by DCB_AddPlayer procedure.
+// DCB_ALL : script works for all.
+// DCB_NONE : script is not working.
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+//USING EXAMPLE.
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//procedure OnMissionStart;
+//begin
+
+  //All players and AI will be affected by script.
+  //DCB_Mode := DCB_ALL;
+
+  //Buildings of players that are affected by script will take 2 damage. Unless they have custom settings.
+  //DCB_HouseDamage := 2;
+
+  //Player 0 will be affected by script. Buildings of player 0 will take 5 damage.
+  //DCB_AddPlayer(0, 5);
+
+//end;
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+//CORE.
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+{$EVENT evtUnitAttacked:DCB_OnUnitAttacked}
+{$EVENT evtWarriorWalked:DCB_OnWarriorWalked}
+{$EVENT evtHouseDestroyed:DCB_OnHouseDestroyed}
+{$EVENT evtGroupOrderAttackHouse:DCB_OnGroupOrderAttackHouse}
+{$EVENT evtGroupOrderAttackUnit:DCB_OnGroupOrderAttackUnit}
+{$EVENT evtGroupOrderMove:DCB_OnGroupOrderMove}
+{$EVENT evtTick:DCB_OnTick}
+
+type
+  DCB_Settings = (DCB_PLAYERS_ONLY, DCB_CUSTOM_PLAYERS_ONLY, DCB_ALL, DCB_NONE);
+
+type DCB_Player =
+record
+  PlayerId: integer;
+  BuildingDamage: integer;
+end;
+
+type DCB_GroupOrder =
+record
+  GroupId: integer;
+  OrderType: TKMGroupOrder;
+
+  Id: integer;
+  Location: TKMPoint;
+end;
+
+type DCB_GroupOrderTask =
+record
+
+  HouseId: integer;
+  GroupOrder: DCB_GroupOrder;
+end;
+
+const 
+  DCB_DefaultHouseDamage = 1;
+var
+  DCB_HouseDamage: integer;
+  DCB_Mode: DCB_Settings;
+  DCB_Players: array of DCB_Player;
+  DCB_GroupOrders: array of DCB_GroupOrder;
+  DCB_GroupOrderTasks: array of DCB_GroupOrderTask;
+
+function DCB_FindGroupOrderTaskByGroupIndex(groupId: integer) : integer;
+var
+  i : integer;
+begin
+  result := -1;
+
+  for i := 0 to Length(DCB_GroupOrderTasks)-1 do
+  begin
+    if (DCB_GroupOrderTasks[i].GroupOrder.GroupId = groupId) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+function DCB_FindGroupOrderTaskIndex(houseId: integer) : integer;
+var
+  i : integer;
+begin
+  result := -1;
+
+  for i := 0 to Length(DCB_GroupOrderTasks)-1 do
+  begin
+    if (DCB_GroupOrderTasks[i].HouseId = houseId) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+function DCB_FindGroupOrderIndex(groupId: integer) : integer;
+var
+  i : integer;
+begin
+  result := -1;
+
+  for i := 0 to Length(DCB_GroupOrders)-1 do
+  begin
+    if (DCB_GroupOrders[i].GroupId = groupId) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+function DCB_FindPlayerIndex(playerId: integer) : integer;
+var
+  i : integer;
+begin
+  result := -1;
+
+  for i := 0 to Length(DCB_Players)-1 do
+  begin
+    if (DCB_Players[i].PlayerId = playerId) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
+procedure DCB_AddGroupOrder(groupId: integer; orderType: 	TKMGroupOrder; id, x, y: integer);
+var
+  orderIndex: integer;
+  count : integer;
+  newOrder : DCB_GroupOrder;
+begin
+
+  orderIndex := DCB_FindGroupOrderIndex(groupId);
+
+  if (orderIndex >= 0) then
+  begin
+    exit;
+  end;
+
+  count := Length(DCB_GroupOrders);
+
+  newOrder.GroupId := groupId;
+  newOrder.OrderType := orderType;
+  newOrder.Id := id;
+  newOrder.Location.X := x;
+  newOrder.Location.Y := y;
+
+  setLength(DCB_GroupOrders, count + 1);
+  DCB_GroupOrders[count] := newOrder;
+end;
+
+procedure DCB_AddGroupOrderTask(houseId: integer; groupOrder: DCB_GroupOrder);
+var
+  taskIndex: integer;
+  count : integer;
+  newTask : DCB_GroupOrderTask;
+begin
+
+  taskIndex := DCB_FindGroupOrderTaskIndex(houseId);
+
+  if (taskIndex >= 0) then
+  begin
+    exit;
+  end;
+
+  count := Length(DCB_GroupOrderTasks);
+
+  newTask.HouseId := houseId;
+  newTask.GroupOrder := groupOrder;
+
+  setLength(DCB_GroupOrderTasks, count + 1);
+  DCB_GroupOrderTasks[count] := newTask;
+end;
+
+procedure DCB_RemoveGroupOrder(groupId: integer);
+var
+  i: integer;
+  count : integer;
+  orderIndex: integer;
+begin
+  orderIndex:= DCB_FindGroupOrderIndex(groupId);
+
+  if (orderIndex = -1) then
+  begin
+    exit;
+  end;
+
+  count:= Length(DCB_GroupOrders);
+  for i:= orderIndex to count - 2 do
+  begin
+    DCB_GroupOrders[i]:= DCB_GroupOrders[i+1];
+  end;
+  SetLength(DCB_GroupOrders, count - 1);
+end;
+
+procedure DCB_RemoveGroupOrderTask(houseId: integer);
+var
+  i: integer;
+  count : integer;
+  taskIndex: integer;
+begin
+  taskIndex := DCB_FindGroupOrderTaskIndex(houseId);
+
+  if (taskIndex = -1) then
+  begin
+    exit;
+  end;
+
+  count:= Length(DCB_GroupOrderTasks);
+  for i:= taskIndex to count - 2 do
+  begin
+    DCB_GroupOrderTasks[i]:= DCB_GroupOrderTasks[i+1];
+  end;
+  SetLength(DCB_GroupOrderTasks, count - 1);
+end;
+
+function DCB_IsMeleeUnit(unitType: TKMUnitType):boolean;
+begin
+  result:= false;
+  if ((unitType = utMilitia) or (unitType = utAxeFighter) or (unitType = utSwordFighter)) then
+  begin
+    result:= true;
+  end;
+
+  if ((unitType = utLanceCarrier) or (unitType = utPikeman)) then
+  begin
+    result:= true;
+  end;
+
+  if ((unitType = utScout) or (unitType = utKnight)) then
+  begin
+    result:= true;
+  end;
+
+  if ((unitType = utBarbarian) or (unitType = utRebel) or (unitType = utWarrior) or (unitType = utVagabond)) then
+  begin
+    result:= true;
+  end;
+end;
+
+function DCB_DamageCloseBuildings(x, y :integer; houseIds : array of integer): array of integer;
+var
+  aHouse: integer;
+  houseOwner: integer;
+  playerIndex: integer;
+  count: integer;
+begin
+
+  result := houseIds;
+  aHouse := S.HouseAt(x,y);
+  if (aHouse = -1) then
+  begin
+    exit;
+  end;
+
+  if (U.ArrayHasElementI(aHouse, houseIds)) then
+  begin
+    exit;
+  end;
+
+  count := Length(result);
+  setLength(result, count + 1);
+  result[count] := aHouse;
+
+  houseOwner := S.HouseOwner(aHouse);
+  playerIndex := DCB_FindPlayerIndex(houseOwner);
+
+  //If there are no player settings.
+  if (playerIndex = -1) then
+  begin
+
+    iF (DCB_Mode = DCB_CUSTOM_PLAYERS_ONLY) then
+    begin
+      exit;
+    end;
+    if ((DCB_Mode = DCB_PLAYERS_ONLY) and (S.PlayerIsAI(houseOwner) = true)) then
+    begin
+      exit;
+    end;
+
+    A.HouseAddDamage(aHouse, U.IfThenI(DCB_HouseDamage > 0, DCB_HouseDamage, DCB_DefaultHouseDamage));
+  end else
+  begin
+    A.HouseAddDamage(aHouse, DCB_Players[playerIndex].BuildingDamage);
+  end;
+end;
+
+function DCB_TryToDestroyHousePlan(x, y, unitId, ownerId: integer) : boolean;
+var
+  houseId: integer;
+  groupId: integer;
+  orderIndex: integer;
+  taskIndex: integer;
+
+begin
+
+  houseId := S.HouseAt(x,y);
+  if (houseId = -1) then
+  begin
+    exit;
+  end;
+
+  //TODO check building progress.
+  if (S.HouseIsComplete(houseId)) then
+  begin
+    exit;
+  end;
+
+  groupId := S.UnitsGroup(unitId);
+  taskIndex := DCB_FindGroupOrderTaskByGroupIndex(groupId);
+
+  //Group already has a task to destroy house plan.
+  //We will force it to attack this plan again to make sure that order wasn't changed by AI.
+  //For example if shooters start shooting we still need to destroy plan.
+  if (taskIndex <> -1)then
+  begin
+    A.GroupOrderAttackHouse(groupId, DCB_GroupOrderTasks[taskIndex].HouseId);
+    exit;
+  end;
+
+  orderIndex := DCB_FindGroupOrderIndex(groupId);
+
+  //If group has any order it will be given to group again after house plan will be destroyed.
+  if (orderIndex <> -1) then
+  begin
+    DCB_AddGroupOrderTask(houseId, DCB_GroupOrders[orderIndex]);
+  end;
+
+  A.GroupOrderAttackHouse(groupId, houseId);
+  result := true;
+
+end;
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+//Public interface------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+procedure DCB_AddPlayer(playerId: integer; buildingDamage: integer);
+var
+  playerIndex: integer;
+  count : integer;
+  newPlayer : DCB_Player;
+begin
+
+  playerIndex := DCB_FindPlayerIndex(playerId);
+
+  if (playerIndex >= 0) then
+  begin
+    exit;
+  end;
+
+  count := Length(DCB_Players);
+  newPlayer.PlayerId := playerId;
+  newPlayer.BuildingDamage := buildingDamage;
+  setLength(DCB_Players, count + 1);
+  DCB_Players[count] := newPlayer;
+end;
+
+procedure DCB_RemovePlayer(playerId: integer);
+var
+  i: integer;
+  count : integer;
+  playerIndex: integer;
+begin
+  playerIndex:= DCB_FindPlayerIndex(playerId);
+
+  if (playerIndex = -1) then
+  begin
+    exit;
+  end;
+
+  count:= Length(DCB_Players);
+  for i:= playerIndex to count - 2 do
+  begin
+    DCB_Players[i]:= DCB_Players[i+1];
+  end;
+  SetLength(DCB_Players, count - 1);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+//Events----------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+procedure DCB_OnUnitAttacked(aUnit, aAttacker: integer);
+var
+  unitType: TKMUnitType;
+  attackerType: TKMUnitType;
+  location: TKMPoint;
+  houseIds : array of integer;
+begin
+	
+  if (aAttacker = -1) then
+  begin
+    exit;
+  end;
+	
+  if (DCB_Mode = DCB_NONE) then
+  begin
+    exit;
+  end;
+
+  attackerType := S.UnitTypeEx(aAttacker);
+  unitType := S.UnitTypeEx(aUnit);
+
+  //Script should work only for melee soldiers.
+  if (not DCB_IsMeleeUnit(attackerType) or not DCB_IsMeleeUnit(unitType)) then
+  begin
+    exit;
+  end;
+
+  location := S.UnitPosition(aUnit);
+
+  houseIds := DCB_DamageCloseBuildings(location.X-1, location.Y-1, houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X-1, location.Y  , houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X-1, location.Y+1, houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X  , location.Y-1, houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X  , location.Y+1, houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X+1, location.Y-1, houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X+1, location.Y  , houseIds);
+  houseIds := DCB_DamageCloseBuildings(location.X+1, location.Y+1, houseIds);
+
+end;
+
+procedure DCB_OnWarriorWalked(aUnit, aToX, aToY: Integer);
+var
+  ownerId: integer;
+  unitType: TKMUnitType;
+
+begin
+
+  unitType := S.UnitTypeEx(aUnit);
+  if (not DCB_IsMeleeUnit(unitType)) then
+  begin
+    exit;
+  end;
+
+  ownerId := States.UnitOwner(aUnit);
+
+  if (not S.PlayerIsAI(ownerId)) then
+  begin
+    exit;
+  end;
+
+  if (DCB_TryToDestroyHousePlan(aToX  , aToY-1, aUnit, ownerId)) then
+	begin
+		exit;
+	end;
+
+  if (DCB_TryToDestroyHousePlan(aToX+1, aToY  , aUnit, ownerId)) then
+	begin
+		exit;
+	end;
+
+  if (DCB_TryToDestroyHousePlan(aToX  , aToY+1, aUnit, ownerId)) then
+	begin
+		exit;
+	end;
+
+  if (DCB_TryToDestroyHousePlan(aToX-1, aToY  , aUnit, ownerId)) then
+	begin
+		exit;
+	end;
+
+end;
+
+procedure DCB_OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+var
+  taskIndex: integer;
+
+begin
+
+  taskIndex := DCB_FindGroupOrderTaskIndex(aHouse);
+  if (taskIndex = -1)then
+  begin
+    exit;
+  end;
+
+  with DCB_GroupOrderTasks[taskIndex].GroupOrder do
+  begin
+
+    if (S.GroupDead(GroupId))then
+    begin
+      exit;
+    end;
+
+    case OrderType of
+
+      goWalkTo: A.GroupOrderWalk(GroupId, Location.X, Location.Y, 4);
+      goAttackHouse: A.GroupOrderAttackHouse(GroupId, Id);
+      goAttackUnit: A.GroupOrderAttackUnit(GroupId, Id);
+    end;
+
+    DCB_RemoveGroupOrderTask(aHouse);
+  end;
+end;
+
+
+procedure DCB_OnGroupOrderAttackHouse(aGroup: Integer; aHouse: Integer);
+var
+  orderIndex: integer;
+
+begin
+
+  if (not States.PlayerIsAI(S.GroupOwner(aGroup)))then
+  begin
+    exit;
+  end;
+
+  orderIndex := DCB_FindGroupOrderIndex(aGroup);
+
+  if (orderIndex = -1) then
+  begin
+    DCB_AddGroupOrder(aGroup, goAttackHouse, aHouse, 0, 0);
+    exit;
+  end;
+
+  DCB_GroupOrders[orderIndex].OrderType := goAttackHouse;
+  DCB_GroupOrders[orderIndex].Id := aHouse;
+  DCB_GroupOrders[orderIndex].Location.X := 0;
+  DCB_GroupOrders[orderIndex].Location.Y := 0;
+end;
+
+procedure DCB_OnGroupOrderAttackUnit(aGroup: Integer; aUnit: Integer);
+var
+  orderIndex: integer;
+
+begin
+
+  if (not States.PlayerIsAI(S.GroupOwner(aGroup)))then
+  begin
+    exit;
+  end;
+
+  orderIndex := DCB_FindGroupOrderIndex(aGroup);
+
+  if (orderIndex = -1) then
+  begin
+    DCB_AddGroupOrder(aGroup, goAttackUnit, aUnit, 0, 0);
+    exit;
+  end;
+
+  DCB_GroupOrders[orderIndex].OrderType := goAttackUnit;
+  DCB_GroupOrders[orderIndex].Id := aUnit;
+  DCB_GroupOrders[orderIndex].Location.X := 0;
+  DCB_GroupOrders[orderIndex].Location.Y := 0;
+end;
+
+procedure DCB_OnGroupOrderMove(aGroup: Integer; aX: Integer; aY: Integer; aDir: TKMDirection);
+var
+  orderIndex: integer;
+
+begin
+
+  if (not States.PlayerIsAI(S.GroupOwner(aGroup)))then
+  begin
+    exit;
+  end;
+
+  orderIndex := DCB_FindGroupOrderIndex(aGroup);
+
+  if (orderIndex = -1) then
+  begin
+    DCB_AddGroupOrder(aGroup, goWalkTo, 0, aX, aY);
+    exit;
+  end;
+
+  DCB_GroupOrders[orderIndex].OrderType := goWalkTo ;
+  DCB_GroupOrders[orderIndex].Id := 0;
+  DCB_GroupOrders[orderIndex].Location.X := aX;
+  DCB_GroupOrders[orderIndex].Location.Y := aY;
+end;
+
+
+procedure DCB_OnTick;
+var
+  i: integer;
+  count : integer;
+
+begin
+
+  //Remove orders and orders tasks of dead groups every 10 seconds.
+  if (States.GameTime mod 100 = 0) then
+  begin
+
+    count:= Length(DCB_GroupOrders);
+    for i:=0 to count-1 do
+    begin
+      if (S.GroupDead(DCB_GroupOrders[i].GroupId)) then
+      begin
+        DCB_RemoveGroupOrder(DCB_GroupOrders[i].GroupId);
+        count := count - 1;
+        i := i - 1;
+      end;
+    end;
+
+    count:= Length(DCB_GroupOrderTasks);
+    for i:=0 to count-1 do
+    begin
+      if (S.GroupDead(DCB_GroupOrderTasks[i].GroupOrder.GroupId)) then
+      begin
+        DCB_RemoveGroupOrderTask(DCB_GroupOrderTasks[i].HouseId);
+        count := count - 1;
+        i := i - 1;
+      end;
+    end;
+
+  end;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
