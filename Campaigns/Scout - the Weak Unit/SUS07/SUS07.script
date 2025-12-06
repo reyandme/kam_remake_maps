@@ -1,0 +1,613 @@
+var
+Pos: TKMPoint;
+CountUp: array [1..4] of Integer;
+Check: array [1..100] of Integer;
+AfterFirstAttackTime: array [1..4] of Integer;
+EndAttackStage: array [1..4] of Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+
+  begin
+  Actions.ShowMsg(0, '<$0>');
+  Actions.ShowMsg(0, '<$1>');
+  Actions.ShowMsg(0, '<$2>');
+  Pos.X:= 0;
+  Pos.Y:= 0;
+  DCB_Mode:= DCB_ALL;
+  DCB_HouseDamage := 6;
+  end;
+
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.GiveRoad(1, 22, 94);
+            Actions.GiveRoad(1, 21, 94);
+            Actions.GiveRoad(1, 20, 94);
+            Actions.GiveRoad(1, 23, 96);
+            Actions.GiveRoad(1, 23, 97);
+            Actions.GiveRoad(1, 23, 98);
+            Actions.GiveRoad(1, 23, 99);
+            Actions.GiveRoad(1, 22, 99);
+            Actions.GiveRoad(1, 21, 99);
+            Actions.GiveRoad(1, 20, 99);
+            Actions.GiveHouse(1, 13, 20, 93);
+            Actions.GiveHouse(1, 21, 20, 98);
+            Actions.GiveRoad(2, 42, 94);
+            Actions.GiveRoad(2, 43, 94);
+            Actions.GiveRoad(2, 44, 94);
+            Actions.GiveRoad(2, 41, 96);
+            Actions.GiveRoad(2, 41, 97);
+            Actions.GiveRoad(2, 41, 98);
+            Actions.GiveRoad(2, 41, 99);
+            Actions.GiveRoad(2, 42, 99);
+            Actions.GiveRoad(2, 43, 99);
+            Actions.GiveHouse(2, 13, 44, 93);
+            Actions.GiveHouse(2, 21, 43, 98);
+            Actions.GiveRoad(3, 30, 107);
+            Actions.GiveRoad(3, 29, 107);
+            Actions.GiveRoad(3, 28, 107);
+            Actions.GiveRoad(3, 27, 107);
+            Actions.GiveRoad(3, 34, 107);
+            Actions.GiveRoad(3, 35, 107);
+            Actions.GiveRoad(3, 36, 107);
+            Actions.GiveHouse(3, 13, 36, 106);
+            Actions.GiveHouse(3, 21, 27, 106);
+          end;
+  end;
+
+end;
+
+procedure OnWarriorEquipped(aUnitID: Integer; aGroupID: Integer);
+begin
+
+
+     begin
+     if States.UnitType(aUnitID) = 24 then
+     if States.UnitOwner(aUnitID) = 4 then
+     if States.GameTime > 36000 then
+      begin
+      Actions.GiveGroup(4, 19, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID)+1, 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     if States.UnitType(aUnitID) = 25 then
+     if States.UnitOwner(aUnitID) = 4 then
+     if States.GameTime > 36000 then
+      begin
+      Actions.GiveGroup(4, 17, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     end;
+
+     begin
+     if States.UnitType(aUnitID) = 24 then
+     if States.UnitOwner(aUnitID) = 5 then
+     if States.GameTime > 42000 then
+      begin
+      Actions.GiveGroup(5, 19, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     if States.UnitType(aUnitID) = 25 then
+     if States.UnitOwner(aUnitID) = 5 then
+     if States.GameTime > 42000 then
+      begin
+      Actions.GiveGroup(5, 17, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     end;
+
+     begin
+     if States.UnitType(aUnitID) = 24 then
+     if States.UnitOwner(aUnitID) = 6 then
+     if States.GameTime > 48000 then
+      begin
+      Actions.GiveGroup(6, 19, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     if States.UnitType(aUnitID) = 25 then
+     if States.UnitOwner(aUnitID) = 6 then
+     if States.GameTime > 48000 then
+      begin
+      Actions.GiveGroup(6, 17, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     end;
+
+     begin
+     if States.UnitType(aUnitID) = 24 then
+     if States.UnitOwner(aUnitID) = 7 then
+     if States.GameTime > 69000 then
+      begin
+      Actions.GiveGroup(7, 19, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     if States.UnitType(aUnitID) = 25 then
+     if States.UnitOwner(aUnitID) = 7 then
+     if States.GameTime > 69000 then
+      begin
+      Actions.GiveGroup(7, 17, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     if States.UnitType(aUnitID) = 27 then
+     if States.UnitOwner(aUnitID) = 7 then
+     if States.GameTime > 69000 then
+      begin
+      Actions.GiveGroup(7, 21, States.UnitPositionX(aUnitID), States.UnitPositionY(aUnitID), 4, 1, 1);
+      Actions.UnitKill(aUnitID, true);
+      end;
+     end;
+
+    case States.MissionDifficulty of
+    mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnitID) = 21 then
+      if States.UnitOwner(aUnitID) = 0 then
+      if Check[44] = 0 then
+       begin
+          Check[44]:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$7>');
+        end;
+      end;
+
+    end;
+    end;
+
+end;
+
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(5,5));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(10,10));
+           end;
+         end;
+
+
+   end;
+
+end;
+
+
+procedure OnTick;
+begin
+
+   begin
+   if States.GameTime = 21001 then
+    begin
+      AfterFirstAttackTime[1]:= 200;
+    end;
+   end;
+
+   begin
+   if States.GameTime = 27001 then
+    begin
+      AfterFirstAttackTime[2]:= 200;
+    end;
+   end;
+
+   begin
+   if States.GameTime = 33001 then
+    begin
+      AfterFirstAttackTime[3]:= 200;
+    end;
+   end;
+
+   begin
+   if States.GameTime = 54001 then
+    begin
+      AfterFirstAttackTime[4]:= 200;
+    end;
+   end;
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+
+  begin
+  if States.GameTime > 21000 then
+  if States.GameTime mod 1200 = 0 then
+  if Check[1] < 250 then
+    begin
+    Check[1]:= Check[1] + 10;
+    end;
+  end;
+
+  begin
+  if States.GameTime > 27000 then
+  if States.GameTime mod 1200 = 0 then
+  if Check[2] < 250 then
+    begin
+    Check[2]:= Check[2] + 10;
+    end;
+  end;
+
+  begin
+  if States.GameTime > 33000 then
+  if States.GameTime mod 1200 = 0 then
+  if Check[3] < 250 then
+    begin
+    Check[3]:= Check[3] + 10;
+    end;
+  end;
+
+  begin
+  if States.GameTime > 51000 then
+  if States.GameTime mod 1200 = 0 then
+  if Check[4] < 250 then
+    begin
+    Check[4]:= Check[4] + 10;
+    end;
+  end;
+
+////////////////
+{
+  begin
+   if States.GameTime mod 600 = 0 then
+   if States.GameTime > 21000 then
+   if CountUp[1] < 80 then
+    begin
+    CountUp[1]:= CountUp[1] + 1;
+    Actions.AIAttackRemoveAll(4);
+    Actions.AIAttackAdd(4, true, 21000, 10 + CountUp[1], 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 600 = 0 then
+   if States.GameTime > 27000 then
+   if CountUp[2] < 80 then
+    begin
+    CountUp[2]:= CountUp[2] + 1;
+    Actions.AIAttackRemoveAll(5);
+    Actions.AIAttackAdd(5, true, 27000, 10 + CountUp[2], 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 600 = 0 then
+   if States.GameTime > 33000 then
+   if CountUp[3] < 95 then
+    begin
+    CountUp[3]:= CountUp[3] + 1;
+    Actions.AIAttackRemoveAll(6);
+    Actions.AIAttackAdd(6, true, 33000, 10 + CountUp[3], 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 600 = 0 then
+   if States.GameTime > 45000 then
+   if CountUp[4] < 95 then
+    begin
+    CountUp[4]:= CountUp[4] + 1;
+    Actions.AIAttackRemoveAll(7);
+    Actions.AIAttackAdd(7, true, 45000, 40 + CountUp[4], 0, 0, 0, 0, true, attClosestBuildingFromArmy, Pos);
+    end;
+  end;
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+  begin
+   if States.GameTime mod 3000 = 0 then
+   if States.GameTime > 20999 then
+    begin
+    Actions.AIAttackRemoveAll(4);
+    Actions.AIAttackAdd(4, true, 21000, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+    Actions.AIAttackAdd(4, true, 21000, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    EndAttackStage[1]:= 750 + States.GameTime;
+{
+    if States.GameTime > 39000 then
+    for Check[90]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(4, Check[90], true);
+      end;
+
+    if States.GameTime < 39000 then
+    for Check[90]:= 24 to 25 do
+      begin
+      Actions.UnitBlock(4, Check[90], true);
+      end;
+}
+
+    end;
+  end;
+
+  begin
+  if States.GameTime > EndAttackStage[1] then
+    begin
+      Actions.AIAttackRemoveAll(4);
+{
+      if States.GameTime > 39000 then
+      for Check[90]:= 14 to 27 do
+        begin
+        Actions.UnitBlock(4, Check[90], false);
+        end;
+
+      if States.GameTime < 39000 then
+      for Check[90]:= 24 to 25 do
+        begin
+        Actions.UnitBlock(4, Check[90], false);
+        end;
+}
+
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 3000 = 0 then
+   if States.GameTime > 26999 then
+    begin
+    Actions.AIAttackRemoveAll(5);
+    //Actions.AIAttackAdd(5, true, 27000, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+    Actions.AIAttackAdd(5, true, 27000, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    EndAttackStage[2]:= 750 + States.GameTime;
+{
+    for Check[91]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(5, Check[91], true);
+      end;
+}
+
+    end;
+  end;
+
+  begin
+  if States.GameTime > EndAttackStage[2] then
+    begin
+      Actions.AIAttackRemoveAll(5);
+{
+    for Check[91]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(5, Check[91], false);
+      end;
+}
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 3000 = 0 then
+   if States.GameTime > 32999 then
+    begin
+    Actions.AIAttackRemoveAll(6);
+    //Actions.AIAttackAdd(6, true, 33000, 1, 0, 0, 1, 0, false, attClosestBuildingFromArmy, Pos);
+    Actions.AIAttackAdd(6, true, 33000, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    EndAttackStage[3]:= 750 + States.GameTime;
+{
+    for Check[92]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(6, Check[92], true);
+      end;
+}
+    end;
+  end;
+
+  begin
+  if States.GameTime > EndAttackStage[3] then
+    begin
+      Actions.AIAttackRemoveAll(6);
+{
+    for Check[92]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(6, Check[92], false);
+      end;
+}
+    end;
+  end;
+
+  begin
+   if States.GameTime mod 3000 = 0 then
+   if States.GameTime > 50999 then
+    begin
+    Actions.AIAttackRemoveAll(7);
+    Actions.AIAttackAdd(7, true, 51000, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+    Actions.AIAttackAdd(7, true, 51000, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+    EndAttackStage[4]:= 750 + States.GameTime;
+{
+    for Check[93]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(7, Check[93], true);
+      end;
+}
+    end;
+  end;
+
+  begin
+  if States.GameTime > EndAttackStage[4] then
+    begin
+      Actions.AIAttackRemoveAll(7);
+{
+    for Check[93]:= 14 to 27 do
+      begin
+      Actions.UnitBlock(7, Check[93], false);
+      end;
+}
+    end;
+  end;
+
+
+  begin
+  if States.GameTime = 15000 then
+    begin
+      Actions.ShowMsg(0, '<$3>');
+    end;
+  end;
+
+  begin
+  if States.GameTime = 42000 then
+    begin
+      Actions.ShowMsg(0, '<$4>');
+    end;
+  end;
+
+  begin
+  if States.GameTime > 18000 then
+  //if States.GameTime < 21001 then
+  if States.GameTime mod (600 - AfterFirstAttackTime[1] - Check[1]) = 0 then
+    begin
+      Actions.HouseAddWaresTo(States.HouseAt(63,5), 7, 10);
+      Actions.HouseTownHallEquip(States.HouseAt(63,5), 24, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(63,5), 25, 1);
+    end;
+  end;
+
+  begin
+  if States.GameTime > 24000 then
+  //if States.GameTime < 27001 then
+  if States.GameTime mod (600 - AfterFirstAttackTime[2] - Check[2]) = 0 then
+    begin
+      Actions.HouseAddWaresTo(States.HouseAt(26,19), 7, 10);
+      Actions.HouseTownHallEquip(States.HouseAt(26,19), 24, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(26,19), 24, 1);
+    end;
+  end;
+
+  begin
+  if States.GameTime > 30000 then
+  //if States.GameTime < 33001 then
+  if States.GameTime mod (600 - AfterFirstAttackTime[3] - Check[3]) = 0 then
+    begin
+      Actions.HouseAddWaresTo(States.HouseAt(71,29), 7, 10);
+      Actions.HouseTownHallEquip(States.HouseAt(71,29), 24, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(71,29), 24, 1);
+    end;
+  end;
+
+  begin
+  if States.GameTime > 45000 then
+  //if States.GameTime < 45001 then
+  if States.GameTime mod (600 - AfterFirstAttackTime[4] - Check[4]) = 0 then
+    begin
+      Actions.HouseAddWaresTo(States.HouseAt(34,7), 7, 20);
+      Actions.HouseTownHallEquip(States.HouseAt(34,7), 27, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(34,7), 25, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(34,7), 27, 1);
+    end;
+  end;
+
+  begin
+  if States.GameTime > 45000 then
+  //if States.GameTime < 45001 then
+  if States.GameTime mod (600 - AfterFirstAttackTime[4] - Check[4]) = 0 then
+    begin
+      Actions.HouseAddWaresTo(States.HouseAt(41,4), 7, 20);
+      Actions.HouseTownHallEquip(States.HouseAt(41,4), 27, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(41,4), 25, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(41,4), 27, 1);
+    end;
+  end;
+
+//////////////////////
+
+  begin
+    if States.GameTime = 36000 then
+      begin
+      Actions.UnitBlock(4, 20, false);
+      Actions.UnitBlock(4, 17, false);
+      Actions.UnitBlock(4, 19, false);
+      end;
+  end;
+
+  begin
+  if States.GameTime = 36000 then
+    begin
+      Actions.MapTileSet(1, 51, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 51, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 52, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 52, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(3, 52, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(4, 52, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(3, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(4, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(5, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(6, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(10, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(11, 53, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(3, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(4, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(5, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(6, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(7, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(8, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(9, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(10, 54, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(3, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(4, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(5, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(6, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(7, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(8, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(9, 55, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(2, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(3, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(4, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(5, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(6, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(7, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(8, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(9, 56, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(1, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(6, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(7, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(8, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(9, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(10, 57, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(8, 58, 146, Utils.RandomRangeI(0,3));
+      Actions.MapTileSet(9, 58, 146, Utils.RandomRangeI(0,3));
+      Actions.ShowMsg(0, '<$5>');
+    end;
+  end;
+
+  begin
+  if States.GameTime = 20400 then
+    begin
+    Actions.PlayerAllianceChange(1, 4, true, true);
+    Actions.PlayerAllianceChange(1, 5, true, true);
+    Actions.PlayerAllianceChange(1, 6, true, true);
+    Actions.PlayerAllianceChange(1, 7, true, true);
+    Actions.PlayerAllianceChange(2, 4, true, true);
+    Actions.PlayerAllianceChange(2, 5, true, true);
+    Actions.PlayerAllianceChange(2, 6, true, true);
+    Actions.PlayerAllianceChange(2, 7, true, true);
+    Actions.PlayerAllianceChange(3, 4, true, true);
+    Actions.PlayerAllianceChange(3, 5, true, true);
+    Actions.PlayerAllianceChange(3, 6, true, true);
+    Actions.PlayerAllianceChange(3, 7, true, true);
+    end;
+   end;
+
+  begin
+  if States.GameTime = 12620 then
+    begin
+      Actions.ShowMsg(0, '<$6>');
+    end;
+   end;
+
+
+end;

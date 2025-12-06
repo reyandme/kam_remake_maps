@@ -1,0 +1,785 @@
+var
+Check: array [0..100] of Integer;
+PrisonerTime: Integer;
+PlayerVillager: array [1..16] of Integer;
+A1: Integer;
+Cavalry: array [1..9] of Integer;
+Guard: array [1..2] of Integer;
+AttackTime: Integer;
+Pos: TKMPoint;
+Group: array [0..5] of Integer;
+TownHallAlly: Integer;
+TownHallEnemy: Integer;
+TownHallEnemyL: Integer;
+Stage2: Integer;
+TownHallStage1Timer: Integer;
+PhaseAttackTimer: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+  DCB_HouseDamage := 5;
+  DCB_Mode:= DCB_ALL;
+  Actions.PlayerAllianceChange(0, 2, false, true);
+  PrisonerTime:= 1740;
+  Actions.FogCoverAll(0);
+  Actions.FogRevealCircle(0, 30, 156, 20);
+  Actions.FogRevealCircle(0, 153, 151, 7);
+  Actions.HouseTownHallMaxGold(States.HouseAt(140,14), 200);
+  Check[20]:= 0;
+  Check[1]:= Utils.RandomRangeI(1,16);
+  TownHallAlly:= 150;
+  TownHallEnemy:= 300;
+  TownHallEnemyL:= 130;
+  Pos.X:= 0;
+  Pos.Y:= 0;
+  TownHallStage1Timer:= 7800;
+  PhaseAttackTimer:= 999999;
+
+  begin
+    for A1:= 1 to 8 do
+      begin
+      PlayerVillager[A1]:= Actions.GiveUnit(0, 0, 152, 151, 5);
+      Actions.UnitHungerSet(PlayerVillager[A1], 27000);
+      end;
+    for A1:= 9 to 16 do
+      begin
+      PlayerVillager[A1]:= Actions.GiveUnit(0, 9, 155, 151, 5);
+      Actions.UnitHungerSet(PlayerVillager[A1], 27000);
+      end;
+  end;
+
+    begin
+      Cavalry[1]:= Actions.GiveGroup(1, 21, 92, 155, 4, 1, 1);
+      Cavalry[2]:= Actions.GiveGroup(1, 21, 93, 128, 4, 1, 1);
+      Cavalry[3]:= Actions.GiveGroup(1, 21, 115, 105, 4, 1, 1);
+      Cavalry[4]:= Actions.GiveGroup(1, 22, 102, 159, 4, 1, 1);
+      Cavalry[5]:= Actions.GiveGroup(1, 22, 102, 151, 4, 1, 1);
+      Cavalry[6]:= Actions.GiveGroup(1, 22, 102, 150, 4, 1, 1);
+      Cavalry[7]:= Actions.GiveGroup(1, 22, 99, 145, 4, 1, 1);
+      Cavalry[8]:= Actions.GiveGroup(1, 22, 106, 134, 4, 1, 1);
+      Cavalry[9]:= Actions.GiveGroup(1, 22, 98, 163, 4, 1, 1);
+
+      for Check[9]:= 1 to 9 do
+        begin
+        Actions.GroupHungerSet(Cavalry[Check[9]], 27000);
+        end;
+
+      Guard[1]:= Actions.GiveGroup(4, 26, 151, 149, 3, 1, 1);
+      Guard[2]:= Actions.GiveGroup(4, 26, 156, 149, 5, 1, 1);
+
+      for Check[9]:= 1 to 2 do
+        begin
+        Actions.GroupHungerSet(Guard[Check[9]], 27000);
+        end;
+
+
+    end;
+
+    case States.MissionDifficulty of
+    mdHard1:
+            begin
+              Actions.AIEquipRate(2, 0, 10);
+            end;
+    mdHard3:
+            begin
+              PrisonerTime:= 30;
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 1, 19);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 2, 13);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 7, 19);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 8, 39);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 10, 11);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 13, 8);
+              Actions.HouseTakeWaresFrom(States.HouseAt(37, 149), 27, 7);
+              Actions.HouseAddWaresTo(States.HouseAt(37, 149), 8, 20);
+              Actions.HouseAddWaresTo(States.HouseAt(37, 149), 10, 15);
+              Actions.HouseAddWaresTo(States.HouseAt(37, 149), 13, 10);
+              Actions.HouseAddWaresTo(States.HouseAt(37, 149), 27, 10);
+              Actions.GroupKillAll(States.GroupAt(34,153), true);
+              Group[0]:= Actions.GiveGroup(0, 27, 34, 153, 1, 9, 3);
+              Actions.GroupHungerSet(Group[0], 18000);
+              Group[5]:= Actions.GiveGroup(0, 27, 43, 160, 1, 12, 4);
+              Actions.GroupHungerSet(Group[5], 18000);
+              Actions.AIEquipRate(2, 0, 250);
+              Actions.AIEquipRate(5, 0, 140);
+              Actions.AIRecruitLimit(5, 50);
+              TownHallAlly:= 200;
+              TownHallEnemy:= 270;
+              TownHallEnemyL:= 105;
+              Actions.HouseAllow(0, 27, False);
+              Actions.HouseAllow(0, 14, False);
+              Actions.HouseAllow(0, 9, False);
+              TownHallStage1Timer:= 6000;
+            end;
+    end;
+
+
+end;
+
+function StageAttackType: Integer;
+begin
+    case States.KamRandomI(12) of
+    0:result:=24;
+    1:result:=25;
+    2:result:=14;
+    3:result:=27;
+    4:result:=24;
+    5:result:=25;
+    6:result:=23;
+    7:result:=27;
+    8:result:=24;
+    9:result:=25;
+    10:result:=14;
+    11:result:=27;
+  end;
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+
+begin
+
+    begin
+    if Check[10] = 0 then
+      begin
+      text := text + '|<$6>: ' + Utils.TimeToString(PrisonerTime);
+      end;
+    if TownHallStage1Timer > 0 then
+    if TownHallStage1Timer < 1800 then
+      begin
+      text := text + '[$0909F6]' + '|<$12>: ' + Utils.TimeToString(TownHallStage1Timer) + '[]';
+      end;
+    end;
+
+text := text + ' ';
+Actions.OverlayTextSet(-1, text);
+end;
+
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(5,5));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(10,10));
+           end;
+         end;
+
+
+   end;
+
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 13 then
+  if States.HouseOwner(aHouse) = 0 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 27, True);
+  if States.HouseType(aHouse) = 27 then
+  if States.HouseOwner(aHouse) = 0 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 14, True);
+  if States.HouseType(aHouse) = 14 then
+  if States.HouseOwner(aHouse) = 0 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 9, True);
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check[44] = 0 then
+       begin
+          Check[44]:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$9>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure TownhallPrisoner();
+begin
+  case States.MissionDifficulty of
+  mdHard1:
+    begin
+    if States.StatArmyCount(3) < 65 then
+    if Check[10] = 0 then
+     begin
+      Actions.HouseTownHallEquip(States.HouseAt(140,157), 23, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(140,157), 25, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(166,144), 23, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(166,144), 25, 1);
+     end;
+    end;
+  mdHard3:
+    begin
+    if States.StatArmyCount(3) < 70 then
+    if Check[10] = 0 then
+     begin
+      Actions.HouseTownHallEquip(States.HouseAt(140,157), 23, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(140,157), 25, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(166,144), 23, 1);
+      Actions.HouseTownHallEquip(States.HouseAt(166,144), 25, 1);
+     end;
+    end;
+  end;
+end;
+
+procedure PhaseAttack();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.GiveGroup(6, StageAttackType, Utils.RandomRangeI(3,157), Utils.RandomRangeI(3,10), 4, 9, 3);
+      Actions.ShowMsg(0, '<$11>');
+    end;
+  end;
+end;
+
+procedure OnTick;
+begin
+
+  begin
+   ShowOverlayHard();
+  end;
+
+  begin
+    if States.GameTime = 30 then
+      begin
+        Actions.ShowMsg(0, '<$0>');
+        Actions.ShowMsg(0, '<$1>');
+      end;
+  end;
+
+  begin
+    if Check[10] = 0 then
+    if States.PlayerVictorious(0) = false then
+    if States.PlayerDefeated(0) = false then
+      begin
+        PrisonerTime:= PrisonerTime - 1;
+      end;
+  end;
+
+  begin
+  if TownHallStage1Timer > 0 then
+    TownHallStage1Timer:= TownHallStage1Timer - 1;
+  end;
+
+  begin
+  if States.UnitDead(PlayerVillager[Check[1]]) = true then
+    begin
+    Check[1]:= Utils.RandomRangeI(1,16);
+    end;
+  end;
+
+  begin
+  if PrisonerTime = 0 then
+  if States.StatCitizenCount(0) > 0 then
+    begin
+      Actions.UnitKill(PlayerVillager[Check[1]], false);
+      PrisonerTime:= 680;
+    end;
+  end;
+
+  begin
+  if States.PlayerDefeated(1) = true then
+  if States.PlayerDefeated(3) = true then
+  if Check[11] = 0 then
+    begin
+    Check[10]:= 1;
+    Check[11]:= 1;
+    Stage2:= 1;
+    Actions.FogCoverAll(2);
+    Actions.PlayerAllianceChange(2, 0, true, true);
+    Actions.PlayerAllianceChange(2, 1, true, false);
+    Actions.PlayerAllianceChange(2, 3, true, false);
+    Actions.PlayerAllianceChange(2, 4, true, false);
+    Actions.PlayerAllianceChange(2, 5, true, false);
+    Actions.PlayerAllianceChange(2, 6, true, false);
+    Actions.ShowMsg(0, '<$2>');
+    Actions.ShowMsg(0, '<$3>');
+    Actions.ShowMsg(0, '<$4>');
+    Actions.ShowMsg(0, '<$8>');
+    Actions.MapTileSet(153, 153, 221, 2);
+    Actions.MapTileSet(153, 154, 221, 2);
+    Actions.MapTileSet(153, 155, 221, 2);
+    Actions.MapTileSet(153, 156, 221, 2);
+    Actions.MapTileSet(153, 157, 221, 2);
+    Actions.MapTileSet(153, 158, 221, 2);
+    Actions.MapTileSet(153, 159, 221, 2);
+    Actions.MapTileSet(154, 153, 221, 2);
+    Actions.MapTileSet(154, 154, 221, 2);
+    Actions.MapTileSet(154, 155, 221, 2);
+    Actions.MapTileSet(154, 156, 221, 2);
+    Actions.MapTileSet(154, 157, 221, 2);
+    Actions.MapTileSet(154, 158, 221, 2);
+    Actions.MapTileSet(154, 159, 221, 2);
+    Group[1]:= Actions.GiveGroup(0, 15, 24, 152, 1, 12, 4);
+    Group[2]:= Actions.GiveGroup(0, 19, 36, 157, 1, 9, 3);
+    Group[3]:= Actions.GiveGroup(0, 17, 48, 164, 1, 9, 3);
+    Group[4]:= Actions.GiveGroup(0, 14, 54, 159, 1, 15, 5);
+    Actions.UnitHungerSet(Group[1], 12000);
+    Actions.UnitHungerSet(Group[2], 12000);
+    Actions.UnitHungerSet(Group[3], 12000);
+    Actions.UnitHungerSet(Group[4], 12000);
+    Actions.GiveUnit(0, 0, 12, 159, 5);
+    Actions.GiveUnit(0, 9, 12, 160, 5);
+    Actions.GiveUnit(0, 0, 12, 159, 5);
+    Actions.GiveUnit(0, 9, 12, 160, 5);
+    Actions.GiveUnit(0, 0, 12, 159, 5);
+    Actions.GiveUnit(0, 9, 12, 160, 5);
+    Actions.GiveUnit(0, 0, 12, 159, 5);
+    Actions.GiveUnit(0, 9, 12, 160, 5);
+    Actions.GiveUnit(0, 0, 12, 159, 5);
+    Actions.GiveUnit(0, 1, 12, 160, 5);
+    Actions.GiveUnit(0, 1, 12, 159, 5);
+    Actions.GiveUnit(0, 10, 12, 160, 5);
+    Actions.GiveUnit(0, 10, 12, 159, 5);
+    Actions.GiveUnit(0, 5, 12, 159, 5);
+    Actions.GroupKillAll(Guard[1], false);
+    Actions.GroupKillAll(Guard[2], false);
+    Actions.PlanAddHouse(2, 21, 140, 157);
+    Actions.PlanAddHouse(2, 18, 166, 144);
+    Actions.HouseDestroy(States.HouseAt(144,164), false);
+    Actions.HouseDestroy(States.HouseAt(132,147), false);
+    Actions.HouseDestroy(States.HouseAt(119,137), false);
+    Actions.HouseDestroy(States.HouseAt(128,132), false);
+    Actions.HouseDestroy(States.HouseAt(134,124), false);
+    Actions.HouseDestroy(States.HouseAt(153,124), false);
+    Actions.HouseDestroy(States.HouseAt(146,117), false);
+    Actions.HouseDestroy(States.HouseAt(154,111), false);
+    AttackTime:= States.GameTime + 10400;
+    Actions.AIAttackAdd(5, true, AttackTime, 48, 0, 0, 0, 0, true, attClosestBuildingFromArmy, Pos);
+    end;
+  end;
+
+    begin
+    if Check[10] = 1 then
+      begin
+        for A1:= 1 to 16 do
+          begin
+          Actions.UnitOrderWalk(PlayerVillager[A1], 41, 153);
+          end;
+        Check[10]:= 2;
+      end;
+    end;
+
+    begin
+    if States.GameTime > 27000 then
+    if States.GameTime mod 6000 = 0 then
+     begin
+     Check[2]:= Check[2] + 1;
+     end;
+    end;
+
+    begin
+     if States.GameTime > 27000 then
+     if States.GameTime < 54000 then
+     if States.GameTime mod 6000 = 0 then
+     if States.PlayerVictorious(0) = false then
+     if States.PlayerDefeated(0) = false then
+      begin
+      Actions.GiveGroup(6, 14, 21, 6, 4, Utils.RandomRangeI(8,12) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      Actions.GiveGroup(6, 24, 58, 6, 4, Utils.RandomRangeI(8,12) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      Actions.GiveGroup(6, 25, 57, 14, 4, Utils.RandomRangeI(8,12) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      end;
+     if States.GameTime > 54000 then
+     if States.GameTime mod 5400 = 0 then
+     if States.PlayerVictorious(0) = false then
+     if States.PlayerDefeated(0) = false then
+      begin
+      Actions.GiveGroup(6, 15, 19, 9, 4, Utils.RandomRangeI(6,9) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      Actions.GiveGroup(6, 19, 62, 9, 4, Utils.RandomRangeI(6,9) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      Actions.GiveGroup(6, 21, 55, 20, 4, Utils.RandomRangeI(6,9) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      Actions.GiveGroup(6, 27, 71, 9, 4, Utils.RandomRangeI(7,12) + Check[2], Utils.RandomRangeI(3,4) + Check[2]/4);
+      end;
+    end;
+
+    begin
+      if States.GameTime = 23400 then
+        begin
+        Actions.ShowMsg(0, '<$7>');
+        end;
+    end;
+
+    begin
+    if States.GameTime > 22200 then
+    if States.GameTime mod TownHallEnemyL = 0 then
+    if States.StatArmyCount(5) < 60 then
+      begin
+        Actions.HouseTownHallEquip(States.HouseAt(140,14), 26, 1);
+        Actions.HouseTownHallEquip(States.HouseAt(140,14), 25, 1);
+        Actions.HouseTownHallEquip(States.HouseAt(140,14), 25, 1);
+      end;
+    if States.GameTime > 22200 then
+    if States.GameTime mod TownHallEnemy = 0 then
+      begin
+        Actions.HouseTownHallEquip(States.HouseAt(140,14), 27, 1);
+        Actions.HouseTownHallEquip(States.HouseAt(140,14), 23, 1);
+      end;
+    end;
+
+
+    begin
+     if Check[20] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[1], 84, 141, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(84,141) = Cavalry[1] then
+      begin
+      Check[20]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[20] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[1], 92, 155, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(92,155) = Cavalry[1] then
+      begin
+      Check[20]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[21] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[2], 77, 107, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(77,107) = Cavalry[2] then
+      begin
+      Check[21]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[21] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[2], 93, 128, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(93,128) = Cavalry[2] then
+      begin
+      Check[21]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[22] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[3], 102, 88, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(102,88) = Cavalry[3] then
+      begin
+      Check[22]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[22] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[3], 115, 105, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(115,105) = Cavalry[3] then
+      begin
+      Check[22]:= 0;
+      end;
+    end;
+
+        begin
+     if Check[23] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[4], 100, 159, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(100,159) = Cavalry[4] then
+      begin
+      Check[23]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[23] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[4], 102, 159, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(102,159) = Cavalry[4] then
+      begin
+      Check[23]:= 0;
+      end;
+    end;
+
+     begin
+     if Check[24] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[5], 102, 158, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(102,158) = Cavalry[5] then
+      begin
+      Check[24]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[24] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[5], 102, 151, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(102,151) = Cavalry[5] then
+      begin
+      Check[24]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[25] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[6], 102, 150, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(102,150) = Cavalry[6] then
+      begin
+      Check[25]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[25] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[6], 100, 150, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(100,150) = Cavalry[6] then
+      begin
+      Check[25]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[26] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[7], 99, 141, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(99,141) = Cavalry[7] then
+      begin
+      Check[26]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[26] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[7], 99, 145, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(99,145) = Cavalry[7] then
+      begin
+      Check[26]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[27] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[8], 101, 139, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(101,139) = Cavalry[8] then
+      begin
+      Check[27]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[27] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[8], 106, 134, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(106,134) = Cavalry[8] then
+      begin
+      Check[27]:= 0;
+      end;
+    end;
+
+    begin
+     if Check[28] = 0 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[9], 93, 168, 5);
+      end;
+    end;
+
+    begin
+     if States.GroupAt(93,168) = Cavalry[9] then
+      begin
+      Check[28]:= 1;
+      end;
+    end;
+
+    begin
+     if Check[28] = 1 then
+      begin
+      Actions.GroupOrderWalk(Cavalry[9], 98, 163, 5);
+      end;
+    end;
+
+    begin
+     if States.GameTime > 20 then
+     if States.GroupAt(98,163) = Cavalry[9] then
+      begin
+      Check[28]:= 0;
+      end;
+    end;
+
+    begin
+    if TownHallStage1Timer = 0 then
+    if States.GameTime mod TownHallEnemyL = 0 then
+     begin
+      TownhallPrisoner();
+     end;
+    end;
+
+
+    begin
+    if (Check[10] = 0) then
+    if (States.StatArmyCount(0) = 0) or (States.StatCitizenCount(0) = 0) then
+     begin
+     Actions.PlayerDefeat(0);
+     Check[10]:= 3;
+     end;
+    end;
+
+    begin
+    if Check[10] = 2 then
+      begin
+        Actions.HouseTownHallMaxGold(States.HouseAt(166,144), 25);
+      end;
+    end;
+
+    begin
+    if States.HouseType(States.HouseAt(166,144)) = 18 then
+    if Check[10] = 2 then
+    if States.GameTime mod TownHallAlly = 0 then
+    if States.StatArmyCount(2) < 110 then
+      begin
+       Actions.HouseTownHallEquip(States.HouseAt(166,144), 27, 1);
+       Actions.HouseTownHallEquip(States.HouseAt(166,144), 26, 1);
+      end;
+    end;
+
+    begin
+    if States.StatArmyCount(2) >= 100 then
+    if States.GameTime mod 2700 = 0 then
+    if States.PlayerVictorious(0) = false then
+    if States.PlayerDefeated(0) = false then
+      begin
+      Actions.GiveGroup(2, Utils.RandomRangeI(14,15), 155, 164, 0, 15, 5);
+      Actions.GiveGroup(2, Utils.RandomRangeI(14,15), 163, 163, 0, 15, 5);
+      Actions.GiveGroup(2, 19, 167, 153, 0, 15, 5);
+      Actions.GiveGroup(2, 19, 160, 166, 0, 15, 5);
+      end;
+    end;
+
+    begin
+    if States.GameTime > 44999 then
+    if States.GameTime mod 3000 = 0 then
+      PhaseAttackTimer:= Utils.RandomRangeI(10,2990);
+    end;
+
+    begin
+    if States.GameTime > 45000 then
+    if PhaseAttackTimer > 0 then
+    if States.PlayerVictorious(0) = false then
+    if States.PlayerDefeated(0) = false then
+      PhaseAttackTimer:= PhaseAttackTimer - 1;
+    end;
+
+    begin
+    if States.GameTime > 45000 then
+    if PhaseAttackTimer = 0 then
+    if States.PlayerVictorious(0) = false then
+    if States.PlayerDefeated(0) = false then
+      begin
+      PhaseAttackTimer:= 99999;
+      PhaseAttack();
+      end;
+    end;
+
+
+
+end;

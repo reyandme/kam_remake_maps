@@ -1,0 +1,444 @@
+var
+PT: Integer;
+Repair: Integer;
+PTEnd: Integer;
+Agroboost: Integer;
+PTVeryHardPoint: Integer;
+Check: array [0..100] of Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+ PT:= 24000;
+ PTVeryHardPoint:= PT;
+ Agroboost:= 0;
+ Actions.ShowMsg(0, '<$1>');
+ Actions.ShowMsg(0, '<$3>');
+ DCB_Mode:= DCB_ALL;
+ DCB_HouseDamage := 5;
+
+ case States.MissionDifficulty of
+ mdHard3:
+         begin
+            PT:= Utils.RandomRangeI(23400,24600);
+            PTVeryHardPoint:= PT;
+            Actions.HouseAllow(0, 8, false);
+            Actions.GiveRoad(4, 78, 15);
+            Actions.GiveRoad(4, 79, 15);
+            Actions.GiveRoad(4, 80, 15);
+            Actions.GiveHouse(4, 18, 80, 14);
+            Actions.GiveRoad(1, 167, 117);
+            Actions.GiveRoad(1, 166, 117);
+            Actions.GiveRoad(1, 165, 117);
+            Actions.GiveRoad(1, 164, 117);
+            Actions.GiveHouse(1, 18, 164, 116);
+
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 1, 64);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 2, 50);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 7, 64);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 9, 12);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 12, 4);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 22, 5);
+
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 8, 60);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 10, 51);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 13, 38);
+            Actions.HouseTakeWaresFrom(States.HouseAt(132,71), 27, 28);
+
+            Actions.HouseAddWaresTo(States.HouseAt(132,71), 1, 30);
+            Actions.HouseAddWaresTo(States.HouseAt(132,71), 2, 30);
+            Actions.HouseAddWaresTo(States.HouseAt(132,71), 7, 30);
+
+            Actions.HouseAddDamage(States.HouseAt(125,80), 25);
+            Actions.ShowMsg(0, '<$6>');
+         end;
+ end;
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+begin
+
+  case States.MissionDifficulty of
+  mdHard1:
+          begin
+
+            begin
+
+              begin
+              if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+                begin
+                  begin
+                  if PT > 0 then
+                  text := text + '|<$0>: ' + '[$6BFAF1]' + Utils.TimeToString(PT) + '[]';
+                  end;
+                end;
+              end;
+
+            text := text + ' ';
+            Actions.OverlayTextSet(-1, text);
+            end;
+
+          end;
+
+  mdHard3:
+          begin
+
+            begin
+
+              begin
+              if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+                begin
+                  begin
+                  if PT > 0 then
+                  text := text + '|<$0>: ' + '[$6BFAF1]' + '??:??:??' + '[]';
+                  end;
+                end;
+              end;
+
+            text := text + ' ';
+            Actions.OverlayTextSet(-1, text);
+            end;
+
+          end;
+  end;
+
+end;
+
+procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+ case States.MissionDifficulty of
+ mdHard1:
+  begin
+  if States.HouseOwner(aHouse) = 0 then
+  if States.HouseType(aHouse) = 29 then
+  if States.GameTime < 650 then
+    begin
+      Repair:= -1;
+    end;
+  end;
+ mdHard3:
+  begin
+  if States.HouseOwner(aHouse) = 0 then
+  if States.HouseType(aHouse) = 29 then
+  if States.GameTime < 590 then
+    begin
+      Repair:= -1;
+    end;
+  end;
+  end;
+end;
+
+procedure OnUnitAttacked(aUnit: Integer; aAttacker: Integer);
+begin
+ if (States.UnitOwner(aUnit) > 4) and (States.UnitOwner(aAttacker) = 0) then
+  if Agroboost >= 0 then
+    begin
+      Agroboost:= 1;
+    end;
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 0 then
+    if States.HouseOwner(aHouse) = 0 then
+      begin
+        Actions.HouseUnlock(0, 8);
+      end;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check[44] = 0 then
+       begin
+          Check[44]:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$7>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure TownHallRecruit(houseId: integer);
+begin
+
+  if States.HouseResourceAmount(houseId, 7) >= 5 then
+  begin
+    if Utils.RandomRangeI(1,10) < 6 then
+      begin
+       Actions.HouseTownHallEquip(houseId , 24, 1);
+       Actions.HouseTownHallEquip(houseId, 25, 1);
+      end else
+      begin
+        Actions.HouseTownHallEquip(houseId, 27, 1);
+      end;
+  end;
+end;
+
+
+procedure BarrackUnlockHard();
+var
+Units: Integer;
+AAI: Integer;
+begin
+  case States.MissionDifficulty of
+  mdHard1:
+          begin
+
+            begin
+              begin
+              for AAI:= 0 to 0 do
+                begin
+                for Units:= 14 to 27 do
+                  begin
+                    Actions.UnitBlock(AAI, Units, false);
+                  end;
+                end;
+              end;
+            Actions.ShowMsg(0, '<$2>');
+            end;
+
+          end;
+  end;
+
+end;
+
+procedure BarrackUnlockVeryHard();
+var
+Units: Integer;
+AAI: Integer;
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+
+            begin
+              begin
+              for AAI:= 0 to 0 do
+                begin
+                for Units:= 14 to 27 do
+                  begin
+                    Actions.UnitBlock(AAI, Units, false);
+                  end;
+                end;
+              end;
+            end;
+
+          end;
+  end;
+
+end;
+
+procedure TownhallVH(houseid: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.HouseAddWaresTo(houseid, 7, 5);
+          end;
+  end;
+end;
+
+procedure Storehouses(houseid: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.HouseAddWaresTo(houseid, 20, 1);
+            if Utils.RandomRangeI(1,2) = 1 then
+              begin
+               Actions.HouseAddWaresTo(houseid, 16, 1);
+              end else
+              begin
+               Actions.HouseAddWaresTo(houseid, 18, 1);
+              end;
+          end;
+  end;
+end;
+
+procedure Villagers();
+begin
+  case States.MissionDifficulty of
+  mdHard1:
+          begin
+            Repair:= 1;
+            Actions.ShowMsg(0, '<$4>');
+            Actions.GiveUnit(0, 0, 123, 79, 5);
+            Actions.GiveUnit(0, 0, 123, 79, 5);
+            Actions.GiveUnit(0, 0, 123, 79, 5);
+            Actions.GiveUnit(0, 9, 123, 79, 5);
+            Actions.GiveUnit(0, 9, 123, 79, 5);
+            Actions.GiveUnit(0, 9, 123, 79, 5);
+            Actions.GiveUnit(0, 9, 123, 79, 5);
+          end;
+  mdHard3:
+          begin
+            Repair:= 1;
+            Actions.ShowMsg(0, '<$5>');
+          end;
+  end;
+end;
+
+procedure PTEnd0();
+begin
+  case States.MissionDifficulty of
+  mdHard1:
+          begin
+          Actions.PlayWAV(-1, 'PTend', 1);
+          PTEnd:= 1;
+          end;
+  mdHard3:
+          begin
+          Actions.PlayWAV(-1, 'Scoutleatherflute', 1);
+          PTEnd:= 1;
+          end;
+  end;
+end;
+
+procedure OnTick;
+var
+Units: Integer;
+AAI: Integer;
+AAI2: Integer;
+begin
+
+  begin
+    ShowOverlayHard();
+  end;
+
+  begin
+  if PT > 0 then
+    begin
+      PT:= PT - 1;
+    end;
+  end;
+
+  begin
+  if PT = 0 then
+  if PTEnd = 0 then
+    begin
+      PTEnd0();
+    end;
+  end;
+
+  begin
+  if States.HouseDestroyed(States.HouseAt(125,80)) = false then
+  if States.HouseTypeMaxHealth(States.HouseType(States.HouseAt(125,80))) - States.HouseDamage(States.HouseAt(125,80)) < States.HouseTypeMaxHealth(States.HouseType(States.HouseAt(125,80))) then
+  if Repair = 0 then
+  if States.GameTime mod 6 = 0 then
+    begin
+     Actions.HouseAddDamage(States.HouseAt(125,80), 5);
+    end;
+  end;
+
+  begin
+  if States.HouseDestroyed(States.HouseAt(125,80)) = false then
+  if States.HouseTypeMaxHealth(States.HouseType(States.HouseAt(125,80))) - States.HouseDamage(States.HouseAt(125,80)) = States.HouseTypeMaxHealth(States.HouseType(States.HouseAt(125,80))) then
+  if Repair = 0 then
+    begin
+    Repair:= 1;
+    end;
+  end;
+
+  begin
+  if States.HouseDestroyed(States.HouseAt(125,80)) = true then
+  if Repair = 0 then
+    begin
+      Villagers();
+    end;
+  end;
+
+  begin
+  if PT = 350 then
+    begin
+    BarrackUnlockHard();
+    end;
+  end;
+
+  begin
+  if PT = 0 then
+    begin
+    BarrackUnlockVeryHard();
+    end;
+  end;
+
+  begin
+  if PT = 0 then
+    begin
+      for AAI:= 1 to 4 do
+        begin
+          for Units:= 14 to 27 do
+            begin
+              Actions.UnitBlock(AAI, Units, false);
+            end;
+        end;
+    end;
+  end;
+
+  begin
+  if PT = 0 then
+    begin
+      begin
+        for AAI:= 1 to 6 do
+          begin
+            for AAI2:= 1 to 6 do
+              begin
+                Actions.PlayerAllianceChange(AAI, AAI2, true, true);
+              end;
+          end;
+      end;
+    PT:= -1;
+    end;
+  end;
+
+  begin
+  if (States.GameTime = PTVeryHardPoint + 4200) or (Agroboost > 0) then
+   begin
+    begin
+      for AAI:= 5 to 6 do
+        begin
+          for Units:= 14 to 27 do
+            begin
+              Actions.UnitBlock(AAI, Units, false);
+            end;
+        end;
+    end;
+    Agroboost:= -1;
+   end;
+  end;
+
+  if States.GameTime mod 450 = 0 then
+  begin
+
+    TownHallRecruit(States.HouseAt(183,9));
+    TownHallRecruit(States.HouseAt(84,115));
+    TownHallRecruit(States.HouseAt(10,28));
+    TownHallRecruit(States.HouseAt(21,85));
+    TownHallRecruit(States.HouseAt(80,14));
+    TownHallRecruit(States.HouseAt(164,116));
+
+    case States.MissionDifficulty of
+    mdHard3:
+            begin
+            TownhallVH(States.HouseAt(183,9));
+            TownhallVH(States.HouseAt(84,115));
+            TownhallVH(States.HouseAt(10,28));
+            TownhallVH(States.HouseAt(21,85));
+            TownhallVH(States.HouseAt(80,14));
+            TownhallVH(States.HouseAt(164,116));
+            end;
+    end;
+
+  end;
+
+end;

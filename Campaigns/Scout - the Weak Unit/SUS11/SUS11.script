@@ -1,0 +1,1270 @@
+var
+GameStartTimer: Integer;
+Stage: Integer;
+Point: array [0..100] of Integer;
+Point1Time: Integer;
+Point2: Integer;
+Point2Time: Integer;
+ReinforcementsTime: Integer;
+RPointX: array [1..200] of Integer;
+RPointY: array [1..200] of Integer;
+ERPointX: array [1..200] of Integer;
+ERPointY: array [1..200] of Integer;
+RPointInt: Integer;
+F: Integer;
+TimeDelayStage: array [1..4] of Integer;
+AttackStage21: Integer;
+AttackStage22: Integer;
+ReinforcementPlayerStage2: Integer;
+EndAttackStage: array [1..10] of Integer;
+Pos: TKMPoint;
+Storehouse: Integer;
+PointAttackStage21: Integer;
+PointAttackStage22: Integer;
+Melee: array [0..26] of Integer;
+Ranger: array [0..26] of Integer;
+Cavalry: array [0..26] of Integer;
+AntiCavalry: array [0..26] of Integer;
+MeleeLimit: array [0..26] of Integer;
+RangerLimit: array [0..26] of Integer;
+CavalryLimit: array [0..26] of Integer;
+AntiCavalryLimit: array [0..26] of Integer;
+ResetPoint: array [0..27] of Integer;
+PointStage2: Integer;
+UnitofShit: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+
+
+  begin
+    UnitofShit:= 0;
+    AttackStage21:= 39000;
+    AttackStage22:= 60000;
+    ReinforcementPlayerStage2:= 72000;
+    GameStartTimer:= 330;
+    Actions.ShowMsg(0, '<$3>');
+    Pos.X:= 49;
+    Pos.Y:= 159;
+    DCB_Mode:= DCB_ALL;
+    DCB_HouseDamage := 8;
+    Actions.LogLinesMaxCnt(0);
+    ////////////////////////////////////
+    Melee[10]:= 45;
+    Ranger[10]:= 90;
+    Cavalry[10]:= 45;
+    AntiCavalry[10]:= 30;
+    MeleeLimit[10]:= 45;
+    RangerLimit[10]:= 90;
+    CavalryLimit[10]:= 75;
+    AntiCavalryLimit[10]:= 30;
+    //
+    Melee[12]:= 45;
+    Ranger[12]:= 45;
+    Cavalry[12]:= 0;
+    AntiCavalry[12]:= 0;
+    MeleeLimit[12]:= 75;
+    RangerLimit[12]:= 45;
+    CavalryLimit[12]:= 30;
+    AntiCavalryLimit[12]:= 0;
+    //
+    Melee[14]:= 0;
+    Ranger[14]:= 45;
+    Cavalry[14]:= 30;
+    AntiCavalry[14]:= 120;
+    MeleeLimit[14]:= 0;
+    RangerLimit[14]:= 60;
+    CavalryLimit[14]:= 45;
+    AntiCavalryLimit[14]:= 150;
+    //
+    Melee[15]:= 45;
+    Ranger[15]:= 45;
+    Cavalry[15]:= 45;
+    AntiCavalry[15]:= 60;
+    MeleeLimit[15]:= 45;
+    RangerLimit[15]:= 45;
+    CavalryLimit[15]:= 90;
+    AntiCavalryLimit[15]:= 60;
+    //
+    Melee[19]:= 30;
+    Ranger[19]:= 120;
+    Cavalry[19]:= 60;
+    AntiCavalry[19]:= 60;
+    MeleeLimit[19]:= 30;
+    RangerLimit[19]:= 120;
+    CavalryLimit[19]:= 150;
+    AntiCavalryLimit[19]:= 60;
+    //
+    Melee[20]:= 0;
+    Ranger[20]:= 0;
+    Cavalry[20]:= 0;
+    AntiCavalry[20]:= 0;
+    MeleeLimit[20]:= 0;
+    RangerLimit[20]:= 30;
+    CavalryLimit[20]:= 30;
+    AntiCavalryLimit[20]:= 30;
+  end;
+
+  begin
+    RPointX[1]:= 5;
+    RPointY[1]:= 175;
+
+    RPointX[2]:= 10;
+    RPointY[2]:= 180;
+
+    RPointX[3]:= 5;
+    RPointY[3]:= 183;
+
+    RPointX[4]:= 7;
+    RPointY[4]:= 195;
+
+    RPointX[5]:= 13;
+    RPointY[5]:= 196;
+
+    RPointX[6]:= 21;
+    RPointY[6]:= 195;
+
+    RPointX[7]:= 27;
+    RPointY[7]:= 196;
+
+    RPointX[8]:= 32;
+    RPointY[8]:= 196;
+
+    RPointX[9]:= 37;
+    RPointY[9]:= 196;
+
+    RPointX[10]:= 42;
+    RPointY[10]:= 196;
+
+    RPointX[11]:= 47;
+    RPointY[11]:= 196;
+
+    RPointX[12]:= 52;
+    RPointY[12]:= 196;
+
+    RPointX[13]:= 57;
+    RPointY[13]:= 196;
+
+    RPointX[14]:= 62;
+    RPointY[14]:= 196;
+
+    RPointX[15]:= 67;
+    RPointY[15]:= 196;
+
+    RPointX[16]:= 72;
+    RPointY[16]:= 195;
+
+    RPointX[17]:= 76;
+    RPointY[17]:= 194;
+
+    RPointX[18]:= 81;
+    RPointY[18]:= 195;
+
+    RPointX[19]:= 80;
+    RPointY[19]:= 190;
+
+//////////////////////////////////ESt-1
+
+    ERPointX[20]:= 7;
+    ERPointY[20]:= 83;
+
+    ERPointX[21]:= 23;
+    ERPointY[21]:= 84;
+
+    ERPointX[22]:= 71;
+    ERPointY[22]:= 66;
+
+    ERPointX[23]:= 88;
+    ERPointY[23]:= 46;
+
+    ERPointX[24]:= 94;
+    ERPointY[24]:= 100;
+
+    ERPointX[25]:= 109;
+    ERPointY[25]:= 110;
+
+    ERPointX[26]:= 173;
+    ERPointY[26]:= 82;
+
+    ERPointX[27]:= 191;
+    ERPointY[27]:= 99;
+
+    ERPointX[28]:= 161;
+    ERPointY[28]:= 196;
+
+    ERPointX[29]:= 170;
+    ERPointY[29]:= 146;
+
+    ERPointX[30]:= 115;
+    ERPointY[30]:= 130;
+  end;
+
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.HouseAllow(0, 29, false);
+          end;
+  end;
+
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+
+begin
+
+   begin
+   if Stage = 0 then
+   if GameStartTimer > 0 then
+      begin
+      text := text + '|<$5>: ' + '[$6BFAF1]' + Utils.TimeToString(GameStartTimer) + '[]';
+      end;
+   if Stage = 1 then
+      begin
+      if Point[0] = 1 then
+        begin
+          text := text + '|<$0> ';
+        end;
+      if Point[0] = 2 then
+        begin
+          text := text + '[$25F609]' + '<$0> ' + '[]';
+        end;
+      if Point[0] = 3 then
+        begin
+          text := text + '[$0909F6]' + '<$0> ' + '[]';
+        end;
+      if Point[1] = 1 then
+      if Point1Time > 0 then
+        begin
+          text := text + '||- <$1>  ' + '[$6BFAF1]' + Utils.TimeToString(Point1Time) + '[]';
+        end;
+      if Point[1] = 2 then
+        begin
+          text := text + '[$25F609]' + '||- <$1> ' + '[]';
+        end;
+      if Point[1] = 3 then
+      if Point1Time = 0 then
+        begin
+          text := text + '[$0909F6]' + '||- <$1> ' + '[]';
+        end;
+      if Point[2] = 1 then
+        begin
+          text := text + '|- <$2> ' + '[$6BFAF1]' + Utils.TimeToString(Point2Time) + '[]';
+        end;
+      if Point[2] = 2 then
+        begin
+          text := text  + '[$25F609]' + '|- <$2> ' + '[]';
+        end;
+      if Point[2] = 3 then
+        begin
+          text := text  + '[$0909F6]' + '|- <$2> ' + '[]';
+        end;
+      end;
+    if Stage = 2 then
+      begin
+        if (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+          begin
+            if ReinforcementPlayerStage2 > 0 then
+            text := text + '|<$15>: ' + '[$6BFAF1]' + Utils.TimeToString(ReinforcementPlayerStage2) + '[]';
+            if AttackStage21 > 0 then
+            text := text + '||<$13> ' + '[$6BFAF1]' + Utils.TimeToString(AttackStage21) + '[]';
+            if AttackStage22 > 0 then
+            text := text + '||<$14> ' + '[$6BFAF1]' + Utils.TimeToString(AttackStage22) + '[]';
+          end;
+      end;
+   end;
+
+text := text + ' ';
+Actions.OverlayTextSet(-1, text);
+end;
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25) or (States.UnitType(aAttacker) = 18)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(2,2));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(4,4));
+           end;
+         end;
+
+
+   end;
+
+end;
+
+procedure Stage1();
+begin
+  Stage:= 1;
+  Point[0]:= 1;
+  Point[1]:= 1;
+  ReinforcementsTime:= 140;
+  RPointInt:= Utils.RandomRangeI(1,19);
+  Point1Time:= 8550;
+end;
+
+function ReinforcementTypeStage1: Integer;
+begin
+case States.MissionDifficulty of
+mdHard1:
+ begin
+  case States.KamRandomI(12) of
+    0:result:=15;
+    1:result:=16;
+    2:result:=18;
+    3:result:=17;
+    4:result:=19;
+    5:result:=20;
+    6:result:=21;
+    7:result:=15;
+    8:result:=16;
+    9:result:=19;
+    10:result:=20;
+    11:result:=21;
+  end;
+ end;
+mdHard3:
+ begin
+  case States.KamRandomI(12) of
+    0:result:=15;
+    1:result:=16;
+    2:result:=18;
+    3:result:=17;
+    4:result:=19;
+    5:result:=20;
+    6:result:=27;
+    7:result:=15;
+    8:result:=16;
+    9:result:=19;
+    10:result:=20;
+    11:result:=27;
+  end;
+ end;
+end;
+
+end;
+
+
+function EnemyForceStage1: Integer;
+begin
+  case States.KamRandomI(7) of
+    0:result:=27;
+    1:result:=27;
+    2:result:=15;
+    3:result:=17;
+    4:result:=19;
+    5:result:=27;
+    6:result:=21;
+  end;
+end;
+
+function Attackdirection: TKMAIAttackTarget;
+begin
+  case States.KamRandomI(5) of
+    0:result:= attClosestUnit;
+    1:result:= attClosestUnit;
+    2:result:= attClosestBuildingFromArmy;
+    3:result:= attClosestBuildingFromStartPos;
+    4:result:= attCustomPosition;
+  end;
+end;
+
+procedure ReinforcementInformationStage1();
+begin
+
+    begin
+      if Point[2] = 0 then
+      if Stage = 1 then
+        ReinforcementsTime := 140;
+      if Point[2] > 0 then
+      if Stage = 1 then
+        ReinforcementsTime := 400;
+    end;
+
+  if States.StatArmyCount(0) < 200 then
+  if Stage = 1 then
+  for F:= 1 to 5 do
+  begin
+
+      begin
+        RPointInt:= Utils.RandomRangeI(1,19);
+        if RPointInt < 7 then
+          begin
+            Actions.GiveGroup(0, ReinforcementTypeStage1, RPointX[RPointInt], RPointY[RPointInt], 1, 12, 4);
+          end;
+        if RPointInt >= 7 then
+        if RPointInt < 16 then
+          begin
+            Actions.GiveGroup(0, ReinforcementTypeStage1, RPointX[RPointInt], RPointY[RPointInt], 0, 12, 4);
+          end;
+        if RPointInt >= 16 then
+          begin
+            Actions.GiveGroup(0, ReinforcementTypeStage1, RPointX[RPointInt], RPointY[RPointInt], 7, 12, 4);
+          end;
+      end;
+  end;
+
+end;
+
+procedure Melees(PlayerID: Integer);
+begin
+ Melee[PlayerID]:= Melee[PlayerID] + 1;
+end;
+
+procedure Rangers(PlayerID: Integer);
+begin
+ Ranger[PlayerID]:= Ranger[PlayerID] + 1;
+end;
+
+procedure Cavalrys(PlayerID: Integer);
+begin
+ Cavalry[PlayerID]:= Cavalry[PlayerID] + 1;
+end;
+
+procedure AntiCavalrys(PlayerID: Integer);
+begin
+ AntiCavalry[PlayerID]:= AntiCavalry[PlayerID] + 1;
+end;
+
+procedure LMelees(PlayerID: Integer);
+begin
+ Melee[PlayerID]:= Melee[PlayerID] - 1;
+end;
+
+procedure LRangers(PlayerID: Integer);
+begin
+ Ranger[PlayerID]:= Ranger[PlayerID] - 1;
+end;
+
+procedure LCavalrys(PlayerID: Integer);
+begin
+ Cavalry[PlayerID]:= Cavalry[PlayerID] - 1;
+end;
+
+procedure LAntiCavalrys(PlayerID: Integer);
+begin
+ AntiCavalry[PlayerID]:= AntiCavalry[PlayerID] - 1;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  if States.UnitType(aUnit) = 26 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     Melees(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 25 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     Rangers(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 27 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     Cavalrys(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 24 then
+ if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     AntiCavalrys(States.UnitOwner(aUnit) + 1);
+    end;
+
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if UnitofShit = 0 then
+       begin
+          UnitofShit:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$22>');
+        end;
+      end;
+
+    end;
+  end;
+
+end;
+
+procedure OnUnitDied(aUnit: Integer; aKillerOwner: Integer);
+begin
+  if (aKillerOwner = 0) or (aKillerOwner = -1) then
+        begin
+
+  if States.UnitType(aUnit) = 26 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     LMelees(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 14 then
+  if (States.UnitOwner(aUnit) = 9) then
+    begin
+     LMelees(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 25 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     LRangers(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 27 then
+  if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     LCavalrys(States.UnitOwner(aUnit) + 1);
+    end;
+  if States.UnitType(aUnit) = 24 then
+ if (States.UnitOwner(aUnit) = 9) or (States.UnitOwner(aUnit) = 11) or (States.UnitOwner(aUnit) = 13) or (States.UnitOwner(aUnit) = 14) or (States.UnitOwner(aUnit) = 18) or (States.UnitOwner(aUnit) = 19) then
+    begin
+     LAntiCavalrys(States.UnitOwner(aUnit) + 1);
+    end;
+
+        end;
+end;
+
+
+procedure EnemyReinforcementsStage1();
+begin
+
+    for F:= 1 to 5 do
+      begin
+        RPointInt:= Utils.RandomRangeI(20,30);
+        Actions.GiveGroup(21, EnemyForceStage1, ERPointX[RPointInt], ERPointY[RPointInt], 4, 12, 4);
+      end;
+    if Point[2] = 1 then
+    for F:= 1 to 5 do
+      begin
+        RPointInt:= Utils.RandomRangeI(20,30);
+        Actions.GiveGroup(21, EnemyForceStage1, ERPointX[RPointInt], ERPointY[RPointInt], 4, 12, 4);
+      end;
+
+end;
+
+procedure StartStage2();
+begin
+    Actions.UnitKill(States.UnitAt(48, 157), true);
+    Actions.UnitKill(States.UnitAt(49, 157), true);
+    Actions.UnitKill(States.UnitAt(50, 157), true);
+    Actions.UnitKill(States.UnitAt(48, 158), true);
+    Actions.UnitKill(States.UnitAt(49, 158), true);
+    Actions.UnitKill(States.UnitAt(50, 158), true);
+    Actions.UnitKill(States.UnitAt(48, 159), true);
+    Actions.UnitKill(States.UnitAt(49, 159), true);
+    Actions.UnitKill(States.UnitAt(50, 159), true);
+    Actions.GiveUnit(0, 0, 27, 197, 5);
+    Actions.GiveUnit(0, 0, 27, 197, 5);
+    Actions.GiveUnit(0, 0, 27, 197, 5);
+    Actions.GiveUnit(0, 0, 27, 197, 5);
+    Actions.GiveUnit(0, 0, 27, 197, 5);
+    Actions.GiveUnit(0, 9, 27, 197, 5);
+    Actions.GiveUnit(0, 9, 27, 197, 5);
+    Actions.GiveUnit(0, 9, 27, 197, 5);
+    begin
+    for F:= 1 to 20 do
+      begin
+      Actions.UnitKill(States.UnitAt(48, 157), true);
+      Actions.UnitKill(States.UnitAt(49, 157), true);
+      Actions.UnitKill(States.UnitAt(50, 157), true);
+      Actions.UnitKill(States.UnitAt(48, 158), true);
+      Actions.UnitKill(States.UnitAt(49, 158), true);
+      Actions.UnitKill(States.UnitAt(50, 158), true);
+      Actions.UnitKill(States.UnitAt(48, 159), true);
+      Actions.UnitKill(States.UnitAt(49, 159), true);
+      Actions.UnitKill(States.UnitAt(50, 159), true);
+      end;
+    end;
+end;
+
+function Types: Integer;
+begin
+  case States.KamRandomI(4) of
+    0:result:=26;
+    1:result:=25;
+    2:result:=27;
+    3:result:=24;
+  end;
+end;
+
+procedure Townhall(HouseID: Integer);
+begin
+if States.HouseDestroyed(HouseID) = false then
+if Stage = 2 then
+  begin
+      if ResetPoint[States.HouseOwner(HouseID)+1] = 0 then
+      if Types = 26 then
+      if Melee[States.HouseOwner(HouseID)+1] < MeleeLimit[States.HouseOwner(HouseID)+1] then
+          begin
+          Actions.HouseTownHallEquip(HouseID, 26, 1);
+          ResetPoint[States.HouseOwner(HouseID)+1]:= 1;
+          end;
+      if ResetPoint[States.HouseOwner(HouseID)+1] = 0 then
+      if Types = 25 then
+      if Ranger[States.HouseOwner(HouseID)+1] < RangerLimit[States.HouseOwner(HouseID)+1] then
+          begin
+          Actions.HouseTownHallEquip(HouseID, 25, 1);
+          ResetPoint[States.HouseOwner(HouseID)+1]:= 1;
+          end;
+      if ResetPoint[States.HouseOwner(HouseID)+1] = 0 then
+      if Types = 27 then
+      if Cavalry[States.HouseOwner(HouseID)+1] < CavalryLimit[States.HouseOwner(HouseID)+1] then
+          begin
+          Actions.HouseTownHallEquip(HouseID, 27, 1);
+          ResetPoint[States.HouseOwner(HouseID)+1]:= 1;
+          end;
+      if ResetPoint[States.HouseOwner(HouseID)+1] = 0 then
+      if Types = 24 then
+      if AntiCavalry[States.HouseOwner(HouseID)+1] < AntiCavalryLimit[States.HouseOwner(HouseID)+1] then
+          begin
+          Actions.HouseTownHallEquip(HouseID, 24, 1);
+          ResetPoint[States.HouseOwner(HouseID)+1]:= 1;
+          end;
+  end;
+end;
+
+function RPlayerStage2: Integer;
+begin
+  case States.KamRandomI(7) of
+    0:result:=16;
+    1:result:=18;
+    2:result:=20;
+    3:result:=16;
+    4:result:=18;
+    5:result:=20;
+    6:result:=22;
+  end;
+end;
+
+procedure ReinforcementsPlayerStage2();
+begin
+  if Stage = 2 then
+  for F:= 1 to 3 do
+  begin
+
+      begin
+        RPointInt:= Utils.RandomRangeI(1,19);
+          while States.GroupAt(RPointX[RPointInt], RPointY[RPointInt]) > 0 do
+            begin
+            RPointInt:= Utils.RandomRangeI(1,19);
+            end;
+        if RPointInt < 7 then
+          begin
+            Actions.GiveGroup(0, RPlayerStage2, RPointX[RPointInt], RPointY[RPointInt], 1, 15, 5);
+          end;
+        if RPointInt >= 7 then
+        if RPointInt < 16 then
+          begin
+            Actions.GiveGroup(0, RPlayerStage2, RPointX[RPointInt], RPointY[RPointInt], 0, 15, 5);
+          end;
+        if RPointInt >= 16 then
+          begin
+            Actions.GiveGroup(0, RPlayerStage2, RPointX[RPointInt], RPointY[RPointInt], 7, 15, 5);
+          end;
+      end;
+  end;
+  Actions.ShowMsg(0, '<$21>');
+  ReinforcementPlayerStage2:= 10200;
+end;
+
+procedure OnTick;
+var
+P: array [0..100] of Integer;
+Clear: Integer;
+Food: Integer;
+Buildings2: array of Integer;
+Units3: array of Integer;
+Units7: array of Integer;
+Units8: array of Integer;
+Units9: array of Integer;
+Units11: array of Integer;
+Units13: array of Integer;
+Units16: array of Integer;
+Units18: array of Integer;
+Units19: array of Integer;
+Units20: array of Integer;
+begin
+
+  begin
+    ShowOverlayHard();
+  end;
+
+  begin
+    if GameStartTimer = 0 then
+    if Stage = 0 then
+      begin
+        Stage1();
+      end;
+  end;
+
+  begin
+  if ReinforcementsTime > 0 then
+  if Stage = 1 then
+  if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+    begin
+      ReinforcementsTime := ReinforcementsTime - 1;
+    end;
+  end;
+
+  begin
+  if Point1Time > 0 then
+  if Stage = 1 then
+  if Point[1] = 1 then
+    Point1Time:= Point1Time - 1;
+  end;
+
+  begin
+  if ReinforcementsTime = 0 then
+  if Stage = 1 then
+    begin
+      ReinforcementInformationStage1();
+    end;
+  end;
+
+
+
+  begin
+  if GameStartTimer > 0 then
+    begin
+    GameStartTimer:= GameStartTimer - 1;
+    end;
+  end;
+
+  begin
+  if States.HouseDestroyed(States.HouseAt(59, 144)) = true then
+  if Stage = 1 then
+  if Point2 = 0 then
+  if States.GameTime mod 10 = 0 then
+    begin
+      Point2:= 1;
+      Point[2]:= 1;
+      Point[1]:= 2;
+      Actions.ShowMsg(0, '<$4>');
+      Point2Time:= 4550;
+    end;
+  end;
+
+  begin
+  if Point2Time > 0 then
+    begin
+    Point2Time:= Point2Time - 1;
+    end;
+  end;
+
+  begin
+  if Point2Time = 0 then
+  if Point[2] = 1 then
+  if Stage = 1 then
+    begin
+    Point[2] := 2;
+    TimeDelayStage[1]:= States.GameTime + 150;
+    Pointstage2:= States.GameTime + 600;
+    ReinforcementsTime := 1;
+    end;
+  end;
+
+  begin
+  if TimeDelayStage[1] < States.GameTime then
+  if Stage = 1 then
+  if Point[2] = 2 then
+    begin
+    Stage := 2;
+    StartStage2();
+    Actions.ShowMsg(0, '<$11>');
+    Actions.ShowMsg(0, '<$12>');
+    Actions.ShowMsg(0, '<$20>');
+	case States.MissionDifficulty of
+	mdHard3:
+		begin
+    			Actions.ShowMsg(0, '<$23>');
+    			Actions.ShowMsg(0, '<$24>');
+		end;
+	end;
+    Actions.FogRevealCircle(0, 190, 163, 10);
+    Actions.FogRevealCircle(0, 189, 135, 6);
+    Actions.FogRevealCircle(0, 114, 100, 6);
+    Actions.FogRevealCircle(0, 104, 93, 6);
+    Actions.FogRevealCircle(0, 98, 62, 6);
+    Actions.FogRevealCircle(0, 34, 62, 6);
+    Actions.FogRevealCircle(0, 57, 19, 6);
+    Actions.FogRevealCircle(0, 70, 86, 6);
+    Actions.FogRevealCircle(0, 134, 132, 9);
+    for F:= 1 to 20 do
+      begin
+        Actions.AIEquipRate(F, 0, 200);
+        Actions.AIEquipRate(F, 1, 200);
+      end;
+    end;
+  end;
+
+  begin
+   if Point[2] = 1 then
+   if Stage = 1 then
+   begin
+    P[2]:= 1;
+      begin
+        Buildings2:= States.PlayerGetAllHouses(P[2]);
+      end;
+   end;
+  end;
+
+  begin
+  if Point[2] = 1 then
+  if Stage = 1 then
+  if States.GameTime mod 10 = 0 then
+  if Length(Buildings2) > 0 then
+    begin
+      for Clear := Low(Buildings2) to High(Buildings2) do
+        begin
+        Actions.HouseAddDamage(Buildings2[Clear], Utils.RandomRangeI(1,2));
+        end;
+    end;
+  end;
+
+  begin
+  if Stage = 1 then
+  if States.GameTime mod 600 = 0 then
+    begin
+      EnemyReinforcementsStage1();
+    end;
+  end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ------ 2
+
+  begin
+  if States.GameTime mod 600 = 0 then
+    begin
+      if States.HouseDestroyed(States.HouseAt(170,165)) = false then
+      if States.HouseResourceAmount(States.HouseAt(170,165), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(170,165), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(170,165), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(78,75)) = false then
+      if States.HouseResourceAmount(States.HouseAt(78,75), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(78,75), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(78,75), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(24,53)) = false then
+      if States.HouseResourceAmount(States.HouseAt(24,53), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(24,53), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(24,53), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(62,4)) = false then
+      if States.HouseResourceAmount(States.HouseAt(62,4), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(62,4), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(62,4), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(171,36)) = false then
+      if States.HouseResourceAmount(States.HouseAt(171,36), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(171,36), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(171,36), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(145,4)) = false then
+      if States.HouseResourceAmount(States.HouseAt(145,4), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(145,4), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(145,4), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(149,8)) = false then
+      if States.HouseResourceAmount(States.HouseAt(149,8), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(149,8), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(149,8), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(189,4)) = false then
+      if States.HouseResourceAmount(States.HouseAt(189,4), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(189,4), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(189,4), 1);
+        end;
+      if States.HouseDestroyed(States.HouseAt(196,9)) = false then
+      if States.HouseResourceAmount(States.HouseAt(196,9), 7) < 100 then
+        begin
+        Actions.HouseAddWaresTo(States.HouseAt(196,9), 7, 800);
+        Actions.HouseTownHallMaxGold(States.HouseAt(196,9), 1);
+        end;
+    end;
+  end;
+
+
+  begin
+    if Stage = 2 then
+    if Storehouse = 0 then
+    if (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+      begin
+      Actions.GiveHouse(0, 11, 49, 159);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 1, 250);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 2, 70);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 7, 350);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 8, 90);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 10, 70);
+      Actions.HouseAddWaresTo(States.HouseAt(49,159), 13, 40);
+      end;
+  end;
+
+  begin
+   if States.HouseType(States.HouseAt(49,159)) = 11 then
+      Storehouse:= 1;
+  end;
+
+  begin
+  if Stage = 2 then
+  if (States.PlayerVictorious(0) = false) and (States.PlayerDefeated(0) = false) then
+    begin
+      if AttackStage21 > 0 then
+        AttackStage21:= AttackStage21 - 1;
+      if AttackStage22 > 0 then
+        AttackStage22:= AttackStage22 - 1;
+      if ReinforcementPlayerStage2 > 0 then
+        ReinforcementPlayerStage2:= ReinforcementPlayerStage2 - 1;
+    end;
+  end;
+
+
+  begin
+  if AttackStage21 = 0 then
+  if PointAttackStage21 = 0 then
+    PointAttackStage21:= States.GameTime;
+  if AttackStage21 = 0 then
+  if States.GameTime mod 5100 = 0 then
+    begin
+    for F:= 9 to 14 do
+      begin
+        Actions.AIAttackAdd(F, true, 0, 1, 0, 0, 0, 0, true, Attackdirection, Pos);
+        EndAttackStage[1]:= States.GameTime + 1200;
+      end;
+    end;
+  end;
+
+  begin
+  if AttackStage21 = 0 then
+  if States.GameTime = PointAttackStage21 + 10 then
+    begin
+    for F:= 9 to 14 do
+      begin
+        Actions.AIAttackAdd(F, true, 0, 1, 0, 0, 0, 0, true, Attackdirection, Pos);
+        EndAttackStage[1]:= States.GameTime + 1200;
+      end;
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime > EndAttackStage[1] then
+    begin
+      for F:= 9 to 14 do
+      Actions.AIAttackRemoveAll(F);
+    end;
+  end;
+
+  begin
+  if AttackStage22 = 0 then
+  if PointAttackStage22 = 0 then
+    PointAttackStage22:= States.GameTime;
+  if AttackStage22 = 0 then
+  if States.GameTime mod 5100 = 0 then
+    begin
+    for F:= 15 to 19 do
+      begin
+        Actions.AIAttackAdd(F, true, 0, 1, 0, 0, 0, 0, true, Attackdirection, Pos);
+        EndAttackStage[2]:= States.GameTime + 1200;
+      end;
+    end;
+  end;
+
+  begin
+  if AttackStage22 = 0 then
+  if States.GameTime = PointAttackStage22 + 10 then
+    begin
+    for F:= 15 to 19 do
+      begin
+        Actions.AIAttackAdd(F, true, 0, 1, 0, 0, 0, 0, true, Attackdirection, Pos);
+        EndAttackStage[2]:= States.GameTime + 1200;
+      end;
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime > EndAttackStage[2] then
+    begin
+      for F:= 15 to 19 do
+      Actions.AIAttackRemoveAll(F);
+    end;
+  end;
+
+  begin
+    Units3:= States.PlayerGetAllUnits(2);
+    Units7:= States.PlayerGetAllUnits(6);
+    Units8:= States.PlayerGetAllUnits(7);
+    Units9:= States.PlayerGetAllUnits(8);
+    Units11:= States.PlayerGetAllUnits(10);
+    Units13:= States.PlayerGetAllUnits(12);
+    Units16:= States.PlayerGetAllUnits(15);
+    Units18:= States.PlayerGetAllUnits(17);
+    Units19:= States.PlayerGetAllUnits(18);
+    Units20:= States.PlayerGetAllUnits(19);
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units3) > 0 then
+    begin
+      for Food := Low(Units3) to High(Units3) do
+        begin
+        Actions.UnitHungerSet(Units3[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units7) > 0 then
+    begin
+      for Food := Low(Units7) to High(Units7) do
+        begin
+        Actions.UnitHungerSet(Units7[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units8) > 0 then
+    begin
+      for Food := Low(Units8) to High(Units8) do
+        begin
+        Actions.UnitHungerSet(Units8[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units9) > 0 then
+    begin
+      for Food := Low(Units9) to High(Units9) do
+        begin
+        Actions.UnitHungerSet(Units9[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units11) > 0 then
+    begin
+      for Food := Low(Units11) to High(Units11) do
+        begin
+        Actions.UnitHungerSet(Units11[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units13) > 0 then
+    begin
+      for Food := Low(Units13) to High(Units13) do
+        begin
+        Actions.UnitHungerSet(Units13[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units16) > 0 then
+    begin
+      for Food := Low(Units16) to High(Units16) do
+        begin
+        Actions.UnitHungerSet(Units16[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units18) > 0 then
+    begin
+      for Food := Low(Units18) to High(Units18) do
+        begin
+        Actions.UnitHungerSet(Units18[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units19) > 0 then
+    begin
+      for Food := Low(Units19) to High(Units19) do
+        begin
+        Actions.UnitHungerSet(Units19[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(Units20) > 0 then
+    begin
+      for Food := Low(Units20) to High(Units20) do
+        begin
+        Actions.UnitHungerSet(Units20[Food], 27000);
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime mod 90 = 0 then
+    begin
+      for F:= 0 to 27 do
+        begin
+          ResetPoint[F]:= 0;
+        end;
+      if States.HouseDestroyed(States.HouseAt(170,165)) = false then
+      Townhall(States.HouseAt(170,165));
+      if States.HouseDestroyed(States.HouseAt(78,75)) = false then
+      Townhall(States.HouseAt(78,75));
+      if States.HouseDestroyed(States.HouseAt(24,53)) = false then
+      Townhall(States.HouseAt(24,53));
+      if States.HouseDestroyed(States.HouseAt(62,4)) = false then
+      Townhall(States.HouseAt(62,4));
+      if States.HouseDestroyed(States.HouseAt(171,36)) = false then
+      Townhall(States.HouseAt(171,36));
+      if States.HouseDestroyed(States.HouseAt(145,4)) = false then
+      Townhall(States.HouseAt(145,4));
+      if States.HouseDestroyed(States.HouseAt(149,8)) = false then
+      Townhall(States.HouseAt(149,8));
+      if States.HouseDestroyed(States.HouseAt(189,4)) = false then
+      Townhall(States.HouseAt(189,4));
+      if States.HouseDestroyed(States.HouseAt(196,9)) = false then
+      Townhall(States.HouseAt(196,9));
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime mod 120 = 0 then
+  if States.HouseDestroyed(States.HouseAt(185,111)) = false then
+  if States.HouseDestroyed(States.HouseAt(191,122)) = false then
+    begin
+      Actions.GiveUnit(10, 13, 185, 112, 4);
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime mod 120 = 0 then
+  if States.HouseDestroyed(States.HouseAt(98,53)) = false then
+  if States.HouseDestroyed(States.HouseAt(102,54)) = false then
+    begin
+      Actions.GiveUnit(12, 13, 98, 54, 4);
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime mod 120 = 0 then
+  if States.HouseDestroyed(States.HouseAt(131,24)) = false then
+  if States.HouseDestroyed(States.HouseAt(122,26)) = false then
+    begin
+      Actions.GiveUnit(15, 13, 131, 25, 4);
+    end;
+  end;
+
+  begin
+  if Stage = 2 then
+  if States.GameTime mod 120 = 0 then
+  if States.HouseDestroyed(States.HouseAt(176,8)) = false then
+  if States.HouseDestroyed(States.HouseAt(164,4)) = false then
+    begin
+      Actions.GiveUnit(17, 13, 176, 9, 4);
+    end;
+  end;
+
+  begin
+  if ReinforcementPlayerStage2 = 0 then
+    begin
+     ReinforcementsPlayerStage2();
+    end;
+  end;
+
+  begin
+  if States.PlayerVictorious(0) = true then
+  if Stage = 2 then
+    begin
+      Stage:= 3;
+    end;
+  end;
+
+  begin
+  if States.GameTime = 84000 then
+    begin
+    for F:= 1 to 20 do
+      begin
+        Actions.AIEquipRate(F, 0, 150);
+        Actions.AIEquipRate(F, 1, 150);
+      end;
+    end;
+  end;
+
+  begin
+  if States.GameTime = 120000 then
+    begin
+    for F:= 1 to 20 do
+      begin
+        Actions.AIEquipRate(F, 0, 80);
+        Actions.AIEquipRate(F, 1, 80);
+      end;
+    end;
+  end;
+
+/////////////////////////
+
+  begin
+  if Stage = 1 then
+  if Point1Time = 0 then
+    begin
+    Point[1]:= 3;
+    Actions.PlayerDefeat(0);
+    end;
+  end;
+
+  begin
+  if States.StatArmyCount(0) = 0 then
+  if Point[2] < 2 then
+  if Stage = 1 then
+    begin
+    Point[2]:= 3;
+    Actions.PlayerDefeat(0);
+    end;
+  end;
+
+  begin
+  if States.HouseDestroyed(States.HouseAt(49,159)) = true then
+  if Stage = 2 then
+  if States.GameTime > PointStage2 then
+    begin
+    Actions.PlayerDefeat(0);
+    end;
+  end;
+
+end;
