@@ -22,7 +22,6 @@ begin
   Actions.HouseWareBlock(States.HouseAt(110, 19), 19, true);
   Actions.HouseWareBlock(States.HouseAt(110, 19), 17, true);
   Actions.AIRecruitLimit(1, 50);
-  Actions.PlayWAV(-1, 'Start', 1);
   Actions.ShowMsg(0, '<$1>');
   Actions.ShowMsg(0, '<$2>');
 

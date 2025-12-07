@@ -12,7 +12,6 @@ begin
   Actions.HouseAllow(0, 17, false);
   PT:= 34800;
   VeryHardConst:= 0;
-  Actions.PlayOGG(-1, 'OctoberFest', 0.5);
   Actions.ShowMsg(0, '<$0>');
   case States.MissionDifficulty of
   mdHard3:
