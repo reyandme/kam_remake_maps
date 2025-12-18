@@ -34,7 +34,7 @@
 
 
 
-!SET_GROUP 22 0 224 4 1 1
+!SET_GROUP 24 0 224 4 1 1
 
 
 !SET_CURR_PLAYER 1
@@ -69,9 +69,9 @@
 
 
 
-!SET_GROUP 22 224 0 4 1 1
+!SET_GROUP 24 224 0 4 1 1
 
 
 //Animals
 
-//This mission was made with KaM Remake Map Editor version r15919 [ UNSECURE ] [ DEBUG ] at 18.12.2025 12:44:18
+//This mission was made with KaM Remake Map Editor version r15919 [ UNSECURE ] [ DEBUG ] at 18.12.2025 18:00:06
