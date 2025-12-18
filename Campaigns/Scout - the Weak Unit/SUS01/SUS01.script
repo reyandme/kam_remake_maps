@@ -1,0 +1,414 @@
+var
+StorehousePlayer: Integer;
+StorehouseEnemy: Integer;
+Pos: TKMPoint;
+TownhallEnemy: Integer;
+PlayerUnit: array [1..25] of Integer;
+Check: array [1..100] of Integer;
+GroupEnemy: array [1..8] of Integer;
+ScoutUnitofShit: Integer;
+TimeVeryHard: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+
+    begin
+
+      begin
+	DCB_Mode:= DCB_ALL;
+	DCB_HouseDamage := 5;
+        StorehousePlayer:= Actions.GiveHouse(0, 11, 33, 92);
+        Actions.HouseAddWaresTo(StorehousePlayer, 1, 75);
+        Actions.HouseAddWaresTo(StorehousePlayer, 2, 60);
+        Actions.HouseAddWaresTo(StorehousePlayer, 7, 425);
+
+        PlayerUnit[1]:= Actions.GiveUnit(0, 0, 37, 94, 5);
+        PlayerUnit[2]:= Actions.GiveUnit(0, 0, 37, 94, 5);
+        PlayerUnit[3]:= Actions.GiveUnit(0, 0, 37, 94, 5);
+        PlayerUnit[4]:= Actions.GiveUnit(0, 0, 37, 94, 5);
+        PlayerUnit[5]:= Actions.GiveUnit(0, 0, 37, 94, 5);
+
+        PlayerUnit[6]:= Actions.GiveUnit(0, 9, 37, 94, 5);
+        PlayerUnit[7]:= Actions.GiveUnit(0, 9, 37, 94, 5);
+        PlayerUnit[8]:= Actions.GiveUnit(0, 9, 37, 94, 5);
+        PlayerUnit[9]:= Actions.GiveUnit(0, 9, 37, 94, 5);
+
+        for Check[4]:= 1 to 9 do
+          begin
+          Actions.UnitHungerSet(PlayerUnit[Check[4]], 27000);
+          end;
+
+        StorehouseEnemy:= Actions.GiveHouse(2, 11, 27, 25);
+        TownhallEnemy:= Actions.GiveHouse(1, 18, 111, 14);
+        Actions.HouseTownHallMaxGold(TownhallEnemy, 20);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 1, 100);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 2, 90);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 7, 750);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 8, 40);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 10, 35);
+        Actions.HouseAddWaresTo(StorehouseEnemy, 13, 20);
+
+        Actions.GiveUnit(2, 0, 31, 27, 5);
+        Actions.GiveUnit(2, 0, 31, 27, 5);
+        Actions.GiveUnit(2, 0, 31, 27, 5);
+        Actions.GiveUnit(2, 0, 31, 27, 5);
+        Actions.GiveUnit(2, 0, 31, 27, 5);
+
+        Actions.GiveUnit(2, 9, 31, 27, 5);
+        Actions.GiveUnit(2, 9, 31, 27, 5);
+        Actions.GiveUnit(2, 9, 31, 27, 5);
+        Actions.GiveUnit(2, 9, 31, 27, 5);
+
+        GroupEnemy[1]:= Actions.GiveGroup(4, 14, 15, 30, 5, 12, 4);
+        GroupEnemy[2]:= Actions.GiveGroup(4, 14, 41, 29, 3, 12, 4);
+        GroupEnemy[3]:= Actions.GiveGroup(4, 25, 18, 23, 5, 4, 2);
+        GroupEnemy[4]:= Actions.GiveGroup(4, 25, 31, 26, 4, 4, 2);
+
+      end;
+
+      begin
+        Pos.X:= 0;
+        Pos.Y:= 0;
+        Actions.AIEquipRate(1, 0, 200);
+        Actions.AIAttackAdd(1, true, 17700, 30, 2, 0, 0, 0, false, attClosestBuildingFromStartPos, Pos);
+        Actions.AIAttackAdd(3, true, 0, 1, 0, 0, 0, 0, true, attClosestBuildingFromStartPos, Pos);
+        Actions.AIRecruitDelay(1, 7800);
+        TimeVeryHard:= 54000;
+      end;
+
+    end;
+
+    case States.MissionDifficulty of
+    mdHard3:
+      begin
+
+            Actions.HouseAllow(0, 27, False);
+            Actions.HouseAllow(0, 14, False);
+            Actions.HouseAllow(0, 9, False);
+
+
+          begin
+            Actions.AIEquipRate(1, 0, 100);
+            Actions.AIAttackAdd(1, true, 15900, 30, 2, 0, 0, 0, false, attClosestBuildingFromStartPos, Pos);
+            Actions.AIRecruitDelay(1, 6000);
+          end;
+
+          begin
+            Actions.HouseTakeWaresFrom(StorehousePlayer, 1, 12);
+            Actions.HouseTakeWaresFrom(StorehousePlayer, 2, 9);
+            Actions.HouseAddWaresTo(StorehousePlayer, 7, 63);
+          end;
+      end;
+    end;
+
+end;
+
+procedure OnUnitAttacked(aUnit: Integer; aAttacker: Integer);
+begin
+
+  begin
+    for Check[1]:= 0 to 27 do
+    if States.UnitOwner(aAttacker) = 0 then
+    if States.UnitOwner(aUnit) = 2 then
+    if Utils.InAreaI(States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 1, 18, 52, 54) then
+      begin
+      if Check[2] = 0 then
+        begin
+        Check[2]:= 1;
+        Check[3]:= States.GameTime + 1800;
+        Actions.GiveGroup(3, 14, 122, 88, 6, 12, 4)
+        Actions.GiveGroup(3, 14, 114, 97, 6, 12, 4)
+        Actions.GiveGroup(3, 27, 116, 119, 6, 12, 4)
+        end;
+      end;
+  end;
+
+  begin
+    for Check[1]:= 0 to 27 do
+    if States.UnitOwner(aAttacker) = 0 then
+    if States.UnitOwner(aUnit) = 2 then
+    if Utils.InAreaI(States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), 1, 18, 52, 54) then
+      begin
+      if ScoutUnitofShit = 0 then
+        begin
+        ScoutUnitofShit:= 1;
+        end;
+      end;
+  end;
+
+end;
+
+procedure ScoutUnitofShityes();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+    GroupEnemy[5]:= Actions.GiveGroup(5, 21, 7, 16, 4, 8, 4);
+    GroupEnemy[6]:= Actions.GiveGroup(5, 21, 7, 29, 4, 8, 4);
+    GroupEnemy[7]:= Actions.GiveGroup(5, 21, 36, 15, 4, 8, 4);
+    GroupEnemy[8]:= Actions.GiveGroup(5, 21, 26, 18, 4, 8, 4);
+    Actions.ShowMsg(0, '<$4>');
+    end;
+  end;
+end;
+
+procedure OverlayVeryHard();
+var text :string;
+
+begin
+
+  case States.MissionDifficulty of
+  mdHard3:
+   begin
+
+   begin
+   if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+    begin
+     text := text + '|<$3>: ' + '[$6BFAF1]' + Utils.TimeToString(TimeVeryHard) + '[]';
+    end;
+   end;
+
+    text := text + ' ';
+    Actions.OverlayTextSet(-1, text);
+
+  end;
+ end;
+
+end;
+
+procedure TimeVeryHardp();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+    if TimeVeryHard > 0 then
+      TimeVeryHard:= TimeVeryHard - 1;
+    end;
+  end;
+end;
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(4,4));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(8,8));
+           end;
+         end;
+
+
+   end;
+
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 18 then
+  if States.HouseOwner(aHouse) = 0 then
+    begin
+    Check[5]:= 1;
+    end;
+  if States.HouseType(aHouse) = 0 then
+  if States.HouseOwner(aHouse) = 0 then
+    begin
+    Actions.HouseUnlock(0, 18);
+    end;
+  if States.HouseType(aHouse) = 13 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 27, True);
+  if States.HouseType(aHouse) = 27 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 14, True);
+  if States.HouseType(aHouse) = 14 then
+    Actions.HouseAllow(States.HouseOwner(aHouse), 9, True);
+end;
+
+procedure Reinforcements();
+begin
+  case States.MissionDifficulty of
+  mdHard1:
+            begin
+              if States.GameTime > 44999 then
+              if States.GameTime mod 7500 = 0 then
+              if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+                begin
+                if Utils.RandomRangeI(1,2) = 1 then
+                  begin
+                  Actions.GiveGroup(3, 27, 9, 34, 4, 12, 4);
+                  Actions.GiveGroup(3, 27, 24, 21, 4, 12, 4);
+                  Actions.GiveGroup(3, 27, 39, 31, 4, 12, 4);
+                  end else
+                  begin
+                  Actions.GiveGroup(3, 27, 122, 88, 6, 12, 4);
+                  Actions.GiveGroup(3, 27, 114, 97, 6, 12, 4);
+                  Actions.GiveGroup(3, 27, 116, 119, 6, 12, 4);
+                  end;
+                end;
+            end;
+
+  mdHard3:
+            begin
+              if States.GameTime > 41999 then
+              if States.GameTime mod 5400 = 0 then
+              if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+                begin
+                if Utils.RandomRangeI(1,2) = 1 then
+                  begin
+                  Actions.GiveGroup(3, 27, 9, 34, 4, 15, 5);
+                  Actions.GiveGroup(3, 21, 24, 21, 4, 15, 5);
+                  Actions.GiveGroup(3, 27, 39, 31, 4, 15, 5);
+                  end else
+                  begin
+                  Actions.GiveGroup(3, 27, 122, 88, 6, 15, 5);
+                  Actions.GiveGroup(3, 21, 114, 97, 6, 15, 5);
+                  Actions.GiveGroup(3, 27, 116, 119, 6, 15, 5);
+                  end;
+                end;
+            end;
+
+  end;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check[44] = 0 then
+       begin
+          Check[44]:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$5>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure OnTick;
+begin
+
+
+      begin
+        Reinforcements();
+        TimeVeryHardp();
+        OverlayVeryHard();
+      end;
+
+      begin
+      if States.GameTime > 12000 then
+      if States.GameTime mod 1200 = 0 then
+       Check[6]:= Check[6] + 1;
+      end;
+
+      begin
+      if States.StatArmyCount(2) > 0 then
+      if States.GameTime > 12000 then
+      if States.GameTime mod 2400 = 0 then
+      if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+        begin
+          Actions.GiveGroup(2, 27, 9, 30, 4, 9 + Check[6], 3 + Check[6]/4)
+        end;
+      end;
+
+      begin
+      if Check[3] mod States.GameTime = 0 then
+       Check[2]:= 0;
+      end;
+
+      begin
+      if States.StatArmyCount(1) < 118 then
+       begin
+       Actions.HouseTownHallEquip(TownhallEnemy, 25, 1);
+       end;
+      end;
+
+
+      begin
+      if ScoutUnitofShit > 0 then
+        begin
+        ScoutUnitofShityes();
+        ScoutUnitofShit:= -1;
+        end;
+      end;
+
+
+
+      begin
+      if States.GameTime mod 600 = 0 then
+        begin
+        if States.GroupDead(GroupEnemy[1]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[1], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[2]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[2], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[3]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[3], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[4]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[4], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[5]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[5], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[6]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[6], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[7]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[7], 27000);
+          end;
+        if States.GroupDead(GroupEnemy[8]) = false then
+          begin
+          Actions.GroupHungerSet(GroupEnemy[8], 27000);
+          end;
+        end;
+      end;
+
+
+      begin
+      if States.GameTime = 30 then
+       Actions.ShowMsg(0, '<$0>');
+      end;
+
+      begin
+      if States.GameTime = 9600 then
+       Actions.ShowMsg(0, '<$1>');
+      end;
+
+      begin
+      if States.GameTime = 37800 then
+      if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+       Actions.ShowMsg(0, '<$2>');
+      end;
+
+      begin
+      if TimeVeryHard = 0 then
+      if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+       Actions.PlayerDefeat(0);
+      end;
+
+end;

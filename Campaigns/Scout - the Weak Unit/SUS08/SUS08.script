@@ -1,0 +1,154 @@
+var
+PT: Integer;
+Check: array [0..100] of Integer;
+VeryHardConst: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+  DCB_Mode:= DCB_ALL;
+  DCB_HouseDamage := 7;
+  Actions.HouseAllow(0, 17, false);
+  PT:= 34800;
+  VeryHardConst:= 0;
+  Actions.ShowMsg(0, '<$0>');
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.HouseAllow(0, 17, true);
+            VeryHardConst:= 600;
+          end;
+  end;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check[44] = 0 then
+       begin
+          Check[44]:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$2>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+
+procedure Beer();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.ShowMsg(0, '<$1>');
+          end;
+  end;
+end;
+
+procedure BeerOpening();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.GiveGroup(6, 24, 27, 98, 4, 1, 1);
+            Actions.GiveGroup(6, 24, 28, 126, 4, 1, 1);
+            Actions.GiveGroup(6, 24, 8, 101, 4, 1, 1);
+          end;
+  end;
+end;
+
+procedure OnHouseBuilt(aHouse: Integer);
+begin
+  if States.HouseType(aHouse) = 17 then
+    begin
+      Actions.HouseAllow(0, 17, false);
+    end;
+end;
+
+procedure OnTick;
+var
+P: Integer;
+Feed: Integer;
+UnitsFeed: array of Integer;
+Units: Integer;
+AAI: Integer;
+begin
+
+
+  begin
+  if PT > 0 then
+    begin
+      PT:= PT - 1;
+    end;
+  end;
+
+  begin
+  if (States.GameTime > (33600 - VeryHardConst)) and (States.GameTime < 34800) then
+  if States.GameTime mod 155 = 0 then
+    begin
+      Actions.HouseSchoolQueueAdd(States.HouseAt(17,14), 13, 1);
+      Actions.HouseSchoolQueueAdd(States.HouseAt(59,12), 13, 1);
+    end;
+  end;
+
+  begin
+   P:= Utils.RandomRangeI(3,5);
+   UnitsFeed:= States.PlayerGetAllGroups(P);
+   if Length(UnitsFeed) <= 0 then
+    exit;
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+  if Length(UnitsFeed) > 0 then
+    begin
+      for Feed := Low(UnitsFeed) to High(UnitsFeed) do
+        Actions.GroupHungerSet(UnitsFeed[Feed], 27000);
+    end;
+  end;
+
+  begin
+  if PT = 0 then
+    begin
+      for AAI:= 1 to 2 do
+        begin
+          for Units:= 14 to 27 do
+            begin
+              Actions.UnitBlock(AAI, Units, false);
+            end;
+        end;
+    end;
+  end;
+
+  begin
+  if States.GameTime = 230 then
+    begin
+      Beer();
+    end;
+  end;
+
+  begin
+  if States.GameTime = 300 then
+    begin
+      BeerOpening();
+    end;
+  end;
+
+  begin
+  if States.GameTime = 301 then
+    begin
+      Actions.GroupOrderAttackHouse(States.GroupAt(8,101), States.HouseAt(8,109));
+    end;
+  end;
+
+
+end;

@@ -1,0 +1,19 @@
+Author
+Classic, vovets1, MAP CREATOR: vovets1
+
+Version
+1.23a - 09.05.2024
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdHard1,mdHard3
+

@@ -1,0 +1,618 @@
+var
+MissionGameTime: Integer;
+AttackLevel: Integer;
+CheckAttackLevelTime: Integer;
+Pos: TKMPoint;
+Check: array [1..100] of Integer;
+CountGroupType: array [1..100] of Integer;
+BuildingDestroy: Integer;
+BanditsGroup: Integer;
+PointX: array [1..6] of Integer;
+PointY: array [1..6] of Integer;
+SpeedAttackTime: Integer;
+VeryHardDifficulty: Integer;
+P: Integer;
+J: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+  DCB_Mode:= DCB_ALL;
+  VeryHardDifficulty:= 0;
+  AttackLevel:= 0;
+  SpeedAttackTime:= 1200;
+  MissionGameTime:= 47100 + SpeedAttackTime;
+  Actions.ShowMsg(0, '<$0>');
+  Actions.ShowMsg(0, '<$1>');
+  Actions.ShowMsg(0, '<$2>');
+  Actions.ShowMsg(0, '<$8>');
+  Pos.X:= 0;
+  Pos.Y:= 0;
+  Actions.AIAutoAttackRange(2, 100);
+  Actions.AIAutoAttackRange(3, 100);
+  Actions.AIAutoAttackRange(4, 100);
+  BuildingDestroy:= 84;
+  BanditsGroup:= 5;
+
+  PointX[1]:= 5;
+  PointY[1]:= 165;
+
+  PointX[2]:= 5;
+  PointY[2]:= 12;
+
+  PointX[3]:= 114;
+  PointY[3]:= 6;
+
+  PointX[4]:= 218;
+  PointY[4]:= 164;
+
+  PointX[5]:= 190;
+  PointY[5]:= 219;
+
+  PointX[6]:= 68;
+  PointY[6]:= 219;
+
+  J:= 1;
+
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            MissionGameTime:= 24755 + SpeedAttackTime;
+            VeryHardDifficulty:= 1;
+            J:= 2;
+            Actions.ShowMsg(0, '<$10>');
+            Actions.HouseTakeWaresFrom(States.HouseAt(60,125), 26, 35);
+            Actions.HouseTakeWaresFrom(States.HouseAt(148,107), 26, 35);
+            Actions.HouseTakeWaresFrom(States.HouseAt(118,146), 26, 35);
+          end;
+  end;
+
+end;
+
+function GroupTypeX3: Integer;
+begin
+  case States.KamRandomI(10) of
+    0:result:=15;
+    1:result:=15;
+    2:result:=15;
+    3:result:=17;
+    4:result:=19;
+    5:result:=19;
+    6:result:=19;
+    7:result:=21;
+    8:result:=21;
+    9:result:=17;
+  end;
+end;
+
+function GroupTypeX4: Integer;
+begin
+  case States.KamRandomI(8) of
+    0:result:=20;
+    1:result:=20;
+    2:result:=20;
+    3:result:=20;
+    4:result:=20;
+    5:result:=20;
+    6:result:=18;
+    7:result:=18;
+  end;
+end;
+
+procedure OnHouseDestroyed(aHouse: Integer; aDestroyerIndex: Integer);
+begin
+  begin
+  if States.HouseOwner(aHouse) = 1 then
+  if States.HouseType(aHouse) >= 0 then
+  if BuildingDestroy > 0 then
+    begin
+      BuildingDestroy:= BuildingDestroy - 1;
+    end;
+  end;
+end;
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 1) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(1,1));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 1) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(1,1));
+           end;
+         end;
+
+
+   end;
+
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+
+begin
+
+   begin
+   if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+    begin
+      begin
+      if MissionGameTime > 0 then
+        text := text + '|<$5>: ' + '[$6BFAF1]' + Utils.TimeToString(MissionGameTime) + '[]';
+      end;
+        text := text + '|<$7>: ' + IntToStr(AttackLevel);
+        text := text + '||<$9>: ' + IntToStr(BuildingDestroy);
+    end;
+   end;
+
+text := text + ' ';
+Actions.OverlayTextSet(-1, text);
+end;
+
+procedure Bandits();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+
+            begin
+            P:= Utils.RandomRangeI(1,6);
+            end;
+
+            begin
+            if P < 3 then
+              begin
+              Actions.GiveGroup(5, 15, PointX[P], PointY[P], 3, BanditsGroup, 4);
+              end;
+            if (P >= 3) and (P <= 4) then
+              begin
+              Actions.GiveGroup(6, 15, PointX[P], PointY[P], 3, BanditsGroup, 4);
+              end;
+            if (P >= 5) and (P <= 6) then
+              begin
+              Actions.GiveGroup(7, 15, PointX[P], PointY[P], 3, BanditsGroup, 4);
+              end;
+            end;
+
+          end;
+  end;
+end;
+
+procedure Speed2();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            if States.HouseDestroyed(States.HouseAt(63,117)) = false then
+            Actions.GiveUnit(0, 13, 63, 118, 4);
+            if States.HouseDestroyed(States.HouseAt(153,108)) = false then
+            Actions.GiveUnit(0, 13, 153, 109, 4);
+            if States.HouseDestroyed(States.HouseAt(113,142)) = false then
+            Actions.GiveUnit(0, 13, 113, 143, 4);
+          end;
+  end;
+end;
+
+procedure OnTick;
+var
+Feed: Integer;
+Units: array of Integer;
+begin
+
+ begin
+  ShowOverlayHard();
+ end;
+
+  begin
+  if States.StatArmyCount(0) > 0 then
+  if VeryHardDifficulty > 0 then
+    Units:= States.PlayerGetAllUnits(0);
+  end;
+
+
+  begin
+  if States.GameTime mod 10 = 0 then
+  if Length(Units) > 0 then
+  if VeryHardDifficulty > 0 then
+    begin
+      for Feed := Low(Units) to High(Units) do
+        Actions.UnitHungerSet(Units[Feed], States.UnitHunger(Units[Feed])-10);
+    end;
+  end;
+
+ begin
+ if MissionGameTime > 0 then
+ if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+  MissionGameTime:= MissionGameTime - 1;
+ end;
+
+ begin
+ if States.GameTime = 1490/J then
+  begin
+  AttackLevel:= 1;
+  CheckAttackLevelTime:= States.GameTime + 2700/J;
+  Actions.PlayWAV(-1, 'GameStart', 1);
+  end;
+ end;
+
+ begin
+ if States.GameTime > 1490/J then
+ if States.GameTime > CheckAttackLevelTime then
+ if AttackLevel < 14 then
+  begin
+  AttackLevel:= AttackLevel + 1;
+  CheckAttackLevelTime:= States.GameTime + 2700/J;
+  end;
+ end;
+
+ begin
+ if (States.GameTime = 40049/J + SpeedAttackTime) or (States.GameTime = 41399/J + SpeedAttackTime) or (States.GameTime = 42749/J + SpeedAttackTime) or (States.GameTime = 44099/J + SpeedAttackTime) then
+  begin
+  AttackLevel:= AttackLevel + 1;
+  end;
+ end;
+
+ begin
+ if States.GameTime = 12300/J then
+  begin
+    Actions.ShowMsg(0, '<$3>');
+    Actions.UnitBlock(0, 15, false);
+    Actions.UnitBlock(0, 17, false);
+    Actions.UnitBlock(0, 19, false);
+    Actions.UnitBlock(0, 21, false);
+  end;
+ end;
+
+ begin
+ if States.GameTime = 23100/J then
+  begin
+    Actions.ShowMsg(0, '<$4>');
+    Actions.UnitBlock(0, 18, false);
+    Actions.UnitBlock(0, 20, false);
+  end;
+ end;
+
+ begin
+ if MissionGameTime = 0 then
+  begin
+   Actions.PlayerWin([0], true);
+  end;
+ end;
+
+ begin
+ if States.GameTime mod 450/J = 0 then
+  begin
+  Actions.AIAttackRemoveAll(2);
+  Actions.AIAttackRemoveAll(3);
+  Actions.AIAttackRemoveAll(4);
+    begin
+      if Utils.RandomRangeI(1,5) = 1 then
+        begin
+          Actions.AIAttackAdd(2, true, 1, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(2, true, 1, 1, 0, 0, 1, 0, false, attClosestBuildingFromArmy, Pos);
+        end;
+      if Utils.RandomRangeI(1,15) = 1 then
+        begin
+          Actions.AIAttackAdd(2, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(2, true, 1, 1, 0, 0, 0, 0, true, attClosestBuildingFromArmy, Pos);
+        end;
+    end;
+    begin
+      if Utils.RandomRangeI(1,5) = 1 then
+        begin
+          Actions.AIAttackAdd(3, true, 1, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(3, true, 1, 1, 0, 0, 1, 0, false, attClosestBuildingFromArmy, Pos);
+        end;
+      if Utils.RandomRangeI(1,15) = 1 then
+        begin
+          Actions.AIAttackAdd(3, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(3, true, 1, 1, 0, 0, 0, 0, true, attClosestBuildingFromArmy, Pos);
+        end;
+    end;
+    begin
+      if Utils.RandomRangeI(1,5) = 1 then
+        begin
+          Actions.AIAttackAdd(4, true, 1, 1, 0, 0, 1, 0, false, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(4, true, 1, 1, 0, 0, 1, 0, false, attClosestBuildingFromArmy, Pos);
+        end;
+      if Utils.RandomRangeI(1,15) = 1 then
+        begin
+          Actions.AIAttackAdd(4, true, 1, 1, 0, 0, 0, 0, true, attClosestUnit, Pos);
+        end else
+        begin
+          Actions.AIAttackAdd(4, true, 1, 1, 0, 0, 0, 0, true, attClosestBuildingFromArmy, Pos);
+        end;
+    end;
+  end;
+ end;
+
+
+ begin
+ if States.GameTime < 37801/J then
+ if States.GameTime = 1500/J + 2700*Check[1]/J then
+  begin
+  Check[1]:= Check[1] + 1;
+  CountGroupType[21]:= 0;
+  CountGroupType[22]:= 0;
+  CountGroupType[23]:= 0;
+  CountGroupType[24]:= 0;
+    while CountGroupType[21] < AttackLevel do
+      begin
+      Actions.GiveGroup(2, 24, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[21]:= CountGroupType[21] + 1;
+      end;
+    while CountGroupType[22] < AttackLevel/2 do
+      begin
+      Actions.GiveGroup(2, 25, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[22]:= CountGroupType[22] + 1;
+      end;
+    while CountGroupType[23] < AttackLevel/4 do
+      begin
+      Actions.GiveGroup(2, GroupTypeX3, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[23]:= CountGroupType[23] + 1;
+      end;
+    while CountGroupType[24] < AttackLevel/8 do
+      begin
+      Actions.GiveGroup(2, GroupTypeX4, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[24]:= CountGroupType[24] + 1;
+      end;
+  end;
+ end;
+
+{ begin
+ if States.GameTime mod 21600/J = 0 then
+  begin
+    Check[30]:= Check[30] + 1;
+  end;
+ end;}
+
+ begin
+ if States.GameTime < 38701/J then
+ if States.GameTime = 2400/J + 2700*Check[2]/J then
+  begin
+  Check[2]:= Check[2] + 1;
+  CountGroupType[31]:= 0;
+  CountGroupType[32]:= 0;
+  CountGroupType[33]:= 0;
+  CountGroupType[34]:= 0;
+    while CountGroupType[31] < AttackLevel do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, 24, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, 24, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[31]:= CountGroupType[31] + 1;
+      end;
+    while CountGroupType[32] < AttackLevel/2 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, 25, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, 25, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[32]:= CountGroupType[32] + 1;
+      end;
+    while CountGroupType[33] < AttackLevel/4 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, GroupTypeX3, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, GroupTypeX3, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[33]:= CountGroupType[33] + 1;
+      end;
+    while CountGroupType[34] < AttackLevel/8 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, GroupTypeX4, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, GroupTypeX4, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[34]:= CountGroupType[34] + 1;
+      end;
+  end;
+ end;
+
+ begin
+ if States.GameTime < 39601/J then
+ if States.GameTime = 3300/J + 2700*Check[3]/J then
+  begin
+  Check[3]:= Check[3] + 1;
+  CountGroupType[41]:= 0;
+  CountGroupType[42]:= 0;
+  CountGroupType[43]:= 0;
+  CountGroupType[44]:= 0;
+    while CountGroupType[41] < AttackLevel do
+      begin
+      Actions.GiveGroup(4, 24, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[41]:= CountGroupType[41] + 1;
+      end;
+    while CountGroupType[42] < AttackLevel/2 do
+      begin
+      Actions.GiveGroup(4, 25, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[42]:= CountGroupType[42] + 1;
+      end;
+    while CountGroupType[43] < AttackLevel/4 do
+      begin
+      Actions.GiveGroup(4, GroupTypeX3, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[43]:= CountGroupType[43] + 1;
+      end;
+    while CountGroupType[44] < AttackLevel/8 do
+      begin
+      Actions.GiveGroup(4, GroupTypeX4, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[44]:= CountGroupType[44] + 1;
+      end;
+  end;
+ end;
+
+ begin
+ if (States.GameTime = 40050/J + SpeedAttackTime) or (States.GameTime = 41400/J + SpeedAttackTime) or (States.GameTime = 42750/J + SpeedAttackTime) or (States.GameTime = 44100/J + SpeedAttackTime) then
+  begin
+  CountGroupType[21]:= 0;
+  CountGroupType[22]:= 0;
+  CountGroupType[23]:= 0;
+  CountGroupType[24]:= 0;
+    while CountGroupType[21] < AttackLevel do
+      begin
+      Actions.GiveGroup(2, 24, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[21]:= CountGroupType[21] + 1;
+      end;
+    while CountGroupType[22] < AttackLevel/2 do
+      begin
+      Actions.GiveGroup(2, 25, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[22]:= CountGroupType[22] + 1;
+      end;
+    while CountGroupType[23] < AttackLevel/4 do
+      begin
+      Actions.GiveGroup(2, GroupTypeX3, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[23]:= CountGroupType[23] + 1;
+      end;
+    while CountGroupType[24] < AttackLevel/8 do
+      begin
+      Actions.GiveGroup(2, GroupTypeX4, Utils.RandomRangeI(2,8), Utils.RandomRangeI(2,216), 2, 4, 2);
+      CountGroupType[24]:= CountGroupType[24] + 1;
+      end;
+  end;
+ end;
+
+ begin
+ if (States.GameTime = 40500/J + SpeedAttackTime) or (States.GameTime = 41850/J + SpeedAttackTime) or (States.GameTime = 43200/J + SpeedAttackTime) or (States.GameTime = 44550/J + SpeedAttackTime) then
+  begin
+  CountGroupType[31]:= 0;
+  CountGroupType[32]:= 0;
+  CountGroupType[33]:= 0;
+  CountGroupType[34]:= 0;
+    while CountGroupType[31] < AttackLevel do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, 24, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, 24, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[31]:= CountGroupType[31] + 1;
+      end;
+    while CountGroupType[32] < AttackLevel/2 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, 25, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, 25, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[32]:= CountGroupType[32] + 1;
+      end;
+    while CountGroupType[33] < AttackLevel/4 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, GroupTypeX3, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, GroupTypeX3, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[33]:= CountGroupType[33] + 1;
+      end;
+    while CountGroupType[34] < AttackLevel/8 do
+      begin
+      if Utils.RandomRangeI(1,2) = 1 then
+        begin
+        Actions.GiveGroup(3, GroupTypeX4, Utils.RandomRangeI(68,223), Utils.RandomRangeI(2,10), 2, 4 + Check[30], 2 + Check[30]/2);
+        end else
+        begin
+        Actions.GiveGroup(3, GroupTypeX4, Utils.RandomRangeI(218,223), Utils.RandomRangeI(2,185), 2, 4 + Check[30], 2 + Check[30]/2);
+        end;
+      CountGroupType[34]:= CountGroupType[34] + 1;
+      end;
+  end;
+ end;
+
+ begin
+ if (States.GameTime = 40950/J + SpeedAttackTime) or (States.GameTime = 42300/J + SpeedAttackTime) or (States.GameTime = 43650/J + SpeedAttackTime) or (States.GameTime = 45000/J + SpeedAttackTime) then
+  begin
+  CountGroupType[41]:= 0;
+  CountGroupType[42]:= 0;
+  CountGroupType[43]:= 0;
+  CountGroupType[44]:= 0;
+    while CountGroupType[41] < AttackLevel do
+      begin
+      Actions.GiveGroup(4, 24, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[41]:= CountGroupType[41] + 1;
+      end;
+    while CountGroupType[42] < AttackLevel/2 do
+      begin
+      Actions.GiveGroup(4, 25, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[42]:= CountGroupType[42] + 1;
+      end;
+    while CountGroupType[43] < AttackLevel/4 do
+      begin
+      Actions.GiveGroup(4, GroupTypeX3, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[43]:= CountGroupType[43] + 1;
+      end;
+    while CountGroupType[44] < AttackLevel/8 do
+      begin
+      Actions.GiveGroup(4, GroupTypeX4, Utils.RandomRangeI(28,205), Utils.RandomRangeI(212,223), 2, 4, 2);
+      CountGroupType[44]:= CountGroupType[44] + 1;
+      end;
+  end;
+ end;
+
+ begin
+ if States.GameTime > 150 then
+ if States.GameTime mod 150 = 0 then
+ if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+  Speed2();
+ end;
+
+ begin
+ if (BuildingDestroy = 0) or (States.HouseDestroyed(States.HouseAt(60,125)) = true) or (States.HouseDestroyed(States.HouseAt(118,146)) = true) or (States.HouseDestroyed(States.HouseAt(148,107)) = true) then
+  begin
+   Actions.PlayerDefeat(0);
+  end;
+ end;
+
+{begin
+ if States.GameTime mod 9000/J = 0 then
+  BanditsGroup:= BanditsGroup + 1;
+ end;
+
+ begin
+ if AttackLevel > 0 then
+ if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+ if States.GameTime mod 3150/J = 0 then
+    begin
+      Bandits();
+    end;
+ end;}
+
+end;

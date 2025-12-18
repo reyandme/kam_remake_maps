@@ -1,0 +1,19 @@
+Author
+Classic, vovets1, MAP CREATOR: FROST
+
+Version
+1.26 - 05.04.2025
+
+SetCoop
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+BlockFullMapPreview
+
+DifficultyLevels
+mdHard1,mdHard3
+

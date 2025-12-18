@@ -1,0 +1,254 @@
+var
+Time: Integer;
+Hardmode: Integer;
+Hardmode2: Integer;
+AttackGroup: Integer;
+Reinforcement: Integer;
+PointHardmode2: Integer;
+Check: Integer;
+Check2: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+begin
+
+  DCB_Mode:= DCB_ALL;
+  DCB_HouseDamage := 5;
+  Time:= 48000;
+  Hardmode:= 1;
+  Hardmode2:= 0;
+
+  Actions.HouseWareBlock(States.HouseAt(110, 19), 19, true);
+  Actions.HouseWareBlock(States.HouseAt(110, 19), 17, true);
+  Actions.AIRecruitLimit(1, 50);
+  Actions.ShowMsg(0, '<$1>');
+  Actions.ShowMsg(0, '<$2>');
+
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.ShowMsg(0, '<$3>');
+          end;
+  end;
+
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+
+begin
+
+   begin
+   if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+    begin
+      begin
+      if Time > 0 then
+      if Hardmode2 = 0 then
+        text := text + '|<$0>: ' + '[$6BFAF1]' + Utils.TimeToString(Time) + '[]';
+      end;
+    end;
+   end;
+
+text := text + ' ';
+Actions.OverlayTextSet(-1, text);
+end;
+
+procedure OnHouseDamaged(aHouse: Integer; aAttacker: Integer);
+var
+H: Integer;
+begin
+
+   begin
+
+
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(6,6));
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 0) and (States.UnitOwner(aAttacker) > 0) then
+           begin
+            Actions.HouseAddDamage(aHouse, Utils.RandomRangeI(12,12));
+           end;
+         end;
+
+
+   end;
+
+   begin
+   if Hardmode2 = 0 then
+   if States.GameTime < 48000 then
+         begin
+         for H:= 0 to 29 do
+          if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 1) and (States.UnitOwner(aAttacker) = 0) and ((States.UnitType(aAttacker) = 17) or (States.UnitType(aAttacker) = 25)) then
+           begin
+            Hardmode2:= 1;
+            PointHardmode2:= States.GameTime;
+            Actions.PlayWAV(-1, 'hardmode2', 1);
+           end else
+           if (States.HouseType(aHouse) = H) and (States.HouseOwner(aHouse) = 1) and (States.UnitOwner(aAttacker) = 0) then
+           begin
+            Hardmode2:= 1;
+            PointHardmode2:= States.GameTime;
+            Actions.PlayWAV(-1, 'hardmode2', 1);
+           end;
+         end;
+   end;
+
+end;
+
+procedure AAIScout();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.GiveGroup(4, 21, Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 12, 4);
+            Actions.GiveGroup(4, 21, Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 12, 4);
+            Actions.GiveGroup(4, 21, Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 12, 4);
+            Actions.GiveGroup(4, 21, Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 12, 4);
+            Actions.GiveGroup(4, 21, Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 12, 4);
+          end;
+  end;
+end;
+
+procedure OnUnitAttacked(aUnit: Integer; aAttacker: Integer);
+begin
+  if States.GameTime < 48000 then
+  if States.UnitOwner(aUnit) = 1 then
+  if States.UnitOwner(aAttacker) = 0 then
+  if Hardmode2 = 0 then
+    begin
+      Hardmode2:= 1;
+      PointHardmode2:= States.GameTime;
+      Actions.PlayWAV(-1, 'hardmode2', 1);
+      AAIScout();
+    end;
+  if States.UnitOwner(aAttacker) = 0 then
+  if Check = 0 then
+  if States.UnitOwner(aUnit) = 1 then
+    begin
+      Check:= 1;
+      Actions.AIDefencePositionAdd(1, 74, 12, 6, 0, 128, 0);
+      Actions.AIDefencePositionAdd(1, 78, 21, 6, 0, 128, 0);
+      Actions.AIDefencePositionAdd(1, 78, 31, 6, 0, 128, 0);
+      Actions.AIDefencePositionAdd(1, 74, 40, 6, 0, 128, 0);
+    end;
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check2 = 0 then
+       begin
+          Check2:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$4>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure TownHallBlock();
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+          begin
+            Actions.HouseAllow(0, 18, false);
+          end;
+  end;
+end;
+
+procedure OnTick;
+begin
+
+  begin
+  if States.GameTime = 10 then
+    TownHallBlock();
+  end;
+
+  begin
+   ShowOverlayHard();
+  end;
+
+  begin
+  if States.GameTime mod 600 = 0 then
+    begin
+      Actions.MarketSetTrade(States.HouseAt(105, 16), 19, 26, 2);
+      Actions.MarketSetTrade(States.HouseAt(112, 14), 19, 2, 4);
+      Actions.MarketSetTrade(States.HouseAt(114, 29), 17, 1, 2);
+    end;
+  end;
+
+  begin
+    if Time > 0 then
+    if Hardmode2 = 0 then
+      Time:= Time - 1;
+  end;
+
+  begin
+  if (States.GameTime > 48000) and (Hardmode2 = 0) then
+  if States.GameTime mod 5999 = 0 then
+    Reinforcement:= Reinforcement + 1;
+  end;
+
+  begin
+  if Hardmode2 = 1 then
+  if States.GameTime mod 5400 = 0 then
+    Reinforcement:= Reinforcement + 1;
+  end;
+
+  begin
+  if States.GameTime mod 6000 = 0 then
+  if (States.GameTime > 47999) and (Hardmode2 = 0) then
+    begin
+     for AttackGroup:= 1 to 8 do
+      begin
+        Actions.GiveGroup(2, Utils.RandomRangeI(15,22), Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 4 + 1*Reinforcement, 4 + Reinforcement/4);
+      end;
+    end;
+  end;
+
+  begin
+  if Hardmode2 = 1 then
+  if States.GameTime > PointHardmode2 then
+    begin
+     for AttackGroup:= 1 to 7 do
+      begin
+        Actions.GiveGroup(3, Utils.RandomRangeI(15,22), Utils.RandomRangeI(115,122), Utils.RandomRangeI(2,60), 6, 3 + 1*Reinforcement, 3 + Reinforcement/4);
+      end;
+    PointHardmode2:= States.GameTime + 1800;
+    end;
+  end;
+
+  begin
+  if States.GameTime > 47999 then
+  if States.GameTime mod 6000 = 0 then
+  if Check = 1 then
+    begin
+      Check:= 2;
+      Actions.AIDefencePositionRemove(1, 74, 12);
+      Actions.AIDefencePositionRemove(1, 78, 21);
+      Actions.AIDefencePositionRemove(1, 78, 31);
+      Actions.AIDefencePositionRemove(1, 74, 40);
+    end;
+  end;
+
+  begin
+  if Check = 2 then
+  if States.GameTime mod 2400 = 0 then
+    begin
+      Check:= 0;
+    end;
+  end;
+
+end;

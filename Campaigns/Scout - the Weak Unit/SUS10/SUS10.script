@@ -1,0 +1,174 @@
+var
+Peacetime: Integer;
+PointSet: Integer;
+Check: Integer;
+
+{$I DamageCloseBuildings.script}
+
+procedure OnMissionStart;
+var
+F: Integer;
+begin
+  Actions.ShowMsg(0, '<$0>');
+  Actions.ShowMsg(0, '<$1>');
+  Peacetime:= 36000;
+  PointSet:= 1;
+  DCB_Mode:= DCB_ALL;
+  DCB_HouseDamage := 6;
+  for F:= 2 to 5 do
+    begin
+      Actions.FogCoverAll(F);
+    end;
+
+  case States.MissionDifficulty of
+  mdHard1:
+          begin
+            Actions.HouseUnlock(0, 9);
+            Actions.HouseUnlock(0, 14);
+          end;
+  mdHard3:
+          begin
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 1, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 2, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 7, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 8, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 10, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 13, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(80,80), 27, 10);
+
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 7, 10);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 11, 4);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 16, 3);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 17, 5);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 19, 5);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 21, 5);
+            Actions.HouseTakeWaresFrom(States.HouseAt(52,75), 26, 3);
+
+          end;
+  end;
+
+end;
+
+function SetType: Integer;
+begin
+  case States.KaMRandomI(4) of
+    0:result:= 15;
+    1:result:= 16;
+    2:result:= 17;
+    3:result:= 18;
+  end;
+end;
+
+procedure ShowOverlayHard();
+var text :string;
+
+begin
+
+   begin
+   if Peacetime > 0 then
+      text := text + '|<$2>: ' + '[$D9CB8C]' + Utils.TimeToString(Peacetime) + '[]';
+   end;
+
+text := text + ' ';
+Actions.OverlayTextSet(-1, text);
+end;
+
+procedure OnWarriorEquipped(aUnit: Integer; aGroup: Integer);
+begin
+  case States.MissionDifficulty of
+  mdHard3:
+    begin
+
+      begin
+      if States.UnitType(aUnit) = 21 then
+      if States.UnitOwner(aUnit) = 0 then
+      if Check = 0 then
+       begin
+          Check:= -1;
+          Actions.PlayerDefeat(0);
+          Actions.ShowMsg(0, '<$4>');
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure OnTick;
+var
+F: Integer;
+Sas: Integer;
+begin
+
+  begin
+    ShowOverlayHard();
+  end;
+
+  begin
+  if Peacetime > 0 then
+  if (States.PlayerDefeated(0) = false) and (States.PlayerVictorious(0) = false) then
+    Peacetime:= Peacetime - 1;
+  end;
+
+
+  begin
+  if Peacetime = 6000 then
+    begin
+      Actions.ShowMsg(0, '<$3>');
+      for Sas:= 16 to 25 do
+        begin
+          Actions.HouseAddWaresTo(States.HouseAt(84,80), Sas, 12);
+        end;
+    end;
+  end;
+
+  begin
+  if Peacetime = 700 then
+    begin
+    for F:= 1 to 5 do
+      begin
+        Actions.AIDefencePositionAdd(F, 80, 80, 4, 0, 128, 1);
+        Actions.AIDefencePositionAdd(F, 80, 80, 4, 1, 128, 1);
+        Actions.AIDefencePositionAdd(F, 80, 80, 4, 2, 128, 1);
+        Actions.AIDefencePositionAdd(F, 80, 80, 4, 3, 128, 1);
+        Actions.AIAutoAttack(F, true);
+        Actions.AIAutoRepair(F, true);
+        Actions.AIDefendAllies(F, true);
+        Actions.AIAutoDefence(F, true);
+        Actions.AIEquipRate(F, 0, 1);
+        Actions.AIEquipRate(F, 1, 1);
+        for Sas:= 14 to 27 do
+          begin
+          Actions.UnitBlock(F, Sas, true);
+          end;
+      end;
+    end;
+  end;
+
+
+  begin
+  if Peacetime = 0 then
+    begin
+    for F:= 2 to 5 do
+      begin
+        Actions.PlayerAllianceChange(2, F, true, true);
+        Actions.PlayerAllianceChange(3, F, true, true);
+        Actions.PlayerAllianceChange(4, F, true, true);
+        Actions.PlayerAllianceChange(5, F, true, true);
+      end;
+    for F:= 14 to 27 do
+      begin
+        Actions.UnitBlock(0, F, false);
+        Actions.UnitBlock(1, F, false);
+        Actions.UnitBlock(2, F, false);
+        Actions.UnitBlock(3, F, false);
+        Actions.UnitBlock(4, F, false);
+        Actions.UnitBlock(5, F, false);
+      end;
+    Peacetime:= -1;
+    Actions.PlayWAV(-1, 'PTend', 1);
+    end;
+  end;
+
+
+end;
