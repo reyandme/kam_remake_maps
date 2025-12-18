@@ -1,0 +1,6 @@
+
+function GetSeed(): string;
+begin
+    //ENTER YOUR SEED HERE! LIKE THIS result := 'YOUR SEED';
+    result := '';
+end;
