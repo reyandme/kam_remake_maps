@@ -1,12 +1,6 @@
 ﻿Author
-Classic
+Classic|          Ritter des Todes
 
 Version
-1.09.31
-
-BigDescLIBX
-0
-
-DifficultyLevels
-mdEasy3,mdEasy2,mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
+1.11 (20.12.2025)
 
