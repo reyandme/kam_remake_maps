@@ -1,265 +1,134 @@
 //-- TBK04 --//
-//04.04.2025
+//20.01.2018
 
-const
-	HUMAN_PLAYER = 0;
+{$I difficulty.script}
 
-
-{$I Helpers.script}
-{$I SlowBuildOrder.script}
-
-
-procedure OnMissionStart();
-var
-	p: Integer;
-	aUnits, aHouses: array of Integer;
-	i: Integer;
-	aCustomPosition: TKMPoint;
+//Gives AI-Players Units a Random Hunger Level (2/3 to Max)
+procedure UnitsRandomHungerSet();
+var 
+	aUnits: array of Integer;
+	i, iGroup: Integer;
+	iPlayerLoop: Byte;
 begin
-	case States.MissionDifficulty() of
-    	mdEasy1: begin
-			//Groups of Player0
-			Actions.GroupHungerSet(Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 28, 71, dirSE, 6, 3), States.UnitMaxHunger());
-			Actions.GroupHungerSet(Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 28, 66, dirE, 6, 3), States.UnitMaxHunger());
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utAxeFighter, 81, 100, dirN, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 87, 99, dirNW, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 74, 98, dirNE, 9, 3);
-
-			//Player3
-            //Basic Setup
-            Actions.AIRecruitDelay(3, MinToTick(80));
-            Actions.AIEquipRate(3, 0, 495);
-			//Attacks
-            Actions.AIAttackRemoveAll(3);
-            Actions.AIAttackAdd(3, true, 0, 30, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utAxeFighter, 130, 80, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utAxeFighter, 133, 67, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utLanceCarrier, 132, 72, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 134, 80, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 136, 71, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 130, 85, dirNW, 4, 4);
-
-			//Player4
-            //Basic Setup
-            Actions.AIRecruitDelay(4, MinToTick(45));
-            Actions.AIEquipRate(4, 0, 460);
-
-			//Player5
-            //Basic Setup
-            Actions.AIRecruitDelay(5, MinToTick(53));
-            Actions.AIEquipRate(5, 0, 410);
-            //Attacks
-            Actions.AIAttackRemoveAll(5);
-            Actions.AIAttackAdd(5, true, 0, 36, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utAxeFighter, 74, 16, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 50, 9, dirW, 4, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 111, 11, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 69, 16, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 52, 14, dirSW, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 106, 11, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 53, 8, dirW, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 73, 13, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 65, 13, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 111, 8, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 96, 14, dirSE, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 58, 14, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 61, 17, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 100, 14, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 79, 14, dirS, 4, 4);
-
-			//Player6
-            //Basic Setup
-            Actions.AIRecruitDelay(6, MinToTick(60));
-            Actions.AIEquipRate(6, 0, 495);
-            //Attacks
-            Actions.AIAttackRemoveAll(6);
-            Actions.AIAttackAdd(6, true, 0, 30, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utAxeFighter, 122, 30, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 131, 47, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 124, 36, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 127, 41, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 121, 25, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 126, 30, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 130, 38, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 137, 48, dirW, 4, 4);
-    	end;
-    	mdNormal: begin
-			//Groups of Player0
-			Actions.GroupHungerSet(Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 28, 71, dirSE, 6, 3), States.UnitMaxHunger());
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 28, 66, dirE, 6, 3);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utAxeFighter, 81, 100, dirN, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 87, 99, dirNW, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 74, 98, dirNE, 9, 3);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utAxeFighter, 130, 80, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utAxeFighter, 133, 67, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utLanceCarrier, 132, 72, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 134, 80, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 136, 71, dirW, 4, 4);
-			Actions.GiveGroupEx(3, utBowman, 130, 85, dirNW, 4, 4);
-
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utAxeFighter, 74, 16, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 50, 9, dirW, 4, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 111, 11, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 69, 16, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 52, 14, dirSW, 4, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 106, 11, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 53, 8, dirW, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 73, 13, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 65, 13, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 111, 8, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 96, 14, dirSE, 4, 4);
-			Actions.GiveGroupEx(5, utBowman, 58, 14, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 61, 17, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 100, 14, dirS, 4, 4);
-			Actions.GiveGroupEx(5, utScout, 79, 14, dirS, 4, 4);
-
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utAxeFighter, 122, 30, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 131, 47, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 124, 36, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 127, 41, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 121, 25, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 126, 30, dirW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 130, 38, dirSW, 4, 4);
-			Actions.GiveGroupEx(6, utBowman, 137, 48, dirW, 4, 4);
-    	end;
-    	mdHard1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 28, 71, dirSE, 6, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 28, 66, dirE, 6, 3);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utAxeFighter, 81, 100, dirN, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 87, 99, dirNW, 9, 3);
-			Actions.GiveGroupEx(1, utRebel, 74, 98, dirNE, 9, 3);
-
-			//Player3
-            //Add Weapons to Barracks
-            GiveAllWeapons(3, 0, 9000);
-            //Basic Setup
-            Actions.AIWorkerLimit(3, 6);
-            Actions.HouseRepairEnable(3, true);
-            Actions.AIRecruitDelay(3, MinToTick(60));
-            Actions.AIEquipRate(3, 0, 385);
-            //Attacks
-            Actions.AIAttackRemoveAll(3);
-            Actions.AIAttackAdd(3, true, 0, 42, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utAxeFighter, 130, 80, dirW, 8, 4);
-			Actions.GiveGroupEx(3, utAxeFighter, 133, 67, dirW, 8, 4);
-			Actions.GiveGroupEx(3, utLanceCarrier, 132, 72, dirW, 8, 4);
-			Actions.GiveGroupEx(3, utBowman, 134, 80, dirW, 8, 4);
-			Actions.GiveGroupEx(3, utBowman, 136, 71, dirW, 8, 4);
-			Actions.GiveGroupEx(3, utBowman, 130, 85, dirNW, 8, 4);
-
-			//Player4
-            //Add Weapons to Barracks
-            GiveAllWeapons(4, 0, 9000);
-            //Basic Setup
-            Actions.AIWorkerLimit(4, 6);
-            Actions.HouseRepairEnable(4, true);
-            Actions.AIRecruitDelay(4, MinToTick(45));
-            Actions.AIEquipRate(4, 0, 235);
-
-			//Player5
-            //Add Weapons to Barracks
-            GiveAllWeapons(5, 0, 9000);
-            //Basic Setup
-            Actions.AIWorkerLimit(5, 6);
-            Actions.HouseRepairEnable(5, true);
-            Actions.AIDefendAllies(5, true);
-            Actions.AIRecruitDelay(5, MinToTick(67));
-            Actions.AIEquipRate(5, 0, 255);
-            //Attacks
-            Actions.AIAttackRemoveAll(5);
-            Actions.AIAttackAdd(5, true, 0, 60, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utAxeFighter, 74, 16, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 50, 9, dirW, 8, 4);
-			Actions.GiveGroupEx(5, utAxeFighter, 111, 11, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 69, 16, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 52, 14, dirSW, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 106, 11, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 53, 8, dirW, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 73, 13, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 65, 13, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 111, 8, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 96, 14, dirSE, 8, 4);
-			Actions.GiveGroupEx(5, utBowman, 58, 14, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utScout, 61, 17, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utScout, 100, 14, dirS, 8, 4);
-			Actions.GiveGroupEx(5, utScout, 79, 14, dirS, 8, 4);
-
-			//Player6
-            //Add Weapons to Barracks
-            GiveAllWeapons(6, 0, 9000);
-            //Basic Setup
-            Actions.AIWorkerLimit(6, 6);
-            Actions.HouseRepairEnable(6, true);
-            Actions.AIRecruitDelay(6, MinToTick(60));
-            Actions.AIEquipRate(6, 0, 300);
-            //Attacks
-            Actions.AIAttackRemoveAll(6);
-            Actions.AIAttackAdd(6, true, 0, 42, 1, 1, 1, 1, true, attClosestBuildingFromStartPos, aCustomPosition);
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utAxeFighter, 122, 30, dirW, 8, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 131, 47, dirSW, 8, 4);
-			Actions.GiveGroupEx(6, utAxeFighter, 124, 36, dirW, 8, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 127, 41, dirSW, 8, 4);
-			Actions.GiveGroupEx(6, utLanceCarrier, 121, 25, dirW, 8, 4);
-			Actions.GiveGroupEx(6, utBowman, 126, 30, dirW, 8, 4);
-			Actions.GiveGroupEx(6, utBowman, 130, 38, dirSW, 8, 4);
-			Actions.GiveGroupEx(6, utBowman, 137, 48, dirW, 8, 4);
-    	end;
-    end;
-
-    //Set Hunger Level of AIs
-    UnitsRandomHungerSet();
-
-    //Disable Sharing Fog
-    for p := 1 to States.StatPlayerCount -1 do
-    begin
-       	Actions.PlayerShareFogCompliment(HUMAN_PLAYER, p, false);
-    end;
-    //Cover All In Fog
-    Actions.FogCoverAll(HUMAN_PLAYER);
-
-    //Reveal Terrain For Units
-    aUnits := States.PlayerGetAllUnits(HUMAN_PLAYER);
-    for i := Low(aUnits) to High(aUnits) do
-    begin
-        Actions.FogRevealCircle(HUMAN_PLAYER, States.UnitPositionX(aUnits[i]), States.UnitPositionY(aUnits[i]), UnitSightRange(aUnits[i]));
-    end;
-    //Reveal Terrain For Buildings
-    aHouses := States.PlayerGetAllHouses(HUMAN_PLAYER);
-    for i := Low(aHouses) to  High(aHouses) do
-    begin
-        Actions.FogRevealCircle(HUMAN_PLAYER, States.HousePositionX(aHouses[i]), States.HousePositionY(aHouses[i]), HouseSightRange(aHouses[i]));
-    end;
+for iPlayerLoop := 0 to States.StatPlayerCount()-1 do
+	begin
+		if States.PlayerIsAI(iPlayerLoop) then
+		begin
+			aUnits := States.PlayerGetAllUnits(iPlayerLoop);
+			for i := 0 to Length(aUnits)-1 do
+			begin
+				if States.UnitsGroup(aUnits[i]) = -1 then
+				begin
+					Actions.UnitHungerSet(aUnits[i], States.UnitMaxHunger/2 + States.KaMRandomI(States.UnitMaxHunger/2 +1));
+				end else
+				begin
+					iGroup := States.UnitsGroup(aUnits[i]);
+					if States.GroupMember(iGroup, 0) = aUnits[i] then
+						Actions.GroupHungerSet(iGroup, States.UnitMaxHunger/2 + States.KaMRandomI(States.UnitMaxHunger/2 +1));
+				end;
+			end;
+		end;
+	end;
 end;
 
+//UnAllow ALL Buildings for specified Player
+procedure LockBuildings(iPlayer: Byte);
+var i: Byte;
+begin
+	for i := 0 to 29 do
+		if i <> 26 then //26 is not in use
+			Actions.HouseAllow(iPlayer, i, false);
+	Actions.HouseAllow(iPlayer, 11, true); //Storehouse always unlocked
+end;
+
+//Use Traditionl Unlock Order for Houses (Overwrites Static Script settings: Comment out Houses that are supposed to be blocked here!)
+procedure TraditionalUnlock(iPlayer: Byte; iHouseID: Integer);
+begin
+	case States.HouseType(iHouseID) of
+		0: 	begin //Sawmill
+			//	Actions.HouseAllow(iPlayer, 4, true); //Iron Mine
+				Actions.HouseAllow(iPlayer, 5, true); //Gold Mine
+				Actions.HouseAllow(iPlayer, 3, true); //Coal Mine
+				Actions.HouseAllow(iPlayer, 28, true); //Vineyard
+				Actions.HouseAllow(iPlayer, 8, true); //Farm
+				Actions.HouseAllow(iPlayer, 19, true); //Weapons Workshop
+				Actions.HouseAllow(iPlayer, 21, true); //Barracks
+				Actions.HouseAllow(iPlayer, 6, true); //Fisherman
+			end;
+		1: 	begin // Iron Smithy
+				Actions.HouseAllow(iPlayer, 2, true); //Weapon Smithy
+				Actions.HouseAllow(iPlayer, 10, true); //Armor Smithy
+			end;
+		2: exit; // Weapon Smithy
+		3: exit; //Coal Mine
+		4: Actions.HouseAllow(iPlayer, 1, true); //Iron Mine -> Iron Smithy
+		5: Actions.HouseAllow(iPlayer, 15, true); //Gold Mine -> Metallurgist
+		6: exit; //Fisherman's Hut
+		7: exit; //Bakery
+		8: 	begin //Farm
+				Actions.HouseAllow(iPlayer, 12, true); //Stables
+				Actions.HouseAllow(iPlayer, 16, true); //Swine Farm
+				Actions.HouseAllow(iPlayer, 22, true); //Mill
+			end;
+		9: Actions.HouseAllow(iPlayer, 0, true); //Woodcutter -> Sawmill
+		10: exit; //Armor Smithy
+		11: Actions.HouseAllow(iPlayer, 13, true); //Storehouse -> School
+		12: exit; //Stables
+		13: Actions.HouseAllow(iPlayer, 27, true); //School -> Inn
+		14: begin //Quarry
+				Actions.HouseAllow(iPlayer, 9, true); //Woodcutter
+			//	Actions.HouseAllow(iPlayer, 17, true); //Watch Tower
+			end;
+		15: exit; //Metallurgist's
+		16:	begin //Swine Farm
+				Actions.HouseAllow(iPlayer, 24, true); //Butcher
+				Actions.HouseAllow(iPlayer, 25, true); //Tannery
+			end;
+		17: exit; //Watch Tower
+		18: exit; //Townhall
+		19: exit; //Weapons Workshop
+		20: exit; //Armor Workshop
+		21: exit; //Barracks
+		22: Actions.HouseAllow(iPlayer, 7, true); //Mill -> Bakery
+		23: exit; //Vehicles Workshop
+		24: exit;//Butcher's
+		25: Actions.HouseAllow(iPlayer, 20, true); //Tannery -> Armor Workshop
+		26: exit; //Unused
+		27: Actions.HouseAllow(iPlayer, 14, true); //Inn -> Quarry
+		28: exit; //Vineyard
+		29: exit; //Market
+	end;
+end;
+
+procedure OnMissionStart;
+var 
+	aHouses: array of Integer;
+	h: Integer;
+begin
+	//Randomize Hunger Level of Enemy Units
+	UnitsRandomHungerSet();
+	//Unallow all Buildings
+	LockBuildings(0);
+	//Unlock Buildings at the Sart
+	aHouses := States.PlayerGetAllHouses(0);
+	for h := 0 to Length(aHouses) -1 do
+		TraditionalUnlock(0, aHouses[h]);
+end;
+
+procedure OnHouseBuilt(aHouseID: Integer);
+var iOwner: Byte;
+begin
+	iOwner := States.HouseOwner(aHouseID);
+	if iOwner = 0 then
+		TraditionalUnlock(iOwner, aHouseID);
+end;
 
 procedure OnTick;
 begin
-	//Message After 15 Seconds
-    if States.GameTime = 150 then
-    begin
-		Actions.ShowMsg(0, '<$0>');
-    end;
-
-	//Message After 600 Seconds
-    if States.GameTime = 6000 then
-    begin
-        Actions.ShowMsg(0, '<$1>');
-    end;
+//Message After 15 Seconds
+  if States.GameTime = 150 then
+    Actions.ShowMsg(0, '<$0>');
+//Message After 600 Seconds
+  if States.GameTime = 6000 then
+    Actions.ShowMsg(0, '<$1>');
 end;

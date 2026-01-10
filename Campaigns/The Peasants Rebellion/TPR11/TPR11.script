@@ -1,170 +1,20 @@
 //-- TBK11 --//
-//31.03.2025
+//07.11.2019
 
-{$I Helpers.script}
-
-const
-	HUMAN_PLAYER = 0;
-
+{$I difficulty.script}
 
 procedure OnMissionStart;
-var
-	UnitPosX: Integer;
 begin
 	//Apply Difficulty
 	case States.MissionDifficulty() of
-		mdEasy1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 12, 87, dirNE, 16, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 9, 92, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 12, 82, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 5, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 7, 84, dirNE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utLanceCarrier, 45, 81, dirNW, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 38, 85, dirN, 6, 3);
-
-			Actions.GiveGroupEx(1, utVagabond, 98, 89, dirW, 8, 4);
-			Actions.GiveGroupEx(1, utScout, 101, 85, dirW, 6, 3); //-2
-
-			Actions.GiveGroupEx(1, utVagabond, 57, 28, dirNW, 8, 4);
-			Actions.GiveGroupEx(1, utScout, 79, 20, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 68, 37, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utRogue, 75, 37, dirN, 8, 4); //Now Rogue instead of Bowman
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utLanceCarrier, 32, 68, dirSW, 6, 3); //-2
-			Actions.GiveGroupEx(2, utAxeFighter, 31, 71, dirW, 6, 3);
-			Actions.GiveGroupEx(2, utVagabond, 103, 31, dirS, 8, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utRogue, 75, 76, dirS, 6, 3); //-2
-			Actions.GiveGroupEx(3, utRogue, 70, 76, dirS, 6, 3); //-2
-			Actions.GiveGroupEx(3, utRogue, 64, 76, dirSW, 6, 3); //-2
-
-			//Groups of Player4
-			Actions.GiveGroupEx(4, utAxeFighter, 10, 45, dirE, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 10, 49, dirNE, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 8, 40, dirSE, 8, 4);
-
-			Actions.GiveGroupEx(4, utLanceCarrier, 97, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utAxeFighter, 98, 49, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 100, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 101, 48, dirW, 8, 4);
-
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utLanceCarrier, 59, 62, dirSE, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 61, 65, dirSE, 8, 4);
-
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utScout, 102, 13, dirSW, 9, 3); //-3
-			Actions.GiveGroupEx(6, utScout, 97, 12, dirS, 12, 4);
+		mdEasy1: 
+		begin
+			Actions.GroupKillAll(States.GroupAt(70, 76), true); //Rebels
+			Actions.GroupKillAll(States.GroupAt(61, 65), true); //Lancers
+			Actions.GroupKillAll(States.GroupAt(10, 49), true); //Rebels
+			Actions.GroupKillAll(States.GroupAt(103, 31), true); //Vagabond
 		end;
-		mdNormal: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 12, 87, dirNE, 16, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 9, 92, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 12, 82, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 5, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 7, 84, dirNE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utLanceCarrier, 45, 81, dirNW, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 38, 85, dirN, 6, 3);
-
-			Actions.GiveGroupEx(1, utVagabond, 98, 89, dirW, 8, 4);
-			Actions.GiveGroupEx(1, utScout, 101, 85, dirW, 8, 4);
-
-			Actions.GiveGroupEx(1, utVagabond, 57, 28, dirNW, 8, 4);
-			Actions.GiveGroupEx(1, utScout, 79, 20, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 68, 37, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 75, 37, dirN, 8, 4);
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utLanceCarrier, 32, 68, dirSW, 8, 4);
-			Actions.GiveGroupEx(2, utAxeFighter, 31, 71, dirW, 6, 3);
-			Actions.GiveGroupEx(2, utVagabond, 103, 31, dirS, 8, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utRogue, 75, 76, dirS, 8, 4);
-			Actions.GiveGroupEx(3, utRogue, 70, 76, dirS, 8, 4);
-			Actions.GiveGroupEx(3, utRogue, 64, 76, dirSW, 8, 4);
-
-			//Groups of Player4
-			Actions.GiveGroupEx(4, utAxeFighter, 10, 45, dirE, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 10, 49, dirNE, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 8, 40, dirSE, 8, 4);
-
-			Actions.GiveGroupEx(4, utLanceCarrier, 97, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utAxeFighter, 98, 49, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 100, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 101, 48, dirW, 8, 4);
-
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utLanceCarrier, 59, 62, dirSE, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 61, 65, dirSE, 8, 4);
-
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utScout, 102, 13, dirSW, 12, 4);
-			Actions.GiveGroupEx(6, utScout, 97, 12, dirS, 12, 4);
-		end;
-		mdHard1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 12, 87, dirNE, 16, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utAxeFighter, 9, 92, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 12, 82, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 5, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 7, 84, dirNE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utLanceCarrier, 45, 81, dirNW, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 38, 85, dirN, 9, 3);
-
-			Actions.GiveGroupEx(1, utVagabond, 98, 89, dirW, 8, 4);
-			Actions.GiveGroupEx(1, utScout, 101, 85, dirW, 9, 3); //+1
-
-			Actions.GiveGroupEx(1, utScout, 57, 28, dirNW, 8, 4); //Now Scout instead of Vagabond
-			Actions.GiveGroupEx(1, utScout, 79, 20, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 68, 37, dirN, 8, 4);
-			Actions.GiveGroupEx(1, utBowman, 75, 37, dirN, 10, 5); //+2
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utLanceCarrier, 32, 68, dirSW, 8, 4);
-			Actions.GiveGroupEx(2, utAxeFighter, 31, 71, dirW, 6, 3);
-			Actions.GiveGroupEx(2, utVagabond, 103, 31, dirS, 8, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utRogue, 75, 76, dirS, 8, 4);
-			Actions.GiveGroupEx(3, utRogue, 70, 76, dirS, 8, 4);
-			Actions.GiveGroupEx(3, utRogue, 64, 76, dirSW, 8, 4);
-
-			//Groups of Player4
-			Actions.GiveGroupEx(4, utAxeFighter, 10, 45, dirE, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 10, 49, dirNE, 10, 5); //+2
-			Actions.GiveGroupEx(4, utRogue, 8, 40, dirSE, 10, 5); //+2
-
-			Actions.GiveGroupEx(4, utLanceCarrier, 97, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utAxeFighter, 98, 49, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utRogue, 100, 40, dirW, 8, 4);
-			Actions.GiveGroupEx(4, utBowman, 101, 48, dirW, 8, 4); //Now Bowman instead of Rogue
-
-			//Groups of Player5
-			Actions.GiveGroupEx(5, utLanceCarrier, 59, 62, dirSE, 8, 4);
-			Actions.GiveGroupEx(5, utLanceCarrier, 61, 65, dirSE, 8, 4);
-
-			//Groups of Player6
-			Actions.GiveGroupEx(6, utScout, 102, 13, dirSW, 12, 4);
-			Actions.GiveGroupEx(6, utScout, 97, 12, dirS, 12, 4);
-		end;
+		mdHard1:
+			IncreaseGroupSize(1, 0);
 	end;
-
-	//Kill AI activation Units
-    for UnitPosX := 1 to 7 do
-    begin
-    	Actions.UnitKill(States.UnitAt(UnitPosX, 95), true);
-    end;
-
-    //Set Hunger Level of AIs
-    UnitsRandomHungerSet();
 end;

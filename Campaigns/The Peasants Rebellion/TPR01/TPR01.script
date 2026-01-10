@@ -1,220 +1,106 @@
 //-- TPR01 --//
-//31.03.2025
+//07.11.2019
 
-const
-	HUMAN_PLAYER = 0;
+{$I difficulty.script}
 
-{$I Helpers.script}
-//{$I GroupScanner.script}
+//Gives AI-Players Units a Random Hunger Level (2/3 to Max)
+procedure UnitsRandomHungerSet();
+var 
+	aUnits: array of Integer;
+	i, iGroup: Integer;
+	iPlayerLoop: Byte;
+begin
+for iPlayerLoop := 0 to States.StatPlayerCount()-1 do
+	begin
+		if States.PlayerIsAI(iPlayerLoop) then
+		begin
+			aUnits := States.PlayerGetAllUnits(iPlayerLoop);
+			for i := 0 to Length(aUnits)-1 do
+			begin
+				if States.UnitsGroup(aUnits[i]) = -1 then
+				begin
+					Actions.UnitHungerSet(aUnits[i], States.UnitMaxHunger/2 + States.KaMRandomI(States.UnitMaxHunger/2 +1));
+				end else
+				begin
+					iGroup := States.UnitsGroup(aUnits[i]);
+					if States.GroupMember(iGroup, 0) = aUnits[i] then
+						Actions.GroupHungerSet(iGroup, States.UnitMaxHunger/2 + States.KaMRandomI(States.UnitMaxHunger/2 +1));
+				end;
+			end;
+		end;
+	end;
+end;
+
+//Returns Sight Ranges for Houses
+function HouseSightRange(aHouseID: Integer): Byte;
+begin
+	case States.HouseType(aHouseID) of
+		0..10, 12..16, 19, 20, 22..29: Result := 10; //Normal Houses
+		11, 18, 21: Result := 13; //Barracks/Storehouse/Townhall
+		17: Result := 18; //Tower
+	end;
+end;
+
+//Returns Sight Ranges for Units
+function UnitSightRange(aUnitsID: Integer): Byte;
+begin
+	case States.UnitType(aUnitsID) of
+		0..13: Result := 4; //Civilians
+		14..20, 22..27: Result := 9; //Fighting Units
+		21: Result := 16; //Scout
+		//28..37: Animals
+	end;
+end;
 
 
 procedure OnMissionStart();
 var
-	UnitPosX, p: Integer;
+	i, j: Integer;
 	aUnits, aHouses: array of Integer;
-	i: Integer;
 begin
-	case States.MissionDifficulty() of
-		mdEasy1: begin
-			//Groups of Player0
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 60, 50, dirN, 12, 4);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 53, 51, dirNW, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 57, 55, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 50, 84, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 35, 66, dirNW, 9, 3);
-
-            //Groups of Player1
-            Actions.GiveGroupEx(1, utRebel, 12, 13, dirSE, 12, 3);
-            Actions.GiveGroupEx(1, utMilitia, 10, 39, dirNE, 12, 4); //OG Values: 10,41
-            Actions.GiveGroupEx(1, utMilitia, 13, 22, dirE, 12, 4);
-            Actions.GiveGroupEx(1, utRebel, 17, 34, dirNE, 9, 3);
-            Actions.GiveGroupEx(1, utMilitia, 22, 29, dirNE, 12, 3);
-
-            //Groups of Player2
-            Actions.GiveGroupEx(2, utRebel, 45, 15, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utMilitia, 38, 23, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utRebel, 42, 27, dirW, 9, 3);
-
-            //Groups of Player3
-            Actions.GiveGroupEx(3, utAxeFighter, 43, 4, dirSW, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 28, 22, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 32, 4, dirS, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 38, 5, dirSW, 6, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 23, 17, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 31, 29, dirW, 9, 3);
-
-            //Groups of Player4
-            Actions.GiveGroupEx(4, utAxeFighter, 5, 64, dirN, 12, 4);
-            Actions.GiveGroupEx(4, utLanceCarrier, 5, 61, dirN, 8, 4);
-
-            //Groups of Player5
-            Actions.GiveGroupEx(5, utAxeFighter, 58, 6, dirS, 9, 3);
-
-            //Groups of Player6
-            Actions.GiveGroupEx(6, utVagabond, 76, 18, dirW, 12, 4);
-            Actions.GiveGroupEx(6, utScout, 73, 6, dirSW, 8, 4);
-            Actions.GiveGroupEx(6, utScout, 76, 12, dirW, 9, 3);
-
-            //Groups of Player7
-            Actions.GiveGroupEx(7, utScout, 75, 13, dirW, 8, 4);
-            Actions.GiveGroupEx(7, utVagabond, 74, 6, dirSW, 12, 4);
-            Actions.GiveGroupEx(7, utScout, 75, 19, dirW, 8, 4);
-
-            //Groups of Player8
-            Actions.GiveGroupEx(8, utAxeFighter, 35, 14, dirSE, 9, 3);
-            Actions.GiveGroupEx(8, utAxeFighter, 32, 24, dirE, 9, 3);
-            Actions.GiveGroupEx(8, utBowman, 37, 28, dirNE, 9, 3);
-		end;
-		mdNormal: begin
-			//Groups of Player0
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 60, 50, dirN, 12, 4);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 53, 51, dirNW, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 57, 55, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 50, 84, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 35, 66, dirNW, 9, 3);
-
-            //Groups of Player1
-            Actions.GiveGroupEx(1, utRebel, 12, 13, dirSE, 12, 3);
-            Actions.GiveGroupEx(1, utMilitia, 10, 39, dirNE, 12, 4); //OG Values: 10,41
-            Actions.GiveGroupEx(1, utMilitia, 13, 22, dirE, 12, 4);
-            Actions.GiveGroupEx(1, utRebel, 17, 34, dirNE, 9, 3);
-            Actions.GiveGroupEx(1, utMilitia, 22, 29, dirNE, 12, 3);
-
-            //Groups of Player2
-            Actions.GiveGroupEx(2, utRebel, 45, 15, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utMilitia, 38, 23, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utRebel, 42, 27, dirW, 9, 3);
-
-            //Groups of Player3
-            Actions.GiveGroupEx(3, utAxeFighter, 43, 4, dirSW, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 28, 22, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 32, 4, dirS, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 38, 5, dirSW, 6, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 23, 17, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 31, 29, dirW, 9, 3);
-
-            //Groups of Player4
-            Actions.GiveGroupEx(4, utAxeFighter, 5, 64, dirN, 12, 4);
-            Actions.GiveGroupEx(4, utLanceCarrier, 5, 60, dirN, 12, 4);
-
-            //Groups of Player5
-            Actions.GiveGroupEx(5, utAxeFighter, 58, 6, dirS, 12, 4);
-
-            //Groups of Player6
-            Actions.GiveGroupEx(6, utVagabond, 76, 18, dirW, 12, 4);
-            Actions.GiveGroupEx(6, utScout, 73, 6, dirSW, 12, 4);
-            Actions.GiveGroupEx(6, utScout, 76, 12, dirW, 9, 3);
-
-            //Groups of Player7
-            Actions.GiveGroupEx(7, utScout, 75, 13, dirW, 12, 4);
-            Actions.GiveGroupEx(7, utVagabond, 74, 6, dirSW, 12, 4);
-            Actions.GiveGroupEx(7, utScout, 75, 19, dirW, 12, 4);
-
-            //Groups of Player8
-            Actions.GiveGroupEx(8, utAxeFighter, 35, 14, dirSE, 9, 3);
-            Actions.GiveGroupEx(8, utAxeFighter, 32, 24, dirE, 9, 3);
-            Actions.GiveGroupEx(8, utBowman, 37, 28, dirNE, 9, 3);
-		end;
-		mdHard1: begin
-			//Groups of Player0
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 60, 50, dirN, 12, 4);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 53, 51, dirNW, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 57, 55, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 50, 84, dirN, 9, 3);
-            Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 35, 66, dirNW, 9, 3);
-
-            //Groups of Player1
-            Actions.GiveGroupEx(1, utRebel, 12, 13, dirSE, 12, 3);
-            Actions.GiveGroupEx(1, utMilitia, 10, 39, dirNE, 12, 4); //OG Values: 10,41
-            Actions.GiveGroupEx(1, utMilitia, 13, 22, dirE, 12, 4);
-            Actions.GiveGroupEx(1, utRebel, 17, 34, dirNE, 9, 3);
-            Actions.GiveGroupEx(1, utMilitia, 22, 29, dirNE, 12, 3);
-
-            //Groups of Player2
-            Actions.GiveGroupEx(2, utRebel, 45, 15, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utMilitia, 38, 23, dirW, 9, 3);
-            Actions.GiveGroupEx(2, utRebel, 42, 27, dirW, 9, 3);
-
-            //Groups of Player3
-            Actions.GiveGroupEx(3, utAxeFighter, 43, 4, dirSW, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 28, 22, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 32, 4, dirS, 6, 3);
-            Actions.GiveGroupEx(3, utAxeFighter, 38, 5, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 23, 17, dirSW, 9, 3);
-            Actions.GiveGroupEx(3, utLanceCarrier, 31, 29, dirW, 9, 3);
-
-            //Groups of Player4
-            Actions.GiveGroupEx(4, utAxeFighter, 5, 64, dirN, 12, 4);
-            Actions.GiveGroupEx(4, utLanceCarrier, 5, 60, dirN, 15, 5);
-
-            //Groups of Player5
-            Actions.GiveGroupEx(5, utAxeFighter, 58, 6, dirS, 15, 5);
-
-            //Groups of Player6
-            Actions.GiveGroupEx(6, utVagabond, 76, 18, dirW, 12, 4);
-            Actions.GiveGroupEx(6, utScout, 73, 6, dirSW, 12, 4);
-            Actions.GiveGroupEx(6, utScout, 76, 12, dirW, 9, 3);
-
-            //Groups of Player7
-            Actions.GiveGroupEx(7, utScout, 75, 13, dirW, 12, 4);
-            Actions.GiveGroupEx(7, utVagabond, 74, 6, dirSW, 12, 4);
-            Actions.GiveGroupEx(7, utScout, 75, 19, dirW, 15, 5);
-
-            //Groups of Player8
-            Actions.GiveGroupEx(8, utAxeFighter, 35, 14, dirSE, 9, 3);
-            Actions.GiveGroupEx(8, utAxeFighter, 32, 24, dirE, 9, 3);
-            Actions.GiveGroupEx(8, utBowman, 37, 28, dirNE, 9, 3);
-		end;
-	end;
-
-	//Kill AI activation Units
-	for UnitPosX := 74 to 79 do
-	begin
-		Actions.UnitKill(States.UnitAt(UnitPosX, 1), true);
-	end;
-
 	//Set Hunger Level of AIs
-    UnitsRandomHungerSet();
-
-    //Disable Sharing Fog
-    for p := 1 to States.StatPlayerCount -1 do
-    begin
-    	Actions.PlayerShareFogCompliment(HUMAN_PLAYER, p, false);
-    end;
-    //Cover All In Fog
-    Actions.FogCoverAll(HUMAN_PLAYER);
-
-    //Reveal Terrain For Units
-    aUnits := States.PlayerGetAllUnits(HUMAN_PLAYER);
-    for i := Low(aUnits) to High(aUnits) do
-    begin
-    	Actions.FogRevealCircle(HUMAN_PLAYER, States.UnitPositionX(aUnits[i]), States.UnitPositionY(aUnits[i]), UnitSightRange(aUnits[i]));
-    end;
-    //Reveal Terrain For Buildings
-    aHouses := States.PlayerGetAllHouses(HUMAN_PLAYER);
-    for i := Low(aHouses) to  High(aHouses) do
-    begin
-    	Actions.FogRevealCircle(HUMAN_PLAYER, States.HousePositionX(aHouses[i]), States.HousePositionY(aHouses[i]), HouseSightRange(aHouses[i]));
-    end;
-
+	UnitsRandomHungerSet();
+	//Apply Difficulty
+	case States.MissionDifficulty() of
+		mdEasy1: 
+			IncreaseGroupSize(0, 0);
+		mdHard1:
+		begin
+			//Increase Group Size of Groups joining fight later on
+			IncreaseGroupSize(4, 0);
+			IncreaseGroupSize(5, 0);
+			IncreaseGroupSize(7, 0);
+		end;
+	end;
+	//Disable Sharing Fog With Ally
+	Actions.PlayerShareFog(0, 1, false);
+	Actions.PlayerShareFog(1, 0, false);
+	Actions.PlayerShareFog(0, 2, false);
+	Actions.PlayerShareFog(2, 0, false);
+	//Cover All In Fog
+	Actions.FogCoverAll(0);
+	//Reveal Terrain For Units And Buildings
+	aUnits := States.PlayerGetAllUnits(0);
+	for i := 0 to Length(aUnits) -1 do
+		Actions.FogRevealCircle(0, States.UnitPositionX(aUnits[i]), States.UnitPositionY(aUnits[i]), UnitSightRange(aUnits[i]));
+	aHouses := States.PlayerGetAllHouses(0);
+	for j := 0 to Length(aHouses) -1 do
+		Actions.FogRevealCircle(0, States.HousePositionX(aHouses[j]), States.HousePositionY(aHouses[j]), HouseSightRange(aHouses[j]));
 	//Reveal certain areas of the Map to Player0
-	Actions.FogRevealCircle(HUMAN_PLAYER, 25, 12, 17);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 11, 21, 18);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 19, 34, 12);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 41, 21, 16);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 54, 29, 17);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 37, 34, 11);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 49, 45, 8);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 35, 34, 12);
-	Actions.FogRevealCircle(HUMAN_PLAYER, 35, 44, 12);
+	Actions.FogRevealCircle(0, 25, 12, 17);
+	Actions.FogRevealCircle(0, 11, 21, 18);
+	Actions.FogRevealCircle(0, 19, 34, 12);
+	Actions.FogRevealCircle(0, 41, 21, 16);
+	Actions.FogRevealCircle(0, 54, 29, 17);
+	Actions.FogRevealCircle(0, 37, 34, 11);
+	Actions.FogRevealCircle(0, 49, 45, 8);
+	Actions.FogRevealCircle(0, 35, 34, 12);
+	Actions.FogRevealCircle(0, 35, 44, 12);
 end;
-
 
 procedure OnTick();
 begin
 	//Message After 10 Seconds
 	if States.GameTime = 100 then
-	begin
-		Actions.ShowMsg(HUMAN_PLAYER, '<$0>');
-	end;
+		Actions.ShowMsg(0, '<$0>');
 end;

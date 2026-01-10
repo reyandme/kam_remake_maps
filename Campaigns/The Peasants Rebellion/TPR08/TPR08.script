@@ -1,118 +1,35 @@
 //-- TBK08 --//
-//31.03.2025
+//07.11.2019
 
-{$I Helpers.script}
-
-const
-	HUMAN_PLAYER = 0;
+{$I difficulty.script}
 
 var
-	aArmyFirst, aArmySecond: array[1..7] of Integer;
-
+	aArmyFirst, aArmySecond: array [1..7] of Integer;
 
 procedure OnMissionStart;
-var
-	UnitPosX: Integer;
 begin
 	//Apply Difficulty
 	case States.MissionDifficulty() of
-		mdEasy1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 69, 45, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 66, 32, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 64, 44, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 35, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 40, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 66, 50, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 71, 54, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 70, 35, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 66, 37, dirW, 9, 3);
-
-			//Groups of Player1
-			aArmyFirst[1] := Actions.GiveGroupEx(1, utSwordFighter, 41, 15, dirSE, 12, 4); //Sword Fighters - Top
-			aArmyFirst[2] := Actions.GiveGroupEx(1, utSwordFighter, 41, 35, dirE, 10, 5); //Sword Fighters - Middle
-			aArmyFirst[3] := Actions.GiveGroupEx(1, utSwordFighter, 44, 49, dirNE, 12, 4); //Sword Fighters - Bottom
-			aArmyFirst[4] := Actions.GiveGroupEx(1, utKnight, 57, 23, dirSE, 6, 2); //Knights - Top
-			aArmyFirst[5] := Actions.GiveGroupEx(1, utKnight, 41, 56, dirE, 6, 3); //Knights - Bottom
-			aArmyFirst[6] := Actions.GiveGroupEx(1, utAxeFighter, 36, 56, dirE, 8, 4); //Axe Fighters - Bottom
-
-			//Groups of Player2
-			aArmySecond[1] := Actions.GiveGroupEx(2, utAxeFighter, 23, 34, dirE, 9, 3); //Axe Fighters - Top-Right
-			aArmySecond[2] := Actions.GiveGroupEx(2, utAxeFighter, 23, 44, dirE, 9, 3); //Axe Fighters - Bottom-Right
-			aArmySecond[3] := Actions.GiveGroupEx(2, utPikeman, 18, 34, dirE, 6, 3); //Pikemen - Top
-			aArmySecond[4] := Actions.GiveGroupEx(2, utPikeman, 18, 44, dirE, 6, 3); //Pikemen - Bottom
-			aArmySecond[5] := Actions.GiveGroupEx(2, utAxeFighter, 8, 34, dirE, 8, 4); //Axe Fighters - Top-Left
-			aArmySecond[6] := Actions.GiveGroupEx(2, utAxeFighter, 8, 44, dirE, 8, 4); //Axe Fighters - Bottom-Left
-			aArmySecond[7] := Actions.GiveGroupEx(2, utKnight, 25, 39, dirE, 6, 2); //Knights - Middle
-		end;
-		mdNormal: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 69, 45, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 66, 32, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 64, 44, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 35, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 40, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 66, 50, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 71, 54, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 70, 35, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 66, 37, dirW, 9, 3);
-
-			//Groups of Player1
-			aArmyFirst[1] := Actions.GiveGroupEx(1, utSwordFighter, 41, 15, dirSE, 12, 4); //Sword Fighters - Top
-			aArmyFirst[2] := Actions.GiveGroupEx(1, utSwordFighter, 41, 35, dirE, 12, 6); //Sword Fighters - Middle
-			aArmyFirst[3] := Actions.GiveGroupEx(1, utSwordFighter, 44, 49, dirNE, 12, 4); //Sword Fighters - Bottom
-			aArmyFirst[4] := Actions.GiveGroupEx(1, utKnight, 57, 23, dirSE, 6, 2); //Knights - Top
-			aArmyFirst[5] := Actions.GiveGroupEx(1, utKnight, 41, 56, dirE, 6, 3); //Knights - Bottom
-			aArmyFirst[6] := Actions.GiveGroupEx(1, utAxeFighter, 36, 56, dirE, 12, 4); //Axe Fighters - Bottom
-
-			//Groups of Player2
-			aArmySecond[1] := Actions.GiveGroupEx(2, utAxeFighter, 23, 34, dirE, 12, 4); //Axe Fighters - Top-Right
-			aArmySecond[2] := Actions.GiveGroupEx(2, utAxeFighter, 23, 44, dirE, 12, 4); //Axe Fighters - Bottom-Right
-			aArmySecond[3] := Actions.GiveGroupEx(2, utPikeman, 18, 34, dirE, 6, 3); //Pikemen - Top
-			aArmySecond[4] := Actions.GiveGroupEx(2, utPikeman, 18, 44, dirE, 6, 3); //Pikemen - Bottom
-			aArmySecond[5] := Actions.GiveGroupEx(2, utAxeFighter, 8, 34, dirE, 8, 4); //Axe Fighters - Top-Left
-			aArmySecond[6] := Actions.GiveGroupEx(2, utAxeFighter, 8, 44, dirE, 8, 4); //Axe Fighters - Bottom-Left
-			aArmySecond[7] := Actions.GiveGroupEx(2, utKnight, 25, 39, dirE, 6, 2); //Knights - Middle
-		end;
-		mdHard1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 69, 45, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utLanceCarrier, 66, 32, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 64, 44, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 35, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utScout, 75, 40, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 66, 50, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 71, 54, dirW, 9, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utBowman, 70, 35, dirW, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 66, 37, dirW, 9, 3);
-
-			//Groups of Player1
-			aArmyFirst[1] := Actions.GiveGroupEx(1, utSwordFighter, 41, 15, dirSE, 12, 4); //Sword Fighters - Top
-			aArmyFirst[2] := Actions.GiveGroupEx(1, utSwordFighter, 41, 35, dirE, 14, 7); //Sword Fighters - Middle
-			aArmyFirst[3] := Actions.GiveGroupEx(1, utSwordFighter, 44, 49, dirNE, 12, 4); //Sword Fighters - Bottom
-			aArmyFirst[4] := Actions.GiveGroupEx(1, utKnight, 57, 23, dirSE, 6, 2); //Knights - Top
-			aArmyFirst[5] := Actions.GiveGroupEx(1, utKnight, 41, 56, dirE, 6, 3); //Knights - Bottom
-			aArmyFirst[6] := Actions.GiveGroupEx(1, utAxeFighter, 36, 56, dirE, 15, 5); //Axe Fighters - Bottom
-
-			//Groups of Player2
-			aArmySecond[1] := Actions.GiveGroupEx(2, utAxeFighter, 23, 34, dirE, 12, 4); //Axe Fighters - Top-Right
-			aArmySecond[2] := Actions.GiveGroupEx(2, utAxeFighter, 23, 44, dirE, 12, 4); //Axe Fighters - Bottom-Right
-			aArmySecond[3] := Actions.GiveGroupEx(2, utPikeman, 18, 34, dirE, 6, 3); //Pikemen - Top
-			aArmySecond[4] := Actions.GiveGroupEx(2, utPikeman, 18, 44, dirE, 6, 3); //Pikemen - Bottom
-			aArmySecond[5] := Actions.GiveGroupEx(2, utAxeFighter, 8, 34, dirE, 10, 5); //Axe Fighters - Top-Left
-			aArmySecond[6] := Actions.GiveGroupEx(2, utAxeFighter, 8, 44, dirE, 10, 5); //Axe Fighters - Bottom-Left
-			aArmySecond[7] := Actions.GiveGroupEx(2, utKnight, 25, 39, dirE, 9, 3); //Knights - Middle
-		end;
+		mdEasy1: 
+			IncreaseGroupSize(0, 0);
+		mdHard1:
+			IncreaseGroupSize(2, 0);
 	end;
-
-	//Kill AI activation Units
-    for UnitPosX := 77 to 79 do
-    begin
-    	Actions.UnitKill(States.UnitAt(UnitPosX, 63), true);
-    end;
-
-    //Set Hunger Level of AIs
-    UnitsRandomHungerSet();
+	//First Wave
+	aArmyFirst[1] := States.GroupAt(41, 15); //Sword Fighters - Top
+	aArmyFirst[2] := States.GroupAt(41, 35); //Sword Fighters - Middle
+	aArmyFirst[3] := States.GroupAt(44, 49); //Sword Fighters - Bottom
+	aArmyFirst[4] := States.GroupAt(57, 23); //Knights - Top
+	aArmyFirst[5] := States.GroupAt(41, 56); //Knights - Bottom
+	aArmyFirst[6] := States.GroupAt(36, 56); //Axe Fighters - Bottom
+	//Second Wave
+	aArmySecond[1] := States.GroupAt(23, 34); //Axe Fighters - Top-Right
+	aArmySecond[2] := States.GroupAt(23, 44); //Axe Fighters - Bottom-Right
+	aArmySecond[3] := States.GroupAt(18, 34); //Pikemen - Top
+	aArmySecond[4] := States.GroupAt(18, 44); //Pikemen - Bottom
+	aArmySecond[5] := States.GroupAt(8, 34); //Axe Fighters - Top-Left
+	aArmySecond[6] := States.GroupAt(8, 44); //Axe Fighters - Bottom-Left
+	aArmySecond[7] := States.GroupAt(25, 39); //Knights - Middle
 end;
 
 procedure OnTick;
@@ -130,7 +47,6 @@ begin
 		Actions.GroupOrderWalk(aArmyFirst[5], 66, 50, 1);
 		Actions.GroupOrderWalk(aArmyFirst[6], 71, 54, 0);
 	end;
-
 	//Second Wave Move
 	if States.GameTime = 200 then
     begin
@@ -141,9 +57,6 @@ begin
 		Actions.GroupOrderWalk(aArmySecond[5], 68, 33, 2);
 		Actions.GroupOrderWalk(aArmySecond[6], 69, 38, 2);
 	end;
-
 	if States.GameTime = 300 then
-	begin
 		Actions.GroupOrderWalk(aArmySecond[7], 66, 38, 2);
-	end;
 end;
