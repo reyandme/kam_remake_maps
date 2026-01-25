@@ -1,139 +1,30 @@
 //-- TBK13 --//
-//31.03.2025
+//07.11.2019
 
-{$I Helpers.script}
+{$I difficulty.script}
 
-const
-	HUMAN_PLAYER = 0;
-
-
-procedure OnMissionStart;
-var
-	UnitPosX: Integer;
+procedure OnMissionStart();
 begin
 	//Apply Difficulty
 	case States.MissionDifficulty() of
-		mdEasy1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 9, 84, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 13, 82, dirNE, 6, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 5, 89, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 14, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 10, 92, dirN, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 19, 79, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 20, 86, dirE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utPikeman, 70, 33, dirSW, 9, 3);
-			Actions.GiveGroupEx(1, utSwordFighter, 66, 38, dirSW, 9, 3);
-			Actions.GiveGroupEx(1, utSwordFighter, 77, 37, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utKnight, 71, 42, dirSW, 12, 4);
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utPikeman, 84, 20, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utCrossbowman, 91, 21, dirSW, 9, 3);
-			Actions.GiveGroupEx(2, utCrossbowman, 87, 16, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utKnight, 88, 25, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utSwordFighter, 79, 22, dirSW, 12, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utCrossbowman, 35, 42, dirSE, 12, 4);
-			Actions.GiveGroupEx(3, utBowman, 29, 45, dirS, 15, 5);
-
-			//Groups of Player4
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(4, utCrossbowman, 90, 45, dirSW, 12, 4), 49, 68, dirNW);
-
-			//Groups of Player5
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 37, dirS, 9, 3), 3, 76, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 14, dirS, 12, 4), 9, 73, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 7, dirS, 9, 3), 14, 71, dirSE);
+		mdEasy1: 
+		begin
+			IncreaseTargetGroupSize(0, 19, 79, 0);
+			IncreaseTargetGroupSize(0, 20, 86, 0);
+			IncreaseTargetGroupSize(0, 10, 92, 0);
 		end;
-		mdNormal: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 9, 84, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 13, 82, dirNE, 6, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 5, 89, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 14, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 10, 92, dirN, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 19, 79, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 20, 86, dirE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utPikeman, 70, 33, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utSwordFighter, 66, 38, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utSwordFighter, 77, 37, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utKnight, 71, 42, dirSW, 12, 4);
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utPikeman, 84, 20, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utCrossbowman, 91, 21, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utCrossbowman, 87, 16, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utKnight, 88, 25, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utSwordFighter, 79, 22, dirSW, 12, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utCrossbowman, 35, 42, dirSE, 15, 5);
-			Actions.GiveGroupEx(3, utBowman, 29, 45, dirS, 15, 5);
-
-			//Groups of Player4
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(4, utCrossbowman, 90, 45, dirSW, 15, 5), 49, 68, dirNW);
-
-			//Groups of Player5
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 37, dirS, 12, 4), 3, 76, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 14, dirS, 12, 4), 9, 73, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 7, dirS, 12, 4), 14, 71, dirSE);
-		end;
-		mdHard1: begin
-			//Groups of Player0
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 9, 84, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 13, 82, dirNE, 6, 3);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utPikeman, 5, 89, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utSwordFighter, 14, 88, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utCrossbowman, 10, 92, dirN, 15, 5);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utKnight, 19, 79, dirNE, 12, 4);
-			Actions.GiveGroupEx(HUMAN_PLAYER, utWarrior, 20, 86, dirE, 12, 4);
-
-			//Groups of Player1
-			Actions.GiveGroupEx(1, utPikeman, 70, 33, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utSwordFighter, 66, 38, dirSW, 12, 4);
-			Actions.GiveGroupEx(1, utSwordFighter, 77, 37, dirSW, 15, 5);
-			Actions.GiveGroupEx(1, utKnight, 71, 42, dirSW, 12, 4);
-
-			//Groups of Player2
-			Actions.GiveGroupEx(2, utPikeman, 84, 20, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utCrossbowman, 91, 21, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utCrossbowman, 87, 16, dirSW, 12, 4);
-			Actions.GiveGroupEx(2, utKnight, 88, 25, dirSW, 15, 5);
-			Actions.GiveGroupEx(2, utSwordFighter, 79, 22, dirSW, 12, 4);
-
-			//Groups of Player3
-			Actions.GiveGroupEx(3, utCrossbowman, 35, 42, dirSE, 15, 5);
-			Actions.GiveGroupEx(3, utBowman, 29, 45, dirS, 15, 5);
-
-			//Groups of Player4
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(4, utCrossbowman, 90, 45, dirSW, 15, 5), 49, 68, dirNW);
-
-			//Groups of Player5
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 37, dirS, 12, 4), 3, 76, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 14, dirS, 15, 5), 9, 73, dirS);
-			Actions.GroupOrderWalkEx(Actions.GiveGroupEx(5, utBowman, 3, 7, dirS, 12, 4), 14, 71, dirSE);
+		mdHard1:
+		begin
+			IncreaseGroupSize(2, 0);
+			IncreaseGroupSize(5, 0); //Bows
 		end;
 	end;
-
-	//Kill AI activation Units
-    for UnitPosX := 1 to 6 do
-    begin
-    	Actions.UnitKill(States.UnitAt(UnitPosX, 95), true);
-    end;
-
-    //Set Hunger Level of AIs
-    UnitsRandomHungerSet();
 end;
 
 procedure OnTick;
 begin
+	if States.GameTime = 14 then
+
 	if States.GameTime = 100 then
-	begin
 		Actions.ShowMsg(0, '<$0>');
-	end;
 end;
