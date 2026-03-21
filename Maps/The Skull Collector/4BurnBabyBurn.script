@@ -1,0 +1,33 @@
+{$EVENT evtTick:BurnBabyBurn}
+
+procedure Buuuuuuurn();	
+var 
+	i, j: Integer; //i = player, j = HouseID
+begin
+	for i:= 0 to PlayerAndAICount-1 do //for all players/AI
+		begin
+			with PlayersAndAI[i] do
+				begin					
+					for j:= 0 to Length(Houses)-1 do
+						begin
+							with Houses[j] do
+								begin
+									if (S.HouseDamage(ID) > 0) then
+										begin				
+											A.HouseAddDamage(ID, U.RandomRangeI(3, 11));						
+										end;						
+								end;
+						end;
+				end;
+			
+		end;
+end;
+
+procedure BurnBabyBurn();
+begin
+	if (S.GameTime mod 30 = 0) then
+		begin
+			Buuuuuuurn();				
+		end;
+end;
+	

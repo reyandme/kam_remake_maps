@@ -1,0 +1,400 @@
+{$EVENT evtMissionStart:SetMissionVariables}
+{$EVENT evtMissionStart:SetHouseAndPlayerAndAIRecordVariables}
+{$EVENT evtHouseBuilt:BuildingBuilt}
+{$EVENT evtHouseDestroyed:BuildingDestroyed}
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	PlayerAndAICount: Integer;
+	PlayerNumber: array of Integer;
+	FirstAI: Integer;
+	
+	StartingSequenceFinished, BottomLeftBlockersOn, TopRightBlockersOn, P2MountedDefenceUnitsRemoved: Boolean;
+	IronTradeTurnedOn, StartBarbarianIronTrade: Boolean;
+	PlayerMakingIronTime: Integer;
+	
+	TruscoMcGrabbins, Flannigan, FlannigansStore, FlanniganTimer, Countdown, SetTimeForFlannigansInvulnerability, GoldForMarket, SkullGoldTotal, BarbarianChieftainKillCount: Integer;
+	WareMultiplier: Single;
+	FlanniganInvulnerabilityEngaged, FlanniganLeftForMarketTown, PlayerBeaconActive: Boolean;
+	SkullGoldTradeWareForPlayer: TKMWareType;
+	
+	BarbarianChieftain: array [0..2] of Integer;
+	
+	MessageSent: array of Boolean;
+		
+	CinematicModeStartTime: Integer;
+	
+	DifficultyMultiplier: Single;
+	EnemyPrepCheckTime: Integer;
+	
+	
+	AttackFrequencyChange: array [0..1] of Integer;
+	
+procedure SetMissionVariables();
+var 
+	i: Integer;
+begin
+	A.ShowMsg(-1, '<$22>');
+	A.ShowMsg(-1, '<$23>');
+	A.ShowMsg(-1, '<$4>');
+	A.ShowMsg(-1, '<$5>');
+	A.ShowMsg(-1, '<$6>');
+	A.ShowMsg(-1, '<$7>');
+	A.ShowMsg(-1, '<$8>');
+	A.ShowMsg(-1, '<$9>');
+	
+	A.PlayerGoalsRemoveAll(12, false); //So barbarian chieftains aren't considered dead onstart
+	A.PlayerGoalsRemoveAll(13, false);
+	A.PlayerGoalsRemoveAll(16, false);
+	
+	PlayerAndAICount:= S.StatPlayerCount();
+	SetLength(PlayerNumber, PlayerAndAICount);
+	for i:= 0 to PlayerAndAICount-1 do
+		begin
+			PlayerNumber[i]:= i;
+		end;
+	FirstAI:= 1;
+	SetLength(MessageSent, 200);		
+	CinematicModeStartTime:= 9900000;
+	PlayerMakingIronTime:= 9900000;
+	
+	FlanniganTimer:= 6000;
+	Countdown:= 9900000;
+	
+	TruscoMcGrabbins:= S.UnitAt(137, 161);
+	Flannigan:= S.GroupAt(140, 168);
+	FlannigansStore:= S.HouseAt(184, 189);
+	
+	BarbarianChieftain[0]:= S.UnitAt(9, 87);
+	BarbarianChieftain[1]:= S.UnitAt(14, 11);
+	BarbarianChieftain[2]:= S.UnitAt(177, 8);
+	
+	A.HouseAllowAllyToSelectAll(1, true);
+	SetTimeForFlannigansInvulnerability:= 9900000;	
+	
+	BottomLeftBlockersOn:= true;
+	TopRightBlockersOn:= true;
+	
+	DifficultySetting:= S.MissionDifficulty();
+	case DifficultySetting of
+		mdEasy1:
+			begin
+				for i:= 2 to PlayerAndAICount-1 do
+					begin
+						A.AIRecruitLimit(i, 15);
+						DifficultyMultiplier:= 1.4;
+						EnemyPrepCheckTime:= 21000;
+						AttackFrequencyChange[0]:= U.RoundTo(144000*DifficultyMultiplier, 10);
+						AttackFrequencyChange[1]:= U.RoundTo(207000*DifficultyMultiplier, 10);
+					end;	
+			end;
+		mdNormal:
+			begin
+				for i:= 2 to PlayerAndAICount-1 do
+					begin
+						A.AIRecruitLimit(i, 25);
+						DifficultyMultiplier:= 1;
+						EnemyPrepCheckTime:= 15000;
+						AttackFrequencyChange[0]:= U.RoundTo(144000*DifficultyMultiplier, 10);
+						AttackFrequencyChange[1]:= U.RoundTo(207000*DifficultyMultiplier, 10);
+					end;					
+			end;
+		mdHard1:
+			begin				
+				for i:= 2 to PlayerAndAICount-1 do
+					begin
+						A.AIRecruitLimit(i, 35);
+						DifficultyMultiplier:= 0.85;
+						EnemyPrepCheckTime:= 12000;
+						AttackFrequencyChange[0]:= U.RoundTo(144000*DifficultyMultiplier, 10);
+						AttackFrequencyChange[1]:= U.RoundTo(207000*DifficultyMultiplier, 10);
+					end;						
+			end;
+		mdHard2:
+			begin				
+				for i:= 2 to PlayerAndAICount-1 do
+					begin
+						A.AIRecruitLimit(i, 40);
+						DifficultyMultiplier:= 0.78;
+						EnemyPrepCheckTime:= 12000;
+						AttackFrequencyChange[0]:= U.RoundTo(144000*DifficultyMultiplier, 10);
+						AttackFrequencyChange[1]:= U.RoundTo(207000*DifficultyMultiplier, 10);
+					end;							
+			end;
+		mdHard3:
+			begin				
+				for i:= 2 to PlayerAndAICount-1 do
+					begin
+						A.AIRecruitLimit(i, 40);
+						DifficultyMultiplier:= 0.7;
+						EnemyPrepCheckTime:= 12000;
+						AttackFrequencyChange[0]:= U.RoundTo(144000*DifficultyMultiplier, 10);
+						AttackFrequencyChange[1]:= U.RoundTo(207000*DifficultyMultiplier, 10);
+					end;						
+			end;
+	end;	
+	A.CinematicStart(0);
+	A.CinematicStart(1);
+	
+	for i:= 1 to 5 do
+		begin
+			A.MapTileObjectSet (i, 147, 61);
+		end;
+	A.MapTileObjectSet (5, 148, 61);
+	for i:= 148 to 152 do
+		begin
+			A.MapTileObjectSet (6, i, 61);
+		end;
+	for i:= 7 to 11 do
+		begin
+			A.MapTileObjectSet (i, 152, 61);
+		end;	
+	A.MapTileObjectSet (11, 151, 61);
+	for i:= 11 to 18 do
+		begin
+			A.MapTileObjectSet (i, 150, 61);
+		end;					
+	for i:= 23 to 27 do
+		begin
+			A.MapTileObjectSet (i, 151, 61);
+		end;
+	for i:= 32 to 36 do
+		begin
+			A.MapTileObjectSet (i, 151, 61);
+		end;
+	for i:= 124 to 132 do
+		begin
+			A.MapTileObjectSet (i, 27, 61);
+		end;
+	for i:= 127 to 132 do
+		begin
+			A.MapTileObjectSet (i, 57, 61);
+		end;		
+end;
+
+type HouseRecord = Record
+	ID, X, Y: Integer;
+	HouseType: TKMHouseType;
+end;
+
+type PlayerAndAIRecord = Record
+
+	Defeated, AttackOn: Boolean;
+	///ATTACKS///
+	InitialAttackTime: array [0..2] of Integer; //Initial attack time of each attack variation
+	PreparingAttack, AttackSent: array [0..2] of Boolean; //0 = defence, 1 = AV1, 2 = AV2 etc
+	PreparationTimeCheck, AttackPreparationTime: Integer; //PTC = how often AI checks whether it needs to prepare an attack. APT sets time it starts preparing.
+	AttackSentToSecondaryLocationTime, AttackSentTime: Integer;
+	AttackAnywayTime: array [0..2] of Integer; //if players keep pulling units, this will set the time for AI to attack with whatever it has prepared after a designated amount of time. 1 = AV1, 2 = AV2 etc
+	
+	//UnitCount
+	TotalTroopCount: array [0..2] of Integer; //0 = defence-only, 1 = AV1, 2 = AV2 etc	
+	
+	///TRADER///
+	Traders: array of Integer;
+	
+	///HOUSES///
+	Houses: array of HouseRecord;
+end;
+
+var
+	PlayersAndAI: array [0..20] of PlayerAndAIRecord;
+	HouseIDs: array of Integer;
+	
+procedure SetHouseAndPlayerAndAIRecordVariables();
+var 
+	i, j, k: Integer;
+begin
+	for i:= 0 to PlayerAndAICount-1 do
+		begin
+			with PlayersAndAI[i] do
+				begin						
+					///TRADER///
+					SetLength(Traders, S.StatHouseTypeCountEx(i, htMarket));
+					///HOUSES///
+					SetLength(HouseIDs, S.StatHouseCount(i));
+					HouseIDs:= S.PlayerGetAllHouses(i);
+					SetLength(Houses, S.StatHouseCount(i));				
+					for j:= 0 to Length(Houses)-1 do
+						begin
+							with Houses[j] do
+								begin
+									ID:= HouseIDs[j];
+									HouseType:= S.HouseTypeEx(ID);
+									X:= S.HousePositionX(ID);
+									Y:= S.HousePositionY(ID);
+									if (HouseType = htMarket) then
+										begin
+											for k:= 0 to Length(Traders)-1 do
+												begin
+													Traders[k]:= ID;	
+													A.MarketSetTradeEx(Traders[k], wtGold, wtWine, 50);																							
+												end;
+										end;
+								end;
+						end;		
+					///ATTACKS///
+					A.AIEquipRate(i, 0, 2);
+					PreparingAttack[0]:= true; //always preparing base defence (attack variation 0 = base defence)
+					AttackPreparationTime:= 9900000;
+					AttackSentToSecondaryLocationTime:= 9900000;;
+					AttackSentTime:= 9900000;
+					PreparationTimeCheck:= EnemyPrepCheckTime;
+					AttackAnywayTime[1]:= 15000;
+					AttackAnywayTime[2]:= 15000;								
+				end;
+		end;
+
+	with PlayersAndAI[8] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(8)+96;
+			InitialAttackTime[1]:= U.RoundTo(30000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+24-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+24-1;
+			PreparationTimeCheck:= 180000; //changes back to EnemyPrepCheckTime after larger attacks
+		end;
+	///
+	with PlayersAndAI[9] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(9)+120;
+			InitialAttackTime[1]:= U.RoundTo(46000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+78-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+27-1;
+		end;
+	with PlayersAndAI[10] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(10)+114;
+			InitialAttackTime[1]:= U.RoundTo(43000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+120-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+99-1;
+			AttackAnywayTime[1]:= 24000;
+		end;
+	with PlayersAndAI[7] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(7)+129;
+			InitialAttackTime[1]:= U.RoundTo(48000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+140-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+108-1;
+			AttackAnywayTime[1]:= 24000;
+			AttackAnywayTime[2]:= 21000;
+		end;
+	///
+	with PlayersAndAI[3] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(3)+144;
+			InitialAttackTime[1]:= U.RoundTo(82800*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+96-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+54-1;
+		end;
+	///			
+	with PlayersAndAI[4] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(4)+144;
+			InitialAttackTime[1]:= U.RoundTo(102000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+54-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+54-1;
+		end;
+	///
+	with PlayersAndAI[5] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(5)+66;
+			InitialAttackTime[1]:= U.RoundTo(142000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+60-1;		
+			TotalTroopCount[2]:= TotalTroopCount[0]+60-1;
+		end;
+	with PlayersAndAI[11] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(11)+18;
+			InitialAttackTime[1]:= U.RoundTo(142000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+24-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+24-1;
+		end;
+	///
+	with PlayersAndAI[6] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(6)+78;
+			InitialAttackTime[1]:= U.RoundTo(162000*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+54-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+54-1;
+		end;
+	///
+	with PlayersAndAI[2] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(2)+90;	
+			InitialAttackTime[1]:= U.RoundTo(181200*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+170-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+48-1;
+			AttackAnywayTime[1]:= 27000;	
+		end;
+	with PlayersAndAI[15] do
+		begin
+			TotalTroopCount[0]:= S.StatArmyCount(15)+42;
+			InitialAttackTime[1]:= U.RoundTo(184500*DifficultyMultiplier, 100);
+			TotalTroopCount[1]:= TotalTroopCount[0]+72-1;			
+			TotalTroopCount[2]:= TotalTroopCount[0]+72-1;
+		end;
+end;
+
+procedure BuildingBuilt(aHouseID: Integer);
+var //add house into array when built
+	i, j, HouseOwnerID: Integer;
+begin
+	HouseOwnerID:= S.HouseOwner(aHouseID);
+	with PlayersAndAI[HouseOwnerID] do
+		begin
+			i:= Length(Houses);
+			SetLength(Houses, i+1);				
+			with Houses[i] do
+				begin
+					ID:= aHouseID;
+					HouseType:= S.HouseTypeEx(ID);
+					X:= S.HousePositionX(ID);
+					Y:= S.HousePositionY(ID);									
+				end;
+			if (S.HouseTypeEx(aHouseID) = htMarket) then
+				begin				
+					j:= Length(Traders);
+					SetLength(Traders, j+1);
+					Traders[j]:= aHouseID;													
+				end;
+		end;
+end;
+
+procedure BuildingDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+var
+	i, j, k, ArrayLength, HouseOwnerID: Integer;
+begin //remove house from array when destroyed			
+	HouseOwnerID:= S.HouseOwner(aHouseID);
+	with PlayersAndAI[HouseOwnerID] do
+		begin							
+			ArrayLength:= Length(Houses);
+			for i:= 0 to (ArrayLength-1) do
+				begin
+					if (Houses[i].ID = aHouseID) then
+						begin
+							for j:= i+1 to (ArrayLength -1) do
+								begin
+									Houses[j-1]:= Houses[j];
+								end;
+								SetLength(Houses, ArrayLength-1); 
+								i:= ArrayLength-1;		
+						end;
+				end;				
+			if (S.HouseTypeEx(aHouseID) = htMarket) then
+				begin
+					ArrayLength:= Length(Traders);
+					for j:= 0 to (ArrayLength-1) do
+						begin
+							if (Traders[j] = aHouseID) then
+								begin
+									for k:= j+1 to (ArrayLength-1) do
+										begin
+											Traders[k-1]:= Traders[k];
+										end;
+									SetLength(Traders, ArrayLength-1); 
+									j:= ArrayLength-1;
+								end;			
+						end;				
+				end;
+		end;
+end;

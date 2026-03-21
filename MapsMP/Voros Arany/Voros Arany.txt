@@ -1,3 +1,3 @@
-BigDesc
-3v3,4v4|Bloody Gold|Lost in a triangle with your friends.Find the circle keys in your enemies rectangular bases to get your exit into a hexagonal paradise.|Oh, and do not forget to destroy them!|Maybe they have some hidden cube sugar also to your horses.|Have Fun!|Made by [$800080]Thunder[HU]
+﻿BigDesc
+[$0000CC]Vörös Arany[]||Lost in a triangle with your friends. Find the circle keys in your enemies rectangular bases to get your exit into a hexagonal paradise.|Oh, and do not forget to deepsearch those storehouses!|Maybe they have some hidden cube sugar also to your horses.||Have Fun!|[$0000CC]Bloody Gold 12P[]||Made by [$800080]Thunder[HU][]||||f2603|-making iron mountains available for each 3 players;|-blocking the South goldmountain for L9
 
