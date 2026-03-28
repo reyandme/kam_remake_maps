@@ -1,0 +1,12 @@
+﻿0:Mon seigneur, les forces ennemies commencent leur siège sur la capitale. Nous devons préparer les défenses.
+1:Mon seigneur, des ennemis ont été repérés au nord-est !
+2:Mon seigneur, des ennemis ont été repérés au nord-ouest !
+3:Mon seigneur, des ennemis ont été repérés au sud-est !
+4:Mon seigneur, des ennemis ont été repérés au sud-ouest !
+5:Mon seigneur, les ennemis attaquent de toutes les directions à la fois !
+6:Mon seigneur, des traîtres se sont infiltrés dans le château ! Nous devons les repousser à tout prix !
+7:Mon seigneur, l'ennemi nous submerge, nous ne pouvons pas sauver la capitale. Nous devons fuir.
+8:Mon seigneur, nous devons nous replier vers notre château, c'est notre dernière ligne de défense. Il n'y aura pas de retraite possible.
+9:[$%s]Objectif :[] Défendre les entrepôts
+10:[$%s]Objectif :[] Se replier vers le château et défendre les murs du château
+11:[$%s]Objectif :[] La capitale est perdue, vous ne pouvez rien faire
