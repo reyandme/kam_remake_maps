@@ -1,0 +1,66 @@
+﻿0:Trusco's Tales
+1:Trusco McGrabbins was finding working for The Skull Collector to be no easy feat - and no easy skull either. But it did pay well, so the reluctance was tempered somewhat - and often completely forgotten after nights of salaciously-induced opulatory splurgence at various exotic brothels (at least temporarily).||For his latest assignment, he had been tasked to venture into the barbarian lands of the north. Three of their chieftains had been particularly egregious in their disdain for The Skull Collector of late - and if it's one thing The Skull Collector does not like, it is disdain directed towards himself - particularly from others. So they must pay. And he's happy to pay to make them pay. And Trusco was happy to be paid to make them pay. No one enquired as to the chieftains' thoughts on the matter, but one would imagine they would not be so taken by the idea.||And so, to cut a long story to a potentially reasonable length, dependent upon the reader's linguistical expectations, here we find ourselves - on a day in late May, ready for a foray into a melee in order to expand upon The Skull Collector's display for a pay day.||To skulls!||(Many thanks to Phischling & greeny for their help learning scripting. Map uses ImprovedAI Script by Strangelove, and BurnBabyBurn script (buildings on fire will continue to take damage unless repaired). Signal (beacon) = B + left click)
+
+2:Trusco: Excellent, we have destroyed an enemy store! We should ransack more of these if we can!
+3:Trusco: Fantastic, we have destroyed an enemy barracks & salvaged some weapons & armour from the wreckage!
+
+22:Trusco McGrabbins: Flannigan?! Flannigan?! Get your ass over here, Flannigan!
+23:Flannigan: Coming, Trusco!
+
+4:Trusco: Right, Flannigan. The task is simple. Wipe out all of the barbarian tribes! The Skull Collector says he will pay 1 gold chest per barbarian skull, with a sizeable bonus for each of the three chieftains. I don't know why, but he insists that you also be rewarded, so if you could run that gold along to the nearest market town to trade for resources, then that'd be mighty useful of you.
+5:Flannigan: Yes, Trusco.
+6:Trusco: Excellent, let's get to it! Here's 20 gold to get you started. I hear they have an excellent selection of wares there, and at reasonable prices! Oh, and I've hired some vagabonds to help here because they're much better trained in this area - although that unfortunately means the enemy will likely be making use of them as well!
+7:Flannigan: Oh, I see. I'm that easy to replace, eh.
+8:Trusco: ...
+9:Flannigan: I'll be on my way.
+
+10:Trusco: Excellent, we have killed a chieftain! Look at all that juicy, juicy gold! Only 2 more to go!
+11:Trusco: Another chieftain down! 1 more to go!
+12:Trusco: Yes! That's the last of the chieftains! I'm RICH, RICH I tell you!
+13:Flannigan: Don't you mean we?
+14:Trusco: Oh yes, of course. We're rich, rich I tell you. Doesn't quite have the same ring to it, does it?
+15:Flannigan: Well that might have something to do with the complete lack of emphasis you put on it.
+16:Trusco: I don't know what you mean. Right, time to go seek out some activities of serious disrepute! 
+
+17:Flannigan Returns in
+18:Gold Taken to Market:
+
+20:Gold Received for Skulls:
+
+21:Trusco: The enemy seems aware that we're training troops clad in iron, and have started up their own iron trade!
+
+24:Flannigan's already on his travels! Have patience dear fellow.
+25:Flannigan: I don't have any gold to buy anything from the market! 
+26:Flannigan: I have returned! Send me a signal when you'd like me to go to the market again.
+
+27:Trusco: Our scouts inform us that the barbarians are planning a small raid from their midwestern position soon. We should prepare ourselves to repel the attack!
+28:Trusco: Our scouts inform us that the barbarians are planning a larger attack soon. We should be wary, and prepare our defences!
+
+29:Trusco: Aha! That must be a barbarian chieftain! Get him, lads!
+31:Trusco: Another barbarian chieftain! You know what to do, guys!
+32:Trusco: There's the last of the barbarian chieftains! I can practically taste the gold already!
+
+30:Flannigan: I have returned from the market!
+
+99:Trusco McGrabbins is dead! The Skull Collector will be most displeased... and Trusco probably isn't too happy about it either.
+
+100:Trusco McGrabbins
+101:Flannigan
+102:Barbarians
+103:Barbarians
+104:Barbarians
+105:Barbarians
+106:Barbarians
+107:Barbarians
+108:Barbarians
+109:Barbarians
+110:Barbarians
+111:Barbarians
+112:Barbarians
+113:Barbarians
+114:Barbarians
+115:Barbarians
+113:Barbarians
+114:Barbarians
+115:Barbarians
+116:Barbarians

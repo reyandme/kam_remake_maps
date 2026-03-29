@@ -1,0 +1,66 @@
+﻿0:Przygody Trusco
+1: Trusco McGrabbins uważał, że praca dla Kolekcjonera Czaszek nie jest łatwym zadaniem. Płacono mu dobrze, więc niechęć z czasem słabła, a często całkowicie znikała po nocach pełnych lubieżnych rozrywek w różnych egzotycznych domach publicznych (przynajmniej tymczasowo).||W ramach swojego ostatniego zadania miał wyruszyć na tereny barbarzyńców na północy. Trzech z ich wodzów wykazało się ostatnio szczególnie rażącą pogardą wobec Kolekcjonera Czaszek, a jeśli jest coś, czego Kolekcjoner Czaszek nie lubi, to jest to brak szacunku w jego kierunku, szczególnie ze strony innych. Muszą więc za to zapłacić. A on chętnie zapłaci, aby ich ukarać. Trusco był szczęśliwy, z propozycji otrzymania zapłaty za ukaranie ich. Nikt nie pytał wodzów o ich zdanie w tej sprawie, ale można sobie wyobrazić, że nie byli oni zachwyceni tym pomysłem.||A więc, aby skrócić tę długą historię do potencjalnie rozsądnej długości, zależnej od oczekiwań językowych czytelnika, oto jesteśmy, pod koniec maja, gotowi do wyprawy, aby powiększyć asortyment Kolekcjonera Czaszek i otrzymać nagrodę.||Za czaszki! ||(Wielkie podziękowania dla Phischlinga i greeny'ego za pomoc w nauce pisania skryptów. Mapa wykorzystuje skrypt ImprovedAI autorstwa Strangelove. Sygnał (ping) = ctrl + B)
+
+2:Trusco: Świetnie, zniszczyliśmy spichlerz wroga! Powinniśmy splądrować spróbować splądrować jeszcze więcej z nich!
+3:Trusco: Fantastycznie, zniszczyliśmy koszary wroga i przejeliśmy pozostałe w nich uzbrojenie!
+
+22:Trusco McGrabbins: Flannigan?! Flannigan?! Ruszaj się, Flannigan!
+23:Flannigan: Już idę, Trusco!
+
+4:Trusco: Racja. Zadanie jest proste. Wytępić plemiona barbarzyńców! Kolekcjoner czaszek obiecuje zapłacić jedną skrzynię złota za każdą czaszkę barbarzyńcy, a także premię za każdego z trzech wodzów. Nalega także, żebyś również otrzymał nagrodę, więc byłoby pomocne, gdybyś zaniósł to złoto do najbliższego miasteczka, żeby wymienić je na surowce.
+5:Flannigan: Tak, Trusco.
+6:Trusco: Świetnie, zabierajmy się do roboty! Oto 20 sztuk złota na początek. Słyszałem, że mają tam doskonały wybór towarów w rozsądnych cenach! Aha, zatrudniłem też kilku włóczęgów do pomocy, ponieważ są oni znacznie lepiej wyszkoleni w tej krainie, choć niestety oznacza to, że wróg prawdopodobnie również będzie z nich korzystał!
+7:Flannigan: Ach tak, łatwo mnie zastąpić, co?
+8:Trusco: ...
+9:Flannigan: Już się zabieram.
+
+10:Trusco: Świetnie, zabiliśmy wodza! Spójrzcie, tylko na to piękne złoto! Zostało już tylko dwóch!
+11:Trusco: Kolejny wódz pokonany! Pozostał jeszcze jeden!
+12:Trusco: Tak! To ostatni z wodzów! Jestem BOGATY, BOGATY, mówię ci!
+13:Flannigan: Nie masz na myśli „my”?
+14:Trusco: O tak, oczywiście. Jesteśmy bogaci, naprawdę bogaci. Nie brzmi to tak samo dobrze, prawda?
+15:Flannigan: Cóż, może to mieć coś wspólnego z tonem w jakim to mówisz.
+16:Trusco: Nie wiem, o co ci chodzi. No dobrze, czas poszukać jakichś naprawdę niegodziwych zajęć! 
+
+17:Flannigan powróci za
+18:Złoto wysłane na rynek:
+
+20:Złoto otrzymane za czaszki:
+
+21:Trusco: Wróg zauważył, że szkolimy żołnierzy zakutych w stalowe zbroje i rozpoczął własny handel by uzyskać żelazne uzbrojenie!
+
+24:Flannigan już wyruszył w podróż! Proszę o cierpliwość, drogi kolego.
+25:Flannigan: Brakuje nam złota, nie jestem w stanie kupić cokolwiek na rynku! 
+26:Flannigan: Wróciłem! Daj mi znać, kiedy chcesz, żebym znowu wyruszył na rynek.
+
+27:Trusco: Nasi zwiadowcy donoszą, że Barbarzyńcy wkrótce wyślą niewielki najazd ze swojej fortecy na północny-zachód od nas. Powinniśmy przygotować się by odeprzeć uderzenie!
+28:Trusco: Nasi zwiadowcy donoszą, że Barbarzyńcy planują silniejsze uderzenie na nasze pozycje. Powinniśmy być czujni i przygotować się do obrony!
+
+29:Trusco: Aha! To musi być wódz barbarzyńców! Brać go!
+31:Trusco: Kolejny barbarzyński wódz! Wiecie, co z nim zrobić!
+32:Trusco: Znaleźliśmy ostatniego z barbarzyńskich wodzów! Bogactwa niedługo będą w moich rękach!
+
+30:Flannigan: Wróciłem z targu!
+
+99:Trusco McGrabbins nie żyje! Kolekcjoner Czasek będzie bardzo niezadowolony... i Trusco prawdopodobnie też nie jest z specjalnie szczęśliwy z tego powodu.
+
+100:Trusco McGrabbins
+101:Flannigan
+102:Barbarzyńcy
+103:Barbarzyńcy
+104:Barbarzyńcy
+105:Barbarzyńcy
+106:Barbarzyńcy
+107:Barbarzyńcy
+108:Barbarzyńcy
+109:Barbarzyńcy
+110:Barbarzyńcy
+111:Barbarzyńcy
+112:Barbarzyńcy
+113:Barbarzyńcy
+114:Barbarzyńcy
+115:Barbarzyńcy
+113:Barbarzyńcy
+114:Barbarzyńcy
+115:Barbarzyńcy
+116:Barbarzyńcy
