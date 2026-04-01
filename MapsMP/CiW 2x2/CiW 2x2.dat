@@ -70,7 +70,6 @@
 !SET_ALLIANCE 2 0
 !SET_ALLIANCE 3 0
 
-!BLOCK_UNIT 9 0
 
 
 
@@ -153,4 +152,4 @@
 
 //Animals
 
-//This mission was made with KaM Remake Map Editor version r15919 [ UNSECURE ] [ DEBUG ] at 18.12.2025 13:22:35
+//This mission was made with KaM Remake Map Editor version r16063 [UNSECURE] [DEBUG] [RNGSPY] [PERFLOG] at 01.04.2026 15:55:10
