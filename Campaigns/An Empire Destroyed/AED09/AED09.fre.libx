@@ -1,0 +1,11 @@
+﻿0: Général, le roi vous a confié la tâche de rassembler les provisions et les hommes dont nous avons besoin pour qu'il puisse convaincre les autres résistances de s'unir et de nous aider dans notre bataille finale.
+1: Général, notre groupe d'éclaireurs est revenu avec de graves nouvelles. Les troupes ennemies marchent vers notre ville et seront bientôt sur nous !
+4:[$0000FC]Objectif[] :
+5:[$8CE6F0] - []
+6:[$00FF7F]Rassembler les ressources :[]
+7: %d [$D2FAFA]Vague[] dans %d
+8:[$D2FAFA]%s[] - %d/%d
+9:[$2FFFAD]%s[]
+10:[$00FF7F]Regrouper l'armée :[]
+11:[$00FF7F]Survivre[]
+12:Soyez prudent, l'ennemi a de petits groupes de pillards se dirigeant vers votre ville. Ils peuvent venir de partout.

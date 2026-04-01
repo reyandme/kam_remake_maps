@@ -1,0 +1,589 @@
+{$I ImproveStaticAIEdited.script} /// by Strangelove - edit = to rebuild even if destroyed by script (BurnBabyBurn)
+{$I 0SetMissionVariables.script}
+{$I 1EnemyPreparingAttacks.script}
+{$I 2EnemySendingAttacks.script}
+{$I 3MasterAttackTrigger.script}
+{$I 4BurnBabyBurn.script}
+{$I 5RansackStoresandBarracks.script}
+
+procedure Trader(Q: Integer);
+var
+	K: Integer;
+	TradersArray: array of Integer;
+begin
+	TradersArray:= S.PlayerGetAllHouses(Q);  //search all houses & store data in variable
+	if Length(TradersArray) <= 0 then  // if house quantity <= 0, then do nothing. If > 0 then houses exist (so set trade).
+		exit;
+	for K := Low(TradersArray) to High(TradersArray) do  // do a positive sequence perform, low to high
+		begin
+			if (S.HouseTypeEx(TradersArray[K]) = htMarket) and (S.PlayerIsAI(S.HouseOwner(TradersArray[K])) = true) and (S.MarketOrderAmount(TradersArray[K]) = 0) then	
+				begin
+					if (StartBarbarianIronTrade = true) then
+						begin
+							case U.RandomRangeI(0, 4) of
+								0: 	begin
+										A.MarketSetTradeEx((TradersArray[K]), wtGold, wtIronArmor, 20);
+									end;
+								1:	begin
+										A.MarketSetTradeEx((TradersArray[K]), wtGold, wtIronShield, 10);
+									end;
+								2: 	begin
+										A.MarketSetTradeEx((TradersArray[K]), wtGold, wtSword, 10);
+									end;
+								3: 	begin
+										A.MarketSetTradeEx((TradersArray[K]), wtGold, wtPike, 10);
+									end;
+								4: 	begin
+										A.MarketSetTradeEx((TradersArray[K]), wtGold, wtCrossbow, 10);
+									end;										
+							end;
+						end else
+							begin
+								case U.RandomRangeI(0, 2) of
+									0: 	begin
+											A.MarketSetTradeEx((TradersArray[K]), wtGold, wtCorn, 30);
+										end;
+									1:	begin
+											A.MarketSetTradeEx((TradersArray[K]), wtGold, wtWine, 30);
+										end;
+									2: 	begin
+											A.MarketSetTradeEx((TradersArray[K]), wtGold, wtTimber, 30);
+										end;										
+								end;
+							end;			
+				end;			
+		end;
+end;
+
+function SkullGoldTradeWare: Integer;
+begin
+  case S.KaMRandomI(60) of
+    0..1: 	   Result := wtTrunk;
+    2..5:      Result := wtStone;
+    6..9:      Result := wtTimber;
+    10..12:    Result := wtIronOre;
+    13..15:    Result := wtGoldOre;
+	16..18:    Result := wtCoal;
+	19..21:    Result := wtIron;	
+	22..26:    Result := wtCorn;
+	27..29:    Result := wtBread;
+	30..31:    Result := wtFlour;
+	32..34:    Result := wtLeather;
+	35..37:    Result := wtSausage;
+	38..39:    Result := wtPig;
+	40..41:    Result := wtSkin;
+	42..43:    Result := wtWoodenShield;
+	44:        Result := wtIronShield;
+	45..46:    Result := wtLeatherArmor;
+	47:        Result := wtIronArmor;
+	48..49:    Result := wtAxe;
+	50:        Result := wtSword;
+	51..52:    Result := wtLance;
+	53:        Result := wtPike;
+	54..55:    Result := wtBow;
+	56:        Result := wtCrossbow;
+	57:   	   Result := wtHorse;
+	58..60:    Result := wtFish;
+  end;
+end;
+
+procedure OnTick;
+var
+	i: Integer;
+	P2Militia: array of Integer;
+begin
+	if (FlanniganLeftForMarketTown = true) then
+		begin
+			if (Countdown <> 0) then
+				begin	
+					Countdown:= Countdown -1; //Countdown					
+					A.OverlayTextSet(-1, '<$20> ' + InttoStr(SkullGoldTotal));
+					A.OverlayTextAppend(-1, '||<$17>: ' + U.TimeToString(Countdown));						
+				end else
+					begin
+						A.OverlayTextSet(-1, '<$20> ' + InttoStr(SkullGoldTotal));						
+						Countdown:= FlanniganTimer; //Reset timer										
+						A.AIDefencePositionAdd (1, 184, 190, 4, 0, 5, 0); //Flannigan's chill spot
+						Flannigan:= A.GiveGroupEx(1, utMilitia, 180, 191, dirN, 1, 1);					
+						if (SkullGoldTradeWareForPlayer = wtStone) then
+							begin
+								WareMultiplier:= 2.69;
+							end else
+						if (SkullGoldTradeWareForPlayer = wtTimber) or (SkullGoldTradeWareForPlayer = wtIronOre) or (SkullGoldTradeWareForPlayer = wtGoldOre) or (SkullGoldTradeWareForPlayer = wtCoal) or (SkullGoldTradeWareForPlayer = wtCorn) or (SkullGoldTradeWareForPlayer = wtBread) or (SkullGoldTradeWareForPlayer = wtFish) then
+							begin
+								WareMultiplier:= 1.88;
+							end else
+						if (SkullGoldTradeWareForPlayer = wtTrunk) or (SkullGoldTradeWareForPlayer = wtFlour) or (SkullGoldTradeWareForPlayer = wtSausage) or (SkullGoldTradeWareForPlayer = wtWoodenShield) then
+							begin
+								WareMultiplier:= 0.88;
+							end else	
+						if (SkullGoldTradeWareForPlayer = wtIron) or (SkullGoldTradeWareForPlayer = wtLeather) or (SkullGoldTradeWareForPlayer = wtAxe) or (SkullGoldTradeWareForPlayer = wtLance) or (SkullGoldTradeWareForPlayer = wtBow) then
+							begin
+								WareMultiplier:= 0.69;
+							end else
+						if (SkullGoldTradeWareForPlayer = wtPig) or (SkullGoldTradeWareForPlayer = wtSkin) or (SkullGoldTradeWareForPlayer = wtSword) or (SkullGoldTradeWareForPlayer = wtPike) or (SkullGoldTradeWareForPlayer = wtCrossbow) then
+							begin
+								WareMultiplier:= 0.58;
+							end else
+						if (SkullGoldTradeWareForPlayer = wtIronArmor) or (SkullGoldTradeWareForPlayer = wtIronShield) or (SkullGoldTradeWareForPlayer = wtHorse) then
+							begin
+								WareMultiplier:= 0.38;
+							end;						
+						if (GoldForMarket*WareMultiplier < 1) then
+							begin
+								A.GiveWaresEx(0, SkullGoldTradeWareForPlayer, 1);
+								A.OverlayTextAppend(-1, '||Flannigans latest wares: 1 ' + S.WareTypeNameEx(SkullGoldTradeWareForPlayer));
+							end else	
+								begin
+									A.GiveWaresEx(0, SkullGoldTradeWareForPlayer, U.RoundTo(GoldForMarket*WareMultiplier, 1));
+									A.OverlayTextAppend(-1, '||Flannigans latest wares: ' + InttoStr(U.RoundTo(GoldForMarket*WareMultiplier, 1)) + ' ' + S.WareTypeNameEx(SkullGoldTradeWareForPlayer));
+								end;					
+						if (FlanniganInvulnerabilityEngaged = false) then
+							begin
+								SetTimeForFlannigansInvulnerability:= U.RoundTo(S.GameTime, 10);
+								FlanniganInvulnerabilityEngaged:= true;
+							end;
+						if (MessageSent[0] = false) then
+							begin
+								A.ShowMsgGoTo(-1, 180, 191, '<$26>');
+								MessageSent[0]:= true;
+							end else
+								begin
+									A.ShowMsgGoTo(-1, 180, 191, '<$30>');
+								end;
+						FlanniganLeftForMarketTown:= false;				
+					end;
+		end;
+	if (S.GameTime mod 10 = 0) then
+		begin
+			if (MessageSent[2] = false) and (S.FogRevealed(0, 9, 87) = true) then //Chieftains visible
+				begin
+					if (BarbarianChieftainKillCount = 0) then
+						begin
+							A.ShowMsgGoTo(-1, 9, 87, '<$29>');
+						end else
+					if (BarbarianChieftainKillCount = 1) then
+						begin
+							A.ShowMsgGoTo(-1, 9, 87, '<$31>');
+						end else
+					if (BarbarianChieftainKillCount = 2) then
+						begin
+							A.ShowMsgGoTo(-1, 9, 87, '<$32>');
+						end;				
+					MessageSent[2]:= true;
+				end;
+			if (MessageSent[3] = false) and (S.FogRevealed(0, 14, 11) = true) then
+				begin
+					if (BarbarianChieftainKillCount = 0) then
+						begin
+							A.ShowMsgGoTo(-1, 14, 11, '<$29>');
+						end else
+					if (BarbarianChieftainKillCount = 1) then
+						begin
+							A.ShowMsgGoTo(-1, 14, 11, '<$31>');
+						end else
+					if (BarbarianChieftainKillCount = 2) then
+						begin
+							A.ShowMsgGoTo(-1, 14, 11, '<$32>');
+						end;	
+					MessageSent[3]:= true;
+				end;
+			if (MessageSent[4] = false) and (S.FogRevealed(0, 177, 8) = true) then
+				begin
+					if (BarbarianChieftainKillCount = 0) then
+						begin
+							A.ShowMsgGoTo(-1, 177, 8, '<$29>');
+						end else
+					if (BarbarianChieftainKillCount = 1) then
+						begin
+							A.ShowMsgGoTo(-1, 177, 8, '<$31>');
+						end else
+					if (BarbarianChieftainKillCount = 2) then
+						begin
+							A.ShowMsgGoTo(-1, 177, 8, '<$32>');
+						end;	
+					MessageSent[4]:= true;
+				end;
+			if (PlayerBeaconActive = true) and (FlanniganLeftForMarketTown = false) then
+				begin
+					A.GroupOrderWalkEx(Flannigan, 180, 191, dirSW);	
+				end;
+			if (FlanniganInvulnerabilityEngaged = false) and (S.GroupAt(180, 191) = Flannigan) then
+				begin
+					Countdown:= 6000;
+					A.GroupKillAll(Flannigan, true);
+					FlanniganLeftForMarketTown:= true;
+					PlayerBeaconActive:= false;
+				end;
+			if ((S.GameTime - SetTimeForFlannigansInvulnerability) = 50) then
+				begin
+					FlanniganInvulnerabilityEngaged:= false;
+				end;
+			with PlayersAndAI[8] do
+				begin
+					if (S.GameTime = (InitialAttackTime[1]-3000)) then //Warning about first attack
+						begin
+							A.ShowMsg(-1, '<$27>');
+						end;
+				end;
+			with PlayersAndAI[10] do
+				begin
+					if (S.GameTime = (InitialAttackTime[1]+7000)) then //Warning about first larger attacks
+						begin
+							A.ShowMsg(-1, '<$28>');
+							with PlayersAndAI[8] do
+								begin									
+									PreparationTimeCheck:= EnemyPrepCheckTime;
+								end;
+						end;
+				end;			
+			if (StartingSequenceFinished = false) then
+				begin
+					if (S.GameTime = 300) then
+						begin
+							SkullGoldTradeWareForPlayer:= SkullGoldTradeWare;
+							A.AIDefencePositionRemove (1, 135, 163);
+							A.GroupOrderWalkEx(Flannigan, 147, 174, dirSE);
+							A.OverlayTextSet(-1, '<$20> ' + InttoStr(SkullGoldTotal));
+							A.CinematicEnd(0);
+							A.CinematicEnd(1);
+						end else
+					if (S.GameTime = 420) then
+						begin
+							A.AIDefencePositionAdd (1, 184, 190, 4, 0, 5, 0); //Flannigan's chill spot							
+						end else
+					if (S.GameTime = 1000) then
+						begin
+							A.AIDefencePositionRemove (1, 184, 190); //Flannigan's chill spot
+							GoldForMarket:= S.HouseWareAmount(FlannigansStore, wtGold);
+							A.HouseTakeWaresFromEx(FlannigansStore, wtGold, GoldForMarket);
+							A.GroupOrderWalkEx(Flannigan, 180, 191, dirSW);	
+							StartingSequenceFinished:= true;
+						end;
+				end;
+			if (S.GameTime mod 50 = 0) then
+				begin
+					if (StartBarbarianIronTrade = false) and (S.GameTime = PlayerMakingIronTime+15000) then
+						begin
+							A.ShowMsg(-1, '<$21>');
+							StartBarbarianIronTrade:= true;
+						end;
+					if (PlayerBeaconActive = true) and (FlanniganLeftForMarketTown = false) then
+						begin
+							A.GroupOrderWalkEx(Flannigan, 180, 191, dirSW);	
+						end;
+					if (P2MountedDefenceUnitsRemoved = false) and (S.UnitDead(BarbarianChieftain[0]) = true) then
+						begin						
+							A.AIDefencePositionRemove(PlayerNumber[2], 24, 68);
+							A.AIDefencePositionRemove(PlayerNumber[2], 29, 68);
+							A.AIDefencePositionRemove(PlayerNumber[2], 27, 72);
+							A.AIDefencePositionRemove(PlayerNumber[2], 32, 72);
+							with PlayersAndAI[2] do
+								begin
+									TotalTroopCount[1]:= TotalTroopCount[1]-48;			
+									TotalTroopCount[2]:= TotalTroopCount[2]-48;
+								end;
+							A.AIAttackRemoveAll(2);
+							A.AIAttackAdd(PlayerNumber[2], true, 0, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0));
+							P2MountedDefenceUnitsRemoved:= true;
+						end;
+				end;
+			if (BottomLeftBlockersOn = true) and ((S.FogRevealed(0, 35, 154) = true) or (S.FogRevealed(0, 35, 149) = true) or (S.FogRevealed(0, 14, 165) = true) or (S.FogRevealed(0, 21, 139) = true)) then 
+				begin
+					for i:= 1 to 5 do
+						begin
+							A.MapTileObjectSet (i, 147, 255);
+						end;
+					A.MapTileObjectSet (5, 148, 255);
+					for i:= 148 to 152 do
+						begin
+							A.MapTileObjectSet (6, i, 255);
+						end;
+					for i:= 7 to 11 do
+						begin
+							A.MapTileObjectSet (i, 152, 255);
+						end;	
+					A.MapTileObjectSet (11, 151, 255);
+					for i:= 11 to 18 do
+						begin
+							A.MapTileObjectSet (i, 150, 255);
+						end;					
+					for i:= 23 to 27 do
+						begin
+							A.MapTileObjectSet (i, 151, 255);
+						end;
+					for i:= 32 to 36 do
+						begin
+							A.MapTileObjectSet (i, 151, 255);
+						end;						
+					BottomLeftBlockersOn:= false;
+				end;
+			if (TopRightBlockersOn = true) and ((S.FogRevealed(0, 132, 60) = true) or (S.FogRevealed(0, 92, 40) = true) or (S.FogRevealed(0, 164, 57) = true)) then 
+				begin
+					for i:= 124 to 132 do
+						begin
+							A.MapTileObjectSet (i, 27, 255);
+						end;
+					for i:= 127 to 132 do
+						begin
+							A.MapTileObjectSet (i, 57, 255);
+						end;
+					A.AIDefencePositionRemove (PlayerNumber[3], 120, 54);
+					A.AIDefencePositionRemove (PlayerNumber[3], 124, 54);
+					A.AIDefencePositionRemove (PlayerNumber[3], 128, 54);
+					A.AIDefencePositionRemove (PlayerNumber[3], 120, 50);
+					A.AIDefencePositionRemove (PlayerNumber[3], 124, 50);
+					A.AIDefencePositionRemove (PlayerNumber[3], 128, 50);
+					with PlayersAndAI[3] do
+						begin							
+							TotalTroopCount[1]:= TotalTroopCount[1]-54;			
+							TotalTroopCount[2]:= TotalTroopCount[2]-54;
+						end;
+					A.AIDefencePositionRemove (PlayerNumber[4], 121, 28);
+					A.AIDefencePositionRemove (PlayerNumber[4], 125, 28);
+					A.AIDefencePositionRemove (PlayerNumber[4], 129, 28);
+					A.AIDefencePositionRemove (PlayerNumber[4], 121, 32);
+					A.AIDefencePositionRemove (PlayerNumber[4], 125, 32);
+					A.AIDefencePositionRemove (PlayerNumber[4], 129, 32);
+					with PlayersAndAI[4] do
+						begin							
+							TotalTroopCount[1]:= TotalTroopCount[1]-54;			
+							TotalTroopCount[2]:= TotalTroopCount[2]-54;
+						end;
+					A.AIAttackRemoveAll(3);
+					A.AIAttackRemoveAll(4);
+					A.AIAttackAdd(PlayerNumber[3], true, 0, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0));
+					A.AIAttackAdd(PlayerNumber[4], true, 0, 1, 0, 0, 0, 0, true, attClosestUnit, U.KMPoint(0, 0));
+					TopRightBlockersOn:= false;
+				end;			
+			if (S.GameTime = AttackFrequencyChange[0]) then
+				begin
+					for i:= 2 to PlayerAndAICount-1 do
+						begin
+							with PlayersAndAI[i] do
+								begin
+									PreparationTimeCheck:= EnemyPrepCheckTime-3000;
+								end;
+						end;
+				end else
+			if (S.GameTime = AttackFrequencyChange[1]) then
+				begin
+					for i:= 2 to PlayerAndAICount-1 do
+						begin
+							with PlayersAndAI[i] do
+								begin
+									PreparationTimeCheck:= EnemyPrepCheckTime-6000;
+								end;
+						end;
+				end;
+			if (S.GameTime mod 1000 = 0) then //Equipment Rate Boosts 
+				begin
+					if (S.GameTime > 5000) then
+						begin
+							for i:= 2 to 15 do
+								begin
+									if (i <> 5) and (i <> 11) and (i <> 12) and (i <> 13) then
+										begin
+											Trader(i);
+										end;
+								end;					
+							if (S.GameTime mod 5000 = 0) then
+								begin
+									for i:= 0 to 1 do
+										begin
+											A.AIEquipRate(2, i, 3);	 //Top Left
+											A.AIEquipRate(3, i, 3);	
+											A.AIEquipRate(4, i, 3);
+											A.AIEquipRate(11, i, 3);	
+											A.AIEquipRate(15, i, 3);
+										end;			
+								end else
+							if (S.GameTime mod 5000 = 1000) then
+								begin														
+									for i:= 0 to 1 do
+										begin
+											A.AIEquipRate(2, i, 900);	
+											A.AIEquipRate(3, i, 900);	
+											A.AIEquipRate(4, i, 900);
+											A.AIEquipRate(11, i, 900);	
+											A.AIEquipRate(15, i, 900);
+											
+											A.AIEquipRate(5, i, 3);	//Top Right
+											A.AIEquipRate(6, i, 3);	
+											A.AIEquipRate(7, i, 3);
+											A.AIEquipRate(14, i, 3);
+										end;
+								end else
+							if (S.GameTime mod 5000 = 2000) then
+								begin														
+									for i:= 0 to 1 do
+										begin
+											A.AIEquipRate(5, i, 900);
+											A.AIEquipRate(6, i, 900);	
+											A.AIEquipRate(7, i, 900);
+											A.AIEquipRate(14, i, 900);
+											
+											A.AIEquipRate(8, i, 3);	//Bottom Left
+											A.AIEquipRate(9, i, 3);	
+											A.AIEquipRate(10, i, 3);
+										end;
+								end else
+							if (S.GameTime mod 5000 = 3000) then
+								begin
+									for i:= 0 to 1 do
+										begin							
+											A.AIEquipRate(8, i, 900);	//Bottom Left
+											A.AIEquipRate(9, i, 900);	
+											A.AIEquipRate(10, i, 900);
+										end;
+								end;
+						end;				
+					if (S.GameTime mod 3000 = 0) then
+						begin
+							A.UnitHungerSet(TruscoMcGrabbins, S.UnitMaxHunger);
+							P2Militia:= S.PlayerGetAllUnits(1);
+							for i:= Low(P2Militia) to High(P2Militia) do
+								begin
+									A.UnitHungerSet(P2Militia[i], S.UnitMaxHunger);
+								end;							
+							for i:= 0 to 2 do
+								begin
+									A.UnitHungerSet(BarbarianChieftain[i], S.UnitMaxHunger);
+								end;	
+						end;
+			end;
+		end;
+end;
+
+procedure OnHouseBuilt (aHouseID: Integer);
+begin
+	if (IronTradeTurnedOn = false) and (S.HouseTypeEx(aHouseID) = htArmorSmithy) then
+		begin
+			PlayerMakingIronTime:= U.Roundto(S.GameTime, 50);
+			IronTradeTurnedOn:= true;
+		end;
+end;
+
+procedure OnWarriorEquipped (aUnitID, aGroup: Integer);
+begin
+	if (S.UnitOwner(aUnitID) <> 0) then
+		begin
+			if (S.UnitTypeEx(aUnitID) = utAxeFighter) then
+				begin //make a Militia/Barbarian
+					if not ((U.RandomRangeI(0, 4) = 0) or (U.RandomRangeI(0, 4) = 1)) then //60%
+						begin
+							A.GiveGroupEx((S.UnitOwner(aUnitID)), utBarbarian, 1 + S.UnitPositionX(aUnitID), 1 + S.UnitPositionY(aUnitID), 4, 1, 1);
+							A.UnitKill(aUnitID, true);
+						end else
+					if (U.RandomRangeI(0, 1) = 0) then //50%
+						begin
+							A.GiveGroupEx((S.UnitOwner(aUnitID)), utMilitia, 1 + S.UnitPositionX(aUnitID), 1 + S.UnitPositionY(aUnitID), 4, 1, 1);
+							A.UnitKill(aUnitID, true);
+						end;						
+				end else
+			if (S.UnitTypeEx(aUnitID) = utScout) then
+				begin //make a Vagabond
+					if (U.RandomRangeI(0, 1) = 0) then //50%
+						begin
+							A.GiveGroupEx((S.UnitOwner(aUnitID)), utVagabond, 1 + S.UnitPositionX(aUnitID), 1 + S.UnitPositionY(aUnitID), 4, 1, 1);
+							A.UnitKill(aUnitID, true);
+						end;			
+				end;			
+		end;
+end;
+
+procedure OnUnitWounded (aUnitID, aAttackerID: Integer);
+begin
+	if (S.UnitTypeEx(aUnitID) = utVagabond) then //Player & Enemy Vagabonds
+		begin
+			if (U.RandomRangeI(0, 1) = 0) then //50%
+				begin 
+					A.UnitHPChange(aUnitID, 1);
+				end;
+		end else
+	if (aUnitID = TruscoMcGrabbins) or (aUnitID = BarbarianChieftain[0]) or (aUnitID = BarbarianChieftain[1]) or (aUnitID = BarbarianChieftain[2]) then
+		begin
+			if not (U.RandomRangeI(0, 5) = 5) then
+				begin 	
+					A.UnitHPChange(aUnitID, 1);
+				end;
+		end;
+end;
+
+procedure OnUnitDied (aUnitID, aKillerOwner: Integer);
+begin
+	if (S.UnitTypeEx(aUnitID) = utBarbarian) then
+		begin
+			A.GiveWaresEx(0, wtGold, 1);
+			A.GiveWaresEx(1, wtGold, 1);
+			SkullGoldTotal:= SkullGoldTotal +1;
+			A.OverlayTextSet(-1, '<$20> ' + InttoStr(SkullGoldTotal));
+			if (FlanniganLeftForMarketTown = false) then
+				begin
+					if (GoldForMarket*WareMultiplier < 1) then
+						begin
+							A.GiveWaresEx(0, SkullGoldTradeWareForPlayer, 1);
+							A.OverlayTextAppend(-1, '||Flannigans latest wares: 1 ' + S.WareTypeNameEx(SkullGoldTradeWareForPlayer));
+						end else
+							begin
+								A.OverlayTextAppend(-1, '||Flannigans latest wares: ' + InttoStr(U.RoundTo(GoldForMarket*WareMultiplier, 1)) + ' ' + S.WareTypeNameEx(SkullGoldTradeWareForPlayer));
+							end;
+				end else
+					begin
+						A.OverlayTextAppend(-1, '||<$17>: ' + U.TimeToString(Countdown));
+					end;		
+			if (aUnitID = BarbarianChieftain[0]) or (aUnitID = BarbarianChieftain[1]) or (aUnitID = BarbarianChieftain[2]) then
+				begin
+					A.GiveWaresEx(0, wtGold, 99);
+					A.GiveWaresEx(1, wtGold, 99);
+					SkullGoldTotal:= SkullGoldTotal +99;
+					BarbarianChieftainKillCount:= BarbarianChieftainKillCount +1;
+					if (BarbarianChieftainKillCount = 1) then
+						begin
+							A.ShowMsg(-1, '<$10>');
+						end else
+					if (BarbarianChieftainKillCount = 2) then
+						begin
+							A.ShowMsg(-1, '<$11>');
+						end else
+					if (BarbarianChieftainKillCount = 3) then
+						begin
+							A.ShowMsg(-1, '<$12>');
+							A.ShowMsg(-1, '<$13>');
+							A.ShowMsg(-1, '<$14>');
+							A.ShowMsg(-1, '<$15>');
+							A.ShowMsg(-1, '<$16>');
+						end;
+				end;
+		end else
+	if (aUnitID = TruscoMcGrabbins) then //if our protaganist is killed in combat
+		begin 
+			A.ShowMsg(-1, '<$99>');
+			A.PlayerDefeat(0);
+			A.PlayerDefeat(1);
+		end;
+end;
+
+procedure OnBeacon(aPlayer, aX, aY: Integer);
+begin
+	if (U.InAreaI(aX, aY, 183, 186, 185, 191) = true) then //Flannigan & his store
+		begin
+			if (S.GameTime > 910) and (S.HouseWareAmount(FlannigansStore, wtGold) > 0) and (FlanniganLeftForMarketTown = false) then
+				begin
+					PlayerBeaconActive:= true;
+					A.AIDefencePositionRemove (1, 184, 190);
+					SkullGoldTradeWareForPlayer:= SkullGoldTradeWare;
+					GoldForMarket:= S.HouseWareAmount(FlannigansStore, wtGold);
+					A.HouseTakeWaresFromEx(FlannigansStore, wtGold, GoldForMarket);
+					A.GroupOrderWalkEx(Flannigan, 180, 191, dirSW);					
+				end else
+			if (FlanniganLeftForMarketTown = true) then
+				begin
+					A.ShowMsg(-1, '<$24>');	
+				end else	
+			if (S.HouseWareAmount(FlannigansStore, wtGold) = 0) then
+				begin
+					A.ShowMsg(-1, '<$25>');	
+				end;
+		end;
+end;

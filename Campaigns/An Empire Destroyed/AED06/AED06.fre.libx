@@ -1,0 +1,16 @@
+﻿0:Les gars, notre mission est de capturer cette ville à tout prix, ils ne l'abandonneront pas sans se battre, mais nous serons victorieux !
+1:
+2:Je n'arrive pas à y croire, ils nous attendaient ! Prenez le fer qu'il reste et préparez les défenses ! Nos ouvriers sont en route.
+3:Général, il semble que nos éclaireurs ont trouvé des campements à proximité qui permettent à l'ennemi d'envoyer des renforts. Nous devons les éliminer afin de sécuriser Maul !
+4:[$0000FC]Objectif[] : 
+5:[$8CE6F0] - []
+6:[$00FF7F]Capturer Maul[]
+7:Barbares restants : [$00FF7F]%d[]
+8:[$00FF7F]Défendre Maul[]
+9: Vague [$00FF7F]%d[] dans [$00FF7F]%d[]
+10:[$00FF7F]Se préparer à défendre Maul[]
+11:Temps restant : [$00FF7F]%s[]
+12:[$00FF7F]Vague :[] %d/%d
+13: dans [$00FF7F]%s[]
+14: - [$00FF7F]%d[]
+15:[$00FF7F]Détruire les campements ennemis[]
