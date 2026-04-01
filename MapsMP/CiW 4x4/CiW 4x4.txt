@@ -1,8 +1,5 @@
-﻿Author
-Classic|          Ritter des Todes
-
-Version
-2.00 (16.12.2025)
+﻿Version
+3.0 (01.04.2026)
 
 BigDescLIBX
 0

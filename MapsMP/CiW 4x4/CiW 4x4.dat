@@ -40,7 +40,7 @@
 
 
 
-!SET_GROUP 24 0 251 4 1 1
+!SET_GROUP 22 0 251 4 1 1
 
 
 !SET_CURR_PLAYER 1
@@ -81,7 +81,7 @@
 
 
 
-!SET_GROUP 24 1 251 4 1 1
+!SET_GROUP 22 1 251 4 1 1
 
 
 !SET_CURR_PLAYER 2
@@ -122,7 +122,7 @@
 
 
 
-!SET_GROUP 24 2 251 4 1 1
+!SET_GROUP 22 2 251 4 1 1
 
 
 !SET_CURR_PLAYER 3
@@ -163,7 +163,7 @@
 
 
 
-!SET_GROUP 24 3 251 4 1 1
+!SET_GROUP 22 3 251 4 1 1
 
 
 !SET_CURR_PLAYER 4
@@ -204,7 +204,7 @@
 
 
 
-!SET_GROUP 24 4 251 4 1 1
+!SET_GROUP 22 4 251 4 1 1
 
 
 !SET_CURR_PLAYER 5
@@ -245,7 +245,7 @@
 
 
 
-!SET_GROUP 24 5 251 4 1 1
+!SET_GROUP 22 5 251 4 1 1
 
 
 !SET_CURR_PLAYER 6
@@ -286,7 +286,7 @@
 
 
 
-!SET_GROUP 24 6 251 4 1 1
+!SET_GROUP 22 6 251 4 1 1
 
 
 !SET_CURR_PLAYER 7
@@ -327,9 +327,9 @@
 
 
 
-!SET_GROUP 24 7 251 4 1 1
+!SET_GROUP 22 7 251 4 1 1
 
 
 //Animals
 
-//This mission was made with KaM Remake Map Editor version r15919 [ UNSECURE ] [ DEBUG ] at 18.12.2025 18:06:05
+//This mission was made with KaM Remake Map Editor version r16063 [UNSECURE] [DEBUG] [RNGSPY] [PERFLOG] at 01.04.2026 15:37:50
