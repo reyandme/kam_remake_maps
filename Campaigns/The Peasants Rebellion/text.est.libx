@@ -1,16 +1,19 @@
-ï»¿0:The Peasants Rebellion
+
+MaxID:23
+
+0:The Peasants Rebellion
 1:TPR%d
-10:MÃ¤ssajad rÃ¼ndavad neid mÃµningaid talupoegasid, kes veel on jÃ¤Ã¤nud lojaalseks kuningriigile. Kuninga palee vastas talupoegasid mÃµrvatakse, seda ei tohi lasta juhtuda. |Sunni vaenased taganema!
-11:PÃ¤rast edukat talupoegade kaitsmist, tuleb meil vabastada veel Ã¼lejÃ¤Ã¤nud talupojad. Suur vaenlaste hulk pÃµhjast liigub meie suunas.|Lahingusse!
-12:PÃ¤rast edukat lahingut, on aeg Ã¼les ehitada rikutud linnad ja taastada vajalikud varud. Edasi tuleb siirduda pÃµhja, kus tuleb vabastada linnad tÃ¼rraniliku aristokraatliku valitsemise alt. SÃ¤Ã¤sta tsiviil elusid ja rÃ¼nda ainult vastase vÃ¤gesid.
-13:Meie luurjad mÃ¤rkasid vaenlase vÃ¤gesid manÃ¶Ã¶verdamas linnade lÃ¤hedal. Suure vaenlase vÃ¤gede tÃµttu on arvata, et lÃ¤hedal asub kindlustatud vaenlase laager. Leia ja hÃ¤vita see, koos militaar majadega.
-14:NÃ¼Ã¼d, pÃ¤rast suurt vÃµitu mÃ¤ssajate vastu on oodata uut massivset vasturÃ¼nnakut nende poolt. Valmista end ette suureks lahinguks ja Ã¤ra lase kÃ¼la hÃ¤vitada.
-15:Me teame, et vaenlane Ã¼ritab ehitatada uusi baase ja seda ei saa lubada. RÃ¼nda esimesel vÃµimalusel, enne kui vaenlane taastub. Lisaks otsi uus koht kust rauda leida, vanad resursihoidlad lÃµppevad.
-16:Enne kui me rÃ¼ndame uuesti mÃ¤ssajaid, me peame vÃµitma tagasi Ã¼he linna lÃµunas. VÃµit on toonud meile vajaliku vÃ¤ikse varu rauda, mida meil on vÃ¤ga vaja, aga kuna varud on piiratud, siis tuleb olla ettevaatlik kuidas me seda kasutame.
-17:Viimase rÃ¼nnaku ajal enamus meie meestest olid meie laagrist eemal, mis andis vÃµimaluse vaenlasel rÃ¼nnakuks. PÃ¶Ã¶rdu tagasi esimesel vÃµimalusel, enne kui meie kaitsed hÃ¤vitatakse!
-18:Varitsuse tÃµttu ei jÃµudnud me oma kindluseni ja me peame vÃ¤lja mÃµtlema uue strateegija, et vallutada tagasi see mis kuulub meile. PeavÃ¤rav on raskelt kaistud ja otsene rÃ¼nnak on mÃµtetu. Ãœrita vÃ¤ltida Ã¼leliigseid kaotusi, kuna meil ei ole vÃµimalik rauda kaevandada.
-19:PÃ¤rast kinduse tagasi vallutamist, oleme saanud mÃµned vangid, kes on Ã¶elnud, et pÃµhja mÃ¤gesid lÃ¤bib tunnel. Tunneli sissepÃ¤Ã¤su valvatakse vÃ¤heste sÃµduritega.Alista kaitsjad ja liigu tunnelisse.
-20:Koobas on suurem kui oskasime oodata. Meie skaudid on avastanud tuulutamis tunnelite juurest mÃµned valvurid. JÃµua tunneli vÃ¤ljapÃ¤Ã¤suni.
-21:Vastaseid on hoiatatud meie tulekust. Tugevad vaenlase pataljonid liigavad meie suunas. Ehita kaitsetorne, et nÃµrgestada vaenlast. Kui kaitse on edukas, siis on vÃµimalus liikuda edasi pÃµhja mÃ¶Ã¶da maakitsust.
-22:Varitsus! Meie vaenlane on meid oodanud. Me oleme nÃ¼Ã¼d vÃ¤ga pahas asukohas. Sunni bandiidid taganema!
-23:Me oleme viimase vaenlase bastjoni juures. Nad on siia toonud oma viimased armeed ja end kirde suunas kindlutanud viimase taganemise jaoks. TÃ¤nu kÃ¼lmale on jÃµgi osaliselt kÃ¼lmunud ja vÃµimaldab Ã¼latada vaenlast. HÃ¤vita viimased vastase vÃ¤ed ja rahu saabub taas meie maale!
+10:Mässajad ründavad neid mõningaid talupoegasid, kes veel on jäänud lojaalseks kuningriigile. Kuninga palee vastas talupoegasid mõrvatakse, seda ei tohi lasta juhtuda. |Sunni vaenased taganema!
+11:Pärast edukat talupoegade kaitsmist, tuleb meil vabastada veel ülejäänud talupojad. Suur vaenlaste hulk põhjast liigub meie suunas.|Lahingusse!
+12:Pärast edukat lahingut, on aeg üles ehitada rikutud linnad ja taastada vajalikud varud. Edasi tuleb siirduda põhja, kus tuleb vabastada linnad türraniliku aristokraatliku valitsemise alt. Säästa tsiviil elusid ja ründa ainult vastase vägesid.
+13:Meie luurjad märkasid vaenlase vägesid manööverdamas linnade lähedal. Suure vaenlase vägede tõttu on arvata, et lähedal asub kindlustatud vaenlase laager. Leia ja hävita see, koos militaar majadega.
+14:Nüüd, pärast suurt võitu mässajate vastu on oodata uut massivset vasturünnakut nende poolt. Valmista end ette suureks lahinguks ja ära lase küla hävitada.
+15:Me teame, et vaenlane üritab ehitatada uusi baase ja seda ei saa lubada. Ründa esimesel võimalusel, enne kui vaenlane taastub. Lisaks otsi uus koht kust rauda leida, vanad resursihoidlad lõppevad.
+16:Enne kui me ründame uuesti mässajaid, me peame võitma tagasi ühe linna lõunas. Võit on toonud meile vajaliku väikse varu rauda, mida meil on väga vaja, aga kuna varud on piiratud, siis tuleb olla ettevaatlik kuidas me seda kasutame.
+17:Viimase rünnaku ajal enamus meie meestest olid meie laagrist eemal, mis andis võimaluse vaenlasel rünnakuks. Pöördu tagasi esimesel võimalusel, enne kui meie kaitsed hävitatakse!
+18:Varitsuse tõttu ei jõudnud me oma kindluseni ja me peame välja mõtlema uue strateegija, et vallutada tagasi see mis kuulub meile. Peavärav on raskelt kaistud ja otsene rünnak on mõtetu. Ürita vältida üleliigseid kaotusi, kuna meil ei ole võimalik rauda kaevandada.
+19:Pärast kinduse tagasi vallutamist, oleme saanud mõned vangid, kes on öelnud, et põhja mägesid läbib tunnel. Tunneli sissepääsu valvatakse väheste sõduritega.Alista kaitsjad ja liigu tunnelisse.
+20:Koobas on suurem kui oskasime oodata. Meie skaudid on avastanud tuulutamis tunnelite juurest mõned valvurid. Jõua tunneli väljapääsuni.
+21:Vastaseid on hoiatatud meie tulekust. Tugevad vaenlase pataljonid liigavad meie suunas. Ehita kaitsetorne, et nõrgestada vaenlast. Kui kaitse on edukas, siis on võimalus liikuda edasi põhja mööda maakitsust.
+22:Varitsus! Meie vaenlane on meid oodanud. Me oleme nüüd väga pahas asukohas. Sunni bandiidid taganema!
+23:Me oleme viimase vaenlase bastjoni juures. Nad on siia toonud oma viimased armeed ja end kirde suunas kindlutanud viimase taganemise jaoks. Tänu külmale on jõgi osaliselt külmunud ja võimaldab ülatada vaenlast. Hävita viimased vastase väed ja rahu saabub taas meie maale!

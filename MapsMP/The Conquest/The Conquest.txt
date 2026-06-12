@@ -1,11 +1,5 @@
-Author
-dicsoupcan, sado
-
-Version
-1.1
+SetSpecial
 
 BigDescLIBX
 0
-
-SetSpecial
 

@@ -1,11 +1,4 @@
-﻿BigDesc
-Mission 14 from The Peasants Rebellion campaign converted for co-operative by andreus.
-
 SetCoop
 
-BlockPeacetime
-
-BlockTeamSelection
-
-BlockFullMapPreview
-
+BigDesc
+Mission 14 from The Peasants Rebellion campaign converted for co-operative by andreus.

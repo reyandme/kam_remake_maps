@@ -1,8 +1,4 @@
-ï»¿MaxID:6
-0:HÃ³dÃ­tÃ¡s: foglalj el Ã©pÃ¼leteket, hogy fegyvereket szerezz a seregednek! Ãšgy tudod megtenni, hogy a bejÃ¡rata elÃ© Ã¡llsz a katonÃ¡iddal 10 mÃ¡sodpercre. Nem kell ott maradnod. Figyelem: a lovagok Ã©s felderÃ­tÃµk nem foglalhatnak el Ã©pÃ¼leteket! Kapsz egy kaszÃ¡rnyÃ¡t Ã©s 3 iskolÃ¡t. Az ÃºjonckÃ©pzÃ©s folyamatos, az arany vÃ©gtelen.||Script by sado, map by dicsoupcan.
-1:A lovagok Ã©s felderÃ­tÃµk nem foglalhatnak el Ã©pÃ¼leteket! A pÃ¡lyaleÃ­rÃ¡sban benne volt. ï¿¼
-2:Nem foglalhatod el a szÃ¶vetsÃ©gesed tornyÃ¡t.
-3:Az Ã©pÃ¼letet elfoglalÃ¡s alatt van.
-4:nyugati csapat
-5:keleti csapat
-6:Az elfoglalt Ã©pÃ¼letek
+
+MaxID:1
+
+0:Hódítás: foglalj el épületeket, hogy fegyvereket szerezz a seregednek! Úgy tudod megtenni, hogy a bejárata elé állsz a katonáiddal. Nem kell ott maradnod. Figyelem: a lovagok és felderítõk nem foglalhatnak el épületeket! Kapsz egy kaszárnyát és 3 iskolát. Az újoncképzés folyamatos, az arany végtelen.||Script by sado, map by dicsoupcan.

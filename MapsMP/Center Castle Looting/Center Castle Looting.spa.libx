@@ -1,6 +1,9 @@
-Ôªø1:Nadie est√° dentro del castillo
+
+MaxID:9
+
+1:Nadie est· dentro del castillo
 2:[$%s]%s[] ha estado buscando en el castillo para %.2d:%.2d
-3:[$%s]%s[] encontr√≥ %d %s, en las ruinas del castillo!
+3:[$%s]%s[] encontrÛ %d %s, en las ruinas del castillo!
 4:oro
 5:Escudos
 6:armadura de hierro

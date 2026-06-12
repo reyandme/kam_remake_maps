@@ -1,8 +1,4 @@
-ï»¿MaxID:6
-0:Conquest mode: ObsaÄ budovy aby jsi dostal zbranÄ› pro svojÃ­ armÃ¡du! Budovu obsadÃ­Å¡, kdyÅ¾ tvÅ¯j vojÃ¡k stojÃ­ na 10 sekund pod jejÃ­m vchodem. NemusÃ­Å¡ zde stÃ¡t celou dobu. VarovÃ¡nÃ­: rÃ½tÃ­Å™i a skauti nejsou schopni obsazovat budovy! VojÃ¡ky vytvÃ¡Å™Ã­Å¡ v hradÄ›, kterÃ½ mÃ¡Å¡ od zaÄÃ¡tku spoleÄnÄ› se tÅ™emi Å¡kolami. Recruti be Å¡kolÃ¡ch se dÄ›lajÃ­ automaticky, zlata je nekoneÄno.||Script by sado, map by dicsoupcan.
-1:NemÅ¯Å¾ete zajmout budovu se zvÄ›dem nebo rytÃ­Å™em!|PÅ™eÄtÄ›te si popis mapy pÅ™Ã­Å¡tÄ› :)
-2:NemÅ¯Å¾ete zajmout vÄ›Å¾, kterou vlastnÃ­ tvÅ¯j spojenec.
-3:ZachycenÃ­ budovy
-4:LevÃ¡ strana
-5:PravÃ¡ strana
-6:PoÄet budov
+
+MaxID:1
+
+0:Conquest mode: Obsaï budovy aby jsi dostal zbranì pro svojí armádu! Budovu obsadíš, kdy vojákem vstoupíš pøed vchod budovy. Nemusíš zde stát celou dobu. Varování: rıtíøi a skauti nejsou schopni obsazovat budovy! Vojáky vytváøíš v hradì, kterı máš od zaèátku spoleènì se tøemi školami. Recruti be školách se dìlají automaticky, zlata je nekoneèno.||Script by sado, map by dicsoupcan.

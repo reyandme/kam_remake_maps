@@ -1,4 +1,4 @@
-                        var i,n,b:integer;
+                        var i,n:integer;
 
 
 
@@ -16,10 +16,6 @@
                                        Actions.HouseWareBlock(States.HouseAt(27,22),6,true);
                                        Actions.HouseWareBlock(States.HouseAt(33,11),7,true);
                                        Actions.HouseWareBlock(States.HouseAt(27,22),7,true);
-                                       Actions.GroupHungerSet(States.GroupAt(76,85),20000);
-                                       Actions.GroupHungerSet(States.GroupAt(67,85),22000);
-                                       Actions.GroupHungerSet(States.GroupAt(55,102),18000);
-                                       Actions.GroupHungerSet(States.GroupAt(60,102),23500);
                              end;
 
 
@@ -27,8 +23,7 @@
 
                         procedure OnTick;
                              begin
-                                       if (States.GameTime mod 18000 = 0)
-                                       and (States.GameTime >= 54000) then
+                                       if States.GameTime mod 18000 = 0 then 
                                             begin
                                                       n:=n+1;
                                                       for i:=0 to n do
@@ -39,22 +34,5 @@
                                                                           Actions.GiveGroup(4,23,100,10,4,12,4);
                                                            end;
                                             end;
-                             end;
-
-
-
-
-                        procedure OnWarriorEquipped(uid, gid: Integer);
-                             begin
-                                       if (States.UnitOwner(uid) = 1)
-                                       or (States.UnitOwner(uid) = 2) then
-                                                 if (States.UnitType(uid) = 14)
-                                                 or (States.UnitType(uid) = 15)
-                                                 or (States.UnitType(uid) = 16) then  
-                                                      begin
-                                                                b:=Actions.GiveGroup(States.UnitOwner(uid), 23, 1+States.UnitPositionX(uid), States.UnitPositionY(uid), 4, 1, 1);
-                                                                Actions.GroupOrderLink(b, gid);
-                                                                Actions.UnitKill(uid, True);
-                                                      end;
                              end;
 

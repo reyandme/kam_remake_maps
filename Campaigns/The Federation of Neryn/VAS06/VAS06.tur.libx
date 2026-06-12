@@ -1,5 +1,8 @@
-ï»¿0:Kod Ã§alÃ½Ã¾madÃ½!|Bir yol veya bina yapÃ½lamadÃ½ veya yapÃ½lÃ½rken yÃ½kÃ½ldÃ½.|GÃ¶rev yeniden baÃ¾latÃ½lmalÃ½...
-1:Birliklerimiz adaya ulaÃ¾tÃ½.|Durumunuzu koruyun! DÃ¼Ã¾man buraya yerleÃ¾menizi kesinlikle engellemeye Ã§alÃ½Ã¾acaktÃ½r.
-2:DÃ¼Ã¾man devriyeleri dost birlikleri koyda tutuyor. Ãlk hedefiniz bu devriye birliklerini yok etmek olmalÃ½dÃ½r. Bunu ne kadar kÃ½sa zamanda yaparsanÃ½z o kadar iyi olur. GÃ¶Ã§ebeler birliklerini yakÃ½n zamanda gÃ¼Ã§lendirecektir.
-3:Angersheim'Ã½ kurtardÃ½nÃ½z. YerleÃ¾ke halkÃ½ bize destek olmak iÃ§in elinden geleni yapacaktÃ½r. DÃ¼Ã¾man birlikler iÃ§in uyanÃ½k olun, rakiplerimiz bu son geliÃ¾meleri ummayacaktÃ½r.
-4:Demir madeni yakÃ½nda tÃ¼kenmiÃ¾ olacak. DolayÃ½sÃ½yla gÃ¼neye doÃ°ru geniÃ¾leminiz gerekmekte. BatÃ½daki kÃ¶mÃ¼r madenlerini altÃ½n Ã¼retimi iÃ§in kullanÃ½n. Bununla birlikte Angersheim'a uzanan yola engel olmamaya dikkat ediniz.
+
+MaxID:4
+
+0:Kod çalışmadı!|Bir yol veya bina yapılamadı veya yapılırken yıkıldı.|Görev yeniden başlatılmalı...
+1:Birliklerimiz adaya ulaştı.|Durumunuzu koruyun! Düşman buraya yerleşmenizi kesinlikle engellemeye çalışacaktır.
+2:Düşman devriyeleri dost birlikleri koyda tutuyor. İlk hedefiniz bu devriye birliklerini yok etmek olmalıdır. Bunu ne kadar kısa zamanda yaparsanız o kadar iyi olur. Göçebeler birliklerini yakın zamanda güçlendirecektir.
+3:Angersheim'ı kurtardınız. Yerleşke halkı bize destek olmak için elinden geleni yapacaktır. Düşman birlikler için uyanık olun, rakiplerimiz bu son gelişmeleri ummayacaktır.
+4:Demir madeni yakında tükenmiş olacak. Dolayısıyla güneye doğru genişleminiz gerekmekte. Batıdaki kömür madenlerini altın üretimi için kullanın. Bununla birlikte Angersheim'a uzanan yola engel olmamaya dikkat ediniz.

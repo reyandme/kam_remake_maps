@@ -1,12 +1,15 @@
-ï»¿0:MÃ³j panie, siÅ‚y wroga rozpoczÄ™Å‚y oblÄ™Å¼enie stolicy. Musimy przygotowaÄ‡ siÄ™ do walki.
-1:MÃ³j panie, wrÃ³g nadciera od pÃ³Å‚nocnego wschodu!
-2:MÃ³j panie, wrÃ³g nadciera od pÃ³Å‚nocnego zachodu!
-3:MÃ³j panie, wrÃ³g nadciera od poÅ‚udniowego wschodu!
-4:MÃ³j panie, wrÃ³g nadciera od poÅ‚udniowego zachodu!
-5:MÃ³j panie, wrÃ³g atakuje ze wszystkich stron jednoczeÅ›nie!
-6:MÃ³j panie, zdrajcy przeniknÄ™li do zamku! Musimy odeprzeÄ‡ ich za wszelkÄ… cenÄ™!
-7:MÃ³j panie, wrÃ³g przywarÅ‚ nas do muru, nie uratujemy stolicy. Musimy uciekaÄ‡.
-8:MÃ³j panie, musimy zbiec do naszego zamku, bÄ™dÄ…cego naszÄ… ostatniÄ… liniÄ… obrony. Nie bÄ™dzie juÅ¼ odwrotu.
-9:[$%s]Zadanie:[] ChroÅ„ spichlerzy
-10:[$%s]Zadanie:[] Wycofaj siÄ™ do zamku i broÅ„ murÃ³w zamkowych
-11:[$%s]Zadanie:[] Stolica stracona, nic juÅ¼ nie moÅ¼esz zrobiÄ‡
+
+MaxID:11
+
+0:Mój panie, si³y wroga rozpoczê³y oblê¿enie stolicy. Musimy przygotowaæ siê do walki.
+1:Mój panie, wróg nadciera od pó³nocnego wschodu!
+2:Mój panie, wróg nadciera od pó³nocnego zachodu!
+3:Mój panie, wróg nadciera od po³udniowego wschodu!
+4:Mój panie, wróg nadciera od po³udniowego zachodu!
+5:Mój panie, wróg atakuje ze wszystkich stron jednoczeœnie!
+6:Mój panie, zdrajcy przeniknêli do zamku! Musimy odeprzeæ ich za wszelk¹ cenê!
+7:Mój panie, wróg przywar³ nas do muru, nie uratujemy stolicy. Musimy uciekaæ.
+8:Mój panie, musimy zbiec do naszego zamku, bêd¹cego nasz¹ ostatni¹ lini¹ obrony. Nie bêdzie ju¿ odwrotu.
+9:[$%s]Zadanie:[] Chroñ spichlerzy
+10:[$%s]Zadanie:[] Wycofaj siê do zamku i broñ murów zamkowych
+11:[$%s]Zadanie:[] Stolica stracona, nic ju¿ nie mo¿esz zrobiæ

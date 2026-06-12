@@ -1,16 +1,19 @@
-ï»¿0:ValstieÃ¨iÃ¸ Sukilimas
+
+MaxID:23
+
+0:Valstieèiø Sukilimas
 1:TPR %d
-10:IÃ°davikai bando prislÃ«gti kelis fermerius, kurie lieka paklusnÃ»s karalystei. Nekalti fermeriai yra skerdÃ¾iami, ir jokiu bÃ»du neleisk to!|Priversk puolÃ«jus bÃ«gti!
-11:Po sÃ«kmingos pagalbos, mes turime iÃ°laisvinti likusius fermerius. BÃ»rys prieÃ°Ã¸ ateina iÃ° Ã°iaurÃ«s.|Ã mÃ¸Ã°Ã¡!
-12:Po sÃ«kmingo mÃ»Ã°io tu dabar turi laiko atstatyti sugriautus miestus ir kaimus ir apsaugoti atsargas jÃ»sÃ¸ pavaldiniams. Po to reikia iÃ°laisvinti gyvenvietes Ã°iaurÃ«je ir susikauti su iÃ°davikÃ¸ tironiÃ°ka aristokratija. Skirkite civilius ir susikaukite su kariais, kurie Ã¨ia Ã¡sikÃ»rÃ«.
-13:MÃ»sÃ¸ Ã°nipai pastebÃ«jo prieÃ°o bÃ»rio manevrus aplinkinÃ«se gyvenvietÃ«se. Pagal didelÃ¡ kariu skaiÃ¨iÃ¸ sprendÃ¾iame, kad jie turi Ã¡tvirtintÃ  stovyklÃ . Rask ir sugriauk jÃ  kartu su kariniais pastatais.
-14:Dabar, po didÃ¾iulio pasisekimo kovoje su sukilÃ«liais, mes turime tikÃ«tis stiprios kontratakos. ParuoÃ°k savo Ã¾mones sunkiam mÃ»Ã°iui. Neleisk jiems sugriauti kaimo.
-15:Mes Ã¾inome, kad mÃ»sÃ¸ prieÃ°as statosi naujas bazes. Tu negali to leisti. Pulk kuo greiÃ¨iau, kol jie dar neatsigavo.|Taip pat paieÃ°kok Ã¾aliavÃ¸, nes tavo geleÃ¾ies rÃ»dos atsargos beveik iÃ°seko.
-16:PrieÃ° griÃ¾tant prie sukilÃ«liÃ¸, mes turime atkovoti gyvenvietes pietuose. Paskutinis mÃ»Ã°is mums davÃ« geleÃ¾ies, kurios mums labai reikia. Kadangi geleÃ¾ies Ã°altiniai Ã¨ia labai riboti, turime atsargiai jÃ  naudoti.
-17:PaskutinÃ«s atakos metu mes turejome patraukti didÃ¾iÃ jÃ  dalÃ¡ Ã¾moniÃ¸ iÃ° bazÃ«s ir leidome prieÃ°ui pulti. GrÃ¡Ã¾k kuo greiÃ¨iau, kol prieÃ°as nesugriovÃ« mÃ»sÃ¸ gynybos.
-18:DÃ«l pasalos mes nespÃ«jome pasiekti pilies laiku. Mes turime sugalvoti gerÃ  strategijÃ , kad atkovoti mÃ»sÃ¸ Ã¾emes. Pagrindiniai vartai stipriai saugomi ir tiesioginÃ« ataka bÃ»tÃ¸ beprasmiÃ°ka. Bandyk atakuoti kitÃ  Ã¡Ã«jimÃ  ir  iÃ°venk nuostuoliÃ¸, nes nebeturime daugiau geleÃ¾ies rÃ»dos.
-19:UÃ¾grobÃ¦ pilÃ¡, mes gavome kaliniÃ¸, kurie papasakojo apie poÃ¾eminÃ¡ tunelÃ¡, kuris veda pro kalnus Ã°iaurÃ«je. ÃÃ«jimas Ã¡ tunelÃ¡ saugomas keliÃ¸ prieÃ°o kariÃ¸. NugalÃ«k sargybinius ir Ã¡eik Ã¡ tunelÃ¡.
-20:Urvas didesnis nei tikÃ«jomes. MÃ»sÃ¸ skautai aptiko prieÃ°o sargybinius vingiuotuose tuneliuose, kurie saugo poÃ¾eminÃ¡ kompleksÃ  nuo Ã¡sibrovÃ«liÃ¸. Pasiek iÃ°Ã«jimÃ  kitoje kalnÃ¸ pusÃ«je.
-21:PrieÃ°as suÃ¾inojo apie mÃ»su ketinimus. StiprÃ»s prieÃ°o batalionas artÃ«ja ir netrukus atakuos. Statyk bokÃ°tus, kad susilpninti ateinanÃ¨ius karius. Kai pavyks apsiginti, tu galÃ«si pereiti Ã¡ Ã°iaurÃ¦.
-22:Pasala! PrieÃ°as mÃ»sÃ¸ laukÃ«. Dabar mes labai blogoje pozicijoje. Priversk Ã°iuos klastingus banditus bÃ«gti!
-23:Atvykome prie paskutinio prieÃ°o bastiono. Jis surinko likusiÃ  armijÃ  ir uÃ¾sibarikadavo Ã°iaurÃ«s rytuose nuo Ã¨ia. DÃ«l ledinio Ã°alÃ¨io, upÃ« yra dalinai uÃ¾Ã°alusi ir leidÃ¾ia mums nustebinti prieÃ°Ã . NugalÃ«k likusius karius, kad taika grÃ¡Ã¾tÃ¸ Ã¡ mÃ»sÃ¸ Ã¾emÃ¦!
+10:Iğdavikai bando prislëgti kelis fermerius, kurie lieka paklusnûs karalystei. Nekalti fermeriai yra skerdşiami, ir jokiu bûdu neleisk to!|Priversk puolëjus bëgti!
+11:Po sëkmingos pagalbos, mes turime iğlaisvinti likusius fermerius. Bûrys prieğø ateina iğ ğiaurës.|Á møğá!
+12:Po sëkmingo mûğio tu dabar turi laiko atstatyti sugriautus miestus ir kaimus ir apsaugoti atsargas jûsø pavaldiniams. Po to reikia iğlaisvinti gyvenvietes ğiaurëje ir susikauti su iğdavikø tironiğka aristokratija. Skirkite civilius ir susikaukite su kariais, kurie èia ásikûrë.
+13:Mûsø ğnipai pastebëjo prieğo bûrio manevrus aplinkinëse gyvenvietëse. Pagal didelá kariu skaièiø sprendşiame, kad jie turi átvirtintà stovyklà. Rask ir sugriauk jà kartu su kariniais pastatais.
+14:Dabar, po didşiulio pasisekimo kovoje su sukilëliais, mes turime tikëtis stiprios kontratakos. Paruoğk savo şmones sunkiam mûğiui. Neleisk jiems sugriauti kaimo.
+15:Mes şinome, kad mûsø prieğas statosi naujas bazes. Tu negali to leisti. Pulk kuo greièiau, kol jie dar neatsigavo.|Taip pat paieğkok şaliavø, nes tavo geleşies rûdos atsargos beveik iğseko.
+16:Prieğ griştant prie sukilëliø, mes turime atkovoti gyvenvietes pietuose. Paskutinis mûğis mums davë geleşies, kurios mums labai reikia. Kadangi geleşies ğaltiniai èia labai riboti, turime atsargiai jà naudoti.
+17:Paskutinës atakos metu mes turejome patraukti didşiàjà dalá şmoniø iğ bazës ir leidome prieğui pulti. Gráşk kuo greièiau, kol prieğas nesugriovë mûsø gynybos.
+18:Dël pasalos mes nespëjome pasiekti pilies laiku. Mes turime sugalvoti gerà strategijà, kad atkovoti mûsø şemes. Pagrindiniai vartai stipriai saugomi ir tiesioginë ataka bûtø beprasmiğka. Bandyk atakuoti kità áëjimà ir  iğvenk nuostuoliø, nes nebeturime daugiau geleşies rûdos.
+19:Uşgrobæ pilá, mes gavome kaliniø, kurie papasakojo apie poşeminá tunelá, kuris veda pro kalnus ğiaurëje. Áëjimas á tunelá saugomas keliø prieğo kariø. Nugalëk sargybinius ir áeik á tunelá.
+20:Urvas didesnis nei tikëjomes. Mûsø skautai aptiko prieğo sargybinius vingiuotuose tuneliuose, kurie saugo poşeminá kompleksà nuo ásibrovëliø. Pasiek iğëjimà kitoje kalnø pusëje.
+21:Prieğas suşinojo apie mûsu ketinimus. Stiprûs prieğo batalionas artëja ir netrukus atakuos. Statyk bokğtus, kad susilpninti ateinanèius karius. Kai pavyks apsiginti, tu galësi pereiti á ğiauræ.
+22:Pasala! Prieğas mûsø laukë. Dabar mes labai blogoje pozicijoje. Priversk ğiuos klastingus banditus bëgti!
+23:Atvykome prie paskutinio prieğo bastiono. Jis surinko likusià armijà ir uşsibarikadavo ğiaurës rytuose nuo èia. Dël ledinio ğalèio, upë yra dalinai uşğalusi ir leidşia mums nustebinti prieğà. Nugalëk likusius karius, kad taika gráştø á mûsø şemæ!

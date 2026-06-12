@@ -1,5 +1,8 @@
-ï»¿0:Skriptet misslyckades!|En vÃ¤g/byggnad kunde inte byggas eller har blivit fÃ¶rstÃ¶rd vid konstruktion.|Uppdraget bÃ¶r startas om...
-1:VÃ¥ra trupper har nÃ¥tt Ã¶n.|HÃ¥ll positionen! De kommer sÃ¤kerligen att fÃ¶rsÃ¶ka fÃ¶rhindra din bosÃ¤ttning.
-2:Fiendepatrullen hÃ¥ller din allierade stÃ¥ngen. Ditt fÃ¶rsta mÃ¥l Ã¤r att fÃ¶rgÃ¶ra den patrullen. Ju fÃ¶rr dess bÃ¤ttre. Troligtvis kommer nomaderna att fÃ¶rstÃ¤rka sina trupper.
-3:Du frigjorde Angersheim. InvÃ¥narna kommer att gÃ¶ra sitt yttersta fÃ¶r att hjÃ¤lpa oss. Se upp fÃ¶r fiendetrupper, motstÃ¥ndarna lÃ¤r inte vara roade av den senaste utvecklingen.
-4:Stenberget Ã¤r snart tÃ¶mt, vilket gÃ¶r att du kan utÃ¶ka ditt centrum sÃ¶derut. AnvÃ¤nd kolet i vÃ¤st till stÃ¶d fÃ¶r din guldproduktion. Se samtidigt till att du inte hindrar Angersheims tillvÃ¤xt.
+
+MaxID:4
+
+0:Skriptet misslyckades!|En väg/byggnad kunde inte byggas eller har blivit förstörd vid konstruktion.|Uppdraget bör startas om...
+1:Våra trupper har nått ön.|Håll positionen! De kommer säkerligen att försöka förhindra din bosättning.
+2:Fiendepatrullen håller din allierade stången. Ditt första mål är att förgöra den patrullen. Ju förr dess bättre. Troligtvis kommer nomaderna att förstärka sina trupper.
+3:Du frigjorde Angersheim. Invånarna kommer att göra sitt yttersta för att hjälpa oss. Se upp för fiendetrupper, motståndarna lär inte vara roade av den senaste utvecklingen.
+4:Stenberget är snart tömt, vilket gör att du kan utöka ditt centrum söderut. Använd kolet i väst till stöd för din guldproduktion. Se samtidigt till att du inte hindrar Angersheims tillväxt.

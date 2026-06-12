@@ -1,5 +1,7 @@
-ï»¿0:Szkript hiba!|Egy utat/Ã©pÃ¼letet nem lehetett megÃ©pÃ­teni, vagy Ã©pÃ­tÃ©s kÃ¶zben megsemmisÃ¼lt.|A kÃ¼ldetÃ©st Ãºjra kell kezdeni...
-1:Csapatok szÃ¡lltak partra a szigeten.|Tartsd az Ã¡llÃ¡st! Biztosan megprÃ³bÃ¡ljÃ¡k megakadÃ¡lyozni a letelepedÃ©sed.
-2:Az ellensÃ©ges Å‘rjÃ¡rat az Ã¶bÃ¶lben tartja a szÃ¶vetsÃ©gesÃ¼nket. ElsÅ‘ cÃ©lod ezen Å‘rjÃ¡rat kiiktatÃ¡sa. MinÃ©l hamarabb, annÃ¡l jobb. Nagyon valÃ³szÃ­nÅ±, hogy a nomÃ¡dok megerÅ‘sÃ­tik csapataikat.
-3:FelszabadÃ­tottad Angersheimet. A lakosok megteszik a legjobbat, hogy segÃ­tsenek nekÃ¼nk. VigyÃ¡zz az ellensÃ©ges csapatokkal, nem nÃ©zik jÃ³ szemmel az Ãºj fejlesztÃ©seket.
-4:A kÅ‘hegy nemsokÃ¡ra elfogy, ezÃ©rt ki kell terjesztened a tÃ¡maszpontod dÃ©lre. HasznÃ¡ld a nyugati szÃ©nbÃ¡nyÃ¡kat, hogy Ã¼zemben tartsd az aranytermelÃ©sed. MindazonÃ¡ltal, figyelj oda, hogy ne akadÃ¡lyozd meg Angersheimet a terjeszkedÃ©sben.
+
+MaxID:4
+
+1:Csapatok szálltak partra a szigeten.|Tartsd az állást! Biztosan megpróbálják megakadályozni a letelepedésed.
+2:Az ellenséges õrjárat az öbölben tartja a szövetségesünket. Elsõ célod ezen õrjárat kiiktatása. Minél hamarabb, annál jobb. Nagyon valószínû, hogy a nomádok megerõsítik csapataikat.
+3:Felszabadítottad Angersheimet. A lakosok megteszik a legjobbat, hogy segítsenek nekünk. Vigyázz az ellenséges csapatokkal, nem nézik jó szemmel az új fejlesztéseket.
+4:A kõhegy nemsokára elfogy, ezért ki kell terjesztened a támaszpontod délre. Használd a nyugati szénbányákat, hogy üzemben tartsd az aranytermelésed. Mindazonáltal, figyelj oda, hogy ne akadályozd meg Angersheimet a terjeszkedésben.

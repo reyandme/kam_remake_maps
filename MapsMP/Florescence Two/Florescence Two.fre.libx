@@ -1,16 +1,19 @@
-ï»¿1:Jambe de bois
+
+MaxID:35
+
+1:Jambe de bois
 2:Restaurant
 3:Destruction
 4:Combattant
 5:Confort
 6:Luxe
-7:VÃ©gÃ©tarien
+7:Végétarien
 8:Eclaireur
 9:Commandant
-10:CitÃ©
+10:Cité
 11:Amateur de fer
-12:VariÃ©tÃ©
-13:StratÃ¨ge
+12:Variété
+13:Stratège
 14:Population
 15:Parade des chevaliers
 16:sur
@@ -23,13 +26,13 @@
 23:Drapeaux au Premier
 24:Drapeaux Finaux
 25:Equipe
-26:aprÃ¨s un temps
-27:donnÃ© seulement une fois
+26:après un temps
+27:donné seulement une fois
 28:individuel
-29:dÃ©bloquÃ© Ã 
+29:débloqué à
 30:min
-31:est en tÃªte
+31:est en tête
 32:temps avant la Victoire
-33:Temps Ã©coulÃ©
+33:Temps écoulé
 34:gagne
-35:DurÃ©e du match
+35:Durée du match

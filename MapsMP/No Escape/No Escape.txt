@@ -1,20 +1,3 @@
-Author
-andreus
-
-Version
-1.5 (07.06.2020)
-
-BigDescLIBX
-4
-
 SetCoop
-
-BlockPeacetime
-
-BlockTeamSelection
-
-BlockFullMapPreview
-
-DifficultyLevels
-mdEasy1,mdNormal,mdHard1,mdHard2
-
+BigDesc
+A coop mission by andreus.

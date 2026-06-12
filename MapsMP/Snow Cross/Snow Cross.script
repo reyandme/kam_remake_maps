@@ -3,18 +3,6 @@ var
   K, I, RandomRanged: Integer;
   Warriors: array of Integer;
 
-
-procedure GetClassicTypes;
-begin
-  Types[0] := 16;
-  Types[1] := 22;
-  Types[2] := 15;
-  Types[3] := 19;
-  Types[4] := 17;
-  Types[5] := 18;
-  Types[6] := 21;
-end;
-
 procedure GetRandomTypes;
 begin
   for K := 0 to 6 do
@@ -33,23 +21,9 @@ begin
   Types[RandomRanged] := States.KaMRandomI(2) + 17; //Get at least ONE ranged group
 end;
 
-
-procedure GetTotalRandomTypes;
-begin
-  for K := 0 to 6 do
-    Types[K] := Utils.RandomRangeI(14, 27);
-  RandomRanged := States.KaMRandomI(7);
-  Types[RandomRanged] := States.KaMRandomI(2) + 17; //Get at least ONE ranged group
-end;
-
-
 procedure OnMissionStart;
 begin
-  case States.MissionDifficulty of
-    mdNormal: GetClassicTypes;
-    mdHard1: GetRandomTypes;
-    mdHard2: GetTotalRandomTypes;
-  end;
+  GetRandomTypes;
 
   if States.PlayerEnabled(0) then
   begin
@@ -62,9 +36,6 @@ begin
     Actions.GiveGroup(0, Types[6], 10, 10, 3, 9, 3);
   end;
 
-  if States.MissionDifficulty = mdHard2 then
-    GetTotalRandomTypes;
-
   if States.PlayerEnabled(1) then
   begin
     Actions.GiveGroup(1, Types[0], 12, 72, 1, 9, 3);
@@ -76,9 +47,6 @@ begin
     Actions.GiveGroup(1, Types[6], 11, 87, 1, 9, 3);
   end;
 
-  if States.MissionDifficulty = mdHard2 then
-    GetTotalRandomTypes;
-
   if States.PlayerEnabled(2) then
   begin
     Actions.GiveGroup(2, Types[0], 73, 13, 5, 9, 3);
@@ -89,9 +57,6 @@ begin
     Actions.GiveGroup(2, Types[5], 83, 6, 5, 9, 3);
     Actions.GiveGroup(2, Types[6], 88, 11, 5, 9, 3);
   end;
-
-  if States.MissionDifficulty = mdHard2 then
-    GetTotalRandomTypes;
 
   if States.PlayerEnabled(3) then 
   begin

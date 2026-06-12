@@ -160,7 +160,7 @@ begin
 		end;
 	end;
 end;
-function ClosestEnemyUnitGType(aPlayer: Integer; gType: TKMGroupType; X, Y, radius:Integer): Integer; 
+function ClosestEnemyUnitGType(aPlayer, gType, X, Y, radius:Integer): Integer; 
 var 
 Units: array of Integer; 
 i, j, BestDistanceSqr, ThisDistanceSqr, DX, DY: Integer;
@@ -171,7 +171,7 @@ begin
 			if( States.PlayerAllianceCheck(aPlayer, j) <> true ) then begin
 				Units := States.PlayerGetAllUnits(j);
 				for i := 0 to Length(Units) -1 do begin
-					if InRange(States.UnitType(Units[i]), 14, 27) and ( States.UnitDead(Units[i]) = false ) and (States.GroupTypeEx(States.UnitsGroup(Units[i])) = gType ) then begin
+					if InRange(States.UnitType(Units[i]), 14, 27) and ( States.UnitDead(Units[i]) = false ) and (States.GroupType(States.UnitsGroup(Units[i])) = gType ) then begin
 						DX := X - States.UnitPositionX(Units[i]);
 						DY := Y - States.UnitPositionY(Units[i]);
 						ThisDistanceSqr := (DX*DX) + (DY*DY);
@@ -185,7 +185,7 @@ begin
 		end;
 	end;
 end;
-function ClosestPlayerGroupType(aPlayer: Integer; gType: TKMGroupType; X, Y, radius: Integer): Integer;
+function ClosestPlayerGroupType(aPlayer, gType, X, Y, radius:Integer): Integer; 
 var 
 Groups: array of Integer; 
 i, BestDistanceSqr, ThisDistanceSqr, DX, DY, fUnit: Integer;
@@ -193,7 +193,7 @@ begin
 	Result := -1;
 	Groups := States.PlayerGetAllGroups(aPlayer);
 	for i := 0 to Length(Groups) -1 do begin
-		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupTypeEx(Groups[i]) = gType ) then begin
+		if ( States.GroupDead(Groups[i]) = false ) and ( States.GroupType(Groups[i]) = gType ) then begin
 			fUnit:=States.GroupMember(Groups[i], 0);
 			DX := X - States.UnitPositionX(fUnit);
 			DY := Y - States.UnitPositionY(fUnit);
@@ -261,7 +261,7 @@ begin
 	6: RESULT := -radius;
 	7: RESULT := -radius;
     else RESULT := 0; 
-  end;
+  end
 end;
 function DirectionToOY(aDir, radius: integer): integer;
 begin
@@ -274,7 +274,7 @@ begin
 	0: RESULT := -radius;
 	1: RESULT := -radius;
     else RESULT := 0; 
-  end;
+  end
 end;
 function RetreatRange(aGroup, radius: integer): boolean;
 var m, d, u: integer;
@@ -309,19 +309,18 @@ begin
 			x:= States.UnitPositionX(States.GroupMember(g, 0));
 			y:= States.UnitPositionY(States.GroupMember(g, 0));
 			p:= States.GroupOwner(g);
-			if States.GroupTypeEx(g) = gtRanged then begin //ranged
+			if States.GroupType(g) = 2 then begin //ranged
 				if RetreatRange(g, AI_RETREAT_RADIUS) then
-					if AttackGroup(g, ClosestEnemyUnitGType(p, gtRanged, x, y, AI_SMELL_RADIUS-4)) then
+					if AttackGroup(g, ClosestEnemyUnitGType(p, 2, x, y, AI_SMELL_RADIUS-4)) then
 						if AttackHouse(g, ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS)) then
 							if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SMELL_RADIUS-7)) then
 								AttackHouse(g, ClosestEnemyHouse(p, x, y, 100));
-			end             // <-- NINCS pontosvessző itt!
-			else begin      // <-- else közvetlenül az end után
+			end else begin//melee
 				if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SNIFF_RADIUS)) then
 					if AttackHouse(g, ClosestEnemyHouse(p, x, y, AI_SNIFF_RADIUS+1)) then begin
 						h:= ClosestEnemyHouseType(p, 17, x, y, AI_SMELL_RADIUS+3);
 						if h > 0 then
-							CoverGroup(g, ClosestPlayerGroupType(p, gtRanged, x, y, AI_COVER_RADIUS))
+							CoverGroup(g, ClosestPlayerGroupType(p, 2, x, y, AI_COVER_RADIUS))
 						else
 							if AttackGroup(g, ClosestEnemyUnit(p, x, y, AI_SMELL_RADIUS-4)) then
 								AttackHouse(g, ClosestEnemyHouse(p, x, y, 100));
@@ -331,8 +330,7 @@ begin
 	end;
  end;
 end;
-
-// end;AI
+// END AI
 
 ////////////////////////
 
@@ -453,7 +451,7 @@ begin
 	25: RESULT := 15; //xbow
 	26: RESULT := 25; //horses
     else RESULT := 0; 
-  end;
+  end
 end;
 function ArmyTypeToQuestCount(aType: integer): integer;
 begin
@@ -472,7 +470,7 @@ begin
 	22: RESULT := 6; //knight
 	
     else RESULT := 0; 
-  end;
+  end
 end;
 procedure GetWaresCount;
 var
@@ -490,29 +488,28 @@ begin
 	end;
 end;
 procedure CheckQuests;
-var j, c, d: integer;
-var WaresQuest, UnitsQuest: boolean;
+var j, c, w: integer;
 begin
 	if QUEST_NUMBER = 1 then begin
 		c:= 0;
-		d:= 0;
+		w:= 0;
 		for j:= 7 to 26 do begin
 			if WareTypeToQuestCount(j) > 0 then begin
 				if WARES[j] >= WareTypeToQuestCount(j) then
 					c:= c + 1;
-				if c >= 12 then begin
-					WaresQuest := true;
+				if c = 12 then begin
+					w:= w + 1;
 				end;
 			end;
 		end;
 		for j:= 14 to 22 do begin
 			if States.StatUnitTypeCount(PLAYER, j) >= ArmyTypeToQuestCount(j) then
-				d:= d + 1;
-			if d >= 9 then begin
-				UnitsQuest := true;
+				c:= c + 1;
+			if c = 9 then begin
+				w:= w + 1;
 			end;
 		end;
-		if WaresQuest and UnitsQuest then
+		if w = 2 then
 			Actions.PlayerWin([PLAYER], true);
 	end;
 end;
@@ -526,10 +523,8 @@ begin
 	if aRanged then begin
 		SetLength(HARASS_GROUPS, 2);
 		HARASS_GROUPS[1]:= Actions.GiveGroup(aPlayer, HARASS_RANGED_TYPE, ENEMY[aPlayer].SPAWN[r].X, ENEMY[aPlayer].SPAWN[r].Y, ENEMY[aPlayer].SPAWN[r].dir, Round(aCount/2), Round(Sqrt(aCount)+1));
-	end          // <-- NINCS pontosvessző!
-	else begin   // <-- else új sorban, szóközzel
+	end else
 		SetLength(HARASS_GROUPS, 1);
-	end;
 	if aPlayer = 3 then
 		aCount:= Round(aCount*1.7);
 	if aPlayer = 1 then
@@ -537,7 +532,6 @@ begin
 	HARASS_GROUPS[0]:= Actions.GiveGroup(aPlayer, ENEMY[aPlayer].aType, ENEMY[aPlayer].SPAWN[r].X, ENEMY[aPlayer].SPAWN[r].Y, ENEMY[aPlayer].SPAWN[r].dir, aCount, Round(Sqrt(aCount)+1));
  end;
 end;
-
 procedure HarassPlayer;
 begin
 	if HARASS_ENABLED then begin
@@ -564,12 +558,12 @@ end;
 procedure ShowMissionObjectives(aPlayer: integer);
 var j: integer;
 begin
-	Actions.OverlayTextSet(aPlayer, '<$4>');  // <-- Paraméter nélkül!
+	Actions.OverlayTextSetFormatted(aPlayer, '<$4>', []);
 	if TIMER_ON then
 		Actions.OverlayTextAppend(aPlayer, ShowTimer(TIMER));
 	Actions.OverlayTextAppend(aPlayer, '|');
 	if QUEST_NUMBER = 1 then begin
-		Actions.OverlayTextAppend(aPlayer, '<$6>');  // <-- Formatted helyett sima Append
+		Actions.OverlayTextAppendFormatted(aPlayer, '<$6>', []);
 		Actions.OverlayTextAppend(aPlayer, '|');
 		for j:= 7 to 26 do begin
 			if WareTypeToQuestCount(j) > 0 then begin
@@ -580,7 +574,7 @@ begin
 				Actions.OverlayTextAppend(aPlayer, '|');
 			end;
 		end;
-		Actions.OverlayTextAppend(aPlayer, '<$10>');  // <-- Itt is
+		Actions.OverlayTextAppendFormatted(aPlayer, '<$10>', []);
 		Actions.OverlayTextAppend(aPlayer, '|');
 		for j:= 14 to 22 do begin
 			if States.StatUnitTypeCount(PLAYER, j) >= ArmyTypeToQuestCount(j) then
@@ -591,7 +585,7 @@ begin
 		end;
 	end;
 	if QUEST_NUMBER = 3 then begin
-		Actions.OverlayTextAppend(aPlayer, '<$11>');  // <-- És itt is
+		Actions.OverlayTextAppendFormatted(aPlayer, '<$11>', []);
 		Actions.OverlayTextAppend(aPlayer, '|');
 	end;
 end;

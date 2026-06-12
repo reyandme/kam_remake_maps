@@ -1,9 +1,12 @@
-ï»¿1:Det finns ingen i slottet
-2:[$%s]%s[] har hÃ¥llit pÃ¥ att sÃ¶ka igenom slottet i %.2d:%.2d
+
+MaxID:9
+
+1:Det finns ingen i slottet
+2:[$%s]%s[] har hållit på att söka igenom slottet i %.2d:%.2d
 3:[$%s]%s[] hittade %d %s i slottsruinen!
 4:guld
-5:skÃ¶ldar
-6:jÃ¤rnrustningar
-7:svÃ¤rd
+5:sköldar
+6:järnrustningar
+7:svärd
 8:pikar
 9:armborst

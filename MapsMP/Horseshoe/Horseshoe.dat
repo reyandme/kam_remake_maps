@@ -1,126 +1,335 @@
-!SET_MAP "data\mission\smaps\Horseshoe.map"
+!SET_MULTIPLAYER
+!SET_MAP "data\mission\smaps\horseshoe.map"
 !SET_MAX_PLAYER 2
-!SET_HUMAN_PLAYER 0
 
-!SET_CURR_PLAYER 0
-!ENABLE_PLAYER 0
-!SET_USER_PLAYER
-!SET_AI_PLAYER
-!SET_ADVANCED_AI_PLAYER
+!DISTRIBUTE_MULTIPLAYER_POSITIONS
+
+
+!SET_CURR_PLAYER 0 
 !SET_RGB_COLOR 460799
-!CENTER_SCREEN 18 12
-!CLEAR_UP 18 12 5
-
-
-!SET_AI_START_POSITION 0 0
-!SET_AI_AUTO_REPAIR
-!SET_AI_AUTO_ATTACK
-!SET_AI_AUTO_DEFEND
-!SET_AI_DEFEND_ALLIES
-!SET_AI_UNLIMITED_EQUIP
-!SET_AI_ARMY_TYPE 3
-!SET_AI_CHARACTER RECRUTS 10
-!SET_AI_CHARACTER WORKER_FACTOR 10
-!SET_AI_CHARACTER CONSTRUCTORS 20
-!SET_AI_CHARACTER TOWN_DEFENSE 100
-!SET_AI_CHARACTER AUTO_ATTACK_RANGE 6
-!SET_AI_CHARACTER EQUIP_RATE_LEATHER 500
-!SET_AI_CHARACTER EQUIP_RATE_IRON 500
-!SET_AI_CHARACTER ATTACK_FACTOR 100
-!SET_AI_CHARACTER RECRUT_COUNT 0
-!SET_AI_CHARACTER TROUP_PARAM 0 9 3
-!SET_AI_CHARACTER TROUP_PARAM 1 9 3
-!SET_AI_CHARACTER TROUP_PARAM 2 9 3
-!SET_AI_CHARACTER TROUP_PARAM 3 9 3
-
-
-
-
-!SET_ALLIANCE 1 0
-
-!SET_HOUSE 11 18 12
-!ADD_WARE 1 50
-!ADD_WARE 2 40
-!ADD_WARE 7 50
-!ADD_WARE 8 40
-!ADD_WARE 10 40
-!ADD_WARE 13 25
-!ADD_WARE 27 20
-
-
-!SET_STREET 16 13 !SET_STREET 17 13 !SET_STREET 18 13
-
-!SET_UNIT 0 17 13
-!SET_UNIT 0 18 13
-!SET_UNIT 0 18 14
-!SET_UNIT 0 17 14
-!SET_UNIT 0 16 14
-!SET_UNIT 9 16 13
-!SET_UNIT 9 19 11
-!SET_UNIT 9 19 12
-!SET_UNIT 9 19 13
-
-
-!SET_CURR_PLAYER 1
-!ENABLE_PLAYER 1
-!SET_USER_PLAYER
 !SET_AI_PLAYER
-!SET_ADVANCED_AI_PLAYER
-!SET_RGB_COLOR 14924635
-!CENTER_SCREEN 62 12
-!CLEAR_UP 62 12 5
-
-
-!SET_AI_START_POSITION 0 0
-!SET_AI_AUTO_REPAIR
+!SET_AI_ARMY_TYPE 3
+!SET_AI_DEFEND_ALLIES
 !SET_AI_AUTO_ATTACK
 !SET_AI_AUTO_DEFEND
-!SET_AI_DEFEND_ALLIES
 !SET_AI_UNLIMITED_EQUIP
-!SET_AI_ARMY_TYPE 3
-!SET_AI_CHARACTER RECRUTS 10
-!SET_AI_CHARACTER WORKER_FACTOR 10
-!SET_AI_CHARACTER CONSTRUCTORS 20
-!SET_AI_CHARACTER TOWN_DEFENSE 100
 !SET_AI_CHARACTER AUTO_ATTACK_RANGE 6
-!SET_AI_CHARACTER EQUIP_RATE_LEATHER 500
+!SET_AI_CHARACTER RECRUTS 10
 !SET_AI_CHARACTER EQUIP_RATE_IRON 500
-!SET_AI_CHARACTER ATTACK_FACTOR 100
-!SET_AI_CHARACTER RECRUT_COUNT 0
-!SET_AI_CHARACTER TROUP_PARAM 0 9 3
-!SET_AI_CHARACTER TROUP_PARAM 1 9 3
-!SET_AI_CHARACTER TROUP_PARAM 2 9 3
-!SET_AI_CHARACTER TROUP_PARAM 3 9 3
+!SET_AI_CHARACTER EQUIP_RATE_LEATHER 500
+!SET_AI_CHARACTER CONSTRUCTORS 20
+!SET_AI_CHARACTER WORKER_FACTOR 10
+!SET_AI_AUTO_REPAIR
+!SET_USER_PLAYER
+!IF VALID_PLAYER
+
+	!CENTER_SCREEN 18 12
+
+	// Reveal Maps
+	!CLEAR_UP 18 12 5
+
+	// Blocked Buildings
+
+
+	// Pre-allowed Buildings
 
 
 
-
-!SET_ALLIANCE 0 0
-
-!SET_HOUSE 11 62 12
-!ADD_WARE 1 50
-!ADD_WARE 2 40
-!ADD_WARE 7 50
-!ADD_WARE 8 40
-!ADD_WARE 10 40
-!ADD_WARE 13 25
-!ADD_WARE 27 20
+	// Buildings
+	!SET_HOUSE 11 18 12
 
 
-!SET_STREET 60 13 !SET_STREET 61 13 !SET_STREET 62 13
+	// Roads
+	!SET_STREET 16 13 !SET_STREET 17 13 !SET_STREET 18 13 
 
-!SET_UNIT 0 61 13
-!SET_UNIT 0 62 13
-!SET_UNIT 0 62 14
-!SET_UNIT 0 61 14
-!SET_UNIT 0 60 14
-!SET_UNIT 9 60 13
-!SET_UNIT 9 63 11
-!SET_UNIT 9 63 12
-!SET_UNIT 9 63 13
+	// Fields
 
 
-//Animals
+	// Wine Fields
+
+
+	// Units
+
+
+	// Units at storehouse
+	!SET_UNIT_BY_STOCK 0 // Serf
+	!SET_UNIT_BY_STOCK 0 // Serf
+	!SET_UNIT_BY_STOCK 0 // Serf
+	!SET_UNIT_BY_STOCK 0 // Serf
+	!SET_UNIT_BY_STOCK 0 // Serf
+	!SET_UNIT_BY_STOCK 9 // Labourer
+	!SET_UNIT_BY_STOCK 9 // Labourer
+	!SET_UNIT_BY_STOCK 9 // Labourer
+	!SET_UNIT_BY_STOCK 9 // Labourer
+
+
+	// Wares
+
+
+	// Wares to Second
+
+
+	// Weapons
+
+
+	// Troops
+
+	!IF MEDIUM_WARES
+
+		// Reveal Maps
+
+		// Blocked Buildings
+
+
+		// Pre-allowed Buildings
+
+
+
+		// Buildings
+
+
+		// Roads
+
+
+		// Fields
+
+
+		// Wine Fields
+
+
+		// Units
+
+
+		// Units at storehouse
+
+
+		// Wares
+
+
+		// Wares to Second
+
+
+		// Weapons
+
+
+		// Troops
+
+	!ENDIF
+	!IF MANY_WARES
+
+		// Reveal Maps
+
+		// Blocked Buildings
+
+
+		// Pre-allowed Buildings
+
+
+
+		// Buildings
+
+
+		// Roads
+
+
+		// Fields
+
+
+		// Wine Fields
+
+
+		// Units
+
+
+		// Units at storehouse
+
+
+		// Wares
+
+
+		// Wares to Second
+
+
+		// Weapons
+
+
+		// Troops
+
+	!ENDIF
+
+!ENDIF
+
+!SET_CURR_PLAYER 1 
+!SET_RGB_COLOR 14924635
+!SET_AI_PLAYER
+!SET_AI_ARMY_TYPE 3
+!SET_AI_DEFEND_ALLIES
+!SET_AI_AUTO_ATTACK
+!SET_AI_AUTO_DEFEND
+!SET_AI_UNLIMITED_EQUIP
+!SET_AI_CHARACTER AUTO_ATTACK_RANGE 6
+!SET_AI_CHARACTER RECRUTS 10
+!SET_AI_CHARACTER EQUIP_RATE_IRON 500
+!SET_AI_CHARACTER EQUIP_RATE_LEATHER 500
+!SET_AI_CHARACTER CONSTRUCTORS 20
+!SET_AI_CHARACTER WORKER_FACTOR 10
+!SET_AI_AUTO_REPAIR
+!SET_USER_PLAYER
+!IF VALID_PLAYER
+
+	!CENTER_SCREEN 62 12
+
+	// Reveal Maps
+	!CLEAR_UP 62 12 5
+
+	// Blocked Buildings
+
+
+	// Pre-allowed Buildings
+
+
+
+	// Buildings
+	!SET_HOUSE 11 62 12
+
+
+	// Roads
+	!SET_STREET 60 13 !SET_STREET 61 13 !SET_STREET 62 13 
+
+	// Fields
+
+
+	// Wine Fields
+
+
+	// Units
+
+
+	// Units at storehouse
+
+
+	// Wares
+
+
+	// Wares to Second
+
+
+	// Weapons
+
+
+	// Troops
+
+	!IF MEDIUM_WARES
+
+		// Reveal Maps
+
+		// Blocked Buildings
+
+
+		// Pre-allowed Buildings
+
+
+
+		// Buildings
+
+
+		// Roads
+
+
+		// Fields
+
+
+		// Wine Fields
+
+
+		// Units
+
+
+		// Units at storehouse
+		!SET_UNIT_BY_STOCK 0 // Serf
+		!SET_UNIT_BY_STOCK 0 // Serf
+		!SET_UNIT_BY_STOCK 0 // Serf
+		!SET_UNIT_BY_STOCK 0 // Serf
+		!SET_UNIT_BY_STOCK 0 // Serf
+		!SET_UNIT_BY_STOCK 9 // Labourer
+		!SET_UNIT_BY_STOCK 9 // Labourer
+		!SET_UNIT_BY_STOCK 9 // Labourer
+		!SET_UNIT_BY_STOCK 9 // Labourer
+
+
+		// Wares
+
+
+		// Wares to Second
+
+
+		// Weapons
+
+
+		// Troops
+
+	!ENDIF
+	!IF MANY_WARES
+
+		// Reveal Maps
+
+		// Blocked Buildings
+
+
+		// Pre-allowed Buildings
+
+
+
+		// Buildings
+
+
+		// Roads
+
+
+		// Fields
+
+
+		// Wine Fields
+
+
+		// Units
+
+
+		// Units at storehouse
+
+
+		// Wares
+
+
+		// Wares to Second
+
+
+		// Weapons
+
+
+		// Troops
+
+	!ENDIF
+
+!ENDIF
+
+// Wares to All
+!ADD_WARE_TO_ALL 1 50 // Stone
+!ADD_WARE_TO_ALL 2 40 // Timber
+!ADD_WARE_TO_ALL 7 50 // Gold
+!ADD_WARE_TO_ALL 10 40 // Loaves
+!ADD_WARE_TO_ALL 8 40 // Wine
+!ADD_WARE_TO_ALL 13 25 // Sausages
+!ADD_WARE_TO_ALL 27 20 // Fish
+
+!IF MEDIUM_WARES
+!ENDIF
+
+!IF MANY_WARES
+!ENDIF
+
+
+// Animals
 !SET_UNIT 24 2 32
 !SET_UNIT 24 74 36
 !SET_UNIT 25 2 73
@@ -148,4 +357,9 @@
 !SET_UNIT 27 13 75
 !SET_UNIT 27 1 70
 
-//This mission was made with KaM Remake Map Editor version r11222 at 10.04.2020 7:10:09
+
+
+
+
+// This Mission Was Created with Lewin's Knights and Merchants Mission Editor Version 0.9 at 20:18 on 11/5/2011
+// For More Information Go To http://lewin.namsys.com.au/kam/ or email lewinjh@gmail.com

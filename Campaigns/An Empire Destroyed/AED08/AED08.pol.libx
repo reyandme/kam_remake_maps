@@ -1,11 +1,14 @@
-ï»¿0:Generale, przywÃ³dca powstaÅ„cÃ³w wysyÅ‚a Ci wiadomoÅ›Ä‡. PozwÃ³l mi jÄ… odczytaÄ‡: Drogi generale, dziÄ™kujÄ™ za wsparcie. ChcielibyÅ›my poprosiÄ‡ o przysÅ‚ugÄ™, czy mÃ³gÅ‚byÅ› wysÅ‚aÄ‡ nam %d kamienia do naszego spichrza, wtedy moglibyÅ›my wysÅ‚aÄ‡ nasze dobra do twojego targu.
-1:Generale, wyglÄ…da na to, Å¼e umocnienia wroga sÄ… zbyt silne!
-2:DziÄ™ki Ci, generale, natychmiast wysyÅ‚amy nasze surowce.
-3:Potrzebujemy targu aby wysÅ‚aÄ‡ surowce!
+
+MaxID:10
+
+0:Generale, przywódca powstañców wysy³a Ci wiadomoœæ. Pozwól mi j¹ odczytaæ: Drogi generale, dziêkujê za wsparcie. Chcielibyœmy poprosiæ o przys³ugê, czy móg³byœ wys³aæ nam %d kamienia do naszego spichrza, wtedy moglibyœmy wys³aæ nasze dobra do twojego targu.
+1:Generale, wygl¹da na to, ¿e umocnienia wroga s¹ zbyt silne!
+2:Dziêki Ci, generale, natychmiast wysy³amy nasze surowce.
+3:Potrzebujemy targu aby wys³aæ surowce!
 4:[$0000FC]Zadanie[]: 
 5:[$8CE6F0] - []
 6:[$00FF7F]Zaatakuj Niss[]
 7: - [$D2FAFA]Surowce[] w %d
 8: - %d [$D2FAFA]%s[]
-9:DziÄ™ki Ci, generale, bÄ™dziemy czekaÄ‡ aÅ¼ zbudujesz targ.
-10:Teraz, po prostu przynieÅ› nam %d kamienia.
+9:Dziêki Ci, generale, bêdziemy czekaæ a¿ zbudujesz targ.
+10:Teraz, po prostu przynieœ nam %d kamienia.

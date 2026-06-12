@@ -4,10 +4,6 @@ var
 procedure OnMissionStart;
 begin
   Reinforcement := True;
-  Actions.PlayWAVAtLocationLooped(-1, 'Lava', 3.5, 40, 53, 22);
-  Actions.PlayWAVAtLocationLooped(-1, 'Lava', 3.5, 40, 66, 30);
-  Actions.PlayWAVAtLocationLooped(-1, 'Lava', 3.5, 40, 63, 49);
-  Actions.PlayWAVAtLocationLooped(-1, 'Lava', 3.5, 40, 77, 42);
 end;
 
 procedure OnTick;

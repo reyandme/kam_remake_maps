@@ -1,8 +1,4 @@
-ï»¿MaxID:6
-0:Tryb Conquest: zdobywaj budynki, aby otrzymaÄ‡ broÅ„ dla twojej armii! Budynek przejmujesz, gdy twoi Å¼oÅ‚nierze stanÄ… pod jego wejÅ›ciem na 10 sekund. Uwaga: ciÄ™Å¼ka i lekka jazda nie moÅ¼e zdobywaÄ‡ budynkÃ³w! Masz warowniÄ™ oraz 3 szkoÅ‚y. Produkcja rekrutÃ³w w szkoÅ‚ach jest automatyczna, a zÅ‚oto nigdy siÄ™ nie skoÅ„czy.||Autor skryptu: sado, autor mapy: dicsoupcan.
-1:Nie moÅ¼esz przejÄ…Ä‡ budynku, uÅ¼ywajÄ…c lekkiej lub ciÄ™Å¼kiej jazdy!|NastÄ™pnym razem przeczytaj opis mapy przed grÄ… :)
-2:Nie moÅ¼esz przejÄ…Ä‡ wieÅ¼y naleÅ¼Ä…cej do twojego sojusznika.
-3:Przejmujesz budynek
-4:Lewa strona
-5:Prawa strona
-6:Liczba budynkÃ³w
+
+MaxID:1
+
+0:Tryb Conquest: zdobywaj budynki, aby otrzymaæ broñ dla twojej armii! Budynek przejmujesz, gdy twoi ¿o³nierze stan¹ przy jego wejœciu. Nie musz¹ jednak staæ tam ca³y czas. Uwaga: ciê¿ka i lekka jazda nie mo¿e zdobywaæ budynków! Masz warowniê oraz 3 szko³y. Produkcja rekrutów w szko³ach jest automatyczna, a z³oto nigdy siê nie skoñczy.||Script by sado, map by dicsoupcan.

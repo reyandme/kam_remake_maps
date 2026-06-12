@@ -1,8 +1,4 @@
-ÔªøMaxID:6
-0:Mode conquete : conqu√©rez des b√¢timents pour avoir des armes ! Vous capturez un b√¢timent avec un soldat devant son entr√©e pendant 10 secondes. Vous n'avez pas a rester pour le garder. Attention : les unit√©s de cavalerie ne sont pas capables de capturer les b√¢timents ! Vous avez un ch√¢teau et trois √©coles. La production de recrues est automatique, vous avez une infinit√© de caisses d'or.||Script by sado, map by dicsoupcan.
-1:You can't capture a building with a scout or a knight!|Read the map description next time :)
-2:You can't capture a tower owned by your ally.
-3:Capturing the building
-4:Left side
-5:Right side
-6:Number of buildings
+
+MaxID:1
+
+0:Mode conquete : conquÈrez des b‚timents pour avoir des armes ! Vous capturez un b‚timent avec un soldat devant son entrÈe. Vous n'avez pas a rester pour le garder. Attention : les unitÈs de cavalerie ne sont pas capables de capturer les b‚timents ! Vous avez un ch‚teau et trois Ècoles. La production de recrues est automatique, vous avez une infinitÈ de caisses d'or.||Script by sado, map by dicsoupcan.

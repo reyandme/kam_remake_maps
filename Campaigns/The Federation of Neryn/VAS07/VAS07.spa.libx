@@ -1,8 +1,11 @@
-Ôªø0:A nuestro favor tenemos que la isla no est√° cubierta por bases enemigas, s√≥lo limpiaron los almacenes. Probablemente estar√°n reclutando a sus tropas en Angersheim con los bienes saqueados. Construya edificios de minera a toda prisa, necesitamos un monton de recuros: oro, hierro y carb√≥n.
-1:Mercanc√≠as en el almac√©n
+
+MaxID:8
+
+0:A nuestro favor tenemos que la isla no est· cubierta por bases enemigas, sÛlo limpiaron los almacenes. Probablemente estar·n reclutando a sus tropas en Angersheim con los bienes saqueados. Construya edificios de minera a toda prisa, necesitamos un monton de recuros: oro, hierro y carbÛn.
+1:MercancÌas en el almacÈn
 2:Oro
 3:Hierro
-4:Carb√≥n
+4:CarbÛn
 5:Tiempo restante
 6:hora
 7:minutos

@@ -1,15 +1,2 @@
-Author
-Strangelove
-
-Version
-2.0 (23.09.2021)
-
-SmallDescLIBX
-10
-
-BigDescLIBX
-11
-
-DifficultyLevels
-mdEasy3,mdEasy2,mdEasy1,mdNormal,mdHard1,mdHard2,mdHard3
-
+BigDesc
+Two Kingdoms. One Canyon.||Map by Strangelove|Sound integration by Tiank||Version 1.0b

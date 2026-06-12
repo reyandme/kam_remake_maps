@@ -1,29 +1,25 @@
 var
-  General, Scout: Integer;
+  General: Integer;
   Barracks: array[0..2] of Integer;
-  Msg: Boolean;
+  //AIMode: Boolean;
 
 
 procedure OnMissionStart;
-var
-  ID: Integer;
 begin
   General := States.GroupAt(32, 117);
+  //AIMode := (States.PlayerEnabled(0) and States.PlayerIsAI(0))
+  //or (States.PlayerEnabled(1) and States.PlayerIsAI(1))
+  //or (States.PlayerEnabled(2) and States.PlayerIsAI(2));
   Barracks[0] := States.HouseAt(25, 120);
   Barracks[1] := States.HouseAt(16, 99);
   Barracks[2] := States.HouseAt(46, 123);
-  Msg := False;
-  Scout := -1;
-  for ID := 0 to 7 do
-    if States.PlayerEnabled(ID) then
-      Actions.AIAutoBuild(ID, False);
 end;
 
 
 procedure OnTick;
 var
   ID, P, W, axe1, sw1, lan1, pik1, pik2,
-  lan2, sc1, kn1, cr1, bow1, AIGroup, X, Y: Integer;
+  lan2, sc1, kn1, cr1, bow1, AIGroup: Integer;
 begin
 
   if States.GameTime = 20 then
@@ -36,23 +32,12 @@ begin
 
 
   if States.GameTime = 1900 then
-    Scout := Actions.GiveGroup(3, 21, 91, 60, 4, 1, 1);
-
-  if Scout > 0 then
-    if not States.GroupDead(Scout) then
-    begin
-      X := States.UnitPositionX(States.GroupMember(Scout, 0));
-      Y := States.UnitPositionY(States.GroupMember(Scout, 0));  
-      if (Utils.InRangeI(X, 31, 34))
-      and (Utils.InRangeI(Y, 120, 121))
-      and (not Msg) then
-      begin
-        for ID := 0 to 2 do 
-          if States.PlayerEnabled(ID) then
-            Actions.ShowMsg(ID, '<$1>');
-        Msg := True;
-      end;
-    end;
+    Actions.GiveGroup(3, 21, 91, 60, 4, 1, 1);
+  
+  if States.GameTime = 2480 then
+    for ID := 0 to 2 do 
+       if States.PlayerEnabled(ID) then
+         Actions.ShowMsg(ID, '<$1>');
    
   if States.GameTime = 2700 then
   begin
@@ -147,13 +132,14 @@ begin
 
   if States.GameTime mod 600 = 0 then
     for ID := 0 to 2 do
-      if States.PlayerEnabled(ID) then
-        if States.PlayerIsAI(ID) then
-          for W := 16 to 26 do
-          begin
-            Actions.GiveWeapons(ID, W, 8);
-            Actions.HouseBarracksGiveRecruit(Barracks[ID]);
-          end;
+    begin
+      if States.PlayerIsAI(ID) then
+        for W := 16 to 26 do
+        begin
+          Actions.GiveWeapons(ID, W, 8);
+          Actions.HouseBarracksGiveRecruit(Barracks[ID]);
+        end;
+    end;
 
   if States.GroupDead(General) then
   begin

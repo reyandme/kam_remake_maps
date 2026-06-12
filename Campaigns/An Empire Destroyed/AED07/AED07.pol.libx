@@ -1,8 +1,12 @@
-ï»¿0:JeÅ›li przewidywania krÃ³la okaÅ¼Ä… siÄ™ prawdziwe, karawana musi przeciÄ…Ä‡ naszÄ… pozycjÄ™. ZnajdÅºmy dobrÄ… pozycjÄ™ na zasadzkÄ™.
-1:Mamy juÅ¼ surowce, lecz patrole wroga nas zauwaÅ¼yÅ‚y! GÅ‚Ã³wne siÅ‚y przybÄ™dÄ… tu wkrÃ³tce. Uciekaj przez lÃ³d, i skrusz go, odcinajÄ…c drogÄ™ potencjalnego poÅ›cigu!
-2:GÅ‚Ã³wne siÅ‚y wroga juÅ¼ przybyÅ‚y, musimy siÄ™ pospieszyÄ‡!
-3:Ustawili blokadÄ™! Musimy siÄ™ przez niÄ… przebiÄ‡!
+
+MaxID:9
+
+0:Jeœli przewidywania króla oka¿¹ siê prawdziwe, karawana musi przeci¹æ nasz¹ pozycjê. ZnajdŸmy dobr¹ pozycjê na zasadzkê.
+1:Mamy ju¿ surowce, lecz patrole wroga nas zauwa¿y³y! G³ówne si³y przybêd¹ tu wkrótce. Uciekaj przez lód, i skrusz go, odcinaj¹c drogê potencjalnego poœcigu!
+2:G³ówne si³y wroga ju¿ przyby³y, musimy siê pospieszyæ!
+3:
+They have set up a blockade! Break through it men!
 4:[$0000FC]Zadanie[]: 
 5:[$8CE6F0] - []
 6:[$00FF7F]Zasadzka[]
-8:[$00FF7F]Uciekaj przez lÃ³d![]
+8:[$00FF7F]Uciekaj przez lód![]
