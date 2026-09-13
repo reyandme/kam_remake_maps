@@ -1,0 +1,38 @@
+{$EVENT evtTick:TownHallUnitOnTick}
+
+var
+	AI3: array[0..2] of Integer;
+	AI8, AI9: Integer;
+	Difficulty: array[0..1] of Integer;
+	
+procedure TownHallUnitOnTick();
+begin
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	if (S.PlayerDefeated(2) = false) and (S.HouseAt(72, 222)<> -1) and (S.GameTime > AI3[0]) and (S.StatUnitTypeCount(2, UNIT_REBEL) < 18) then
+	    begin
+	    A.HouseTownHallEquip(S.HouseAt(72, 222), UNIT_REBEL, 1);
+        AI3[0]:= (S.GameTime + Difficulty[0]);
+		end;
+	if (S.PlayerDefeated(2) = false) and (S.HouseAt(72, 222)<> -1) and (S.GameTime > AI3[1]) and (S.StatUnitTypeCount(2, UNIT_ROGUE) < 6) then
+	    begin
+	    A.HouseTownHallEquip(S.HouseAt(72, 222), UNIT_ROGUE, 1);
+        AI3[1]:= (S.GameTime + Difficulty[0]);
+		end;
+	if (S.PlayerDefeated(2) = false) and (S.HouseAt(72, 222)<> -1) and (S.GameTime > AI3[2]) and (S.StatUnitTypeCount(2, UNIT_VAGABOND) < 18) then
+	    begin
+	    A.HouseTownHallEquip(S.HouseAt(72, 222), UNIT_VAGABOND, 1);
+        AI3[2]:= (S.GameTime + Difficulty[0]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (S.PlayerDefeated(7) = false) and (S.HouseAt(45, 158)<> -1) and (S.GameTime > AI8) and (S.StatUnitTypeCount(7, UNIT_WARRIOR) < 48) then
+	    begin
+	    A.HouseTownHallEquip(S.HouseAt(45, 158), UNIT_WARRIOR, 1);
+        AI8:= (S.GameTime + Difficulty[1]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (S.PlayerDefeated(8) = false) and (S.HouseAt(117, 142)<> -1) and (S.GameTime > AI9) and (S.StatUnitTypeCount(8, UNIT_WARRIOR) < 60) then
+	    begin
+	    A.HouseTownHallEquip(S.HouseAt(117, 142), UNIT_WARRIOR, 1);
+        AI9:= (S.GameTime + Difficulty[1]);
+		end;
+end;

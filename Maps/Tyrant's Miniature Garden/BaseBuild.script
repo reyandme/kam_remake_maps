@@ -1,0 +1,69 @@
+{$EVENT evtTick:BaseBuild}
+
+procedure BaseBuild();
+begin	
+if S.GameTime = 27000 then begin
+    //AI_3
+	A.PlanAddHouse(2, HOUSE_GOLD_MINE, 65, 16);
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 62, 23);
+	A.PlanAddRoad(2, 62, 24);
+	A.PlanAddRoad(2, 65, 17);
+	A.PlanAddRoad(2, 62, 19);
+	A.PlanAddRoad(2, 63, 19);
+	A.PlanAddRoad(2, 64, 19);
+	A.PlanAddRoad(2, 64, 18);
+	A.PlanAddRoad(2, 64, 17);
+	//AI_4
+	A.PlanAddHouse(3, HOUSE_GOLD_MINE, 86, 25);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 77, 27);
+    end;
+	
+if S.GameTime = 36000 then begin
+	//AI_3
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 64, 27);
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 78, 31);
+	A.PlanAddHouse(2, HOUSE_GOLD_MINE, 79, 20);
+	A.PlanAddHouse(2, HOUSE_GOLD_MINE, 53, 19);
+	A.PlanAddRoad(2, 53, 20);
+	A.PlanAddRoad(2, 53, 21);
+	A.PlanAddRoad(2, 79, 21);
+	A.PlanAddRoad(2, 79, 22);
+	A.PlanAddRoad(2, 79, 23);
+	A.PlanAddRoad(2, 79, 24);
+	A.PlanAddRoad(2, 79, 25);
+	A.PlanAddRoad(2, 79, 26);
+	//AI_4
+	A.PlanAddHouse(3, HOUSE_GOLD_MINE, 54, 45);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 97, 57);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 90, 62);
+	A.PlanAddRoad(3, 96, 58);
+	A.PlanAddRoad(3, 97, 58);
+	A.PlanAddRoad(3, 54, 46);
+	A.PlanAddRoad(3, 55, 46);
+	A.PlanAddRoad(3, 56, 46);
+    end;
+	
+if S.GameTime = 45000 then begin
+	//AI_3
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 68, 29);
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 72, 27);
+	A.PlanAddHouse(2, HOUSE_GOLD_MINE, 100, 34);
+	//AI_4
+	A.PlanAddHouse(3, HOUSE_GOLD_MINE, 114, 45);
+	A.PlanAddHouse(3, HOUSE_GOLD_MINE, 98, 50);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 81, 26);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 93, 59);
+    end;
+	
+if S.GameTime = 54000 then begin
+	//AI_3
+	A.PlanAddHouse(2, HOUSE_GOLD_MINE, 70, 22);
+	A.PlanAddHouse(2, HOUSE_COAL_MINE, 68, 25);
+	A.PlanAddRoad(2, 70, 23);
+	A.PlanAddRoad(2, 70, 24);
+	A.PlanAddRoad(2, 70, 25);
+	A.PlanAddRoad(2, 70, 26);
+	//AI_4
+	A.PlanAddHouse(3, HOUSE_GOLD_MINE, 110, 47);
+    end;
+end;

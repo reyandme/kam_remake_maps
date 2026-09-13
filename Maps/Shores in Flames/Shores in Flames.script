@@ -1,12 +1,14 @@
 //-- Shores in Flames --//
 //By Strangelove
-//v0.7.3
-//04.09.2024
+//v0.7.4
+//28.08.2025
 
-{$I difficulty.script}
-{$I improvestaticai.script}
-{$I dynamicmap.script}
+//Universal
+{$I Scripts/tools.script}
+{$I Scripts/improvestaticai.script}
+//Map Specific
 {$I replacesnow.script}
+
 
 const
 	HUMAN_PLAYER = 0;
@@ -42,24 +44,6 @@ EVENTS:
 10. Kill enemy bases as usual
 =============================================================================}
 
-
-function MinToTick(Minutes: Cardinal): Cardinal;
-begin
-	Result := Minutes *600;
-end;
-
-
-function Randomize(Value: Integer; Percentage: Single): Integer;
-begin
-	Result := Utils.RandomRangeI(Round(Value *(1 -(Percentage /100))), Round(Value *(1 +(Percentage /100))));
-end;
-
-
-procedure IronEquipRate(Player: Byte; Rate: Word);
-begin
-	Actions.AIEquipRate(Player, 1, Rate);
-	Actions.AIEquipRate(Player, 0, Rate *2); //Leather Equip Rate = Iron Equip Rate *2
-end;
 
 
 procedure OnMissionStart();
@@ -99,7 +83,7 @@ begin
 			Actions.AIWorkerLimit(2, 4);
 			Actions.AIRecruitLimit(2, 10);
 			Actions.AIRecruitDelay(2, MinToTick(54));
-			IronEquipRate(2, Randomize(585, 1));
+			SetEqualEquipRate(2, Randomize(585, 1));
 			//Defence Positions of Player2
 			AddDefencePositionAndGroup(2, 16, 101, 87, 6, 22); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 25); //DefencePosition #1
@@ -121,7 +105,7 @@ begin
 			Actions.AIWorkerLimit(3, 4);
 			Actions.AIRecruitLimit(3, 10);
 			Actions.AIRecruitDelay(3, MinToTick(85));
-			IronEquipRate(3, Randomize(430, 1));
+			SetEqualEquipRate(3, Randomize(430, 1));
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 25); //DefencePosition #0
 			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
@@ -160,7 +144,7 @@ begin
 			Actions.AIWorkerLimit(2, 6);
 			Actions.AIRecruitLimit(2, 15);
 			Actions.AIRecruitDelay(2, MinToTick(47));
-			IronEquipRate(2, Randomize(365, 2));
+			SetEqualEquipRate(2, Randomize(365, 2));
 			//Defence Positions of Player2
 			AddDefencePositionAndGroup(2, 16, 101, 87, 6, 22); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 25); //DefencePosition #1
@@ -186,7 +170,7 @@ begin
 			Actions.AIWorkerLimit(3, 6);
 			Actions.AIRecruitLimit(3, 15);
 			Actions.AIRecruitDelay(3, MinToTick(60));
-			IronEquipRate(3, Randomize(360, 2));
+			SetEqualEquipRate(3, Randomize(360, 2));
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 25); //DefencePosition #0
 			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
@@ -232,7 +216,7 @@ begin
 			Actions.AIWorkerLimit(2, 8);
 			Actions.AIRecruitLimit(2, 20);
 			Actions.AIRecruitDelay(2, MinToTick(35));
-			IronEquipRate(2, Randomize(295, 3));
+			SetEqualEquipRate(2, Randomize(295, 3));
 			//Defence Positions of Player2
 			AddDefencePositionAndGroup(2, 16, 103, 87, 6, 22); //DefencePosition #0
 			AddDefencePositionAndGroup(2, 16, 107, 89, 6, 27); //DefencePosition #1
@@ -258,7 +242,7 @@ begin
 			Actions.AIWorkerLimit(3, 8);
 			Actions.AIRecruitLimit(3, 20);
 			Actions.AIRecruitDelay(3, MinToTick(47));
-			IronEquipRate(3, Randomize(290, 3));
+			SetEqualEquipRate(3, Randomize(290, 3));
 			//Defence Positions of Player3
 			AddDefencePositionAndGroup(3, 16, 107, 42, 3, 30); //DefencePosition #0
 			AddDefencePositionAndGroup(3, 16, 104, 48, 2, 24); //DefencePosition #1
@@ -324,7 +308,7 @@ begin
 	end;
 	
 	//Add Buildings to Site with a Delay (Does not work in OnHouseDigged-Event)
-	if GameTime = StorehouseDiggedTiming +MAX_HANDS +1 then
+	if GameTime = StorehouseDiggedTiming +30 then
 		Actions.HouseAddBuildingMaterials(StorehouseID);
 	
 	{EventScheduler is moved from 2 to 3 in OnHouseBuilt-Event}
@@ -383,12 +367,13 @@ begin
 					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
-							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
-							//Add Groups (38 Units)
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 39, 18, dirS, 12, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 44, 18, dirS, 9, 3);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 39, 15, dirS, 8, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 35, 17, dirS, 9, 3);
+							Actions.AIStartPosition(HARBOUR_PLAYER, 1, 1); //Top Left corner
+							//Add Groups (42 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 67, 15, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 71, 19, dirSW, 6, 2);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 73, 17, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 69, 13, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 69, 13, dirSW, 12, 4);
 						end;
 						1: begin
 							//Set Attack Position
@@ -429,12 +414,14 @@ begin
 					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
-							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
-							//Add Groups (41 Units)
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 39, 18, dirS, 12, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 44, 18, dirS, 9, 3);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 39, 15, dirS, 8, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 34, 18, dirS, 12, 4);
+							Actions.AIStartPosition(HARBOUR_PLAYER, 1, 1); //Top Left corner
+							//Add Groups (45 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 67, 15, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 71, 19, dirSW, 6, 2);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 73, 17, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 69, 13, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 69, 13, dirSW, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 69, 13, dirSW, 3, 3);
 						end;
 						1: begin
 							//Set Attack Position
@@ -467,13 +454,14 @@ begin
 					case Utils.RandomRangeI(0, MaxRandomRange) of
 						0: begin
 							//Set Attack Position
-							Actions.AIStartPosition(HARBOUR_PLAYER, 35, 45); //Avoid Stone Chokepoint
-							//Add Groups (47 Units)
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utBarbarian, 40, 20, dirS, 12, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 41, 20, dirS, 12, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 45, 19, dirS, 9, 3);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 40, 15, dirS, 8, 4);
-							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 35, 19, dirS, 6, 3);	
+							Actions.AIStartPosition(HARBOUR_PLAYER, 1, 1); //Top Left corner
+							//Add Groups (45 Units)
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 67, 15, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utSwordFighter, 71, 19, dirSW, 6, 2);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 73, 17, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utCrossbowman, 69, 13, dirSW, 8, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utPikeman, 69, 13, dirSW, 12, 4);
+							Actions.GiveGroupEx(HARBOUR_PLAYER, utKnight, 69, 13, dirSW, 3, 3);
 						end;
 						1: begin
 							//Set Attack Position

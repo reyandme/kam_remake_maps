@@ -41,3 +41,11 @@ Shores in Flames
 - After 1st attack, the "Beacon"-Sound will be played to alert the player whenever troops have landed
 - Added Message to player for first AI reinforcements (No messages will be sent for future attacks)
 - Changed AI Player Colors
+
+0.7.4 (28.08.2025)
+- Replaced old 'difficulty.script' with new 'tools.script'
+- Main script cleaned up
+- Updated improvestaticai.script to newest version
+
+1.0 (03.09.2026)
+- When AI landing troops are spawned on players side of the map, they can only spawn where the player started with his troops (since the other location seemed too close to player base and was percieved to be unfair)

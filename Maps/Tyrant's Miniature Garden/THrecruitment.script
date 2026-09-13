@@ -1,0 +1,29 @@
+{$EVENT evtTick:TownHallUnitOnTick}
+
+var
+	AI: array[0..2] of Integer;
+	Difficulty: array[0..2] of Integer;
+	
+procedure TownHallUnitOnTick();
+begin
+//////////////////////////////////              AI 2              ////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	if (S.PlayerDefeated(1) = false) and (S.HouseAt(99, 93)<> -1) and (S.GameTime > AI[0]) and (S.StatUnitMultipleTypesCount(1, [UNIT_BARBARIAN, UNIT_AXE_FIGHTER, UNIT_SWORD_FIGHTER]) < 30) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(99, 93), UNIT_BARBARIAN, 1);
+			AI[0]:= (S.GameTime + Difficulty[0]);
+		end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+	if (S.PlayerDefeated(1) = false) and (S.HouseAt(99, 93)<> -1) and (S.GameTime > AI[1]) and (S.StatUnitMultipleTypesCount(1, [UNIT_ROGUE, UNIT_BOWMAN, UNIT_CROSSBOWMAN]) < 30) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(99, 93), UNIT_ROGUE, 1);
+			AI[1]:= (S.GameTime + Difficulty[1]);
+		end;
+//////////////////////////////////              AI 4              ////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.PlayerDefeated(3) = false) and (S.HouseAt(94, 29)<> -1) and (S.GameTime > AI[2]) and (S.StatUnitMultipleTypesCount(3, [UNIT_BARBARIAN, UNIT_AXE_FIGHTER, UNIT_SWORD_FIGHTER]) < 48) then
+	    begin
+			A.HouseTownHallEquip(S.HouseAt(94, 29), UNIT_BARBARIAN, 1);
+			AI[2]:= (S.GameTime + Difficulty[2]);
+		end;
+end;

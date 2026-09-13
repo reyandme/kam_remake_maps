@@ -1,0 +1,676 @@
+{$I improvestaticai.script}  /// By Strangelove
+{$I constants.script}  /// By Greeny
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I BaseBuild.script}
+{$I THrecruitment.script}
+
+var
+	DifficultySetting: TKMMissionDifficulty;
+	Isle2, Assault: Boolean;
+	Stage, MainStore: Integer;
+	PortStore: array[0..2] of Integer;
+	Countdown: array[0..2] of Integer;
+	Offset: array[0..2] of Integer;
+	Clock: array[0..2] of Boolean;
+	Builder: array[0..3] of Integer;
+	AIattack: array[0..2] of Boolean;
+	AIMarket: array[0..1] of Integer;
+	
+
+Procedure ChangeHouseOwner(aX,aY, toPlayer:Integer);
+var aHouseWares : array[0..27] of integer;
+	aHouseID, newHouseID, aHType, aDamage : Integer;
+	HousePos : TKMPoint;
+	I : Integer;
+begin
+	If States.HouseAt(aX,aY) > 0 then 
+	begin
+		aHouseID := States.HouseAt(aX,aY);
+		HousePos := States.HousePosition(aHouseID);
+		aHType := States.HouseType(aHouseID);
+		aDamage := States.HouseDamage(aHouseID);
+		for I := 0 to 27 do 
+			aHouseWares[I] := States.HouseResourceAmount(aHouseID,I);
+		
+		Actions.HouseDestroy(aHouseID, true);
+		newHouseID := Actions.GiveHouse(toPlayer,aHType,HousePos.X,HousePos.Y);
+		for I := 0 to 27 do
+			If aHouseWares[I]>0 then Actions.HouseAddWaresTo(newHouseID,I,aHouseWares[I]);
+			
+		Actions.HouseAddDamage(newHouseID,aDamage);
+	end;
+end;
+
+Procedure Block_All_Wares_Except(houseID: Integer; wares: Array of Integer);
+var i: Integer;
+begin
+    For i := 0 to 27 do A.HouseWareBlock(houseID, i, True);
+    For i := 0 to High(wares) do A.HouseWareBlock(houseID, wares[i], False);
+end;
+
+Procedure Ware_Transfer(fromHouseID, toHouseID: Integer);
+var ware: Integer;
+begin
+    For ware := 0 to 27 do begin
+        A.HouseAddWaresTo(toHouseID, ware, S.HouseResourceAmount(fromHouseID, ware));
+        A.HouseTakeWaresFrom(fromHouseID, ware, S.HouseResourceAmount(fromHouseID, ware));        
+    end;
+end;
+
+procedure OnMissionStart();	
+begin
+DifficultySetting := S.MissionDifficulty();
+A.ShowMsg(0, '<$1>');
+A.PlayerShareFogCompliment(0, 1, False);
+A.FogCoverAll(0);
+A.FogRevealCircle(0, 25, 225, 20);
+CutScene[0]:= 36000000;
+CutScene[1]:= 36000000;
+CutScene[2]:= 36000000;
+Stage:= 0;
+A.AIRecruitDelay(3, 36000000);
+A.AIRecruitDelay(4, 36000000);
+A.AIRecruitDelay(5, 36000000);
+A.AIRecruitDelay(6, 36000000);
+A.AIRecruitDelay(7, 36000000);
+A.AIRecruitDelay(8, 36000000);
+AI3[0]:= 6000;
+AI3[1]:= 6300;
+AI3[2]:= 6600;
+AI8:= 36000000;
+AI9:= 36000000;
+AIMarket[0]:= S.HouseAt(217, 43);
+AIMarket[1]:= S.HouseAt(33, 166);
+case DifficultySetting of
+	    mdEasy1:
+        begin
+		///Isle NR 1 start wares
+		A.GiveWares(0, WARE_GOLD, 50);
+		A.GiveWares(0, WARE_STONES, 60);
+		A.GiveWares(0, WARE_TIMBER, 40);
+		A.GiveWares(0, WARE_WINE, 50);
+		A.GiveWares(0, WARE_SAUSAGES, 20);
+		A.GiveWares(0, WARE_LOAVES, 30);
+		A.GiveWares(0, WARE_FISH, 20);
+		///Isle NR 2 start wares
+		MainStore:= S.HouseAt(185, 226);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 60);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 60);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 50);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 60);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 20);
+		///Isle NR 3 start wares
+		MainStore:= S.HouseAt(213, 126);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 45);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 100);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 50);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 60);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 20);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 20);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 20);
+		///Isle NR 4 start wares
+		MainStore:= S.HouseAt(37, 88);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 100);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 120);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 60);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 50);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 50);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 50);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 50);
+		///AI EQ rates
+		A.AIEquipRate(3, 1, 500);
+		A.AIEquipRate(4, 0, 475);
+		A.AIEquipRate(5, 1, 425);
+		A.AIEquipRate(6, 0, 600);
+		A.AIEquipRate(6, 1, 600);
+		A.AIEquipRate(7, 1, 400);
+		A.AIEquipRate(8, 1, 400);
+		Difficulty[0]:= 900; 
+		Difficulty[1]:= 450; 
+        end;
+		
+        mdNormal:
+        begin
+		///Isle NR 1 start wares
+		A.GiveWares(0, WARE_GOLD, 40);
+		A.GiveWares(0, WARE_STONES, 50);
+		A.GiveWares(0, WARE_TIMBER, 35);
+		A.GiveWares(0, WARE_WINE, 40);
+		A.GiveWares(0, WARE_SAUSAGES, 15);
+		A.GiveWares(0, WARE_LOAVES, 25);
+		A.GiveWares(0, WARE_FISH, 15);
+		///Isle NR 2 start wares
+		MainStore:= S.HouseAt(185, 226);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 50);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 55);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 45);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 50);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 20);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 25);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 15);
+		///Isle NR 3 start wares
+		MainStore:= S.HouseAt(213, 126);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 35);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 90);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 45);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 50);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 15);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 15);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 15);
+		///Isle NR 4 start wares
+		MainStore:= S.HouseAt(37, 88);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 80);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 100);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 50);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 40);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 40);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 40);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 40);
+		///AI EQ rates
+		A.AIEquipRate(3, 1, 395);
+		A.AIEquipRate(4, 0, 375);
+		A.AIEquipRate(5, 1, 345);
+		A.AIEquipRate(6, 0, 485);
+		A.AIEquipRate(6, 1, 485);
+		A.AIEquipRate(7, 1, 300);
+		A.AIEquipRate(8, 1, 300);
+		Difficulty[0]:= 650; 
+		Difficulty[1]:= 385; 
+        end;
+		
+        mdHard1:
+        begin
+		///Isle NR 1 start wares
+		A.GiveWares(0, WARE_GOLD, 30);
+		A.GiveWares(0, WARE_STONES, 40);
+		A.GiveWares(0, WARE_TIMBER, 30);
+		A.GiveWares(0, WARE_WINE, 30);
+		A.GiveWares(0, WARE_SAUSAGES, 10);
+		A.GiveWares(0, WARE_LOAVES, 20);
+		A.GiveWares(0, WARE_FISH, 10);
+		///Isle NR 2 start wares
+		MainStore:= S.HouseAt(185, 226);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 40);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 50);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 40);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 40);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 15);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 15);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 10);
+		///Isle NR 3 start wares
+		MainStore:= S.HouseAt(213, 126);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 30);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 80);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 40);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 40);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 10);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 10);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 10);
+		///Isle NR 4 start wares
+		MainStore:= S.HouseAt(37, 88);
+		A.HouseAddWaresTo(MainStore, WARE_GOLD, 70);
+		A.HouseAddWaresTo(MainStore, WARE_STONES, 80);
+		A.HouseAddWaresTo(MainStore, WARE_TIMBER, 40);
+		A.HouseAddWaresTo(MainStore, WARE_WINE, 30);
+		A.HouseAddWaresTo(MainStore, WARE_SAUSAGES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_LOAVES, 30);
+		A.HouseAddWaresTo(MainStore, WARE_FISH, 30);
+		///AI EQ rates
+		A.AIEquipRate(3, 1, 250);
+		A.AIEquipRate(4, 0, 225);
+		A.AIEquipRate(5, 1, 175);
+		A.AIEquipRate(6, 0, 350);
+		A.AIEquipRate(6, 1, 350);
+		A.AIEquipRate(7, 1, 175);
+		A.AIEquipRate(8, 1, 175);
+		Difficulty[0]:= 400; 
+		Difficulty[1]:= 275; 
+        end;
+    end;
+end;
+	
+	
+procedure OnTick();
+begin
+if S.PlayerDefeated(2) and (Isle2 = false) and S.FogRevealed(0, 185, 225) then
+    begin
+	A.ShowMsg(0, '<$2>');
+	ChangeHouseOwner(185, 226, 0);
+	Isle2:= true;
+	Assault:= false;
+	Clock[0]:= true;
+	Offset[0]:= S.GameTime + 4800 + (S.KamRandomI(2400));
+	A.AIAttackRemoveAll(9);
+	end;
+
+if S.GameTime = (CutScene[0] + 50) then
+    begin
+	Assault:= true;
+	A.CinematicEnd(0);
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveGroup(9, UNIT_MILITIA, 163, 228, DIRECTION_SW, 10, 5);
+		A.GiveGroup(9, UNIT_LANCE_CARRIER, 169, 234, DIRECTION_SW, 6, 3);
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveGroup(9, UNIT_MILITIA, 163, 228, DIRECTION_SW, 15, 5);
+		A.GiveGroup(9, UNIT_LANCE_CARRIER, 169, 234, DIRECTION_SW, 6, 3);
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveGroup(9, UNIT_MILITIA, 163, 228, DIRECTION_SW, 15, 5);
+		A.GiveGroup(9, UNIT_LANCE_CARRIER, 169, 234, DIRECTION_SW, 9, 3);
+        end;
+    end;
+	end;
+	
+if S.GameTime = (CutScene[1] + 50) then
+    begin
+	A.CinematicEnd(0);
+	ChangeHouseOwner(213, 125, 0);
+	end;
+	
+if S.GameTime = (CutScene[1] + 400) then
+    begin
+	A.ShowMsg(0, '<$8>');
+	end;
+	
+if S.GameTime = (CutScene[1] + 18000) then
+    begin
+	A.ShowMsg(0, '<$11>');
+	end;	
+	
+if S.GameTime = (CutScene[2] + 50) then
+    begin
+	A.CinematicEnd(0);
+	ChangeHouseOwner(37, 88, 0);
+	end;
+	
+	
+if S.GameTime = (CutScene[2] + 400) then
+    begin
+	A.ShowMsg(0, '<$10>');
+	end;
+
+if S.GameTime = (CutScene[2] + 6000) then
+    begin
+	A.ShowMsg(0, '<$12>');
+	end;	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////STOREHOUSE BLOCK///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (S.GameTime MOD 10 = 0) and (Stage = 1) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[0], [WARE_GOLD, WARE_WINE]);
+	end;
+	
+if (S.GameTime MOD 10 = 0) and (Stage = 2) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[0], [WARE_TREE_TRUNK, WARE_GOLD, WARE_WINE]);
+	end;
+	
+if (S.GameTime MOD 10 = 0) and (Stage = 3) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[0], [WARE_TREE_TRUNK, WARE_LOAVES, WARE_GOLD, WARE_WINE, WARE_LEATHER]);
+	end;	
+	
+if (S.GameTime MOD 10 = 0) and (Stage = 2)and (S.HouseOwner(PortStore[1]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[1], [WARE_GOLD, WARE_CORN]);
+	end;
+	
+if (S.GameTime MOD 10 = 0) and (Stage = 3) and (S.HouseOwner(PortStore[1]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[1], [WARE_GOLD, WARE_CORN, WARE_SAUSAGES, WARE_TIMBER]);
+	end;
+	
+if (S.GameTime MOD 10 = 0) and (Stage = 3) and (S.HouseOwner(PortStore[2]) = 0) then
+    begin
+	Block_All_Wares_Except(PortStore[2], [WARE_COAL, WARE_IRON]);
+	end;	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////STOREHOUSE TRANSFERS/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (Stage = 1) and (countdown[0] = 0) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Ware_Transfer(PortStore[0], S.HouseAt(185, 226));
+	Offset[0]:= S.GameTime + 4800 + (S.KamRandomI(2400));
+	end;
+	
+if (Stage = 2) and (countdown[0] = 0) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Ware_Transfer(PortStore[0], S.HouseAt(213, 126));
+	Offset[0]:= S.GameTime + 4800 + (S.KamRandomI(2400));
+	end;
+
+if (Stage = 3) and (countdown[0] = 0) and (S.HouseOwner(PortStore[0]) = 0) then
+    begin
+	Ware_Transfer(PortStore[0], S.HouseAt(37, 88));
+	Offset[0]:= S.GameTime + 4800 + (S.KamRandomI(2400));
+	end;	
+
+if (Stage = 2) and (countdown[1] = 0) and (S.HouseOwner(PortStore[1]) = 0) then
+    begin
+	Ware_Transfer(PortStore[1], S.HouseAt(213, 126));
+	Offset[1]:= S.GameTime + 5400 + (S.KamRandomI(2400));
+	end;
+	
+if (Stage = 3) and (countdown[1] = 0) and (S.HouseOwner(PortStore[1]) = 0) then
+    begin
+	Ware_Transfer(PortStore[1], S.HouseAt(37, 88));
+	Offset[1]:= S.GameTime + 5400 + (S.KamRandomI(2400));
+	end;
+	
+if (Stage = 3) and (countdown[2] = 0) and (S.HouseOwner(PortStore[2]) = 0) then
+    begin
+	Ware_Transfer(PortStore[2], S.HouseAt(37, 88));
+	Offset[2]:= S.GameTime + 6000 + (S.KamRandomI(2400));
+	end;
+	
+If Clock[0] then
+	begin
+		countdown[0] := Offset[0] - S.GameTime;
+		if countdown[0] > 0 then
+		begin
+			A.OverlayTextSet(0,'<$3>: '+ U.TimeToString(countdown[0]));
+		end;
+	end;
+
+If Clock[1] then
+	begin
+		countdown[1] := Offset[1] - S.GameTime;
+		if countdown[1] > 0 then
+		begin
+			A.OverlayTextAppend(0,'|<$4>: '+ U.TimeToString(countdown[1]));
+		end;
+	end;
+
+If Clock[2] then
+	begin
+		countdown[2]:= Offset[2] - S.GameTime;
+		if countdown[2] > 0 then
+		begin
+			A.OverlayTextAppend(0,'|<$5>: '+ U.TimeToString(countdown[2]));
+		end;
+	end;	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if (S.GameTime MOD 16500 = 0) then
+    begin
+    if (S.HouseDestroyed(AIMarket[0]) = false) and (S.HouseType(AIMarket[0]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade(AIMarket[0], WARE_GOLD, WARE_CORN, 30);
+        end;
+    
+    if (S.HouseDestroyed(AIMarket[1]) = false) and (S.HouseType(AIMarket[1]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade(AIMarket[1], WARE_GOLD, WARE_CORN, 20);
+        end;
+    end;
+		
+////////////////////////////////////////////////ATTACK LOOPS/////////////////////////////////////////////////////
+/// AI 6
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(5) > 198) and (AIattack[0] = false) then
+    begin
+	A.AIDefencePositionRemove(5, 99, 32);
+	A.AIDefencePositionRemove(5, 103, 28);
+	A.AIDefencePositionRemove(5, 98, 32);
+	A.AIDefencePositionRemove(5, 103, 29);
+	A.AIDefencePositionRemove(5, 107, 33);
+	A.AIDefencePositionRemove(5, 104, 35);
+	A.AIDefencePositionAdd(5, 143, 60, DIRECTION_SE, GROUP_MOUNTED, 35, 0);
+	A.AIDefencePositionAdd(5, 151, 54, DIRECTION_SE, GROUP_MOUNTED, 35, 0);
+	A.AIDefencePositionAdd(5, 149, 57, DIRECTION_SE, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(5, 145, 61, DIRECTION_SE, GROUP_RANGED, 35, 0);
+	A.AIDefencePositionAdd(5, 145, 56, DIRECTION_SE, GROUP_ANTIHORSE, 35, 0);
+	A.AIDefencePositionAdd(5, 148, 59, DIRECTION_SE, GROUP_MELEE, 35, 0);
+	AIattack[0]:= true;
+	end;
+	
+if (S.GameTime MOD 10 = 0) and ((S.StatArmyCount(5) > 205) or (S. StatArmyCount(5) = 205)) and (AIattack[0] = true) then
+    begin
+	A.AIDefencePositionRemove(5, 145, 61);
+	A.AIDefencePositionRemove(5, 149, 57);
+	A.AIDefencePositionRemove(5, 148, 59);
+	A.AIDefencePositionRemove(5, 148, 59);
+	A.AIDefencePositionRemove(5, 145, 56);
+	A.AIDefencePositionRemove(5, 143, 60);
+	A.AIDefencePositionRemove(5, 151, 54);
+	end;	
+	
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(5) < 170) and (AIattack[0] = true) then
+    begin
+	A.AIDefencePositionAdd(5, 99, 32, DIRECTION_SE, GROUP_MOUNTED, 55, 0);
+	A.AIDefencePositionAdd(5, 103, 28, DIRECTION_SE, GROUP_MOUNTED, 46, 0);
+	A.AIDefencePositionAdd(5, 98, 32, DIRECTION_SE, GROUP_RANGED, 50, 0);
+	A.AIDefencePositionAdd(5, 103, 29, DIRECTION_SE, GROUP_RANGED, 50, 0);
+	A.AIDefencePositionAdd(5, 107, 33, DIRECTION_SE, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(5, 104, 35, DIRECTION_SE, GROUP_MELEE, 45, 0);
+	AIattack[0]:= false;
+	end;
+/// AI 7
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(6) > 178) and (AIattack[1] = false) then
+    begin
+	A.AIDefencePositionRemove(6, 227, 33);
+	A.AIDefencePositionRemove(6, 205, 30);
+	A.AIDefencePositionRemove(6, 222, 34);
+	A.AIDefencePositionRemove(6, 209, 26);
+	A.AIDefencePositionRemove(6, 216, 33);
+	A.AIDefencePositionRemove(6, 220, 24);
+	A.AIDefencePositionAdd(6, 201, 63, DIRECTION_S, GROUP_RANGED, 45, 0);
+	A.AIDefencePositionAdd(6, 201, 65, DIRECTION_S, GROUP_RANGED, 45, 0);
+	A.AIDefencePositionAdd(6, 197, 65, DIRECTION_S, GROUP_ANTIHORSE, 45, 0);
+	A.AIDefencePositionAdd(6, 205, 62, DIRECTION_S, GROUP_ANTIHORSE, 45, 0);
+	A.AIDefencePositionAdd(6, 197, 62, DIRECTION_S, GROUP_MELEE, 45, 0);
+	A.AIDefencePositionAdd(6, 205, 65, DIRECTION_S, GROUP_MELEE, 45, 0);
+	AIattack[1]:= true;
+	end;
+	
+if (S.GameTime MOD 10 = 0) and ((S.StatArmyCount(6) > 184) or (S. StatArmyCount(6) = 184)) and (AIattack[1] = true) then
+    begin
+	A.AIDefencePositionRemove(6, 197, 65);
+	A.AIDefencePositionRemove(6, 197, 62);
+	A.AIDefencePositionRemove(6, 205, 62);
+	A.AIDefencePositionRemove(6, 205, 65);
+	A.AIDefencePositionRemove(6, 201, 65);
+	A.AIDefencePositionRemove(6, 201, 63);
+	end;	
+	
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(6) < 140) and (AIattack[1] = true) then
+    begin
+	A.AIDefencePositionAdd(6, 227, 33, DIRECTION_S, GROUP_RANGED, 37, 0);
+	A.AIDefencePositionAdd(6, 205, 30, DIRECTION_S, GROUP_RANGED, 30, 0);
+	A.AIDefencePositionAdd(6, 222, 34, DIRECTION_S, GROUP_ANTIHORSE, 32, 0);
+	A.AIDefencePositionAdd(6, 209, 26, DIRECTION_S, GROUP_ANTIHORSE, 33, 0);
+	A.AIDefencePositionAdd(6, 216, 33, DIRECTION_S, GROUP_MELEE, 32, 0);
+	A.AIDefencePositionAdd(6, 220, 24, DIRECTION_S, GROUP_MELEE, 42, 0);
+	AIattack[1]:= false;
+	end;
+	
+/// AI 9
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(8) > 219) and (AIattack[2] = false) then
+    begin
+	A.AIDefencePositionRemove(8, 90, 149);
+	A.AIDefencePositionRemove(8, 119, 125);
+	A.AIDefencePositionRemove(8, 107, 156);
+	A.AIDefencePositionRemove(8, 109, 113);
+	A.AIDefencePositionRemove(8, 102, 155);
+	A.AIDefencePositionRemove(8, 112, 135);
+	A.AIDefencePositionRemove(8, 92, 158);
+	A.AIDefencePositionAdd(8, 74, 137, DIRECTION_NW, GROUP_RANGED, 45, 0);
+	A.AIDefencePositionAdd(8, 78, 142, DIRECTION_NW, GROUP_RANGED, 45, 0);
+	A.AIDefencePositionAdd(8, 80, 121, DIRECTION_NW, GROUP_RANGED, 45, 0);
+	A.AIDefencePositionAdd(8, 83, 118, DIRECTION_NW, GROUP_ANTIHORSE, 45, 0);
+	A.AIDefencePositionAdd(8, 77, 138, DIRECTION_W, GROUP_ANTIHORSE, 45, 0);
+	A.AIDefencePositionAdd(8, 73, 141, DIRECTION_NW, GROUP_MELEE, 45, 0);
+	A.AIDefencePositionAdd(8, 80, 120, DIRECTION_NW, GROUP_MELEE, 45, 0);
+	AIattack[2]:= true;
+	end;
+	
+if (S.GameTime MOD 10 = 0) and ((S.StatArmyCount(8) > 227) or (S. StatArmyCount(8) = 227)) and (AIattack[2] = true) then
+    begin
+	A.AIDefencePositionRemove(8, 78, 142);
+	A.AIDefencePositionRemove(8, 73, 141);
+	A.AIDefencePositionRemove(8, 77, 138);
+	A.AIDefencePositionRemove(8, 74, 137);
+	A.AIDefencePositionRemove(8, 83, 118);
+	A.AIDefencePositionRemove(8, 80, 120);
+	A.AIDefencePositionRemove(8, 80, 121);
+	end;	
+	
+if (S.GameTime MOD 10 = 0) and (S.StatArmyCount(8) < 170) and (AIattack[2] = true) then
+    begin
+	A.AIDefencePositionAdd(8, 90, 149, DIRECTION_W, GROUP_RANGED, 20, 0);
+	A.AIDefencePositionAdd(8, 119, 125, DIRECTION_W, GROUP_RANGED, 50, 0);
+	A.AIDefencePositionAdd(8, 107, 156, DIRECTION_W, GROUP_RANGED, 50, 0);
+	A.AIDefencePositionAdd(8, 109, 113, DIRECTION_W, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(8, 102, 155, DIRECTION_W, GROUP_ANTIHORSE, 40, 0);
+	A.AIDefencePositionAdd(8, 112, 135, DIRECTION_W, GROUP_MELEE, 45, 0);
+	A.AIDefencePositionAdd(8, 92, 158, DIRECTION_W, GROUP_MELEE, 45, 0);
+	AIattack[2]:= false;
+	end;
+	
+////////////////////////////////////////////ATTACKS ON CONTROLLED ISLES///////////////////////////////////////////////	
+end;
+
+
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+if  (aIndex = 2) then
+	begin
+	A.ShowMsg(0, '<$6>');
+	A.CinematicStart(0);
+	A.CinematicPanTo(0, 135, 248, 50);
+	A.FogRevealCircle(0, 135, 248, 17);
+	A.GiveGroup(0, UNIT_BOWMAN, 141, 245, DIRECTION_NE, 8, 4);
+	A.GiveGroup(0, UNIT_LANCE_CARRIER, 137, 242, DIRECTION_NE, 6, 3);
+	A.GiveGroup(0, UNIT_AXE_FIGHTER, 142, 247, DIRECTION_NE, 6, 3);
+	ChangeHouseOwner(83, 226, 0);
+	A.GiveUnit(0, UNIT_SERF, 136, 246, 0);
+	A.GiveUnit(0, UNIT_SERF, 137, 247, 0);
+	A.GiveUnit(0, UNIT_SERF, 137, 248, 0);
+	A.GiveUnit(0, UNIT_SERF, 138, 249, 0);
+	A.GiveUnit(0, UNIT_SERF, 139, 249, 0);
+	Builder[0]:= A.GiveUnit(0, UNIT_LABORER, 135, 245, 0);
+	Builder[1]:= A.GiveUnit(0, UNIT_LABORER, 135, 246, 0);
+	Builder[2]:= A.GiveUnit(0, UNIT_LABORER, 136, 247, 0);
+	Builder[3]:= A.GiveUnit(0, UNIT_LABORER, 138, 248, 0);
+	CutScene[0]:= S.GameTime;
+	PortStore[0]:= S.HouseAt(83, 226);
+	Stage:= Stage + 1;
+	A.AIRecruitDelay(3, S.GameTime + 6000);
+    A.AIRecruitDelay(4, S.GameTime + 6000);
+	end;
+	
+if  (aIndex = 3) then
+	begin
+	A.ShowMsg(0, '<$7>');
+	A.CinematicStart(0);
+	A.CinematicPanTo(0, 213, 125, 50);
+	A.FogRevealCircle(0, 213, 125, 28);
+	ChangeHouseOwner(238, 180, 0);
+	A.GiveUnit(0, UNIT_SERF, 214, 137, 0);
+	A.GiveUnit(0, UNIT_SERF, 215, 137, 0);
+	A.GiveUnit(0, UNIT_SERF, 216, 137, 0);
+	A.GiveUnit(0, UNIT_SERF, 214, 138, 0);
+	A.GiveUnit(0, UNIT_SERF, 215, 138, 0);
+	A.GiveUnit(0, UNIT_SERF, 216, 138, 0);
+	A.GiveUnit(0, UNIT_LABORER, 214, 139, 0);
+	A.GiveUnit(0, UNIT_LABORER, 215, 139, 0);
+	A.GiveUnit(0, UNIT_LABORER, 216, 139, 0);
+	A.GiveUnit(0, UNIT_LABORER, 214, 140, 0);
+	A.GiveUnit(0, UNIT_LABORER, 215, 140, 0);
+	CutScene[1]:= S.GameTime;
+	Clock[1]:= true;
+	Offset[1]:= S.GameTime + 5400 + (S.KamRandomI(2400));
+	PortStore[1]:= S.HouseAt(238, 180);
+	Stage:= Stage + 1;
+	A.AIRecruitDelay(5, (S.GameTime + 3000));
+    A.AIRecruitDelay(6, (S.GameTime + 3150));
+	end;
+
+if  (aIndex = 5) then
+	begin
+	A.ShowMsg(0, '<$9>');
+	A.CinematicStart(0);
+	A.CinematicPanTo(0, 37, 87, 50);
+	A.FogRevealCircle(0, 37, 87, 30);
+	ChangeHouseOwner(118, 65, 0);
+	A.GiveUnit(0, UNIT_SERF, 28, 84, 0);
+	A.GiveUnit(0, UNIT_SERF, 29, 84, 0);
+	A.GiveUnit(0, UNIT_SERF, 30, 84, 0);
+	A.GiveUnit(0, UNIT_SERF, 31, 84, 0);
+	A.GiveUnit(0, UNIT_SERF, 32, 84, 0);
+	A.GiveUnit(0, UNIT_LABORER, 28, 86, 0);
+	A.GiveUnit(0, UNIT_LABORER, 29, 86, 0);
+	A.GiveUnit(0, UNIT_LABORER, 30, 86, 0);
+	A.GiveUnit(0, UNIT_LABORER, 31, 86, 0);
+	CutScene[2]:= S.GameTime;
+	Clock[2]:= true;
+	Offset[2]:= S.GameTime + 6000 + (S.KamRandomI(2400));
+	PortStore[2]:= S.HouseAt(118, 65);
+	Stage:= Stage + 1;
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 43, 89, DIRECTION_SE, 9, 3);
+		A.GiveGroup(0, UNIT_KNIGHT, 49, 90, DIRECTION_SE, 9, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 44, 95, DIRECTION_SE, 9, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 31, 95, DIRECTION_SW, 9, 3);
+		AI8:= S.GameTime + 8000;
+        AI9:= S.GameTime + 9100;
+		A.AIRecruitDelay(7, (S.GameTime + 8300));
+        A.AIRecruitDelay(8, (S.GameTime + 9500));
+        end;
+		
+        mdNormal:
+        begin
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 43, 89, DIRECTION_SE, 6, 3);
+		A.GiveGroup(0, UNIT_KNIGHT, 49, 90, DIRECTION_SE, 6, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 44, 95, DIRECTION_SE, 9, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 31, 95, DIRECTION_SW, 9, 3);
+		AI8:= S.GameTime + 7300;
+        AI9:= S.GameTime + 8200;
+		A.AIRecruitDelay(7, (S.GameTime + 7500));
+        A.AIRecruitDelay(8, (S.GameTime + 8600));
+        end;
+		
+        mdHard1:
+        begin
+		A.GiveGroup(0, UNIT_CROSSBOWMAN, 43, 89, DIRECTION_SE, 6, 3);
+		A.GiveGroup(0, UNIT_KNIGHT, 49, 90, DIRECTION_SE, 6, 3);
+		A.GiveGroup(0, UNIT_SWORD_FIGHTER, 44, 95, DIRECTION_SE, 6, 3);
+		A.GiveGroup(0, UNIT_PIKEMAN, 31, 95, DIRECTION_SW, 6, 3);
+		AI8:= S.GameTime + 6700;
+        AI9:= S.GameTime + 7900;
+		A.AIRecruitDelay(7, (S.GameTime + 6900));
+        A.AIRecruitDelay(8, (S.GameTime + 8300));
+        end;
+    end;
+	end;	
+end;
+
+procedure OnHouseDestroyed(aHouseID: Integer; aDestroyerIndex: Integer);
+begin
+    if ((aHouseID = S.HouseAt(33, 220)) and (S.HouseOwner(S.HouseAt(33, 220)) = 0)) or ((aHouseID = PortStore[0]) and (S.HouseOwner(PortStore[0]) = 0)) or ((aHouseID = S.HouseAt(185, 226)) and (S.HouseOwner(S.HouseAt(185, 226)) = 0)) or ((aHouseID = PortStore[1]) and (S.HouseOwner(PortStore[1]) = 0)) or ((aHouseID = S.HouseAt(213, 126)) and (S.HouseOwner(S.HouseAt(213, 126)) = 0)) or ((aHouseID = PortStore[2]) and (S.HouseOwner(PortStore[2]) = 0)) or ((aHouseID = S.HouseAt(37, 88)) and (S.HouseOwner(S.HouseAt(37, 88)) = 0)) then
+	begin
+	A.PlayerDefeat(0);
+	end;
+end;
+
+procedure OnUnitDied(aUnitThatWasKilled: Integer; aPlayerWhoKilledUnit: Integer);
+begin
+if (Assault = true) and ((S.UnitDead(Builder[0]) = true)) and ((S.UnitDead(Builder[1]) = true)) and ((S.UnitDead(Builder[2]) = true)) and ((S.UnitDead(Builder[3]) = true)) then
+    begin
+	A.PlayerDefeat(0);
+	end;
+end;
+

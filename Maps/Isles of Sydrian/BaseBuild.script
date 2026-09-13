@@ -1,0 +1,567 @@
+{$EVENT evtTick:BaseBuild}
+
+var
+	CutScene: array[0..2] of Integer;
+
+procedure BaseBuild();
+begin
+/// Isle 2
+if S.GameTime = (CutScene[0] + 15000) then
+    begin
+	A.PlanAddHouse(3, HOUSE_IRON_MINE, 231, 177);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 212, 174);
+	A.PlanAddRoad(3, 231, 178);
+	A.PlanAddRoad(3, 230, 178);
+	A.PlanAddRoad(3, 229, 178);
+	A.PlanAddRoad(3, 212, 175);
+	A.PlanAddRoad(3, 213, 175);
+	A.PlanAddRoad(3, 214, 175);
+	end;
+	
+if S.GameTime = (CutScene[0] + 21500) then
+    begin
+	A.PlanAddHouse(3, HOUSE_IRON_MINE, 199, 185);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 210, 186);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 206, 184);
+	A.PlanAddRoad(3, 214, 188);
+	A.PlanAddRoad(3, 213, 188);
+	A.PlanAddRoad(3, 212, 188);
+	A.PlanAddRoad(3, 212, 187);
+	A.PlanAddRoad(3, 211, 187);
+	A.PlanAddRoad(3, 210, 187);
+	A.PlanAddRoad(3, 209, 187);
+	A.PlanAddRoad(3, 208, 187);
+	A.PlanAddRoad(3, 208, 186);
+	A.PlanAddRoad(3, 207, 186);
+	A.PlanAddRoad(3, 207, 185);
+	A.PlanAddRoad(3, 206, 185);
+	A.PlanAddRoad(3, 205, 185);
+	A.PlanAddRoad(3, 205, 186);
+	A.PlanAddRoad(3, 204, 186);
+	A.PlanAddRoad(3, 203, 186);
+	A.PlanAddRoad(3, 203, 185);
+	A.PlanAddRoad(3, 202, 185);
+	A.PlanAddRoad(3, 201, 185);
+	A.PlanAddRoad(3, 201, 186);
+	A.PlanAddRoad(3, 200, 186);
+	A.PlanAddRoad(3, 199, 186);
+	end;
+	
+if S.GameTime = (CutScene[0] + 30000) then
+    begin
+	A.PlanAddHouse(3, HOUSE_IRON_MINE, 204, 174);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 207, 177);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 211, 178);
+	A.PlanAddRoad(3, 213, 181);
+	A.PlanAddRoad(3, 213, 180);
+	A.PlanAddRoad(3, 212, 180);
+	A.PlanAddRoad(3, 212, 179);
+	A.PlanAddRoad(3, 211, 179);
+	A.PlanAddRoad(3, 210, 179);
+	A.PlanAddRoad(3, 209, 179);
+	A.PlanAddRoad(3, 209, 178);
+	A.PlanAddRoad(3, 208, 178);
+	A.PlanAddRoad(3, 207, 178);
+	A.PlanAddRoad(3, 206, 178);
+	A.PlanAddRoad(3, 205, 178);
+	A.PlanAddRoad(3, 205, 177);
+	A.PlanAddRoad(3, 205, 176);
+	A.PlanAddRoad(3, 204, 176);
+	A.PlanAddRoad(3, 204, 175);
+	end;
+	
+if S.GameTime = (CutScene[0] + 41000) then
+    begin
+	A.PlanAddHouse(3, HOUSE_IRON_MINE, 236, 176);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 203, 178);
+	A.PlanAddRoad(3, 235, 180);
+	A.PlanAddRoad(3, 235, 179);
+	A.PlanAddRoad(3, 235, 178);
+	A.PlanAddRoad(3, 235, 177);
+	A.PlanAddRoad(3, 236, 177);
+	A.PlanAddRoad(3, 205, 179);
+	A.PlanAddRoad(3, 204, 179);
+	A.PlanAddRoad(3, 203, 179);
+	A.PlanAddRoad(3, 204, 180);
+	A.PlanAddRoad(3, 204, 181);
+	A.PlanAddRoad(3, 204, 182);
+	A.PlanAddRoad(3, 204, 183);
+	A.PlanAddRoad(3, 203, 183);
+	A.PlanAddRoad(3, 203, 184);
+	end;
+	
+if S.GameTime = (CutScene[0] + 52000) then
+    begin
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 206, 181);
+	A.PlanAddHouse(3, HOUSE_COAL_MINE, 211, 182);
+	A.PlanAddRoad(3, 205, 182);
+	A.PlanAddRoad(3, 206, 182);
+	A.PlanAddRoad(3, 207, 182);
+	A.PlanAddRoad(3, 208, 182);
+	A.PlanAddRoad(3, 209, 182);
+	A.PlanAddRoad(3, 213, 182);
+	A.PlanAddRoad(3, 209, 183);
+	A.PlanAddRoad(3, 210, 183);
+	A.PlanAddRoad(3, 211, 183);
+	A.PlanAddRoad(3, 212, 183);
+	A.PlanAddRoad(3, 213, 183);
+	end;
+/// Isle 3
+if S.GameTime = (CutScene[1] + 18000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 110, 46);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 111, 27);
+	A.PlanAddRoad(5, 114, 47);
+	A.PlanAddRoad(5, 113, 47);
+	A.PlanAddRoad(5, 112, 47);
+	A.PlanAddRoad(5, 111, 47);
+	A.PlanAddRoad(5, 110, 47);
+	A.PlanAddRoad(5, 117, 38);
+	A.PlanAddRoad(5, 117, 37);
+	A.PlanAddRoad(5, 117, 36);
+	A.PlanAddRoad(5, 118, 36);
+	A.PlanAddRoad(5, 118, 35);
+	A.PlanAddRoad(5, 118, 34);
+	A.PlanAddRoad(5, 117, 34);
+	A.PlanAddRoad(5, 117, 33);
+	A.PlanAddRoad(5, 117, 32);
+	A.PlanAddRoad(5, 116, 32);
+	A.PlanAddRoad(5, 115, 32);
+	A.PlanAddRoad(5, 115, 31);
+	A.PlanAddRoad(5, 114, 31);
+	A.PlanAddRoad(5, 114, 30);
+	A.PlanAddRoad(5, 113, 30);
+	A.PlanAddRoad(5, 112, 30);
+	A.PlanAddRoad(5, 112, 29);
+	A.PlanAddRoad(5, 112, 28);
+	A.PlanAddRoad(5, 111, 28);
+	///
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 228, 42);
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 199, 32);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 209, 34);
+	A.PlanAddRoad(6, 228, 43);
+	A.PlanAddRoad(6, 199, 33);
+	A.PlanAddRoad(6, 200, 33);
+	A.PlanAddRoad(6, 201, 33);
+	end;
+	
+if S.GameTime = (CutScene[1] + 24000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 128, 23);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 119, 26);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 124, 26);
+	A.PlanAddRoad(5, 117, 31);
+	A.PlanAddRoad(5, 118, 31);
+	A.PlanAddRoad(5, 118, 30);
+	A.PlanAddRoad(5, 119, 30);
+	A.PlanAddRoad(5, 119, 29);
+	A.PlanAddRoad(5, 119, 28);
+	A.PlanAddRoad(5, 119, 27);
+	A.PlanAddRoad(5, 120, 28);
+	A.PlanAddRoad(5, 121, 28);
+	A.PlanAddRoad(5, 121, 27);
+	A.PlanAddRoad(5, 122, 27);
+	A.PlanAddRoad(5, 123, 27);
+	A.PlanAddRoad(5, 124, 27);
+	A.PlanAddRoad(5, 125, 27);
+	A.PlanAddRoad(5, 126, 27);
+	A.PlanAddRoad(5, 126, 26);
+	A.PlanAddRoad(5, 127, 26);
+	A.PlanAddRoad(5, 127, 25);
+	A.PlanAddRoad(5, 127, 24);
+	A.PlanAddRoad(5, 128, 24);
+	///
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 209, 31);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 220, 30);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 224, 30);
+	A.PlanAddRoad(6, 206, 32);
+	A.PlanAddRoad(6, 207, 32);
+	A.PlanAddRoad(6, 208, 32);
+	A.PlanAddRoad(6, 209, 32);
+	A.PlanAddRoad(6, 219, 31);
+	A.PlanAddRoad(6, 220, 31);
+	A.PlanAddRoad(6, 221, 31);
+	A.PlanAddRoad(6, 222, 31);
+	A.PlanAddRoad(6, 223, 31);
+	A.PlanAddRoad(6, 224, 31);
+	end;
+	
+if S.GameTime = (CutScene[1] + 35000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 108, 23);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 121, 21);
+	A.PlanAddRoad(5, 110, 28);
+	A.PlanAddRoad(5, 109, 28);
+	A.PlanAddRoad(5, 109, 27);
+	A.PlanAddRoad(5, 108, 27);
+	A.PlanAddRoad(5, 108, 26);
+	A.PlanAddRoad(5, 108, 25);
+	A.PlanAddRoad(5, 108, 24);
+	A.PlanAddRoad(5, 109, 24);
+	A.PlanAddRoad(5, 110, 24);
+	A.PlanAddRoad(5, 110, 23);
+	A.PlanAddRoad(5, 111, 23);
+	A.PlanAddRoad(5, 112, 23);
+	A.PlanAddRoad(5, 112, 22);
+	///	
+	end;
+
+if S.GameTime = (CutScene[1] + 48000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 124, 21);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 114, 24);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 116, 19);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 119, 22);
+	A.PlanAddRoad(5, 118, 27);
+	A.PlanAddRoad(5, 117, 27);
+	A.PlanAddRoad(5, 117, 26);
+	A.PlanAddRoad(5, 116, 26);
+	A.PlanAddRoad(5, 114, 25);
+	A.PlanAddRoad(5, 115, 25);
+	A.PlanAddRoad(5, 116, 25);
+	A.PlanAddRoad(5, 116, 24);
+	A.PlanAddRoad(5, 117, 24);
+	A.PlanAddRoad(5, 117, 23);
+	A.PlanAddRoad(5, 118, 23);
+	A.PlanAddRoad(5, 119, 23);
+	A.PlanAddRoad(5, 120, 23);
+	A.PlanAddRoad(5, 121, 23);
+	A.PlanAddRoad(5, 121, 22);
+	A.PlanAddRoad(5, 122, 22);
+	A.PlanAddRoad(5, 123, 22);
+	A.PlanAddRoad(5, 124, 22);
+	A.PlanAddRoad(5, 125, 22);
+	A.PlanAddRoad(5, 125, 23);
+	A.PlanAddRoad(5, 125, 24);
+	A.PlanAddRoad(5, 126, 24);
+	A.PlanAddRoad(5, 117, 22);
+	A.PlanAddRoad(5, 116, 22);
+	A.PlanAddRoad(5, 116, 21);
+	A.PlanAddRoad(5, 115, 21);
+	A.PlanAddRoad(5, 114, 21);
+	A.PlanAddRoad(5, 116, 20);
+	A.PlanAddRoad(5, 114, 22);
+	A.PlanAddRoad(5, 113, 22);
+	///
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 193, 33);
+	A.PlanAddHouse(6, HOUSE_IRON_MINE, 231, 47);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 220, 30);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 224, 30);
+	A.PlanAddRoad(6, 193, 38);
+	A.PlanAddRoad(6, 193, 37);
+	A.PlanAddRoad(6, 193, 36);
+	A.PlanAddRoad(6, 193, 35);
+	A.PlanAddRoad(6, 193, 34);
+	A.PlanAddRoad(6, 229, 48);
+	A.PlanAddRoad(6, 230, 48);
+	A.PlanAddRoad(6, 231, 48);
+	end;
+	
+if S.GameTime = (CutScene[1] + 60000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 106, 47);
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 93, 21);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 103, 23);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 101, 19);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 107, 20);
+	A.PlanAddRoad(5, 106, 48);
+	A.PlanAddRoad(5, 107, 48);
+	A.PlanAddRoad(5, 108, 48);
+	A.PlanAddRoad(5, 108, 47);
+	A.PlanAddRoad(5, 109, 47);
+	A.PlanAddRoad(5, 93, 22);
+	A.PlanAddRoad(5, 94, 22);
+	A.PlanAddRoad(5, 95, 22);
+	A.PlanAddRoad(5, 95, 21);
+	A.PlanAddRoad(5, 96, 21);
+	A.PlanAddRoad(5, 97, 21);
+	A.PlanAddRoad(5, 98, 21);
+	A.PlanAddRoad(5, 98, 22);
+	A.PlanAddRoad(5, 99, 22);
+	A.PlanAddRoad(5, 100, 22);
+	A.PlanAddRoad(5, 101, 22);
+	A.PlanAddRoad(5, 100, 23);
+	A.PlanAddRoad(5, 100, 24);
+	A.PlanAddRoad(5, 101, 24);
+	A.PlanAddRoad(5, 102, 24);
+	A.PlanAddRoad(5, 103, 24);
+	A.PlanAddRoad(5, 104, 24);
+	A.PlanAddRoad(5, 105, 24);
+	A.PlanAddRoad(5, 106, 24);
+	A.PlanAddRoad(5, 107, 24);
+	A.PlanAddRoad(5, 101, 20);
+	A.PlanAddRoad(5, 101, 21);
+	A.PlanAddRoad(5, 110, 21);
+	A.PlanAddRoad(5, 110, 22);
+	A.PlanAddRoad(5, 109, 21);
+	A.PlanAddRoad(5, 108, 21);
+	A.PlanAddRoad(5, 107, 21);
+	A.PlanAddRoad(5, 106, 21);
+	A.PlanAddRoad(5, 105, 21);
+	A.PlanAddRoad(5, 105, 20);
+	A.PlanAddRoad(5, 104, 20);
+	A.PlanAddRoad(5, 103, 20);
+	A.PlanAddRoad(5, 103, 21);
+	A.PlanAddRoad(5, 102, 21);
+	///
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 213, 30);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 213, 27);
+	A.PlanAddRoad(6, 210, 32);
+	A.PlanAddRoad(6, 211, 32);
+	A.PlanAddRoad(6, 211, 31);
+	A.PlanAddRoad(6, 212, 31);
+	A.PlanAddRoad(6, 213, 31);
+	A.PlanAddRoad(6, 214, 31);
+	A.PlanAddRoad(6, 215, 31);
+	A.PlanAddRoad(6, 216, 31);
+	A.PlanAddRoad(6, 217, 31);
+	A.PlanAddRoad(6, 213, 28);
+	A.PlanAddRoad(6, 214, 28);
+	A.PlanAddRoad(6, 215, 28);
+	A.PlanAddRoad(6, 215, 29);
+	A.PlanAddRoad(6, 215, 30);
+	end;
+	
+if S.GameTime = (CutScene[1] + 72000) then
+    begin
+	A.PlanAddHouse(5, HOUSE_IRON_MINE, 89, 24);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 104, 14);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 106, 17);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 111, 17);
+	A.PlanAddHouse(5, HOUSE_COAL_MINE, 115, 15);
+	A.PlanAddRoad(5, 94, 23);
+	A.PlanAddRoad(5, 94, 24);
+	A.PlanAddRoad(5, 93, 24);
+	A.PlanAddRoad(5, 92, 24);
+	A.PlanAddRoad(5, 91, 24);
+	A.PlanAddRoad(5, 91, 25);
+	A.PlanAddRoad(5, 90, 25);
+	A.PlanAddRoad(5, 89, 25);
+	A.PlanAddRoad(5, 106, 18);
+	A.PlanAddRoad(5, 107, 18);
+	A.PlanAddRoad(5, 108, 18);
+	A.PlanAddRoad(5, 109, 18);
+	A.PlanAddRoad(5, 110, 18);
+	A.PlanAddRoad(5, 111, 18);
+	A.PlanAddRoad(5, 112, 18);
+	A.PlanAddRoad(5, 113, 18);
+	A.PlanAddRoad(5, 109, 19);
+	A.PlanAddRoad(5, 109, 20);
+	A.PlanAddRoad(5, 104, 15);
+	A.PlanAddRoad(5, 105, 15);
+	A.PlanAddRoad(5, 106, 15);
+	A.PlanAddRoad(5, 107, 15);
+	A.PlanAddRoad(5, 108, 15);
+	A.PlanAddRoad(5, 108, 16);
+	A.PlanAddRoad(5, 108, 17);
+	A.PlanAddRoad(5, 113, 17);
+	A.PlanAddRoad(5, 114, 17);
+	A.PlanAddRoad(5, 114, 16);
+	A.PlanAddRoad(5, 115, 16);
+	///
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 217, 27);
+	A.PlanAddHouse(6, HOUSE_COAL_MINE, 222, 27);
+	A.PlanAddRoad(6, 217, 28);
+	A.PlanAddRoad(6, 218, 28);
+	A.PlanAddRoad(6, 219, 28);
+	A.PlanAddRoad(6, 220, 28);
+	A.PlanAddRoad(6, 221, 28);
+	A.PlanAddRoad(6, 222, 28);
+	A.PlanAddRoad(6, 217, 29);
+	A.PlanAddRoad(6, 216, 29);
+	end;	
+/// Isle 4
+if S.GameTime = (CutScene[2] + 20000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 35, 139);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 20, 145);
+	A.PlanAddRoad(7, 35, 140);
+	A.PlanAddRoad(7, 36, 140);
+	A.PlanAddRoad(7, 36, 141);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 126, 145);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 104, 149);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 117, 138);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 106, 118);
+	A.PlanAddRoad(8, 122, 148);
+	A.PlanAddRoad(8, 123, 148);
+	A.PlanAddRoad(8, 123, 147);
+	A.PlanAddRoad(8, 124, 147);
+	A.PlanAddRoad(8, 124, 146);
+	A.PlanAddRoad(8, 125, 146);
+	A.PlanAddRoad(8, 126, 146);
+	end;
+	
+if S.GameTime = (CutScene[2] + 29000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 43, 139);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 41, 143);
+	A.PlanAddRoad(7, 43, 140);
+	A.PlanAddRoad(7, 43, 141);
+	A.PlanAddRoad(7, 43, 142);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 83, 154);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 108, 153);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 121, 136);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 103, 115);
+	A.PlanAddRoad(8, 83, 155);
+	A.PlanAddRoad(8, 84, 155);
+	A.PlanAddRoad(8, 108, 154);
+	A.PlanAddRoad(8, 109, 154);
+	A.PlanAddRoad(8, 110, 154);
+	A.PlanAddRoad(8, 110, 153);
+	A.PlanAddRoad(8, 111, 153);
+	A.PlanAddRoad(8, 120, 137);
+	A.PlanAddRoad(8, 121, 137);
+	A.PlanAddRoad(8, 104, 118);
+	A.PlanAddRoad(8, 104, 117);
+	A.PlanAddRoad(8, 104, 116);
+	A.PlanAddRoad(8, 103, 116);
+	end;
+	
+if S.GameTime = (CutScene[2] + 36000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 47, 154);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 41, 143);
+	A.PlanAddRoad(7, 47, 155);
+	A.PlanAddRoad(7, 46, 155);
+	A.PlanAddRoad(7, 45, 155);
+	A.PlanAddRoad(7, 45, 154);
+	A.PlanAddRoad(7, 44, 154);
+	A.PlanAddRoad(7, 44, 153);
+	A.PlanAddRoad(7, 44, 152);
+	A.PlanAddRoad(7, 43, 152);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 105, 110);
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 127, 131);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 119, 132);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 125, 134);
+	A.PlanAddRoad(8, 105, 111);
+	A.PlanAddRoad(8, 105, 112);
+	A.PlanAddRoad(8, 105, 113);
+	A.PlanAddRoad(8, 105, 114);
+	A.PlanAddRoad(8, 105, 115);
+	A.PlanAddRoad(8, 105, 116);
+	A.PlanAddRoad(8, 119, 133);
+	A.PlanAddRoad(8, 120, 133);
+	A.PlanAddRoad(8, 121, 133);
+	A.PlanAddRoad(8, 121, 134);
+	A.PlanAddRoad(8, 122, 134);
+	A.PlanAddRoad(8, 123, 134);
+	A.PlanAddRoad(8, 123, 135);
+	A.PlanAddRoad(8, 124, 135);
+	A.PlanAddRoad(8, 125, 135);
+	A.PlanAddRoad(8, 123, 133);
+	A.PlanAddRoad(8, 123, 132);
+	A.PlanAddRoad(8, 124, 132);
+	A.PlanAddRoad(8, 125, 132);
+	A.PlanAddRoad(8, 126, 132);
+	A.PlanAddRoad(8, 127, 132);
+	end;
+	
+if S.GameTime = (CutScene[2] + 45000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 16, 137);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 19, 138);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 23, 137);
+	A.PlanAddRoad(7, 16, 138);
+	A.PlanAddRoad(7, 17, 138);
+	A.PlanAddRoad(7, 17, 139);
+	A.PlanAddRoad(7, 18, 139);
+	A.PlanAddRoad(7, 19, 139);
+	A.PlanAddRoad(7, 20, 139);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 109, 111);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 107, 114);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 101, 119);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 102, 153);
+	A.PlanAddRoad(8, 106, 115);
+	A.PlanAddRoad(8, 107, 115);
+	A.PlanAddRoad(8, 106, 112);
+	A.PlanAddRoad(8, 107, 112);
+	A.PlanAddRoad(8, 108, 112);
+	A.PlanAddRoad(8, 109, 112);
+	A.PlanAddRoad(8, 102, 154);
+	A.PlanAddRoad(8, 103, 154);
+	A.PlanAddRoad(8, 104, 154);
+	A.PlanAddRoad(8, 104, 153);
+	A.PlanAddRoad(8, 104, 152);
+	end;
+	
+if S.GameTime = (CutScene[2] + 54000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 13, 153);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 19, 141);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 33, 142);
+	A.PlanAddRoad(7, 13, 154);
+	A.PlanAddRoad(7, 14, 154);
+	A.PlanAddRoad(7, 14, 153);
+	A.PlanAddRoad(7, 15, 153);
+	A.PlanAddRoad(7, 15, 152);
+	A.PlanAddRoad(7, 16, 152);
+	A.PlanAddRoad(7, 17, 152);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 76, 152);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 109, 149);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 113, 151);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 117, 151);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 115, 131);
+	A.PlanAddRoad(8, 76, 153);
+	A.PlanAddRoad(8, 77, 153);
+	A.PlanAddRoad(8, 78, 153);
+	A.PlanAddRoad(8, 79, 153);
+	A.PlanAddRoad(8, 79, 154);
+	A.PlanAddRoad(8, 80, 154);
+	A.PlanAddRoad(8, 81, 154);
+	A.PlanAddRoad(8, 81, 155);
+	A.PlanAddRoad(8, 82, 155);
+	end;
+	
+if S.GameTime = (CutScene[2] + 65000) then
+    begin
+	A.PlanAddHouse(7, HOUSE_GOLD_MINE, 11, 141);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 27, 141);
+	A.PlanAddHouse(7, HOUSE_COAL_MINE, 23, 142);
+	A.PlanAddRoad(7, 12, 145);
+	A.PlanAddRoad(7, 12, 144);
+	A.PlanAddRoad(7, 11, 144);
+	A.PlanAddRoad(7, 11, 143);
+	A.PlanAddRoad(7, 11, 142);
+	A.PlanAddRoad(7, 23, 143);
+	A.PlanAddRoad(7, 24, 143);
+	A.PlanAddRoad(7, 25, 143);
+	A.PlanAddRoad(7, 25, 142);
+	A.PlanAddRoad(7, 26, 142);
+	A.PlanAddRoad(7, 27, 142);
+	A.PlanAddRoad(7, 28, 142);
+	A.PlanAddRoad(7, 29, 142);
+	A.PlanAddRoad(7, 29, 141);
+	///
+	A.PlanAddHouse(8, HOUSE_GOLD_MINE, 123, 128);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 116, 135);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 98, 154);
+	A.PlanAddHouse(8, HOUSE_COAL_MINE, 98, 158);
+	A.PlanAddRoad(8, 116, 136);
+	A.PlanAddRoad(8, 117, 136);
+	A.PlanAddRoad(8, 123, 129);
+	A.PlanAddRoad(8, 123, 130);
+	A.PlanAddRoad(8, 124, 130);
+	A.PlanAddRoad(8, 124, 131);
+	A.PlanAddRoad(8, 95, 154);
+	A.PlanAddRoad(8, 95, 155);
+	A.PlanAddRoad(8, 96, 155);
+	A.PlanAddRoad(8, 96, 156);
+	A.PlanAddRoad(8, 96, 157);
+	A.PlanAddRoad(8, 96, 158);
+	A.PlanAddRoad(8, 96, 159);
+	A.PlanAddRoad(8, 97, 159);
+	A.PlanAddRoad(8, 98, 159);
+	A.PlanAddRoad(8, 97, 156);
+	A.PlanAddRoad(8, 98, 156);
+	A.PlanAddRoad(8, 98, 155);
+	A.PlanAddRoad(8, 99, 155);
+	A.PlanAddRoad(8, 100, 155);
+	A.PlanAddRoad(8, 100, 154);
+	A.PlanAddRoad(8, 101, 154);
+	end;	
+end;

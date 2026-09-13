@@ -1,0 +1,15 @@
+﻿Author
+DontTalk
+
+Version
+1.0 Optimized, Rebalanced, Polish translation.
+
+SmallDesc
+A Mission by DontTalk
+
+BigDescLIBX
+0
+
+DifficultyLevels
+mdEasy1,mdNormal,mdHard1
+

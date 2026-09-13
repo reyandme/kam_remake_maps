@@ -1,12 +1,14 @@
 //-- Return of the King --//
 //By Strangelove
-//v1.0
-//12.12.2024
-//Developed for KaM Remake r15122
+//v1.1a
+//03.09.2026
+//Developed for KaM Remake r16020
 
 
-{$I tools.script}
-{$I improvestaticai.script}
+//Universal
+{$I Scripts/tools.script}
+{$I Scripts/improvestaticai.script}
+//Map Specific
 {$I player1.script}
 
 
@@ -52,9 +54,15 @@ var
 	aHouses: array of Integer;
 begin
 	aHouses := States.PlayerGetAllHouses(Player);
+	
 	for h := 0 to High(aHouses) do
+	begin
 		if (States.HouseTypeEx(aHouses[h]) = htStore) then
+		begin
 			Amount := Amount +States.HouseWareAmount(aHouses[h], FoodType);
+		end;
+	end;
+	
 	Result := Amount;
 end;
 
@@ -63,6 +71,7 @@ end;
 procedure KingDiscovered();
 begin
 	Actions.ShowMsg(HUMAN_PLAYER, '<$3>');
+	
 	//Remove Attacks and focus new Attacks on King directly
 	Actions.AIAttackRemoveAll(5);
 	aCustomPosition := Utils.KMPoint(States.UnitPositionX(KingID), States.UnitPositionY(KingID));
@@ -77,11 +86,14 @@ begin
 	Actions.AIDefencePositionRemove(5, 7, 124); //Remove 1 Swordman Defense Position...
 	Actions.AIDefencePositionAdd(5, 7, 124, 1, 0, 30, 1); //...and assign them to a new Attack Position on the same location
 	Actions.AIDefencePositionAdd(5, 10, 82, 0, 3, 30, 1); //Additional Attacking Position with Knights
+	
 	//Take Aim at King
 	aCustomPosition := Utils.KMPoint(States.UnitPositionX(KingID), States.UnitPositionY(KingID));
 	AddAIAttack(5, true, 0, 2, 1, 0, 2, attCustomPosition, aCustomPosition); //60 Units
+	
 	//Speed up Recruit Rate to double of ALLY_PLAYER
 	SetEqualEquipRate(5, 100);
+	
 	//Inform Player
 	Actions.ShowMsg(HUMAN_PLAYER, '<$5>');
 end;
@@ -533,18 +545,27 @@ begin
 	HouseTypeEx := States.HouseTypeEx(aHouse);
 	
 	if IsImportantBuilding(HouseTypeEx) then
+	begin
 		if States.PlayerIsAI(HouseOwner) then
+		begin
 			MainGoal_EnemyHousesDestroyed := 0;
+		end;
+	end;
 	
 	if HouseOwner = HUMAN_PLAYER then
+	begin
 		case HouseTypeEx of
 			htVineyard, htBakery, htFishermans, htButchers:
 			begin
 				bShowBonusObjective[2] := true;
 				if not bFoodMsg then
+				begin
 					Actions.ShowMsg(HUMAN_PLAYER, '<$7>');
+					bFoodMsg := true;
+				end;
 			end;
 		end;
+	end;
 end;
 
 
@@ -585,7 +606,9 @@ begin
 	end;
 	
 	if States.PlayerIsAI(States.UnitOwner(aUnit)) then
+	begin
 		MainGoal_EnemyUnitsDestroyed := 0;
+	end;
 end;
 
 
@@ -595,11 +618,13 @@ begin
 	begin
 		Inc(AllyDeathCounter);
 		if not bAllyMsg then
+		begin
 			if AllyDeathCounter = Round(AllyDeathCounterMax *0.8) then
 			begin
 				Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$4>'); //Warning Message to player
 				bAllyMsg := true;
 			end;
+		end;
 		if AllyDeathCounter >= AllyDeathCounterMax then
 		begin
 			BonusGoal_AllyDeathCounter := 2;
@@ -617,11 +642,13 @@ end;
 procedure OnUnitWounded(aUnit: Integer; aAttacker: Integer);
 begin
 	if not bKingsGuardMsg then
+	begin
 		if States.UnitOwner(aUnit) = KING_PLAYER then
 		begin
 			Actions.ShowMsgGoto(HUMAN_PLAYER, States.UnitPositionX(aUnit), States.UnitPositionY(aUnit), '<$6>'); //Inform Player that Kings Guard is in Battle
 			bKingsGuardMsg := true;
 		end;
+	end;
 end;
 
 
@@ -631,6 +658,7 @@ var
 	aHouses: array of Integer;
 begin
 	if IsImportantBuilding(aHouseType) then
+	begin
 		if States.PlayerIsAI(aOwner) then
 		begin
 			MainGoal_EnemyHousesDestroyed := 1;
@@ -638,13 +666,16 @@ begin
 			begin
 				aHouses := States.PlayerGetAllHouses(p);
 				for h := 0 to High(aHouses) do
+				begin
 					if IsImportantBuilding(States.HouseTypeEx(aHouses[h])) then
 					begin
 						MainGoal_EnemyHousesDestroyed := 0;
 						break;
 					end;
+				end;
 			end;
 		end;
+	end;
 end;
 
 
@@ -654,6 +685,7 @@ var
 	aGroups: array of Integer;
 begin
 	if States.PlayerIsAI(aOwner) then
+	begin
 		if IsWarrior(aUnitType) then
 		begin
 			MainGoal_EnemyUnitsDestroyed := 1;
@@ -667,6 +699,7 @@ begin
 				end;
 			end;
 		end;
+	end;
 end;
 
 
@@ -677,7 +710,9 @@ begin
 		MainGoal_ProtectKing := 1;	
 				
 		if TotalFoodAmountByType(HUMAN_PLAYER, FoodType) < RequiredAmountOfFood then
+		begin
 			BonusGoal_GatherFood := 2;
+		end;
 	end;
 end;
 
@@ -693,9 +728,12 @@ begin
 	GameTime := States.GameTime();
 	
 	if GameTime mod 7 = 0 then
+	begin
 		ChangeWaterfallEndTiles(56, 57, 135);
+	end;
 	
 	if bKingArrived then
+	begin
 		//Autofeed for KING_PLAYERs Units
 		if GameTime mod MinToTick(20) = 0 then
 		begin
@@ -703,10 +741,13 @@ begin
 			for g := 0 to High(aKingGroups) do
 				Actions.GroupHungerSet(aKingGroups[g], States.UnitMaxHunger());
 		end;
+	end;
 		
 	//Schedule Game Events
 	if GameTime = 80 then
+	begin
 		Actions.ShowMsg(HUMAN_PLAYER, '<$0>');
+	end;
 	
 	if GameTime = MinToTick(32) then
 	begin
@@ -737,21 +778,33 @@ begin
 	case DifficultySetting of
 		mdEasy1: begin
 			if GameTime = MinToTick(192) then 
+			begin
 				KingDiscovered();
+			end;
 			if GameTime = MinToTick(240) then //4hours
+			begin
 				FinalStage();
+			end;
 		end;
 		mdNormal: begin
 			if GameTime = MinToTick(144) then
+			begin
 				KingDiscovered();
+			end;
 			if GameTime = MinToTick(180) then //3hours
+			begin
 				FinalStage();
+			end;
 		end;
 		mdHard1: begin
 			if GameTime = MinToTick(108) then
+			begin
 				KingDiscovered();
+			end;
 			if GameTime = MinToTick(135) then //2hours 15minutes
+			begin
 				FinalStage();
+			end;
 		end;
 	end;
 	
@@ -760,11 +813,15 @@ begin
 	DisplayGoals(HUMAN_PLAYER, MainGoal_EnemyHousesDestroyed, '<$11>');
 	DisplayGoals(HUMAN_PLAYER, MainGoal_EnemyUnitsDestroyed, '<$12>');
 	if bKingArrived then
+	begin
 		DisplayGoals(HUMAN_PLAYER, MainGoal_ProtectKing, '<$13>');
+	end;
 	
 	//Display Bonus Goals
 	if bShowBonusObjective[1] or bShowBonusObjective[2] then
+	begin
 		bShowBonusObjective[0] := true;
+	end;
 	
 	GatheredFood := TotalFoodAmountByType(HUMAN_PLAYER, FoodType);
 	if GatheredFood >= RequiredAmountOfFood then
@@ -774,9 +831,15 @@ begin
 		BonusGoal_GatherFood := 0;
 		
 	if bShowBonusObjective[0] then
+	begin
 		Actions.OverlayTextAppend(HUMAN_PLAYER, '||[$33FFF3]<$14>:[$FFFFFF]');
+	end;
 	if bShowBonusObjective[1] then
+	begin
 		DisplayGoals(HUMAN_PLAYER, BonusGoal_AllyDeathCounter, '<$15> (' +inttostr(AllyDeathCounter) +'/' +inttostr(AllyDeathCounterMax) +')');
+	end;
 	if bShowBonusObjective[2] then
+	begin
 		DisplayGoals(HUMAN_PLAYER, BonusGoal_GatherFood, '<$16>: (' +inttostr(GatheredFood) +'/' +inttostr(RequiredAmountOfFood) +') ' +States.WareTypeNameEx(FoodType));
+	end;
 end;

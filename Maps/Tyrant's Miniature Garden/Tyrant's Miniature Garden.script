@@ -1,0 +1,158 @@
+{$I improvestaticai.script}  /// By Strangelove
+{$I constants.script}  /// By Greeny
+{$I DamageCloseBuildings.script} /// By Ritter des Todes
+{$I zzcmAntiLure.script} /// By Cmowla
+{$I THrecruitment.script}
+{$I BaseBuild.script}
+var
+	DifficultySetting: TKMMissionDifficulty;
+	AIMarket: array[0..2] of Integer;
+	pointxy: TKMPoint;
+	AIattack, M1: Boolean;
+
+procedure OnMissionStart();
+begin
+AI[0]:= 2800;
+AI[1]:= 2900;
+A.ShowMsg(0, '<$1>');
+AIattack:= false;
+M1:= false;
+AIMarket[0]:= S.HouseAt(98, 80);
+AIMarket[1]:= S.HouseAt(94, 18);
+AIMarket[2]:= S.HouseAt(99, 24);
+DifficultySetting := S.MissionDifficulty();
+case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 100);
+		A.GiveWares(0, WARE_STONES, 80);
+		A.GiveWares(0, WARE_TIMBER, 90);
+		A.GiveWares(0, WARE_WINE, 100);
+		A.GiveWares(0, WARE_SAUSAGES, 40);
+		A.GiveWares(0, WARE_LOAVES, 40);
+		A.GiveWares(0, WARE_FISH, 20);
+		///AI eq rates
+		A.AIEquipRate(2, 0, 575);
+		Difficulty[0]:= 750; ///Barbarians (AI 2)
+		Difficulty[1]:= 750; ///Rogues (AI 2)
+		Difficulty[2]:= 575; ///Barbarians (AI 4)
+		///Attacking AI recruit delay
+		AI[2]:= 34000;
+		end;
+
+		mdNormal:
+        begin
+		A.GiveWares(0, WARE_GOLD, 70);
+		A.GiveWares(0, WARE_STONES, 70);
+		A.GiveWares(0, WARE_TIMBER, 80);
+		A.GiveWares(0, WARE_WINE, 80);
+		A.GiveWares(0, WARE_SAUSAGES, 30);
+		A.GiveWares(0, WARE_LOAVES, 30);
+		A.GiveWares(0, WARE_FISH, 10);
+		///AI eq rate
+		A.AIEquipRate(2, 0, 400);
+		Difficulty[0]:= 500; ///Barbarians (AI 2)
+		Difficulty[1]:= 500; ///Rogues (AI 2)
+		Difficulty[2]:= 400; ///Barbarians (AI 4)
+		///Attacking AI recruit delay
+		AI[2]:= 30000;
+		end;
+
+		mdHard1:
+        begin
+		A.GiveWares(0, WARE_GOLD, 40);
+		A.GiveWares(0, WARE_STONES, 60);
+		A.GiveWares(0, WARE_TIMBER, 70);
+		A.GiveWares(0, WARE_WINE, 60);
+		A.GiveWares(0, WARE_SAUSAGES, 15);
+		A.GiveWares(0, WARE_LOAVES, 15);
+		A.GiveWares(0, WARE_FISH, 10);
+		///AI eq rates
+		A.AIEquipRate(2, 0, 225);
+		Difficulty[0]:= 350; ///Barbarians (AI 2)
+		Difficulty[1]:= 350; ///Rogues (AI 2)
+		Difficulty[2]:= 225; ///Barbarians (AI 4)
+		///Attacking AI recruit delay
+		AI[2]:= 26000;
+		end;
+    end;
+end;
+
+procedure OnTick();
+begin
+if S.GameTime = 1800 then begin
+	A.ShowMsgGoto(0, 96, 94, '<$2>');
+	A.FogRevealCircle(0, 96, 94, 4);
+    end;
+	
+if (S.GameTime = AI[2]) and (M1 = false) then begin
+	A.ShowMsg(0, '<$3>');
+	M1:= true;
+    end;
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+if (States.GameTime MOD 9000 = 0) then
+	begin
+    if (AIMarket[0] <> -1) and (S.HouseDestroyed(AIMarket[0]) = false) and (S.HouseType(AIMarket[0]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[0]), WARE_FISH, WARE_GOLD, 25);
+        end;
+    
+    if (AIMarket[1] <> -1) and (S.HouseDestroyed(AIMarket[1]) = false) and (S.HouseType(AIMarket[1]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[1]), WARE_GOLD, WARE_CORN, 25);
+        end;
+		
+	if (AIMarket[2] <> -1) and (S.HouseDestroyed(AIMarket[2]) = false) and (S.HouseType(AIMarket[2]) = HOUSE_MARKETPLACE) then
+        begin
+        A.MarketSetTrade((AIMarket[2]), WARE_FISH, WARE_TREE_TRUNK, 25);
+        end;	
+    end;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+if (S.StatArmyCount(3) >= 48) and (AIattack = false) and (S.GameTime MOD 10 = 0) then begin
+	A.AIDefencePositionRemoveAll(3);
+	A.AIAttackAdd(3, True, 1, 1, 1, 0, 0, 0, false, attClosestBuildingFromStartPos, pointxy);
+	AIattack:= true;
+	end;	
+	
+if (S.StatArmyCount(3) < 24) and (AIattack = true) and (S.GameTime MOD 10 = 0) then begin
+	A.AIDefencePositionAdd(3, 67, 33, DIRECTION_S, GROUP_MELEE, 25, 0);
+	A.AIDefencePositionAdd(3, 75, 22, DIRECTION_S, GROUP_MELEE, 37, 0);
+	A.AIDefencePositionAdd(3, 47, 32, DIRECTION_SE, GROUP_MELEE, 25, 0);
+	A.AIDefencePositionAdd(3, 100, 28, DIRECTION_S, GROUP_MELEE, 42, 0);
+	A.AIDefencePositionAdd(3, 86, 54, DIRECTION_SW, GROUP_MELEE, 18, 0);
+	A.AIDefencePositionAdd(3, 57, 11, DIRECTION_S, GROUP_MELEE, 32, 0);
+	A.AIAttackRemoveAll(3);
+	AIattack:= false;
+	end;	
+end;
+	
+procedure OnPlayerDefeated(aIndex: Integer);
+begin
+if  (aIndex = 1) then begin
+	A.ShowMsg(0, '<$4>');
+	case DifficultySetting of
+	    mdEasy1:
+        begin
+		A.GiveWares(0, WARE_WINE, 150);
+		A.GiveWares(0, WARE_LOAVES, 125);
+		A.GiveWares(0, WARE_FISH, 100);
+		end;
+
+		mdNormal:
+        begin
+		A.GiveWares(0, WARE_WINE, 100);
+		A.GiveWares(0, WARE_LOAVES, 100);
+		A.GiveWares(0, WARE_FISH, 100);
+		end;
+
+		mdHard1:
+        begin
+		A.GiveWares(0, WARE_WINE, 100);
+		A.GiveWares(0, WARE_LOAVES, 50);
+		A.GiveWares(0, WARE_FISH, 100);
+		end;
+    end;
+end;
+end;

@@ -56,3 +56,12 @@ v1.0 (12.12.2024)
 + bonus missions:
   - greatly reduced the amount of units the ally can use on all difficulty settings
   - changed food goal from any food type to specific food item, which is chosen randomly and the amount dependent on difficulty setting
+  
+v1.1 (28.08.2025)
+- Reorganized scripts in mission folder
+- main script reorganized and cleaned updated
+- removed unreadable characters in the libx-files
+- Updated scripts to newest version (mainly improvestaticai.script)
+
+v1.1a (03.09.2026)
+- Fixed a bug where the same message of the hungy people was displyed everytime a vineyard, bakery, fishermans' or butcher was built, instead of just once
