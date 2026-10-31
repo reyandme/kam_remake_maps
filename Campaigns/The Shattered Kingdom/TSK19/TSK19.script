@@ -1,48 +1,79 @@
-//-- TSK19 --//
-//07.11.2019
-
-{$I difficulty.script}
-
 var
-	iGroup: array[0..1] of Integer;
+  aGroups: array[0..1] of Integer;
+
+
+procedure SetupAI();
+var
+  p: Byte;
+  h: Integer;
+  aHouses: array of Integer;
+
+begin
+  for p := 0 to States.StatPlayerCount() - 1 do
+  begin
+    if States.PlayerIsAI(p) then
+    begin
+      // Iron
+      Actions.PlayerWareDistribution(p, 6, 2, 5); // Weapon smithy
+      Actions.PlayerWareDistribution(p, 6, 10, 5); // Armor smithy
+
+      // Coal
+      Actions.PlayerWareDistribution(p, 5, 1, 5); // Iron smithy
+      Actions.PlayerWareDistribution(p, 5, 15, 5); // Metallurgist's
+      Actions.PlayerWareDistribution(p, 5, 2, 5); // Weapon smithy
+      Actions.PlayerWareDistribution(p, 5, 10, 5); // Armor smithy
+
+      // Timber
+      Actions.PlayerWareDistribution(p, 2, 20, 5); // Armory workshop
+      Actions.PlayerWareDistribution(p, 2, 19, 5); // Weapons workshop
+
+      // Corn
+      Actions.PlayerWareDistribution(p, 9, 22, 5); // Mill
+      Actions.PlayerWareDistribution(p, 9, 16, 5); // Swine farm
+      Actions.PlayerWareDistribution(p, 9, 12, 5); // Stables
+
+      aHouses := States.PlayerGetAllHouses(p);
+
+      for h := 0 to Length(aHouses) - 1 do
+      begin
+        if (States.HouseType(aHouses[h]) = 11) then
+        begin
+          Actions.HouseWareBlock(aHouses[h], 0, true); // Tree trunks
+          Actions.HouseWareBlock(aHouses[h], 3, true); // Iron ore
+          Actions.HouseWareBlock(aHouses[h], 4, true); // Gold ore
+          Actions.HouseWareBlock(aHouses[h], 5, true); // Coal
+          Actions.HouseWareBlock(aHouses[h], 6, true); // Iron
+          Actions.HouseWareBlock(aHouses[h], 9, true); // Corn
+          Actions.HouseWareBlock(aHouses[h], 11, true); // Flour
+          Actions.HouseWareBlock(aHouses[h], 12, true); // Leather
+          Actions.HouseWareBlock(aHouses[h], 14, true); // Pigs
+          Actions.HouseWareBlock(aHouses[h], 15, true); // Skins
+        end;
+      end;
+    end;
+  end;
+end;
 
 
 procedure OnMissionStart();
 begin
-	case States.MissionDifficulty() of
-		mdEasy2:
-			IncreaseGroupSize(0, 0);
-		mdEasy1:
-		begin
-			IncreaseTargetGroupSize(0, 15, 58, 0);
-			IncreaseTargetGroupSize(0, 27, 74, 0);
-			IncreaseTargetGroupSize(0, 40, 71, 0);
-			IncreaseTargetGroupSize(0, 55, 75, 0);
-			IncreaseTargetGroupSize(0, 53, 55, 0);
-		end;
-		mdHard1: //4 Groups increased
-		begin
-			IncreaseGroupSize(3, 0);
-			IncreaseTargetGroupSize(1, 29, 41, 0);
-			IncreaseTargetGroupSize(1, 32, 33, 0);
-		end;
-		mdHard2: //7 Groups increased
-			IncreaseGroupSize(1, 0);
-	end;
-	//Assigning Knights To Variables
-	iGroup[0] := States.GroupAt(26, 46);
-	iGroup[1] := States.GroupAt(34, 45);
+  SetupAI();
+
+  aGroups[0] := States.GroupAt(26, 46); // Knight
+  aGroups[1] := States.GroupAt(34, 45); // Knight
 end;
+
 
 procedure OnTick();
 begin
-	//Message On Mission Start
-	if States.GameTime = 10 then
-		Actions.ShowMsg(0, '<$0>');
-	//Knight Attack After 2,5 Minutes
-	if States.GameTime = 150 then
-	begin
-		Actions.GroupOrderWalk(iGroup[0], 39, 70, 3);
-		Actions.GroupOrderWalk(iGroup[1], 46, 73, 3);
-	end;
+  if (States.GameTime() = 10) then
+  begin
+    Actions.ShowMsg(0, '<$0>');
+  end;
+
+  if (States.GameTime() = 150) then
+  begin
+    Actions.GroupOrderWalk(aGroups[0], 39, 70, 3);
+    Actions.GroupOrderWalk(aGroups[1], 46, 73, 3);
+  end;
 end;
