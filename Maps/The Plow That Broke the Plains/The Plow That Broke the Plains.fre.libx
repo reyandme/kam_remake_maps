@@ -1,0 +1,5 @@
+﻿0:Nous avons enfin trouvé un endroit où nous installer. Une belle plaine au bord de la mer, avec beaucoup de terre fertile : l'endroit idéal pour une ville.||Malheureusement, quelqu'un est arrivé avant nous. Sur la petite île près de la plaine se trouve un camp de bandits qui ne semble pas prêt à laisser quiconque s'installer dans la région. Battez les bandits et emparez-vous de cette plaine fertile !||[$0707FF]Difficulté :[] *||Carte utilisant le script d'IA amélioré de [$E1FA6B]Strangelove[].|Carte utilisant le script Anti Lure de [$7A7AEB]Cmowla[] (4.3b).
+1:Nous sommes arrivés dans la plaine. La terre y est fertile, mais les ressources naturelles sont plutôt rares : nous devrons agir prudemment pour ne pas manquer de ces matériaux vitaux.
+2:Les bandits ont remarqué notre activité. Ils ne tarderont pas à attaquer notre colonie naissante. Préparez-vous !
+101:Bandits
+102:Bandits

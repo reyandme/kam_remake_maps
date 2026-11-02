@@ -1,0 +1,17 @@
+﻿0:Space Invaders||Les règles : comme dans le jeu classique que tout le monde connaît sans doute, les soldats ennemis se déplacent sans cesse de gauche à droite puis inversement, en descendant de temps en temps. Votre but : envoyer vos cavaliers éliminer les forces ennemies. Pour envoyer un chevalier ou un cavalier léger, ordonnez à vos maçons de construire une route une case au-dessus de lui. Terminer les vagues plus tôt vous rapporte des bonus : activez-les de la même façon, en envoyant un maçon construire une route à sa droite.||Bonne chance, les envahisseurs doivent mourir !|Carte de sado
+1:Manche
+2:Résultat
+3:Score de la manche
+4:Troupes
+5:Temps
+6:Bonus
+7:Tour de guet
+8:Rage des miliciens
+9:Plus d'unités
+10:Guerrier nucléaire
+11:Manant explosif
+12:Mort instantanée
+13:Vous avez gagné ! Votre score est de
+14:Vous avez perdu à la manche
+15:Vies
+16:Vie supplémentaire
